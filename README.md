@@ -1,4 +1,3 @@
-
 # 🏘️ 빌리지
 
 ## 🧑‍💻 팀원 소개
@@ -59,15 +58,15 @@
     </tr>
 </table>
 
-## 📔 그라운드 룰
-- [Ground Rule](https://www.notion.so/dd3d1058652d4b708a9b4ce0cbcb0671?p=764bd4c549924631a9c9b0168426239d&pm=s)
+## 📒 협업 문서
 
-## 📔 협업 전략 (브랜치 구조, 커밋 템플릿)
- - GitHub Flow 를 사용해서 브랜치 관리
- - iOS, BE 브랜치 분리 후 각 브랜치 내에서 feature 별로 작업
- - GitHub 메시지 commit 컨벤션
-     - [Commit 컨벤션](https://www.notion.so/dd3d1058652d4b708a9b4ce0cbcb0671?p=bdfab6a28e7d4d258566d9d94a9f51d8&pm=s)
-
+<div>
+    <a href="https://knotty-hook-ea6.notion.site/764bd4c549924631a9c9b0168426239d?pvs=4">그라운드 룰</a> |
+    <a href="https://knotty-hook-ea6.notion.site/ac416ce1e732494e8805cf92bae62418?pvs=4">브랜치 전략</a> |
+    <a href="https://knotty-hook-ea6.notion.site/bdfab6a28e7d4d258566d9d94a9f51d8?pvs=4)">커밋 컨벤션</a> |
+    <a href="https://knotty-hook-ea6.notion.site/PR-3105a5f1997d440fb47887646aa107f1?pvs=4">PR, 이슈 템플릿</a> |
+    <a href="https://knotty-hook-ea6.notion.site/ba8a117af5e843fd92336db11a2bda0a?pvs=4">개발 환경</a>
+</div>
     
 ## 📔 기획/디자인 링크
 
