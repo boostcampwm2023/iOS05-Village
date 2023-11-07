@@ -67,8 +67,10 @@
     <a href="https://knotty-hook-ea6.notion.site/PR-3105a5f1997d440fb47887646aa107f1?pvs=4">PR, 이슈 템플릿</a> |
     <a href="https://knotty-hook-ea6.notion.site/ba8a117af5e843fd92336db11a2bda0a?pvs=4">개발 환경</a>
 </div>
-    
-## 📔 기획/디자인 링크
 
-## 📔 회의록/이슈/위키 연결
- - [GitHub wiki](https://github.com/boostcampwm2023/iOS05-Village/wiki)
+## 📔 기획 / 디자인 링크
+
+## 📔 회의 기록
+<div>
+    <a href="https://knotty-hook-ea6.notion.site/883568fd6a154170bd6482965ebaa0c9?v=69e3dfd417234826b5142442199c9613&pvs=4">데일리 스크럼</a>
+</div>
