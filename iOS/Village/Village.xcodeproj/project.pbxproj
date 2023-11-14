@@ -56,10 +56,8 @@
 			isa = PBXGroup;
 			children = (
 				8FBE3AEC2B03547E00660530 /* Application */,
-				59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */,
 				8FBE3AED2B03549300660530 /* Presentation */,
-				59E0C6042AFBA3FE0073D494 /* Assets.xcassets */,
-				59E0C6092AFBA3FE0073D494 /* Info.plist */,
+				8FBE3AEE2B03554600660530 /* Resources */,
 			);
 			path = Village;
 			sourceTree = "<group>";
@@ -67,6 +65,7 @@
 		8FBE3AEC2B03547E00660530 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */,
 				59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */,
 			);
 			path = Application;
@@ -78,6 +77,15 @@
 				59E0C5FF2AFBA3FC0073D494 /* ViewController.swift */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		8FBE3AEE2B03554600660530 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				59E0C6042AFBA3FE0073D494 /* Assets.xcassets */,
+				59E0C6092AFBA3FE0073D494 /* Info.plist */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
