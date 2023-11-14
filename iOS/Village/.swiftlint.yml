@@ -1,0 +1,18 @@
+# 기본 적용되는 룰에서 사용하지 않는 룰
+disabled_rules:
+    - trailing_whitespace                    # 후행 공백
+
+# 옵트 인 룰
+opt_in_rules:
+    - empty_count                            # count보다 isEmpty 선호
+    - empty_string                           # == ""보다 isEmpty 선호
+    - used_import                            # 사용되지 않는 모듈 import 알림
+
+# 식별자 네이밍 커스텀 정의
+identifier_name:
+    min_length: 2
+
+# 룰 적용 제외할 파일
+excluded:
+    - Village/AppDelegate.swift
+    - Village/SceneDelegate.swift
