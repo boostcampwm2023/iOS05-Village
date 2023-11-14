@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5975E98A2B035919007CEF13 /* getPostInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* getPostInfo.json */; };
+		5975E98B2B035919007CEF13 /* getPostsInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* getPostsInfo.json */; };
+		5975E98C2B035919007CEF13 /* getUsersInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* getUsersInfo.json */; };
 		59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */; };
 		59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */; };
 		59E0C6002AFBA3FC0073D494 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FF2AFBA3FC0073D494 /* ViewController.swift */; };
@@ -15,6 +18,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5975E9872B035919007CEF13 /* getPostInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getPostInfo.json; sourceTree = "<group>"; };
+		5975E9882B035919007CEF13 /* getPostsInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getPostsInfo.json; sourceTree = "<group>"; };
+		5975E9892B035919007CEF13 /* getUsersInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getUsersInfo.json; sourceTree = "<group>"; };
 		59E0C5F82AFBA3FC0073D494 /* Village.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Village.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -35,6 +41,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5975E98D2B03591E007CEF13 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				5975E9872B035919007CEF13 /* getPostInfo.json */,
+				5975E9882B035919007CEF13 /* getPostsInfo.json */,
+				5975E9892B035919007CEF13 /* getUsersInfo.json */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		59E0C5EF2AFBA3FC0073D494 = {
 			isa = PBXGroup;
 			children = (
@@ -58,6 +74,7 @@
 				8FBE3AEC2B03547E00660530 /* Application */,
 				8FBE3AED2B03549300660530 /* Presentation */,
 				8FBE3AEE2B03554600660530 /* Resources */,
+				5975E98D2B03591E007CEF13 /* Data */,
 			);
 			path = Village;
 			sourceTree = "<group>";
@@ -147,8 +164,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5975E98A2B035919007CEF13 /* getPostInfo.json in Resources */,
 				8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */,
+				5975E98B2B035919007CEF13 /* getPostsInfo.json in Resources */,
 				59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */,
+				5975E98C2B035919007CEF13 /* getUsersInfo.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
