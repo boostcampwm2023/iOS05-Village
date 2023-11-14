@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44425A632B038AEA00AAD64A /* FloatingButton.swift */; };
 		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
 		5975E98C2B035919007CEF13 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* Users.json */; };
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		44425A632B038AEA00AAD64A /* FloatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButton.swift; sourceTree = "<group>"; };
 		5975E9872B035919007CEF13 /* Post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Post.json; sourceTree = "<group>"; };
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
 		5975E9892B035919007CEF13 /* Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Users.json; sourceTree = "<group>"; };
@@ -59,6 +61,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		44425A622B038AA700AAD64A /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				44425A632B038AEA00AAD64A /* FloatingButton.swift */,
+			);
+			path = CustomView;
+			sourceTree = "<group>";
+		};
 		5975E98D2B03591E007CEF13 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -126,6 +136,7 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				44425A622B038AA700AAD64A /* CustomView */,
 				59E0C5FF2AFBA3FC0073D494 /* ViewController.swift */,
 			);
 			path = Presentation;
@@ -276,6 +287,7 @@
 				59E0C6002AFBA3FC0073D494 /* ViewController.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
 				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
+				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
