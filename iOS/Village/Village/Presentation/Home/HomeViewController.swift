@@ -46,7 +46,6 @@ class HomeViewController: UIViewController {
     private func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.backgroundColor = .green
         view.addSubview(collectionView)
     }
     
@@ -63,7 +62,7 @@ class HomeViewController: UIViewController {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10.0, leading: 20.0, bottom: 4.0, trailing: 20.0)
+        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 4.0, trailing: 0.0)
         section.interGroupSpacing = 8.0
         
         return UICollectionViewCompositionalLayout(section: section)
@@ -80,8 +79,7 @@ class HomeViewController: UIViewController {
                 return UICollectionViewCell()
             }
             
-            cell.label.text = item
-            cell.backgroundColor = .blue
+            cell.titleLabel.text = item
             return cell
         }
     }

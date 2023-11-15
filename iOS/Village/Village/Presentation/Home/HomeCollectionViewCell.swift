@@ -11,13 +11,6 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "HomeCollectionViewCell"
     
-    let label: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.backgroundColor = .red
-        return label
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
@@ -27,15 +20,56 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         fatalError()
     }
     
+    let postImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(systemName: "photo")
+        imageView.layer.borderWidth = 0.3
+        imageView.layer.cornerRadius = 16
+        imageView.backgroundColor = .primary500
+        return imageView
+    }()
+    
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 16, weight: .bold)
+        return label
+    }()
+    
+    let priceLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.text = "10000원"
+        
+        return label
+    }()
+    
     func setUI() {
-        self.addSubview(label)
+        self.addSubview(postImageView)
+        self.addSubview(titleLabel)
+        self.addSubview(priceLabel)
         configureConstraints()
     }
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
-            label.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10)
+            postImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            postImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            postImageView.widthAnchor.constraint(equalToConstant: 80),
+            postImageView.heightAnchor.constraint(equalToConstant: 80)
+        ])
+        
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 25),
+            titleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            priceLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
         ])
     }
 }
