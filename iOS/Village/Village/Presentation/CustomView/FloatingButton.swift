@@ -10,27 +10,30 @@ import Combine
 
 final class FloatingButton: UIButton {
     
-    @Published var toggle = false {
+    @Published var isActive = false {
         willSet {
             switch newValue {
             case true:
-                toggleOn()
+                activate()
             case false:
-                toggleOff()
+                deactivate()
             }
         }
     }
     
-    init(imageName: String = "plus", frame: CGRect) {
+    init(imageSystemName: ImageSystemName = .plus, frame: CGRect) {
         super.init(frame: frame)
         
-        addAction(.init { [weak self] _ in self?.toggle.toggle()}, for: .touchUpInside)
+        let action = UIAction { [weak self] _ in
+            self?.isActive.toggle()
+        }
+        addAction(action, for: .touchUpInside)
         
         self.layer.cornerRadius = 32.5
         self.backgroundColor = .primary500
         self.tintColor = .white
         
-        setImage(imageName: imageName)
+        setImage(imageSystemName: imageSystemName)
     }
     
     private override init(frame: CGRect) {
@@ -47,7 +50,7 @@ final class FloatingButton: UIButton {
 
 private extension FloatingButton {
     
-    func toggleOn() {
+    func activate() {
         self.backgroundColor = .grey800
 
         UIView.transition(with: self, duration: 0.2) {
@@ -55,7 +58,7 @@ private extension FloatingButton {
         }
     }
     
-    func toggleOff() {
+    func deactivate() {
         self.backgroundColor = .primary500
 
         UIView.transition(with: self, duration: 0.2) {
@@ -63,9 +66,9 @@ private extension FloatingButton {
         }
     }
     
-    func setImage(imageName: String) {
+    func setImage(imageSystemName: ImageSystemName) {
         let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
-        let plusImage = UIImage(systemName: imageName, withConfiguration: config)
+        let plusImage = UIImage(systemName: imageSystemName.rawValue, withConfiguration: config)
         
         self.setImage(plusImage, for: .normal)
     }
