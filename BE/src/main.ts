@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { setupSwagger } from './utils/swagger';
+import { setupSwagger } from './config/swagger.config';
 import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
-import { dailyOption, winstonOptions } from './utils/winston';
+import { dailyOption, winstonOptions } from './config/winston.config';
 import * as winstonDaily from 'winston-daily-rotate-file';
 
 async function bootstrap() {
