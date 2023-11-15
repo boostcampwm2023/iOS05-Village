@@ -11,7 +11,7 @@ export const winstonOptions = new winston.transports.Console({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.colorize({ all: true }),
-    nestWinstonModuleUtilities.format.nestLike('MyApp', {
+    nestWinstonModuleUtilities.format.nestLike('Village', {
       prettyPrint: true,
     }),
   ),
