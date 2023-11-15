@@ -80,6 +80,7 @@ class HomeViewController: UIViewController {
             }
             
             cell.titleLabel.text = item
+            
             return cell
         }
     }

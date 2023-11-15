@@ -47,10 +47,19 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    let accessoryView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(systemName: "chevron.right")
+        
+        return imageView
+    }()
+    
     func setUI() {
         self.addSubview(postImageView)
         self.addSubview(titleLabel)
         self.addSubview(priceLabel)
+        self.addSubview(accessoryView)
         configureConstraints()
     }
     
@@ -70,6 +79,11 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
             priceLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            accessoryView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            accessoryView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16)
         ])
     }
 }
