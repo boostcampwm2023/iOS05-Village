@@ -6,23 +6,31 @@
 //
 
 import UIKit
+import Combine
 
 final class FloatingButton: UIButton {
     
-    private var toggle = false {
-        didSet {
-            updateUI()
+    @Published var toggle = false {
+        willSet {
+            switch newValue {
+            case true:
+                toggleOn()
+            case false:
+                toggleOff()
+            }
         }
     }
     
-    init() {
-        super.init(frame: CGRect(x: 0, y: 0, width: 65, height: 65))
+    init(imageName: String = "plus", frame: CGRect) {
+        super.init(frame: frame)
+        
+        addAction(.init { [weak self] _ in self?.toggle.toggle()}, for: .touchUpInside)
         
         self.layer.cornerRadius = 32.5
         self.backgroundColor = .primary500
         self.tintColor = .white
         
-        setImage()
+        setImage(imageName: imageName)
     }
     
     private override init(frame: CGRect) {
@@ -33,46 +41,33 @@ final class FloatingButton: UIButton {
         super.init(coder: coder)
     }
     
-    func trigger() {
-        toggle.toggle()
-    }
-    
 }
 
 // MARK: - UI
 
 private extension FloatingButton {
     
-    func updateUI() {
-        switch toggle {
-        case true:
-            toggleOn()
-        case false:
-            toggleOff()
-        }
-    }
-    
     func toggleOn() {
         self.backgroundColor = .grey800
-        
-        UIView.transition(with: self, duration: 0.3) {
-            self.transform = .init(rotationAngle: .pi/4)
+
+        UIView.transition(with: self, duration: 0.2) {
+            self.transform = CGAffineTransform(rotationAngle: .pi/4)
         }
     }
     
     func toggleOff() {
         self.backgroundColor = .primary500
-        
-        UIView.transition(with: self, duration: 0.3) {
-            self.transform = .init(rotationAngle: 0)
+
+        UIView.transition(with: self, duration: 0.2) {
+            self.transform = CGAffineTransform(rotationAngle: 0)
         }
     }
     
-    func setImage() {
-        let imageName = "plus"
+    func setImage(imageName: String) {
         let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
         let plusImage = UIImage(systemName: imageName, withConfiguration: config)
         
         self.setImage(plusImage, for: .normal)
     }
+
 }
