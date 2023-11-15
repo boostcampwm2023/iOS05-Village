@@ -21,9 +21,17 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setNavigationUI()
         configureCollectionView()
         configureDataSource()
         generateData()
+    }
+    
+    private func setNavigationUI() {
+        let titleLabel = UILabel()
+        titleLabel.setTitle("홈")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
     }
     
     private func configureCollectionView() {
