@@ -14,6 +14,8 @@
 		59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */; };
 		59E0C6002AFBA3FC0073D494 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FF2AFBA3FC0073D494 /* ViewController.swift */; };
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
+		59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */; };
+		59E196CB2B04614200BF7C5A /* PeriodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196CA2B04614200BF7C5A /* PeriodPicker.swift */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +40,8 @@
 		59E0C5FF2AFBA3FC0073D494 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		59E0C6042AFBA3FE0073D494 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		59E0C6092AFBA3FE0073D494 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingRentViewController.swift; sourceTree = "<group>"; };
+		59E196CA2B04614200BF7C5A /* PeriodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodPicker.swift; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,6 +118,15 @@
 			path = Village;
 			sourceTree = "<group>";
 		};
+		59E196C72B045EFA00BF7C5A /* PostingRent */ = {
+			isa = PBXGroup;
+			children = (
+				59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */,
+				59E196CA2B04614200BF7C5A /* PeriodPicker.swift */,
+			);
+			path = PostingRent;
+			sourceTree = "<group>";
+		};
 		8FBE3AEC2B03547E00660530 /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -126,6 +139,7 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				59E196C72B045EFA00BF7C5A /* PostingRent */,
 				59E0C5FF2AFBA3FC0073D494 /* ViewController.swift */,
 			);
 			path = Presentation;
@@ -275,6 +289,8 @@
 			files = (
 				59E0C6002AFBA3FC0073D494 /* ViewController.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
+				59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */,
+				59E196CB2B04614200BF7C5A /* PeriodPicker.swift in Sources */,
 				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
