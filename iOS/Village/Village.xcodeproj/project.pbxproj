@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		440FCC2D2B04EB940011B637 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440FCC2C2B04EB940011B637 /* Constants.swift */; };
 		44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44425A632B038AEA00AAD64A /* FloatingButton.swift */; };
 		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
@@ -29,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		440FCC2C2B04EB940011B637 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		44425A632B038AEA00AAD64A /* FloatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButton.swift; sourceTree = "<group>"; };
 		5975E9872B035919007CEF13 /* Post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Post.json; sourceTree = "<group>"; };
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
@@ -61,6 +63,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		440FCC2B2B04EB830011B637 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				440FCC2C2B04EB940011B637 /* Constants.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		44425A622B038AA700AAD64A /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
@@ -117,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				8FBE3AEC2B03547E00660530 /* Application */,
+				440FCC2B2B04EB830011B637 /* Common */,
 				8FBE3AED2B03549300660530 /* Presentation */,
 				8FBE3AEE2B03554600660530 /* Resources */,
 				5975E98D2B03591E007CEF13 /* Data */,
@@ -284,6 +295,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				59E0C6002AFBA3FC0073D494 /* ViewController.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
 				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
