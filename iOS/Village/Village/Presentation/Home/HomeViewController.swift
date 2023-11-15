@@ -32,6 +32,15 @@ class HomeViewController: UIViewController {
         let titleLabel = UILabel()
         titleLabel.setTitle("홈")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        let search = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(search), symbolName: "magnifyingglass"
+        )
+        self.navigationItem.rightBarButtonItems = [search]
+        
+    }
+    
+    @objc func search() {
+        
     }
     
     private func configureCollectionView() {

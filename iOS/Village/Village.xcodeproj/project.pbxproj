@@ -18,6 +18,7 @@
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
+		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
+		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */,
+				8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				59E0C6002AFBA3FC0073D494 /* ViewController.swift in Sources */,
+				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
 				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
 			);
