@@ -178,3 +178,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 /envs
+/logs
+
