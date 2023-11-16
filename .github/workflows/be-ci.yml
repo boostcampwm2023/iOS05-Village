@@ -1,0 +1,31 @@
+name: CI Workflow
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - BE
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      # 해당 레포의 소스코드가 작업 환경에 복제된다 , checkout 의 2번째 버젼 사용
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      # node.js 를 설치한다.
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.9.x
+      # npm install 실행
+      - name: Install dependencies
+        run: |
+          cd BE
+          npm install
+      # npm test 실행
+      - name: Build and test
+        run: |
+          npm run build
+          npm test
