@@ -24,9 +24,8 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
         imageView.layer.cornerRadius = 16
-        imageView.backgroundColor = .primary100
+        
         return imageView
     }()
     
@@ -87,9 +86,17 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     }
     
     func configureData(post: Post) {
-        postImageView.image = UIImage()
         titleLabel.text = post.title
         let price = post.price.map(String.init) ?? ""
         priceLabel.text = price != "" ? "\(price)원" : ""
+    }
+    
+    func configureImage(image: UIImage?) {
+        if image != nil {
+            postImageView.image = image
+        } else {
+            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            postImageView.backgroundColor = .primary100
+        }
     }
 }

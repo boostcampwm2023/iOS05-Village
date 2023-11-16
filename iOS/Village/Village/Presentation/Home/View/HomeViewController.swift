@@ -16,6 +16,7 @@ final class HomeViewController: UIViewController {
     private var collectionView: UICollectionView!
     
     private var viewModel = PostListItemViewModel()
+    private var networkService = NetworkService()
     
     enum Section {
         case main
@@ -99,6 +100,18 @@ final class HomeViewController: UIViewController {
             }
             
             cell.configureData(post: post)
+            
+            if let imageURL = post.images.first, let postImageURL = URL(string: imageURL) {
+                self.networkService.loadImage(from: postImageURL) { [weak cell] data in
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            cell?.configureImage(image: image)
+                        }
+                    }
+                }
+            } else {
+                cell.configureImage(image: nil)
+            }
             
             return cell
         }
