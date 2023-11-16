@@ -3,7 +3,6 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from '../entities/user.entity';
 import { PostEntity } from '../entities/post.entity';
-// import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
