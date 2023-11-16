@@ -108,7 +108,7 @@ final class HomeViewController: UIViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
         snapshot.appendSections([.main])
         
-        snapshot.appendItems(viewModel.posts)
+        snapshot.appendItems(viewModel.getPosts())
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
