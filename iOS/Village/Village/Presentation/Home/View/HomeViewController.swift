@@ -9,11 +9,13 @@ import UIKit
 
 final class HomeViewController: UIViewController {
     
-    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, String>
+    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, Post>
     
     private var dataSource: HomeDataSource!
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     private var collectionView: UICollectionView!
+    
+    private var viewModel = PostListItemViewModel()
     
     enum Section {
         case main
@@ -22,10 +24,27 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setViewModel()
         setNavigationUI()
         configureCollectionView()
         configureDataSource()
         generateData()
+    }
+    
+    private func setViewModel() {
+        guard let path = Bundle.main.path(forResource: "Post", ofType: "json") else { return }
+        
+        guard let jsonString = try? String(contentsOfFile: path) else { return }
+        do {
+            let decoder = JSONDecoder()
+            let data = jsonString.data(using: .utf8)
+            
+            guard let data = data else { return }
+            let posts = try decoder.decode(VillagePost.self, from: data)
+            viewModel.updatePosts(updatePosts: posts.body)
+        } catch {
+            return
+        }
     }
     
     private func setNavigationUI() {
@@ -70,7 +89,7 @@ final class HomeViewController: UIViewController {
     
     private func configureDataSource() {
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, item) ->
+        dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
             UICollectionViewCell? in
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: self.reuseIdentifier,
@@ -79,19 +98,17 @@ final class HomeViewController: UIViewController {
                 return UICollectionViewCell()
             }
             
-            cell.titleLabel.text = item
+            cell.configureData(post: post)
             
             return cell
         }
     }
     
     private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, String>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
         snapshot.appendSections([.main])
         
-        let items = ["12123","12","13","14","15","16","17","18","19","asd","qweqwe", "1231424", "1241243123", "121231234123", "1123123", "adsasd", "13213asda", "q", "zxc", "zxcvasd", "vsdacv", "ber"]
-        
-        snapshot.appendItems(items)
+        snapshot.appendItems(viewModel.posts)
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
