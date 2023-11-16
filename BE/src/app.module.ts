@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { winstonOptions, dailyOption } from './config/winston.config';
 import { MysqlConfigProvider } from './config/mysql.config';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MysqlConfigProvider } from './config/mysql.config';
     TypeOrmModule.forRootAsync({
       useClass: MysqlConfigProvider,
     }),
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService, Logger],
