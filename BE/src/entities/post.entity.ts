@@ -1,0 +1,68 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
+import { UserEntity } from './user.entity';
+import { PostImageEntity } from './postImage.entity';
+import { BlockPostEntity } from './blockPost.entity';
+
+@Entity('post')
+export class PostEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ length: 100, nullable: false, charset: 'utf8' })
+  title: string;
+
+  @Column({ nullable: true })
+  price: number;
+
+  @Column({ type: 'text', nullable: false, charset: 'utf8' })
+  contents: string;
+
+  @Column({ nullable: false })
+  user_id: number;
+
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  @JoinColumn({ name: 'user_id' })
+  user: UserEntity;
+
+  @Column({ type: 'tinyint', nullable: false })
+  status: number;
+
+  @Column({ type: 'datetime', nullable: false })
+  start_date: Date;
+
+  @Column({ type: 'datetime', nullable: false })
+  end_date: Date;
+
+  @Column({ type: 'tinyint', nullable: false })
+  is_request: number;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    nullable: false,
+  })
+  create_date: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    nullable: true,
+  })
+  update_date: Date;
+
+  @Column({ length: 2048, nullable: true, charset: 'utf8' })
+  thumbnail: string;
+
+  @OneToMany(() => PostImageEntity, (post_image) => post_image.post)
+  post_images: PostImageEntity[];
+
+  @OneToMany(() => BlockPostEntity, (post_image) => post_image.blocked_post)
+  blocked_posts: PostImageEntity[];
+}
