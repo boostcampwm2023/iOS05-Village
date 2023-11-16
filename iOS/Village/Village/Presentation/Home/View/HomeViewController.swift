@@ -33,7 +33,7 @@ final class HomeViewController: UIViewController {
         titleLabel.setTitle("홈")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let search = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(search), symbolName: .magnifyingglass
+            self, action: #selector(search), symbolName: .magnifyingGlass
         )
         self.navigationItem.rightBarButtonItems = [search]
         

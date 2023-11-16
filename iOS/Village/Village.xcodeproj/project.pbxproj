@@ -23,6 +23,7 @@
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
+		8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
+		8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListItemViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,8 +191,8 @@
 		8FBE3B062B04763200660530 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */,
-				8FBE3B0B2B048B1300660530 /* HomeViewController.swift */,
+				8FC7FE722B05CE3000B91D3B /* ViewModel */,
+				8FC7FE712B05CE2300B91D3B /* View */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -210,6 +212,23 @@
 				8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		8FC7FE712B05CE2300B91D3B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */,
+				8FBE3B0B2B048B1300660530 /* HomeViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8FC7FE722B05CE3000B91D3B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -356,6 +375,7 @@
 				59E196CB2B04614200BF7C5A /* PeriodPicker.swift in Sources */,
 				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
+				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
