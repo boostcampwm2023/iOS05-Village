@@ -7,12 +7,12 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController {
     
     typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, String>
     
     private var dataSource: HomeDataSource!
-    private let reuseIdentifier = "HomeCollectionViewCell"
+    private let reuseIdentifier = HomeCollectionViewCell.identifier
     private var collectionView: UICollectionView!
     
     enum Section {
@@ -33,14 +33,14 @@ class HomeViewController: UIViewController {
         titleLabel.setTitle("홈")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let search = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(search), symbolName: "magnifyingglass"
+            self, action: #selector(search), symbolName: .magnifyingglass
         )
         self.navigationItem.rightBarButtonItems = [search]
         
     }
     
     @objc func search() {
-        
+        // TODO: 검색버튼액션 구현
     }
     
     private func configureCollectionView() {
