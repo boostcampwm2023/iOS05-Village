@@ -168,10 +168,10 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				44425A622B038AA700AAD64A /* CustomView */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
 				8FBE3B062B04763200660530 /* Home */,
 				59E196C72B045EFA00BF7C5A /* PostingRent */,
-				44425A622B038AA700AAD64A /* CustomView */,
 				59E0C5FF2AFBA3FC0073D494 /* ViewController.swift */,
 			);
 			path = Presentation;

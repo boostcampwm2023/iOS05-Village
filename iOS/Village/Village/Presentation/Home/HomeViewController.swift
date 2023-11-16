@@ -15,6 +15,12 @@ final class HomeViewController: UIViewController {
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     private var collectionView: UICollectionView!
     
+    private let floatingButton: FloatingButton = {
+        let button = FloatingButton(frame: .zero)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     enum Section {
         case main
     }
@@ -22,10 +28,17 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupUI()
+        generateData()
+    }
+    
+    private func setupUI() {
         setNavigationUI()
         configureCollectionView()
         configureDataSource()
-        generateData()
+        
+        view.addSubview(floatingButton)
+        setLayoutConstraint()
     }
     
     private func setNavigationUI() {
@@ -93,5 +106,14 @@ final class HomeViewController: UIViewController {
         
         snapshot.appendItems(items)
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func setLayoutConstraint() {
+        NSLayoutConstraint.activate([
+            floatingButton.widthAnchor.constraint(equalToConstant: 65),
+            floatingButton.heightAnchor.constraint(equalToConstant: 65),
+            floatingButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+        ])
     }
 }
