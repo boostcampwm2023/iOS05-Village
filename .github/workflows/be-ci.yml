@@ -27,5 +27,6 @@ jobs:
       # npm test 실행
       - name: Build and test
         run: |
+          cd BE
           npm run build
           npm test
