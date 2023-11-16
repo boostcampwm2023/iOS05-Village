@@ -1,11 +1,13 @@
 import { Module, Logger } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { WinstonModule } from 'nest-winston';
+import * as process from 'process';
+import * as winstonDaily from 'winston-daily-rotate-file';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import * as process from 'process';
-import { WinstonModule } from 'nest-winston';
-import { winstonOptions, dailyOption } from './utils/winston';
-import * as winstonDaily from 'winston-daily-rotate-file';
+import { winstonOptions, dailyOption } from './config/winston.config';
+import { MysqlConfigProvider } from './config/mysql.config';
 
 @Module({
   imports: [
@@ -15,6 +17,9 @@ import * as winstonDaily from 'winston-daily-rotate-file';
     }),
     WinstonModule.forRoot({
       transports: [winstonOptions, new winstonDaily(dailyOption('warn'))],
+    }),
+    TypeOrmModule.forRootAsync({
+      useClass: MysqlConfigProvider,
     }),
   ],
   controllers: [AppController],

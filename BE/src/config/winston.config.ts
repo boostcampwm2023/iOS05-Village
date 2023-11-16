@@ -1,9 +1,7 @@
 import * as winston from 'winston';
-import * as winstonDaily from 'winston-daily-rotate-file';
 import {
   utilities as nestWinstonModuleUtilities,
   utilities,
-  WinstonModule,
 } from 'nest-winston';
 
 export const winstonOptions = new winston.transports.Console({

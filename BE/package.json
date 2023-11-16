@@ -25,9 +25,12 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.15",
+    "@nestjs/typeorm": "^10.0.1",
+    "mysql2": "^3.6.3",
     "nest-winston": "^1.9.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "typeorm": "^0.3.17",
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^4.7.1"
   },
