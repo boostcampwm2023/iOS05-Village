@@ -9,4 +9,7 @@ import Foundation
 
 enum ImageSystemName: String {
     case plus
+    case photo
+    case magnifyingglass
+    case chevronRight = "chevron.right"
 }

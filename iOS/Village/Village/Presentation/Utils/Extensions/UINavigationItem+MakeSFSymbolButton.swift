@@ -9,9 +9,9 @@ import UIKit
 
 extension UINavigationItem {
     
-    func makeSFSymbolButton(_ target: Any?, action: Selector, symbolName: String) -> UIBarButtonItem {
+    func makeSFSymbolButton(_ target: Any?, action: Selector, symbolName: ImageSystemName) -> UIBarButtonItem {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: symbolName), for: .normal)
+        button.setImage(UIImage(systemName: symbolName.rawValue), for: .normal)
         button.addTarget(target, action: action, for: .touchUpInside)
         button.tintColor = .black
         

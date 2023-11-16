@@ -17,17 +17,16 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError()
+        super.init(coder: coder)
     }
     
     let postImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(systemName: "photo")
-        imageView.layer.borderWidth = 0.3
+        imageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
         imageView.layer.cornerRadius = 16
-        imageView.backgroundColor = .primary500
+        imageView.backgroundColor = .primary100
         return imageView
     }()
     
@@ -50,7 +49,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     let accessoryView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: "chevron.right")
+        imageView.image = UIImage(systemName: ImageSystemName.chevronRight.rawValue)
         
         return imageView
     }()
