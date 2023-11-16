@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
       # 해당 레포의 소스코드가 작업 환경에 복제된다 , checkout 의 2번째 버젼 사용
