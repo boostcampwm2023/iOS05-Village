@@ -46,8 +46,8 @@ class PostingRentViewController: UIViewController {
         textField.heightAnchor.constraint(equalToConstant: 48).isActive = true
         return textField
     }()
-    private let periodPicker = PeriodPicker(startSegmentTitle: "대여 시작 가능", endSegmentTitle: "대여 종료")
-
+    private let periodPicker = TimePickerView()
+    
     private let priceTextFieldView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 0.5
@@ -116,7 +116,7 @@ private extension PostingRentViewController {
     
     func configurePeriodPicker() {
         periodPicker.translatesAutoresizingMaskIntoConstraints = false
-        periodPicker.heightAnchor.constraint(equalToConstant: 250).isActive = true
+        periodPicker.heightAnchor.constraint(equalToConstant: 100).isActive = true
     }
     
 }
