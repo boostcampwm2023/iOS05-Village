@@ -26,6 +26,7 @@
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
 		8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */; };
 		8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE772B06768C00B91D3B /* NetworkService.swift */; };
+		8FC7FE7B2B07A89A00B91D3B /* DetailPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* DetailPostViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
 		8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListItemViewModel.swift; sourceTree = "<group>"; };
 		8FC7FE772B06768C00B91D3B /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		8FC7FE7A2B07A89A00B91D3B /* DetailPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPostViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				8FC7FE792B07A88400B91D3B /* DetailPost */,
 				44425A622B038AA700AAD64A /* CustomView */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
 				8FBE3B062B04763200660530 /* Home */,
@@ -243,6 +246,14 @@
 				8FC7FE772B06768C00B91D3B /* NetworkService.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		8FC7FE792B07A88400B91D3B /* DetailPost */ = {
+			isa = PBXGroup;
+			children = (
+				8FC7FE7A2B07A89A00B91D3B /* DetailPostViewController.swift */,
+			);
+			path = DetailPost;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -392,6 +403,7 @@
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
+				8FC7FE7B2B07A89A00B91D3B /* DetailPostViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
