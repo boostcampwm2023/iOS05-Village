@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct VillagePost: Codable {
+struct PostResponse: Codable {
     let body: [Post]
 }
 

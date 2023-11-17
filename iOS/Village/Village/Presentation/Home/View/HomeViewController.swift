@@ -77,7 +77,7 @@ final class HomeViewController: UIViewController {
             let data = jsonString.data(using: .utf8)
             
             guard let data = data else { return }
-            let posts = try decoder.decode(VillagePost.self, from: data)
+            let posts = try decoder.decode(PostResponse.self, from: data)
             viewModel.updatePosts(updatePosts: posts.body)
         } catch {
             return
