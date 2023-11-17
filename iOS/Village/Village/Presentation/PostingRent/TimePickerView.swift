@@ -46,6 +46,15 @@ final class TimePickerView: UIView {
         "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
         "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
     ]
+    var time: Date? {
+        guard let date = selectedDate, let hour = selectedHour else { return nil }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.ddHH:mm"
+        formatter.locale = Locale(identifier: PickerLocale.korea.rawValue)
+        var time = formatter.date(from: date + hour)
+        
+        return time
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -122,15 +131,19 @@ final class TimePickerView: UIView {
     }
     
     @objc func datePickerDoneTapped(_ sender: UIBarButtonItem) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy.MM.dd"
-        selectedDate = dateFormatter.string(from: datePicker.date)
-        dateTextField.text = dateFormatter.string(from: datePicker.date)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        formatter.locale = Locale(identifier: PickerLocale.korea.rawValue)
+        selectedDate = formatter.string(from: datePicker.date)
+        dateTextField.text = formatter.string(from: datePicker.date)
         dateTextField.resignFirstResponder()
     }
     
     @objc func hourPickerDoneTapped(_ sender: UIBarButtonItem) {
-        hourTextField.text = selectedHour ?? hours[0]
+        if selectedHour == nil {
+            selectedHour = hours[0]
+        }
+        hourTextField.text = selectedHour
         hourTextField.resignFirstResponder()
     }
     
