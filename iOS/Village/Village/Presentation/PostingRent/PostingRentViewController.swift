@@ -8,6 +8,7 @@
 import UIKit
 
 final class PostingRentViewController: UIViewController {
+    
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
     //    private let photoHeaderLabel = UILabel()
@@ -76,18 +77,31 @@ final class PostingRentViewController: UIViewController {
         return view
     }()
     private let detailTextViewPlaceHolder = "설명을 입력하세요."
-    private let detailTextView: UITextView = {
+    private lazy var detailTextView: UITextView = {
         let textView = UITextView()
         textView.layer.cornerRadius = 8
         textView.layer.borderWidth = 0.5
         textView.font = UIFont.systemFont(ofSize: 18)
         textView.textContainerInset = .init(top: 16, left: 16, bottom: 16, right: 16)
+        textView.isScrollEnabled = false
+        textView.text = self.detailTextViewPlaceHolder
+        textView.textColor = .lightGray
         return textView
     }()
     
+    private let postButtonView = UIView()
+    private let postButton: UIButton = {
+        var configuration = UIButton.Configuration.filled()
+        configuration.title = "작성하기"
+        configuration.baseBackgroundColor = .primary500
+        configuration.titleAlignment = .center
+        configuration.cornerStyle = .medium
+        return UIButton(configuration: configuration)
+    }()
     override func viewDidLoad() {
         view.backgroundColor = .white
         setNavigationUI()
+        setPostButtonView()
         configureUIComponents()
         super.viewDidLoad()
     }
@@ -158,12 +172,29 @@ private extension PostingRentViewController {
     
     func configureDetailTextView() {
         detailTextView.delegate = self
-        detailTextView.isScrollEnabled = false
         detailTextView.heightAnchor.constraint(equalToConstant: 180).isActive = true
-        detailTextView.text = detailTextViewPlaceHolder
-        detailTextView.textColor = .lightGray
     }
     
+    func setPostButtonView() {
+        postButtonView.setLayer(cornerRadius: 0)
+        postButtonView.translatesAutoresizingMaskIntoConstraints = false
+        postButton.translatesAutoresizingMaskIntoConstraints = false
+        postButtonView.addSubview(postButton)
+        view.addSubview(postButtonView)
+        NSLayoutConstraint.activate([
+            postButton.topAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 18),
+            postButton.leadingAnchor.constraint(equalTo: postButtonView.leadingAnchor, constant: 16),
+            postButton.trailingAnchor.constraint(equalTo: postButtonView.trailingAnchor, constant: -16),
+            postButton.heightAnchor.constraint(equalToConstant: 44)
+        ])
+        
+        NSLayoutConstraint.activate([
+            postButtonView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            postButtonView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            postButtonView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            postButtonView.heightAnchor.constraint(equalToConstant: 100)
+        ])
+    }
 }
 
 extension PostingRentViewController: UITextViewDelegate {

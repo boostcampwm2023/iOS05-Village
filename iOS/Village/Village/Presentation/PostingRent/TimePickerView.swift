@@ -11,6 +11,7 @@ enum PickerLocale: String {
     case korea = "ko-KR"
 }
 
+// TODO: 키보드 올리기, 시간 범위
 final class TimePickerView: UIView {
 
     private let dateTextField: UITextField = {
