@@ -87,8 +87,23 @@ final class PostingRentViewController: UIViewController {
     
     override func viewDidLoad() {
         view.backgroundColor = .white
+        setNavigationUI()
         configureUIComponents()
         super.viewDidLoad()
+    }
+    
+    private func setNavigationUI() {
+        let titleLabel = UILabel()
+        titleLabel.setTitle("대여 등록")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        let close = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(close), symbolName: .xmark
+        )
+        self.navigationItem.rightBarButtonItems = [close]
+    }
+    
+    @objc func close(_ sender: UIBarButtonItem) {
+        dismiss(animated: true)
     }
     
 }

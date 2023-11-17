@@ -12,4 +12,5 @@ enum ImageSystemName: String {
     case photo
     case magnifyingglass
     case chevronRight = "chevron.right"
+    case xmark
 }
