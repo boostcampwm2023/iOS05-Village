@@ -7,8 +7,8 @@
 
 import UIKit
 
-class PostingRentViewController: UIViewController {
-    
+final class PostingRentViewController: UIViewController {
+    private let scrollView = UIScrollView()
     private let stackView = UIStackView()
     //    private let photoHeaderLabel = UILabel()
     //    private let addPhotoButton = UIButton()
@@ -18,9 +18,15 @@ class PostingRentViewController: UIViewController {
         label.font = .boldSystemFont(ofSize: 16)
         return label
     }()
-    private let periodHeaderLabel: UILabel = {
+    private let periodStartHeaderLabel: UILabel = {
         let label = UILabel()
-        label.text = "대여 가능 기간"
+        label.text = "대여 시작 가능"
+        label.font = .boldSystemFont(ofSize: 16)
+        return label
+    }()
+    private let periodEndHeaderLabel: UILabel = {
+        let label = UILabel()
+        label.text = "대여 종료"
         label.font = .boldSystemFont(ofSize: 16)
         return label
     }()
@@ -46,8 +52,9 @@ class PostingRentViewController: UIViewController {
         textField.heightAnchor.constraint(equalToConstant: 48).isActive = true
         return textField
     }()
-    private let periodPicker = PeriodPicker(startSegmentTitle: "대여 시작 가능", endSegmentTitle: "대여 종료")
-
+    private let startTimePicker = TimePickerView()
+    private let endTimePicker = TimePickerView()
+    
     private let priceTextFieldView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 0.5
@@ -68,12 +75,13 @@ class PostingRentViewController: UIViewController {
         ])
         return view
     }()
+    private let detailTextViewPlaceHolder = "설명을 입력하세요."
     private let detailTextView: UITextView = {
         let textView = UITextView()
         textView.layer.cornerRadius = 8
         textView.layer.borderWidth = 0.5
-        textView.font = UIFont.systemFont(ofSize: 16)
-        textView.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
+        textView.font = UIFont.systemFont(ofSize: 18)
+        textView.textContainerInset = .init(top: 16, left: 16, bottom: 16, right: 16)
         return textView
     }()
     
@@ -89,23 +97,35 @@ private extension PostingRentViewController {
     
     func configureUIComponents() {
         configureStackView()
-        configurePeriodPicker()
+        configurePicker()
+        configureDetailTextView()
     }
     
     func configureStackView() {
-        view.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
+        scrollView.addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -10),
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         
         stackView.addArrangedSubview(titleHeaderLabel)
         stackView.addArrangedSubview(titleTextField)
-        stackView.addArrangedSubview(periodHeaderLabel)
-        stackView.addArrangedSubview(periodPicker)
+        stackView.addArrangedSubview(periodStartHeaderLabel)
+        stackView.addArrangedSubview(startTimePicker)
+        stackView.addArrangedSubview(periodEndHeaderLabel)
+        stackView.addArrangedSubview(endTimePicker)
         stackView.addArrangedSubview(priceHeaderLabel)
         stackView.addArrangedSubview(priceTextFieldView)
         stackView.addArrangedSubview(detailHeaderLabel)
@@ -114,9 +134,48 @@ private extension PostingRentViewController {
         stackView.spacing = 10
     }
     
-    func configurePeriodPicker() {
-        periodPicker.translatesAutoresizingMaskIntoConstraints = false
-        periodPicker.heightAnchor.constraint(equalToConstant: 250).isActive = true
+    func configurePicker() {
+        startTimePicker.translatesAutoresizingMaskIntoConstraints = false
+        startTimePicker.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        endTimePicker.translatesAutoresizingMaskIntoConstraints = false
+        endTimePicker.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    
+    func configureDetailTextView() {
+        detailTextView.delegate = self
+        detailTextView.isScrollEnabled = false
+        detailTextView.heightAnchor.constraint(equalToConstant: 180).isActive = true
+        detailTextView.text = detailTextViewPlaceHolder
+        detailTextView.textColor = .lightGray
+    }
+    
+}
+
+extension PostingRentViewController: UITextViewDelegate {
+    
+    func textViewDidChange(_ textView: UITextView) {
+        let size = CGSize(width: view.frame.width, height: .infinity)
+        let estimatedSize = textView.sizeThatFits(size)
+        
+        textView.constraints.forEach { (constraint) in
+            if estimatedSize.height > 180 && constraint.firstAttribute == .height {
+                constraint.constant = estimatedSize.height
+            }
+        }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == detailTextViewPlaceHolder {
+            textView.text = nil
+            textView.textColor = .black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = detailTextViewPlaceHolder
+            textView.textColor = .lightGray
+        }
     }
     
 }
