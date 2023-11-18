@@ -172,8 +172,6 @@ final class HomeViewController: UIViewController {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
-    
-    
     private func setLayoutConstraint() {
         NSLayoutConstraint.activate([
             floatingButton.widthAnchor.constraint(equalToConstant: 65),
@@ -194,8 +192,8 @@ final class HomeViewController: UIViewController {
 extension HomeViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        nextVC.postData = viewModel.getPost(index: indexPath.row)
         let nextVC = PostDetailViewController()
+        nextVC.postData = viewModel.getPost(at: indexPath.row)
         
         self.navigationController?.pushViewController(nextVC, animated: false)
     }
