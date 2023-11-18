@@ -112,6 +112,7 @@ final class HomeViewController: UIViewController {
     private func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.delegate = self
         view.addSubview(collectionView)
     }
     
@@ -171,6 +172,8 @@ final class HomeViewController: UIViewController {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
+    
+    
     private func setLayoutConstraint() {
         NSLayoutConstraint.activate([
             floatingButton.widthAnchor.constraint(equalToConstant: 65),
@@ -185,5 +188,15 @@ final class HomeViewController: UIViewController {
             menuView.trailingAnchor.constraint(equalTo: floatingButton.trailingAnchor, constant: 0),
             menuView.bottomAnchor.constraint(equalTo: floatingButton.topAnchor, constant: -15)
         ])
+    }
+}
+
+extension HomeViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let nextVC = DetailPostViewController()
+        nextVC.postData = viewModel.getPost(index: indexPath.row)
+        
+        self.navigationController?.pushViewController(nextVC, animated: false)
     }
 }
