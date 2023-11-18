@@ -90,14 +90,17 @@ final class PostingRentViewController: UIViewController {
     }()
     
     private let postButtonView = UIView()
-    private let postButton: UIButton = {
+    private lazy var postButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.title = "작성하기"
         configuration.baseBackgroundColor = .primary500
         configuration.titleAlignment = .center
         configuration.cornerStyle = .medium
-        return UIButton(configuration: configuration)
+        let button = UIButton(configuration: configuration)
+        button.addTarget(self, action: #selector(post), for: .touchUpInside)
+        return button
     }()
+    
     override func viewDidLoad() {
         view.backgroundColor = .white
         setNavigationUI()
@@ -106,18 +109,12 @@ final class PostingRentViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    private func setNavigationUI() {
-        let titleLabel = UILabel()
-        titleLabel.setTitle("대여 등록")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
-        let close = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(close), symbolName: .xmark
-        )
-        self.navigationItem.rightBarButtonItems = [close]
-    }
-    
     @objc func close(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
+    }
+    
+    // TODO: 작성하기 버튼 눌렀을 때 작동 구현
+    @objc func post(_ sender: UIButton) {
     }
     
 }
@@ -139,7 +136,7 @@ private extension PostingRentViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor)
         ])
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
@@ -195,6 +192,17 @@ private extension PostingRentViewController {
             postButtonView.heightAnchor.constraint(equalToConstant: 100)
         ])
     }
+    
+    func setNavigationUI() {
+        let titleLabel = UILabel()
+        titleLabel.setTitle("대여 등록")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        let close = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(close), symbolName: .xmark
+        )
+        self.navigationItem.rightBarButtonItems = [close]
+    }
+    
 }
 
 extension PostingRentViewController: UITextViewDelegate {
