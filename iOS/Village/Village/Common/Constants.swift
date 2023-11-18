@@ -12,10 +12,10 @@ enum ImageSystemName: String {
     case photo
     case magnifyingGlass = "magnifyingglass"
     case chevronRight = "chevron.right"
-    case home = "house"
-    case fillHome = "house.fill"
+    case house = "house"
+    case houseFill = "house.fill"
     case message = "message"
-    case fillMessage = "message.fill"
-    case myPage = "person"
-    case fillMyPage = "person.fill"
+    case messageFill = "message.fill"
+    case person = "person"
+    case personFill = "person.fill"
 }

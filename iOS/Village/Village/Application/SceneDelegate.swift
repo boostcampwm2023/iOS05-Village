@@ -27,16 +27,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         if let items = tapBarController.tabBar.items {
-            items[0].selectedImage = UIImage(systemName: ImageSystemName.fillHome.rawValue)
-            items[0].image = UIImage(systemName: ImageSystemName.home.rawValue)
+            items[0].selectedImage = UIImage(systemName: ImageSystemName.houseFill.rawValue)
+            items[0].image = UIImage(systemName: ImageSystemName.house.rawValue)
             items[0].title = "홈"
             
-            items[1].selectedImage = UIImage(systemName: ImageSystemName.fillMessage.rawValue)
+            items[1].selectedImage = UIImage(systemName: ImageSystemName.messageFill.rawValue)
             items[1].image = UIImage(systemName: ImageSystemName.message.rawValue)
             items[1].title = "채팅"
             
-            items[2].selectedImage = UIImage(systemName: ImageSystemName.fillMyPage.rawValue)
-            items[2].image = UIImage(systemName: ImageSystemName.myPage.rawValue)
+            items[2].selectedImage = UIImage(systemName: ImageSystemName.personFill.rawValue)
+            items[2].image = UIImage(systemName: ImageSystemName.person.rawValue)
             items[2].title = "내 정보"
         }
         
