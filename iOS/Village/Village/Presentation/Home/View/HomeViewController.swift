@@ -194,8 +194,8 @@ final class HomeViewController: UIViewController {
 extension HomeViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let nextVC = DetailPostViewController()
         nextVC.postData = viewModel.getPost(index: indexPath.row)
+        let nextVC = PostDetailViewController()
         
         self.navigationController?.pushViewController(nextVC, animated: false)
     }
