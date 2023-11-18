@@ -45,11 +45,10 @@ final class PostingRentViewController: UIViewController {
     }()
     private let titleTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "제목을 입력하세요"
-        textField.layer.borderWidth = 0.5
-        textField.layer.cornerRadius = 8
+        textField.setPlaceHolder("제목을 입력하세요")
+        textField.setLayer()
         textField.leftViewMode = .always
-        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: textField.frame.height))
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
         textField.heightAnchor.constraint(equalToConstant: 48).isActive = true
         return textField
     }()
@@ -58,10 +57,9 @@ final class PostingRentViewController: UIViewController {
     
     private let priceTextFieldView: UIView = {
         let view = UIView()
-        view.layer.borderWidth = 0.5
-        view.layer.cornerRadius = 8
+        view.setLayer()
         let textField = UITextField()
-        textField.placeholder = "가격을 입력하세요"
+        textField.setPlaceHolder("가격을 입력하세요")
         let rightView = UILabel()
         rightView.text = "원"
         textField.rightView = rightView
@@ -70,8 +68,8 @@ final class PostingRentViewController: UIViewController {
         view.addSubview(textField)
         textField.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
-            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             textField.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         return view
@@ -79,10 +77,9 @@ final class PostingRentViewController: UIViewController {
     private let detailTextViewPlaceHolder = "설명을 입력하세요."
     private lazy var detailTextView: UITextView = {
         let textView = UITextView()
-        textView.layer.cornerRadius = 8
-        textView.layer.borderWidth = 0.5
+        textView.setLayer()
         textView.font = UIFont.systemFont(ofSize: 18)
-        textView.textContainerInset = .init(top: 16, left: 16, bottom: 16, right: 16)
+        textView.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
         textView.isScrollEnabled = false
         textView.text = self.detailTextViewPlaceHolder
         textView.textColor = .lightGray
