@@ -101,7 +101,12 @@ final class PostingRentViewController: UIViewController {
     }()
     
     private let postButtonView = UIView()
-    private lazy var postButtonViewBottomConstraint = postButtonView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
+    private lazy var postButtonViewBottomConstraint = postButtonView
+        .bottomAnchor
+        .constraint(
+            equalTo: self.view.bottomAnchor,
+            constant: 0
+        )
     private lazy var postButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.title = "작성하기"
@@ -117,8 +122,6 @@ final class PostingRentViewController: UIViewController {
     
     override func viewDidLoad() {
         view.backgroundColor = .white
-        setNavigationUI()
-        setPostButtonView()
         configureUIComponents()
         setupKeyboardEvent()
         super.viewDidLoad()
@@ -147,39 +150,48 @@ final class PostingRentViewController: UIViewController {
         )
     }
     
-    @objc func keyboardWillShow(_ sender: Notification) {
-        guard let keyboardFrame = sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        let keyboardHeight = keyboardFrame.cgRectValue.height
-        
-        NSLayoutConstraint.deactivate([postButtonViewBottomConstraint])
-        postButtonViewBottomConstraint = postButtonView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
-        
-        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
-    }
-    
-    @objc func keyboardWillHide(_ sender: Notification) {
-        guard let keyboardFrame = sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        let keyboardHeight = keyboardFrame.cgRectValue.height
-        
-        NSLayoutConstraint.deactivate([postButtonViewBottomConstraint])
-        postButtonViewBottomConstraint = postButtonView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
-        
-        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
-    }
-    
 }
 
 private extension PostingRentViewController {
     
     func configureUIComponents() {
-        configureDetailTextView()
+        configureNavigation()
+        configurePostButtonView()
+        configureScrollView()
         configureStackView()
         configurePicker()
+        configureDetailTextView()
+        configurePostButton()
+    }
+    
+    func configureNavigation() {
+        let titleLabel = UILabel()
+        titleLabel.setTitle("대여 등록")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        let close = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(close), symbolName: .xmark
+        )
+        self.navigationItem.rightBarButtonItems = [close]
+        navigationController?.navigationBar.backgroundColor = .white
+    }
+    
+    func configurePostButtonView() {
+        postButtonView.setLayer(cornerRadius: 0)
+        postButtonView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(postButtonView)
+        
+        NSLayoutConstraint.activate([
+            postButtonView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            postButtonView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            postButtonView.heightAnchor.constraint(equalToConstant: 100)
+        ])
+        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
     }
     
     func configureScrollView() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
+        
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -191,6 +203,7 @@ private extension PostingRentViewController {
     func configureStackView() {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(stackView)
+        
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
@@ -216,6 +229,7 @@ private extension PostingRentViewController {
     func configurePicker() {
         startTimePicker.translatesAutoresizingMaskIntoConstraints = false
         startTimePicker.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
         endTimePicker.translatesAutoresizingMaskIntoConstraints = false
         endTimePicker.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
@@ -225,39 +239,16 @@ private extension PostingRentViewController {
         detailTextView.heightAnchor.constraint(equalToConstant: 180).isActive = true
     }
     
-    func setPostButton() {
+    func configurePostButton() {
         postButton.translatesAutoresizingMaskIntoConstraints = false
         postButtonView.addSubview(postButton)
+        
         NSLayoutConstraint.activate([
             postButton.topAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 18),
             postButton.leadingAnchor.constraint(equalTo: postButtonView.leadingAnchor, constant: 16),
             postButton.trailingAnchor.constraint(equalTo: postButtonView.trailingAnchor, constant: -16),
             postButton.heightAnchor.constraint(equalToConstant: 44)
         ])
-    }
-    
-    func setPostButtonView() {
-        postButtonView.setLayer(cornerRadius: 0)
-        postButtonView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(postButtonView)
-        
-        NSLayoutConstraint.activate([
-            postButtonView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            postButtonView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            postButtonView.heightAnchor.constraint(equalToConstant: 100)
-        ])
-        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
-    }
-    
-    func setNavigationUI() {
-        let titleLabel = UILabel()
-        titleLabel.setTitle("대여 등록")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
-        let close = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(close), symbolName: .xmark
-        )
-        self.navigationItem.rightBarButtonItems = [close]
-        navigationController?.navigationBar.backgroundColor = .white
     }
     
 }
@@ -296,6 +287,41 @@ extension PostingRentViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+}
+
+@objc
+extension PostingRentViewController {
+    
+    func keyboardWillShow(_ sender: Notification) {
+        guard let keyboardFrame = sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let keyboardHeight = keyboardFrame.cgRectValue.height
+        
+        NSLayoutConstraint.deactivate([postButtonViewBottomConstraint])
+        postButtonViewBottomConstraint = postButtonView
+            .bottomAnchor
+            .constraint(
+                equalTo: self.view.bottomAnchor,
+                constant: -keyboardHeight
+            )
+        
+        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
+    }
+    
+    func keyboardWillHide(_ sender: Notification) {
+        guard let keyboardFrame = sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let keyboardHeight = keyboardFrame.cgRectValue.height
+        
+        NSLayoutConstraint.deactivate([postButtonViewBottomConstraint])
+        postButtonViewBottomConstraint = postButtonView
+            .bottomAnchor
+            .constraint(
+                equalTo: self.view.bottomAnchor,
+                constant: 0
+            )
+        
+        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
     }
     
 }
