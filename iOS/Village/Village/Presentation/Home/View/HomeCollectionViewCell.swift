@@ -18,6 +18,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setUI()
     }
     
     private let postImageView: UIImageView = {
