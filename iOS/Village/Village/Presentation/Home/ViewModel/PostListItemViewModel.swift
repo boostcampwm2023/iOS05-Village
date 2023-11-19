@@ -46,4 +46,8 @@ final class PostListItemViewModel {
         return posts
     }
     
+    func getPost(_ index: Int) -> Post {
+        return posts[index]
+    }
+    
 }
