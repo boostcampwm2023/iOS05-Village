@@ -47,8 +47,6 @@ final class FloatingButton: UIView {
     
 }
 
-// MARK: - UI
-
 private extension FloatingButton {
     
     func activate() {
