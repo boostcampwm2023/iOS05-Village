@@ -27,8 +27,8 @@
 		8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */; };
 		8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE772B06768C00B91D3B /* NetworkService.swift */; };
 		8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */; };
-		8FC7FE7E2B08796400B91D3B /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7D2B08796400B91D3B /* ChatViewController.swift */; };
-		8FC7FE812B08798200B91D3B /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE802B08798200B91D3B /* MyPageViewController.swift */; };
+		8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A442B09D1A6005EE367 /* ChatViewController.swift */; };
+		8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,8 +65,8 @@
 		8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListItemViewModel.swift; sourceTree = "<group>"; };
 		8FC7FE772B06768C00B91D3B /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
-		8FC7FE7D2B08796400B91D3B /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
-		8FC7FE802B08798200B91D3B /* MyPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
+		8FD52A442B09D1A6005EE367 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,9 +182,8 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				8FD52A432B09D1A6005EE367 /* Chat */,
 				8FC7FE792B07A88400B91D3B /* DetailPost */,
-				8FC7FE7F2B08797600B91D3B /* MyPage */,
-				8FC7FE7C2B08795100B91D3B /* Chat */,
 				44425A622B038AA700AAD64A /* CustomView */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
 				8FBE3B062B04763200660530 /* Home */,
@@ -260,21 +259,25 @@
 				8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */,
 			);
 			path = DetailPost;
-		8FC7FE7C2B08795100B91D3B /* Chat */ = {
+			sourceTree = "<group>";
+		};
+		8FD52A432B09D1A6005EE367 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				8FC7FE7D2B08796400B91D3B /* ChatViewController.swift */,
+				8FD52A462B09D1AD005EE367 /* MyPage */,
+				8FD52A442B09D1A6005EE367 /* ChatViewController.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
 		};
-		8FC7FE7F2B08797600B91D3B /* MyPage */ = {
+		8FD52A462B09D1AD005EE367 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
-				8FC7FE802B08798200B91D3B /* MyPageViewController.swift */,
+				8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */,
 			);
-			path = MyPage;
-			sourceTree = "<group>";
+			name = MyPage;
+			path = Village/Presentation/MyPage;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -411,19 +414,19 @@
 			files = (
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
+				8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
-				8FC7FE812B08798200B91D3B /* MyPageViewController.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
+				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
 				59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */,
 				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
-				8FC7FE7E2B08796400B91D3B /* ChatViewController.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
 			);
