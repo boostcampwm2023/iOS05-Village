@@ -99,12 +99,13 @@ final class HomeViewController: UIViewController {
         let presentPostRequestVC = UIAction(title: "대여 요청하기") { _ in
             // TODO: 요청 게시글 화면 이동
         }
-        let presentPostRentVC = UIAction(title: "대여 등록하기") { [weak self] _ in
+        let presentPostRentNC = UIAction(title: "대여 등록하기") { [weak self] _ in
             let postRentVC = PostingRentViewController()
-            postRentVC.modalPresentationStyle = .fullScreen
-            self?.present(postRentVC, animated: true)
+            let postRentNC = UINavigationController(rootViewController: postRentVC)
+            postRentNC.modalPresentationStyle = .fullScreen
+            self?.present(postRentNC, animated: true)
         }
-        menuView.setMenuActions([presentPostRequestVC, presentPostRentVC])
+        menuView.setMenuActions([presentPostRequestVC, presentPostRentNC])
     }
     
     @objc func search() {
