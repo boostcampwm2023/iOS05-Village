@@ -1,5 +1,9 @@
 import { ConfigService } from '@nestjs/config';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { uuid } from 'uuidv4';
 import { Injectable } from '@nestjs/common';
 
@@ -28,5 +32,13 @@ export class S3Handler {
     return `${this.configService.get('S3_ENDPOINT')}/${this.configService.get(
       'S3_BUCKET',
     )}/${fileName}`;
+  }
+  async deleteFile(fileLocation: string) {
+    const fileKey = fileLocation.split('/').pop();
+    const command = new DeleteObjectCommand({
+      Bucket: this.configService.get('S3_BUCKET'),
+      Key: fileKey,
+    });
+    await this.s3.send(command);
   }
 }
