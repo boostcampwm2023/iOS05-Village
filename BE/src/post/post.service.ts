@@ -29,4 +29,19 @@ export class PostService {
     // console.log(posts);
     return posts;
   }
+
+  async findPostById(postId: number) {
+    const res = await this.postRepository.findOne({ where: { id: postId } });
+    const post = {
+      title: res.title,
+      contents: res.contents,
+      price: res.price,
+      user_id: res.user_id,
+      images: res.post_images,
+      is_request: res.is_request,
+      start_date: res.start_date,
+      end_date: res.end_date,
+    };
+    return post;
+  }
 }
