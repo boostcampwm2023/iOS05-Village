@@ -73,17 +73,17 @@ final class TimePickerView: UIView {
         addSubview(dateTextField)
         NSLayoutConstraint.activate([
             dateTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
+            dateTextField.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -10),
             dateTextField.centerYAnchor.constraint(equalTo: centerYAnchor),
-            dateTextField.widthAnchor.constraint(equalToConstant: 100),
             dateTextField.heightAnchor.constraint(equalToConstant: 48)
         ])
         
         hourTextField.translatesAutoresizingMaskIntoConstraints = false
         addSubview(hourTextField)
         NSLayoutConstraint.activate([
-            hourTextField.leadingAnchor.constraint(equalTo: dateTextField.trailingAnchor, constant: 10),
+            hourTextField.leadingAnchor.constraint(equalTo: centerXAnchor, constant: 10),
+            hourTextField.trailingAnchor.constraint(equalTo: trailingAnchor),
             hourTextField.centerYAnchor.constraint(equalTo: centerYAnchor),
-            hourTextField.widthAnchor.constraint(equalToConstant: 100),
             hourTextField.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
