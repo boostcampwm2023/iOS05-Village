@@ -17,4 +17,4 @@ jobs:
         run: |
           cd BE
           npm install
-          pm2 start npm -- run start:dev
+          pm2 start npm -- run start:prod
