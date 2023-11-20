@@ -5,7 +5,7 @@ import * as multerS3 from 'multer-s3';
 import { ConfigService } from '@nestjs/config';
 import { uuid } from 'uuidv4';
 
-export const multerOptionsFactory = (
+export const S3MulterOptionsFactory = (
   configService: ConfigService,
 ): MulterOptions => {
   return {
