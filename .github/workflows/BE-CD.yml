@@ -15,6 +15,6 @@ jobs:
       # node.js 를 설치한다.
       - name: run npm
         run: |
-          cd be
+          cd BE
           npm install
           pm2 start npm -- run start:dev
