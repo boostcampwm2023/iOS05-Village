@@ -8,9 +8,29 @@
 import UIKit
 
 final class PostingRentViewController: UIViewController {
+    private lazy var keyboardToolBar: UIToolbar = {
+        let toolbar = UIToolbar()
+        let hideKeyboardButton = UIBarButtonItem(
+            barButtonSystemItem: .close,
+            target: nil,
+            action: #selector(hideKeyboard)
+        )
+        let flexibleSpaceButton = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: nil,
+            action: nil
+        )
+        toolbar.sizeToFit()
+        toolbar.setItems([flexibleSpaceButton, hideKeyboardButton], animated: false)
+        
+        return toolbar
+    }()
     
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
+    private lazy var scrollViewBottomConstraint: NSLayoutConstraint = {
+        return scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 0)
+    }()
     //    private let photoHeaderLabel = UILabel()
     //    private let addPhotoButton = UIButton()
     private let titleHeaderLabel: UILabel = {
@@ -61,6 +81,7 @@ final class PostingRentViewController: UIViewController {
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
         textField.heightAnchor.constraint(equalToConstant: 48).isActive = true
         textField.delegate = self
+        textField.inputAccessoryView = keyboardToolBar
         
         return textField
     }()
@@ -85,6 +106,8 @@ final class PostingRentViewController: UIViewController {
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             textField.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+        textField.inputAccessoryView = keyboardToolBar
+        
         return view
     }()
     private let detailTextViewPlaceHolder = "설명을 입력하세요."
@@ -96,17 +119,12 @@ final class PostingRentViewController: UIViewController {
         textView.textColor = .lightGray
         textView.font = UIFont.systemFont(ofSize: 18)
         textView.isScrollEnabled = false
+        textView.inputAccessoryView = keyboardToolBar
         
         return textView
     }()
     
     private let postButtonView = UIView()
-    private lazy var postButtonViewBottomConstraint = postButtonView
-        .bottomAnchor
-        .constraint(
-            equalTo: self.view.bottomAnchor,
-            constant: 0
-        )
     private lazy var postButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.title = "작성하기"
@@ -121,9 +139,8 @@ final class PostingRentViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
-        view.backgroundColor = .white
         configureUIComponents()
-        setupKeyboardEvent()
+        setUpNotification()
         super.viewDidLoad()
     }
     
@@ -135,7 +152,7 @@ final class PostingRentViewController: UIViewController {
     @objc func post(_ sender: UIButton) {
     }
     
-    func setupKeyboardEvent() {
+    private func setUpNotification() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow),
@@ -150,6 +167,41 @@ final class PostingRentViewController: UIViewController {
         )
     }
     
+    @objc private func hideKeyboard(_ sender: UIBarButtonItem) {
+        view.endEditing(true)
+    }
+    
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as NSDictionary?,
+              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        keyboardFrame = view.convert(keyboardFrame, from: nil)
+        NSLayoutConstraint.deactivate([scrollViewBottomConstraint])
+        scrollViewBottomConstraint = scrollView
+            .bottomAnchor
+            .constraint(
+                equalTo: view.bottomAnchor,
+                constant: -keyboardFrame.height
+            )
+        NSLayoutConstraint.activate([scrollViewBottomConstraint])
+        
+    }
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as NSDictionary?,
+              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        keyboardFrame = view.convert(keyboardFrame, from: nil)
+        NSLayoutConstraint.deactivate([scrollViewBottomConstraint])
+        scrollViewBottomConstraint = scrollView
+            .bottomAnchor
+            .constraint(
+                equalTo: postButtonView.topAnchor,
+                constant: 0
+            )
+        NSLayoutConstraint.activate([scrollViewBottomConstraint])
+    }
 }
 
 private extension PostingRentViewController {
@@ -172,32 +224,32 @@ private extension PostingRentViewController {
             self, action: #selector(close), symbolName: .xmark
         )
         self.navigationItem.rightBarButtonItems = [close]
-        navigationController?.navigationBar.backgroundColor = .white
     }
     
     func configurePostButtonView() {
-        postButtonView.setLayer(cornerRadius: 0)
         postButtonView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(postButtonView)
         
         NSLayoutConstraint.activate([
             postButtonView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             postButtonView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            postButtonView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             postButtonView.heightAnchor.constraint(equalToConstant: 100)
         ])
-        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
     }
     
     func configureScrollView() {
+        scrollView.keyboardDismissMode = .onDrag
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor)
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
+        
+        NSLayoutConstraint.activate([scrollViewBottomConstraint])
     }
     
     func configureStackView() {
@@ -208,18 +260,22 @@ private extension PostingRentViewController {
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -10),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20),
             stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         
         stackView.addArrangedSubview(titleHeaderLabel)
         stackView.addArrangedSubview(titleTextField)
+        stackView.setCustomSpacing(25, after: titleTextField)
         stackView.addArrangedSubview(periodStartHeaderLabel)
         stackView.addArrangedSubview(startTimePicker)
+        stackView.setCustomSpacing(25, after: startTimePicker)
         stackView.addArrangedSubview(periodEndHeaderLabel)
         stackView.addArrangedSubview(endTimePicker)
+        stackView.setCustomSpacing(25, after: endTimePicker)
         stackView.addArrangedSubview(priceHeaderLabel)
         stackView.addArrangedSubview(priceTextFieldView)
+        stackView.setCustomSpacing(25, after: priceTextFieldView)
         stackView.addArrangedSubview(detailHeaderLabel)
         stackView.addArrangedSubview(detailTextView)
         stackView.axis = .vertical
@@ -269,7 +325,7 @@ extension PostingRentViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == detailTextViewPlaceHolder {
             textView.text = nil
-            textView.textColor = .black
+            textView.textColor = .label
         }
     }
     
@@ -287,41 +343,6 @@ extension PostingRentViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
-    }
-    
-}
-
-@objc
-extension PostingRentViewController {
-    
-    func keyboardWillShow(_ sender: Notification) {
-        guard let keyboardFrame = sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        let keyboardHeight = keyboardFrame.cgRectValue.height
-        
-        NSLayoutConstraint.deactivate([postButtonViewBottomConstraint])
-        postButtonViewBottomConstraint = postButtonView
-            .bottomAnchor
-            .constraint(
-                equalTo: self.view.bottomAnchor,
-                constant: -keyboardHeight
-            )
-        
-        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
-    }
-    
-    func keyboardWillHide(_ sender: Notification) {
-        guard let keyboardFrame = sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        let keyboardHeight = keyboardFrame.cgRectValue.height
-        
-        NSLayoutConstraint.deactivate([postButtonViewBottomConstraint])
-        postButtonViewBottomConstraint = postButtonView
-            .bottomAnchor
-            .constraint(
-                equalTo: self.view.bottomAnchor,
-                constant: 0
-            )
-        
-        NSLayoutConstraint.activate([postButtonViewBottomConstraint])
     }
     
 }
