@@ -18,4 +18,5 @@ enum ImageSystemName: String {
     case messageFill = "message.fill"
     case person = "person"
     case personFill = "person.fill"
+    case arrowLeft = "arrow.left"
 }
