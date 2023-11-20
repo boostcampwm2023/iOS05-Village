@@ -3,7 +3,7 @@ name: Backend CD
 on:
   push:
     branches:
-      - main
+      - BE
 jobs:
   deploy:
     runs-on: self-hosted
