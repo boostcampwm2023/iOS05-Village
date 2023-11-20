@@ -30,6 +30,7 @@
 		8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A442B09D1A6005EE367 /* ChatViewController.swift */; };
 		8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */; };
 		8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */; };
+		8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		8FD52A442B09D1A6005EE367 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +186,7 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				8FD52A4F2B0B51A2005EE367 /* ChatRoom */,
 				8FD52A492B0B0A20005EE367 /* Search */,
 				8FD52A462B09D1AD005EE367 /* MyPage */,
 				8FD52A432B09D1A6005EE367 /* Chat */,
@@ -288,6 +291,14 @@
 				8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */,
 			);
 			path = Search;
+			sourceTree = "<group>";
+		};
+		8FD52A4F2B0B51A2005EE367 /* ChatRoom */ = {
+			isa = PBXGroup;
+			children = (
+				8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */,
+			);
+			path = ChatRoom;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -427,6 +438,7 @@
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
 				8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
+				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
