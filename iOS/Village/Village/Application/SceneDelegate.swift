@@ -16,17 +16,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         
-        let tapBarController = UITabBarController()
+        let tabBarController = UITabBarController()
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
         let chatViewController = UINavigationController(rootViewController: ChatViewController())
         let myPageViewController = UINavigationController(rootViewController: MyPageViewController())
         
-        tapBarController.setViewControllers(
+        tabBarController.setViewControllers(
             [homeViewController, chatViewController, myPageViewController],
             animated: true
         )
         
-        if let items = tapBarController.tabBar.items {
+        if let items = tabBarController.tabBar.items {
             items[0].selectedImage = UIImage(systemName: ImageSystemName.houseFill.rawValue)
             items[0].image = UIImage(systemName: ImageSystemName.house.rawValue)
             items[0].title = "홈"
@@ -40,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             items[2].title = "내 정보"
         }
         
-        window?.rootViewController = tapBarController
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
 

@@ -89,7 +89,7 @@ final class HomeViewController: UIViewController {
         titleLabel.setTitle("홈")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let search = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(search), symbolName: .magnifyingGlass
+            self, action: #selector(searchButtonTapped), symbolName: .magnifyingGlass
         )
         self.navigationItem.rightBarButtonItems = [search]
         
@@ -107,7 +107,7 @@ final class HomeViewController: UIViewController {
         menuView.setMenuActions([presentPostRequestVC, presentPostRentVC])
     }
     
-    @objc func search() {
+    @objc func searchButtonTapped() {
         let nextVC = SearchViewController()
         let presentSearchNV = UINavigationController(rootViewController: nextVC)
         presentSearchNV.modalPresentationStyle = .fullScreen

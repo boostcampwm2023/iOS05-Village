@@ -11,7 +11,13 @@ class SearchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        setNavigationBarUI()
+        
+        view.backgroundColor = .systemBackground
+    }
+    
+    private func setNavigationBarUI() {
         let arrowLeft = self.navigationItem.makeSFSymbolButton(
             self, action: #selector(backButtonTapped), symbolName: .arrowLeft
         )
@@ -20,8 +26,6 @@ class SearchViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = arrowLeft
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchBar)
-        
-        view.backgroundColor = .systemBackground
     }
     
     @objc private func backButtonTapped() {
