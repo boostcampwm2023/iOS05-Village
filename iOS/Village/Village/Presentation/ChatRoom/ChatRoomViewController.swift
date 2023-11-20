@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ChatRoomViewController: UIViewController {
+final class ChatRoomViewController: UIViewController {
     
     let chatStackView: UIStackView = {
         let stackView = UIStackView()
