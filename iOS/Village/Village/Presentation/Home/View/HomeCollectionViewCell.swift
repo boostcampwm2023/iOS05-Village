@@ -18,35 +18,35 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setUI()
     }
     
-    let postImageView: UIImageView = {
+    private let postImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
         imageView.layer.cornerRadius = 16
-        imageView.backgroundColor = .primary100
+        
         return imageView
     }()
     
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .bold)
-        return label
-    }()
-    
-    let priceLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.text = "10000원"
         
         return label
     }()
     
-    let accessoryView: UIImageView = {
+    private let priceLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        
+        return label
+    }()
+    
+    private let accessoryView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: ImageSystemName.chevronRight.rawValue)
@@ -54,7 +54,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    func setUI() {
+    private func setUI() {
         self.addSubview(postImageView)
         self.addSubview(titleLabel)
         self.addSubview(priceLabel)
@@ -62,7 +62,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         configureConstraints()
     }
     
-    func configureConstraints() {
+    private func configureConstraints() {
         NSLayoutConstraint.activate([
             postImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             postImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
@@ -84,5 +84,20 @@ final class HomeCollectionViewCell: UICollectionViewCell {
             accessoryView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             accessoryView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16)
         ])
+    }
+    
+    func configureData(post: Post) {
+        titleLabel.text = post.title
+        let price = post.price.map(String.init) ?? ""
+        priceLabel.text = price != "" ? "\(price)원" : ""
+    }
+    
+    func configureImage(image: UIImage?) {
+        if image != nil {
+            postImageView.image = image
+        } else {
+            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            postImageView.backgroundColor = .primary100
+        }
     }
 }

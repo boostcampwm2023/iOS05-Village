@@ -10,12 +10,15 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, String>
+    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, Post>
     
     private var dataSource: HomeDataSource!
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     private var collectionView: UICollectionView!
     
+    private var viewModel = PostListItemViewModel()
+    private var networkService = NetworkService()
+
     private let floatingButton: FloatingButton = {
         let button = FloatingButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +41,7 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setViewModel()
         floatingButton.$isActive
             .sink(receiveValue: { [weak self] isActive in
                 switch isActive {
@@ -64,25 +68,43 @@ final class HomeViewController: UIViewController {
         setLayoutConstraint()
     }
     
+    private func setViewModel() {
+        guard let path = Bundle.main.path(forResource: "Post", ofType: "json") else { return }
+        
+        guard let jsonString = try? String(contentsOfFile: path) else { return }
+        do {
+            let decoder = JSONDecoder()
+            let data = jsonString.data(using: .utf8)
+            
+            guard let data = data else { return }
+            let posts = try decoder.decode(PostResponse.self, from: data)
+            viewModel.updatePosts(updatePosts: posts.body)
+        } catch {
+            return
+        }
+    }
+    
     private func setNavigationUI() {
         let titleLabel = UILabel()
         titleLabel.setTitle("홈")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let search = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(search), symbolName: .magnifyingglass
+            self, action: #selector(search), symbolName: .magnifyingGlass
         )
         self.navigationItem.rightBarButtonItems = [search]
         
     }
     
     private func setMenuUI() {
-        let postRequestAction = UIAction(title: "대여 요청하기") { _ in
+        let presentPostRequestVC = UIAction(title: "대여 요청하기") { _ in
             // TODO: 요청 게시글 화면 이동
         }
-        let postRentAction = UIAction(title: "대여 등록하기") { _ in
-            // TODO: 등록 게시글 화면 이동
+        let presentPostRentVC = UIAction(title: "대여 등록하기") { [weak self] _ in
+            let postRentVC = PostingRentViewController()
+            postRentVC.modalPresentationStyle = .fullScreen
+            self?.present(postRentVC, animated: true)
         }
-        menuView.setMenuActions([postRequestAction, postRentAction])
+        menuView.setMenuActions([presentPostRequestVC, presentPostRentVC])
     }
     
     @objc func search() {
@@ -92,6 +114,7 @@ final class HomeViewController: UIViewController {
     private func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.delegate = self
         view.addSubview(collectionView)
     }
     
@@ -116,7 +139,7 @@ final class HomeViewController: UIViewController {
     
     private func configureDataSource() {
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, item) ->
+        dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
             UICollectionViewCell? in
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: self.reuseIdentifier,
@@ -125,19 +148,29 @@ final class HomeViewController: UIViewController {
                 return UICollectionViewCell()
             }
             
-            cell.titleLabel.text = item
+            cell.configureData(post: post)
+            
+            if let imageURL = post.images.first, let postImageURL = URL(string: imageURL) {
+                self.networkService.loadImage(from: postImageURL) { [weak cell] data in
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            cell?.configureImage(image: image)
+                        }
+                    }
+                }
+            } else {
+                cell.configureImage(image: nil)
+            }
             
             return cell
         }
     }
     
     private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, String>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
         snapshot.appendSections([.main])
         
-        let items = ["12123","12","13","14","15","16","17","18","19","asd","qweqwe", "1231424", "1241243123", "121231234123", "1123123", "adsasd", "13213asda", "q", "zxc", "zxcvasd", "vsdacv", "ber"]
-        
-        snapshot.appendItems(items)
+        snapshot.appendItems(viewModel.getPosts())
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
@@ -155,5 +188,15 @@ final class HomeViewController: UIViewController {
             menuView.trailingAnchor.constraint(equalTo: floatingButton.trailingAnchor, constant: 0),
             menuView.bottomAnchor.constraint(equalTo: floatingButton.topAnchor, constant: -15)
         ])
+    }
+}
+
+extension HomeViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let nextVC = PostDetailViewController()
+        nextVC.postData = viewModel.getPost(indexPath.row)
+        
+        self.navigationController?.pushViewController(nextVC, animated: false)
     }
 }
