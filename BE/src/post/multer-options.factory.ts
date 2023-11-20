@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import * as multerS3 from 'multer-s3';
 import { ConfigService } from '@nestjs/config';
+import { uuid } from 'uuidv4';
 
 export const multerOptionsFactory = (
   configService: ConfigService,
@@ -21,7 +22,7 @@ export const multerOptionsFactory = (
       acl: 'public-read',
       contentType: multerS3.AUTO_CONTENT_TYPE,
       key: (req: Request, file, callback) => {
-        const fileName = file.originalname;
+        const fileName = uuid();
         callback(null, fileName);
       },
     }),
