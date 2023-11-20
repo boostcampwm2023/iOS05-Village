@@ -108,7 +108,10 @@ final class HomeViewController: UIViewController {
     }
     
     @objc func search() {
-        // TODO: 검색버튼액션 구현
+        let nextVC = SearchViewController()
+        let presentSearchNV = UINavigationController(rootViewController: nextVC)
+        presentSearchNV.modalPresentationStyle = .fullScreen
+        self.present(presentSearchNV, animated: true)
     }
     
     private func configureCollectionView() {

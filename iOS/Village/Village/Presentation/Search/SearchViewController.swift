@@ -24,4 +24,8 @@ class SearchViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
+    @objc private func backButtonTapped() {
+        self.dismiss(animated: true)
+    }
+
 }
