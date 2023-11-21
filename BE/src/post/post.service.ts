@@ -5,14 +5,19 @@ import { Repository } from 'typeorm';
 import { UpdatePostDto } from './postUpdateDto';
 import { validate } from 'class-validator';
 import { PostImageEntity } from 'src/entities/postImage.entity';
+import { S3Handler } from '../utils/S3Handler';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(PostEntity)
     private postRepository: Repository<PostEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     @InjectRepository(PostImageEntity)
     private postImageRepository: Repository<PostImageEntity>,
+    private s3Handler: S3Handler,
   ) {}
   async getPosts() {
     const res = await this.postRepository.find();
@@ -31,7 +36,6 @@ export class PostService {
       };
       posts.push(post);
     });
-    // console.log(posts);
     return posts;
   }
 
@@ -98,6 +102,41 @@ export class PostService {
       }
     } catch {
       return null;
+
+  async uploadImages(files: Express.Multer.File[]): Promise<string[]> {
+    const fileLocation: Array<string> = [];
+    for (const file of files) {
+      fileLocation.push(await this.s3Handler.uploadFile(file));
+    }
+    return fileLocation;
+  }
+
+  async createPost(imageLocations, createPostDto, userHash) {
+    const post = new PostEntity();
+    const user = await this.userRepository.findOne({
+      where: { user_hash: userHash },
+    });
+    post.title = createPostDto.title;
+    post.contents = createPostDto.contents;
+    post.price = createPostDto.price;
+    post.is_request = createPostDto.is_request;
+    post.start_date = createPostDto.start_date;
+    post.end_date = createPostDto.end_date;
+    post.status = true;
+    post.user_id = user.id;
+    // 이미지 추가
+    const res = await this.postRepository.save(post);
+    if (res.is_request === false) {
+      await this.createImages(imageLocations, res.id);
+    }
+  }
+
+  async createImages(imageLocations: Array<string>, postId: number) {
+    for (const imageLocation of imageLocations) {
+      const postImageEntity = new PostImageEntity();
+      postImageEntity.image_url = imageLocation;
+      postImageEntity.post_id = postId;
+      await this.postImageRepository.save(postImageEntity);
     }
   }
 }

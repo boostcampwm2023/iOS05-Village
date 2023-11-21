@@ -3,14 +3,15 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
-import { PostImageEntity } from 'src/entities/postImage.entity';
+import { S3Handler } from '../utils/S3Handler';
+import { UserEntity } from '../entities/user.entity';
+import { PostImageEntity } from '../entities/postImage.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PostEntity]),
-    TypeOrmModule.forFeature([PostImageEntity]),
+    TypeOrmModule.forFeature([PostEntity, UserEntity, PostImageEntity]),
   ],
   controllers: [PostController],
-  providers: [PostService],
+  providers: [PostService, S3Handler],
 })
 export class PostModule {}
