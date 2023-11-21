@@ -18,6 +18,7 @@ final class PostingViewController: UIViewController {
     
     private let viewModel: PostingViewModel
     private let type: PostType
+    
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar()
         let hideKeyboardButton = UIBarButtonItem(
@@ -36,13 +37,26 @@ final class PostingViewController: UIViewController {
         return toolbar
     }()
     
-    private let scrollView = UIScrollView()
-    private let stackView = UIStackView()
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return scrollView
+    }()
+    
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        
+        return stackView
+    }()
+    
     private lazy var scrollViewBottomConstraint: NSLayoutConstraint = {
         return scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 0)
     }()
-    //    private let photoHeaderLabel = UILabel()
-    //    private let addPhotoButton = UIButton()
+    
     private let titleHeaderLabel: UILabel = {
         let label = UILabel()
         label.text = "제목"
@@ -90,7 +104,6 @@ final class PostingViewController: UIViewController {
     
     private lazy var titleTextField: UITextField = {
         let textField = UITextField()
-        textField.heightAnchor.constraint(equalToConstant: 48).isActive = true
         textField.setLayer()
         textField.setPlaceHolder("제목을 입력하세요")
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
@@ -100,13 +113,24 @@ final class PostingViewController: UIViewController {
         
         return textField
     }()
-    private let startTimePicker = TimePickerView()
-    private let endTimePicker = TimePickerView()
+    
+    private let startTimePicker: TimePickerView = {
+        let picker = TimePickerView()
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        
+        return picker
+    }()
+    
+    private let endTimePicker: TimePickerView = {
+        let picker = TimePickerView()
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        
+        return picker
+    }()
     
     private lazy var priceTextFieldView: UIView = {
         let view = UIView()
         view.setLayer()
-        view.heightAnchor.constraint(equalToConstant: 48).isActive = true
         
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -129,6 +153,7 @@ final class PostingViewController: UIViewController {
         
         return view
     }()
+    
     private lazy var detailTextView: UITextView = {
         let textView = UITextView()
         textView.setLayer()
@@ -138,11 +163,18 @@ final class PostingViewController: UIViewController {
         textView.font = UIFont.systemFont(ofSize: 18)
         textView.isScrollEnabled = false
         textView.inputAccessoryView = keyboardToolBar
+        textView.delegate = self
         
         return textView
     }()
     
-    private let postButtonView = UIView()
+    private let postButtonView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     private lazy var postButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.title = "작성하기"
@@ -151,6 +183,7 @@ final class PostingViewController: UIViewController {
         configuration.cornerStyle = .medium
         
         let button = UIButton(configuration: configuration)
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(post), for: .touchUpInside)
         
         return button
@@ -158,7 +191,9 @@ final class PostingViewController: UIViewController {
     
     override func viewDidLoad() {
         
-        configureUIComponents()
+        configureNavigation()
+        configureUI()
+        configureConstraints()
         setUpNotification()
         
         view.backgroundColor = .systemBackground
@@ -170,7 +205,7 @@ final class PostingViewController: UIViewController {
         self.type = type
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -243,67 +278,12 @@ private extension PostingViewController {
         )
     }
     
-    func configureUIComponents() {
-        configureNavigation()
-        configurePostButtonView()
-        configureScrollView()
-        configureStackView()
-        configurePicker()
-        configureDetailTextView()
-        configurePostButton()
-        configureInputViews()
-    }
-    
-    func configureNavigation() {
-        let titleLabel = UILabel()
-        switch type {
-        case .rent:
-            titleLabel.setTitle("대여 등록")
-        case .request:
-            titleLabel.setTitle("대여 요청 등록")
-        }
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
-        let close = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(close), symbolName: .xmark
-        )
-        self.navigationItem.rightBarButtonItems = [close]
-    }
-    
-    func configurePostButtonView() {
-        postButtonView.translatesAutoresizingMaskIntoConstraints = false
+    func configureUI() {
+        
         view.addSubview(postButtonView)
-        
-        NSLayoutConstraint.activate([
-            postButtonView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            postButtonView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            postButtonView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            postButtonView.heightAnchor.constraint(equalToConstant: 100)
-        ])
-    }
-    
-    func configureScrollView() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
-        
-        NSLayoutConstraint.activate([
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([scrollViewBottomConstraint])
-    }
-    
-    func configureStackView() {
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(stackView)
-        
-        NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20)
-        ])
+        postButtonView.addSubview(postButton)
         
         stackView.addArrangedSubview(titleHeaderLabel)
         stackView.addArrangedSubview(titleTextField)
@@ -326,26 +306,38 @@ private extension PostingViewController {
         stackView.addArrangedSubview(detailHeaderLabel)
         stackView.addArrangedSubview(detailTextView)
         
-        stackView.axis = .vertical
-        stackView.spacing = 10
     }
     
-    func configurePicker() {
-        startTimePicker.translatesAutoresizingMaskIntoConstraints = false
-        startTimePicker.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    func configureConstraints() {
+        NSLayoutConstraint.activate([
+            postButtonView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            postButtonView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            postButtonView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            postButtonView.heightAnchor.constraint(equalToConstant: 100)
+        ])
         
-        endTimePicker.translatesAutoresizingMaskIntoConstraints = false
-        endTimePicker.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    }
-    
-    func configureDetailTextView() {
-        detailTextView.delegate = self
-        detailTextView.heightAnchor.constraint(equalToConstant: 180).isActive = true
-    }
-    
-    func configurePostButton() {
-        postButton.translatesAutoresizingMaskIntoConstraints = false
-        postButtonView.addSubview(postButton)
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollViewBottomConstraint
+        ])
+        
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            startTimePicker.heightAnchor.constraint(equalToConstant: 50),
+            endTimePicker.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        
+        NSLayoutConstraint.activate([
+            detailTextView.heightAnchor.constraint(equalToConstant: 180)
+        ])
         
         NSLayoutConstraint.activate([
             postButton.topAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 18),
@@ -353,16 +345,34 @@ private extension PostingViewController {
             postButton.trailingAnchor.constraint(equalTo: postButtonView.trailingAnchor, constant: -16),
             postButton.heightAnchor.constraint(equalToConstant: 44)
         ])
-    }
-    
-    func configureInputViews() {
+        
         NSLayoutConstraint.activate([
+            titleTextField.heightAnchor.constraint(equalToConstant: 48),
             titleTextField.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
             detailTextView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
+        
         if type == .rent {
-            priceTextFieldView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50).isActive = true
+            NSLayoutConstraint.activate([
+                priceTextFieldView.heightAnchor.constraint(equalToConstant: 48),
+                priceTextFieldView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+            ])
         }
+    }
+    
+    func configureNavigation() {
+        let titleLabel = UILabel()
+        switch type {
+        case .rent:
+            titleLabel.setTitle("대여 등록")
+        case .request:
+            titleLabel.setTitle("대여 요청 등록")
+        }
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        let close = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(close), symbolName: .xmark
+        )
+        self.navigationItem.rightBarButtonItems = [close]
     }
     
 }

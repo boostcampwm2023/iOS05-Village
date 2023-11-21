@@ -95,7 +95,7 @@ final class HomeViewController: UIViewController {
     }
     
     private func setMenuUI() {
-        let presentPostRequestVC = UIAction(title: "대여 요청하기") { [weak self] _ in
+        let presentPostRequestNC = UIAction(title: "대여 요청하기") { [weak self] _ in
             let postRequestVC = PostingViewController(viewModel: PostingViewModel(), type: .request)
             let postRequestNC = UINavigationController(rootViewController: postRequestVC)
             postRequestNC.modalPresentationStyle = .fullScreen
@@ -107,7 +107,7 @@ final class HomeViewController: UIViewController {
             postRentNC.modalPresentationStyle = .fullScreen
             self?.present(postRentNC, animated: true)
         }
-        menuView.setMenuActions([presentPostRequestVC, presentPostRentNC])
+        menuView.setMenuActions([presentPostRequestNC, presentPostRentNC])
     }
     
     @objc func searchButtonTapped() {
