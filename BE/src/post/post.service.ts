@@ -4,12 +4,15 @@ import { PostEntity } from '../entities/post.entity';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from './postUpdateDto';
 import { validate } from 'class-validator';
+import { PostImageEntity } from 'src/entities/postImage.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(PostEntity)
     private postRepository: Repository<PostEntity>,
+    @InjectRepository(PostImageEntity)
+    private postImageRepository: Repository<PostImageEntity>,
   ) {}
   async getPosts() {
     const res = await this.postRepository.find();
@@ -53,20 +56,51 @@ export class PostService {
     }
   }
 
+  async changeImages(postId: number, images: string[]) {
+    try {
+      await this.postImageRepository.delete({ post_id: postId });
+      images.forEach(async (image) => {
+        await this.postImageRepository.save({
+          post_id: postId,
+          image_url: image,
+        });
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async changeExceptImages(postId: number, updatePostDto: UpdatePostDto) {
+    console.log(updatePostDto);
+    try {
+      await this.postRepository.update({ id: postId }, updatePostDto);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async updatePostById(postId: number, updatePostDto: UpdatePostDto) {
     const isDataExists = await this.postRepository.findOne({
       where: { id: postId },
     });
 
-    if (!isDataExists) {
-      return null;
-    } else {
-      try {
-        await this.postRepository.update({ id: postId }, updatePostDto);
-        return true;
-      } catch {
+    const isChangingImages = 'images' in updatePostDto; // images 가 존재여부 확인
+
+    try {
+      if (!isDataExists) {
         return false;
+      } else if (!isChangingImages) {
+        await this.changeExceptImages(postId, updatePostDto);
+        return true;
+      } else {
+        await this.changeExceptImages(postId, updatePostDto);
+        await this.changeImages(postId, updatePostDto.images);
+        return true;
       }
+    } catch {
+      return null;
     }
   }
 }

@@ -14,6 +14,7 @@ export class UpdatePostDto {
   price?: number;
 
   @IsArray()
-  @IsString()
+  @IsOptional()
+  @IsString({ each: true })
   images?: string[];
 }
