@@ -16,6 +16,7 @@ async function bootstrap() {
       ],
     }),
   });
+
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useGlobalPipes(new ValidationPipe());
   setupSwagger(app);

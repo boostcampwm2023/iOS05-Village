@@ -1,15 +1,21 @@
 import {
+  Body,
   Controller,
   Get,
+  HttpCode,
   HttpException,
   Param,
-  Post,
+  Patch,
+  Req,
+  Res,
+   Post,
   UploadedFiles,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UpdatePostDto } from './postUpdateDto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreatePostDto } from './createPost.dto';
 import { MultiPartBody } from '../utils/multiPartBody.decorator';
@@ -51,6 +57,20 @@ export class PostController {
     if (post) {
       return post;
     } else if (post === null) {
+      throw new HttpException('게시글이 존재하지 않습니다.', 404);
+    } else {
+      throw new HttpException('서버 오류입니다.', 500);
+    }
+  }
+
+  @Patch('/:id')
+  @ApiOperation({ summary: 'fix post context', description: '게시글 수정' })
+  async postModify(@Param('id') id: number, @Body() body: UpdatePostDto) {
+    const isFixed = await this.postService.updatePostById(id, body);
+
+    if (isFixed) {
+      return HttpCode(200);
+    } else if (isFixed === false) {
       throw new HttpException('게시글이 존재하지 않습니다.', 404);
     } else {
       throw new HttpException('서버 오류입니다.', 500);
