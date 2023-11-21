@@ -107,6 +107,7 @@ final class PostingRentViewController: UIViewController {
             textField.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         textField.inputAccessoryView = keyboardToolBar
+        textField.keyboardType = .numberPad
         
         return view
     }()
@@ -139,8 +140,11 @@ final class PostingRentViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
+        
         configureUIComponents()
         setUpNotification()
+        
+        view.backgroundColor = .systemBackground
         super.viewDidLoad()
     }
     

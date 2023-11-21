@@ -13,7 +13,7 @@ enum PickerLocale: String {
 
 // TODO: 키보드 올리기, 시간 범위
 final class TimePickerView: UIView {
-
+ 
     private let dateTextField: UITextField = {
         let textfield = UITextField()
         textfield.text = "날짜"
@@ -52,9 +52,8 @@ final class TimePickerView: UIView {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.ddHH:mm"
         formatter.locale = Locale(identifier: PickerLocale.korea.rawValue)
-        var time = formatter.date(from: date + hour)
         
-        return time
+        return formatter.date(from: date + hour)
     }
     
     override init(frame: CGRect) {
@@ -100,8 +99,8 @@ final class TimePickerView: UIView {
             target: self,
             action: #selector(datePickerDoneTapped)
         )
-
-        toolBar.items = [flexibleSpace, doneButton]
+        
+        toolBar.setItems([flexibleSpace, doneButton], animated: true)
         toolBar.sizeToFit()
 
         dateTextField.inputAccessoryView = toolBar
@@ -124,7 +123,7 @@ final class TimePickerView: UIView {
             action: #selector(hourPickerDoneTapped)
         )
 
-        toolBar.items = [flexibleSpace, doneButton]
+        toolBar.setItems([flexibleSpace, doneButton], animated: true)
         toolBar.sizeToFit()
 
         hourTextField.inputAccessoryView = toolBar
