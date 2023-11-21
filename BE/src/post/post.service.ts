@@ -140,4 +140,17 @@ export class PostService {
       await this.postImageRepository.save(postImageEntity);
     }
   }
+
+  async deletePostById(postId: number) {
+    const isDataExists = await this.postRepository.findOne({
+      where: { id: postId, status: true },
+    });
+
+    if (!isDataExists) {
+      return false;
+    } else {
+      await this.postRepository.update({ id: postId }, { status: false });
+      return true;
+    }
+  }
 }
