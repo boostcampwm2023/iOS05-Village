@@ -7,13 +7,6 @@
 
 import UIKit
 
-enum PostType {
-    
-    case rent
-    case request
-    
-}
-
 final class PostingViewController: UIViewController {
     
     private let viewModel: PostingViewModel
@@ -108,6 +101,8 @@ final class PostingViewController: UIViewController {
         textField.setPlaceHolder("제목을 입력하세요")
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
         textField.leftViewMode = .always
+        textField.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
+        textField.rightViewMode = .always
         textField.inputAccessoryView = keyboardToolBar
         textField.delegate = self
         
@@ -128,30 +123,21 @@ final class PostingViewController: UIViewController {
         return picker
     }()
     
-    private lazy var priceTextFieldView: UIView = {
-        let view = UIView()
-        view.setLayer()
-        
+    private lazy var priceTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(textField)
+        textField.setLayer()
         textField.setPlaceHolder("가격을 입력하세요")
-        NSLayoutConstraint.activate([
-            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            textField.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
         
-        let rightView = UILabel()
-        rightView.text = "원"
-        textField.rightView = rightView
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
+        textField.leftViewMode = .always
+        textField.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
         textField.rightViewMode = .always
         
-        textField.delegate = self
         textField.inputAccessoryView = keyboardToolBar
+        textField.delegate = self
         textField.keyboardType = .numberPad
         
-        return view
+        return textField
     }()
     
     private lazy var detailTextView: UITextView = {
@@ -299,8 +285,8 @@ private extension PostingViewController {
         
         if type == .rent {
             stackView.addArrangedSubview(priceHeaderLabel)
-            stackView.addArrangedSubview(priceTextFieldView)
-            stackView.setCustomSpacing(25, after: priceTextFieldView)
+            stackView.addArrangedSubview(priceTextField)
+            stackView.setCustomSpacing(25, after: priceTextField)
         }
         
         stackView.addArrangedSubview(detailHeaderLabel)
@@ -354,8 +340,8 @@ private extension PostingViewController {
         
         if type == .rent {
             NSLayoutConstraint.activate([
-                priceTextFieldView.heightAnchor.constraint(equalToConstant: 48),
-                priceTextFieldView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+                priceTextField.heightAnchor.constraint(equalToConstant: 48),
+                priceTextField.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
             ])
         }
     }
@@ -373,6 +359,45 @@ private extension PostingViewController {
             self, action: #selector(close), symbolName: .xmark
         )
         self.navigationItem.rightBarButtonItems = [close]
+    }
+    
+}
+
+extension PostingViewController: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == priceTextField {
+            guard var text = textField.text else { return true }
+            
+            text = text.replacingOccurrences(of: "원", with: "")
+            text = text.replacingOccurrences(of: ",", with: "")
+            
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            
+            if string.isEmpty {
+                if text.count > 1 {
+                    guard let price = Int.init("\(text.prefix(text.count - 1))"),
+                          let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
+                    
+                    textField.text = "\(result)원"
+                } else {
+                    textField.text = ""
+                }
+            } else {
+                guard let price = Int.init("\(text)\(string)"),
+                      let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
+                
+                textField.text = "\(result)원"
+            }
+            return false
+        }
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
 }
