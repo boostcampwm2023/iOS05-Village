@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		440FCC2D2B04EB940011B637 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440FCC2C2B04EB940011B637 /* Constants.swift */; };
 		44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44425A632B038AEA00AAD64A /* FloatingButton.swift */; };
+		444A50902B0C60F900454397 /* ImagePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A508F2B0C60F900454397 /* ImagePageView.swift */; };
 		4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4491AA272B05D6C90016FC70 /* MenuView.swift */; };
 		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
@@ -48,6 +49,7 @@
 /* Begin PBXFileReference section */
 		440FCC2C2B04EB940011B637 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		44425A632B038AEA00AAD64A /* FloatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButton.swift; sourceTree = "<group>"; };
+		444A508F2B0C60F900454397 /* ImagePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePageView.swift; sourceTree = "<group>"; };
 		4491AA272B05D6C90016FC70 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		5975E9872B035919007CEF13 /* Post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Post.json; sourceTree = "<group>"; };
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			children = (
 				44425A632B038AEA00AAD64A /* FloatingButton.swift */,
 				4491AA272B05D6C90016FC70 /* MenuView.swift */,
+				444A508F2B0C60F900454397 /* ImagePageView.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -455,6 +458,7 @@
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
+				444A50902B0C60F900454397 /* ImagePageView.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
