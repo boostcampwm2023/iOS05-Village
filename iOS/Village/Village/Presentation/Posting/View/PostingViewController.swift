@@ -130,7 +130,10 @@ final class PostingViewController: UIViewController {
         
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
         textField.leftViewMode = .always
-        textField.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
+        
+        let label = UILabel()
+        label.text = "원  "
+        textField.rightView = label
         textField.rightViewMode = .always
         
         textField.inputAccessoryView = keyboardToolBar
@@ -372,10 +375,8 @@ extension PostingViewController: UITextFieldDelegate {
     ) -> Bool {
         if textField == priceTextField {
             guard var text = textField.text else { return true }
-            if Int(string) == nil { return false }
-            text = text.replacingOccurrences(of: "원", with: "")
             text = text.replacingOccurrences(of: ",", with: "")
-            
+            if !string.isEmpty && Int(string) == nil || text.count + string.count > 15 { return false }
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             
@@ -383,14 +384,14 @@ extension PostingViewController: UITextFieldDelegate {
                 if text.count > 1 {
                     guard let price = Int.init("\(text.prefix(text.count - 1))"),
                           let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
-                    textField.text = "\(result)원"
+                    textField.text = "\(result)"
                 } else {
                     textField.text = ""
                 }
             } else {
                 guard let price = Int.init("\(text)\(string)"),
                       let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
-                textField.text = "\(result)원"
+                textField.text = "\(result)"
             }
             return false
         }
