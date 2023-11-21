@@ -16,7 +16,7 @@
 		59BD5DC72B0C746A00FEB80F /* PostingRentViewController+UITextViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DC62B0C746A00FEB80F /* PostingRentViewController+UITextViewDelegate.swift */; };
 		59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DC82B0C760500FEB80F /* UIStackView+.swift */; };
 		59BD5DCB2B0C764D00FEB80F /* PostingViewController+UITextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DCA2B0C764D00FEB80F /* PostingViewController+UITextFieldDelegate.swift */; };
-		59BD5DCC2B0C772200FEB80F /* PostingRentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */; };
+		59BD5DCC2B0C772200FEB80F /* PostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostingViewController.swift */; };
 		59BD5DCD2B0C775200FEB80F /* FloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44425A632B038AEA00AAD64A /* FloatingButton.swift */; };
 		59BD5DCE2B0C775D00FEB80F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */; };
 		59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */; };
@@ -67,7 +67,7 @@
 		59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		59E0C6042AFBA3FE0073D494 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		59E0C6092AFBA3FE0073D494 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingRentViewController.swift; sourceTree = "<group>"; };
+		59E196C82B045F4900BF7C5A /* PostingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingViewController.swift; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				59BD5DD22B0C7A0A00FEB80F /* Custom */,
-				59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */,
+				59E196C82B045F4900BF7C5A /* PostingViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -472,7 +472,7 @@
 			files = (
 				59BD5DCE2B0C775D00FEB80F /* SceneDelegate.swift in Sources */,
 				59BD5DCD2B0C775200FEB80F /* FloatingButton.swift in Sources */,
-				59BD5DCC2B0C772200FEB80F /* PostingRentViewController.swift in Sources */,
+				59BD5DCC2B0C772200FEB80F /* PostingViewController.swift in Sources */,
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
