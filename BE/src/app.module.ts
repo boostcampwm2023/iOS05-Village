@@ -1,4 +1,4 @@
-import { Module, Logger } from '@nestjs/common';
+import { Module, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WinstonModule } from 'nest-winston';
@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { winstonOptions, dailyOption } from './config/winston.config';
 import { MysqlConfigProvider } from './config/mysql.config';
 import { PostModule } from './post/post.module';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -25,6 +26,13 @@ import { PostModule } from './post/post.module';
     PostModule,
   ],
   controllers: [AppController],
-  providers: [AppService, Logger],
+  providers: [
+    AppService,
+    Logger,
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
 })
 export class AppModule {}
