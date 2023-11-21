@@ -365,7 +365,11 @@ private extension PostingViewController {
 
 extension PostingViewController: UITextFieldDelegate {
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         if textField == priceTextField {
             guard var text = textField.text else { return true }
             if Int(string) == nil { return false }
@@ -379,7 +383,6 @@ extension PostingViewController: UITextFieldDelegate {
                 if text.count > 1 {
                     guard let price = Int.init("\(text.prefix(text.count - 1))"),
                           let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
-                    
                     textField.text = "\(result)원"
                 } else {
                     textField.text = ""
@@ -387,7 +390,6 @@ extension PostingViewController: UITextFieldDelegate {
             } else {
                 guard let price = Int.init("\(text)\(string)"),
                       let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
-                
                 textField.text = "\(result)원"
             }
             return false
