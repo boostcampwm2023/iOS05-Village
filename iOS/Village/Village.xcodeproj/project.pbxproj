@@ -25,6 +25,7 @@
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
 		8F95CF942B0C60E00024631F /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF932B0C60E00024631F /* HTTPMethod.swift */; };
 		8F95CF962B0C66910024631F /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF952B0C66910024631F /* Requestable.swift */; };
+		8F95CF982B0C7B270024631F /* Reponsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF972B0C7B270024631F /* Reponsable.swift */; };
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
@@ -70,6 +71,7 @@
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		8F95CF932B0C60E00024631F /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		8F95CF952B0C66910024631F /* Requestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
+		8F95CF972B0C7B270024631F /* Reponsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reponsable.swift; sourceTree = "<group>"; };
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 				8FC7FE772B06768C00B91D3B /* NetworkService.swift */,
 				8F95CF932B0C60E00024631F /* HTTPMethod.swift */,
 				8F95CF952B0C66910024631F /* Requestable.swift */,
+				8F95CF972B0C7B270024631F /* Reponsable.swift */,
 				8F95CF912B0C57460024631F /* NetworkError.swift */,
 			);
 			path = Network;
@@ -459,6 +462,7 @@
 			files = (
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
+				8F95CF982B0C7B270024631F /* Reponsable.swift in Sources */,
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
 				8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
