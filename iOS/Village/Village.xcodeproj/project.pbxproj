@@ -28,7 +28,7 @@
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
 		8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */; };
 		8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE772B06768C00B91D3B /* NetworkService.swift */; };
-		8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */; };
+		8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */; };
 		8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A442B09D1A6005EE367 /* ChatViewController.swift */; };
 		8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */; };
 		8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */; };
@@ -70,7 +70,7 @@
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
 		8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListItemViewModel.swift; sourceTree = "<group>"; };
 		8FC7FE772B06768C00B91D3B /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
-		8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
+		8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentDetailViewController.swift; sourceTree = "<group>"; };
 		8FD52A442B09D1A6005EE367 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -203,7 +203,7 @@
 				8FD52A492B0B0A20005EE367 /* Search */,
 				8FD52A462B09D1AD005EE367 /* MyPage */,
 				8FD52A432B09D1A6005EE367 /* Chat */,
-				8FC7FE792B07A88400B91D3B /* DetailPost */,
+				8FC7FE792B07A88400B91D3B /* PostDetail */,
 				44425A622B038AA700AAD64A /* CustomView */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
 				8FBE3B062B04763200660530 /* Home */,
@@ -274,12 +274,12 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
-		8FC7FE792B07A88400B91D3B /* DetailPost */ = {
+		8FC7FE792B07A88400B91D3B /* PostDetail */ = {
 			isa = PBXGroup;
 			children = (
-				8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */,
+				8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */,
 			);
-			path = DetailPost;
+			path = PostDetail;
 			sourceTree = "<group>";
 		};
 		8FD52A432B09D1A6005EE367 /* Chat */ = {
@@ -471,7 +471,7 @@
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
-				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
+				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
