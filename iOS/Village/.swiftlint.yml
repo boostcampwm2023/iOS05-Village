@@ -8,5 +8,5 @@ identifier_name:
 
 # 룰 적용 제외할 파일
 excluded:
-    - Village/AppDelegate.swift
-    - Village/SceneDelegate.swift
+    - Village/Application/AppDelegate.swift
+    - Village/Application/SceneDelegate.swift
