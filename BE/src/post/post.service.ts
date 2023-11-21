@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { Repository } from 'typeorm';
@@ -65,19 +65,16 @@ export class PostService {
           image_url: image,
         });
       });
-      return true;
     } catch {
-      return false;
+      throw new HttpException('서버 오류입니다.', 500);
     }
   }
 
   async changeExceptImages(postId: number, updatePostDto: UpdatePostDto) {
-    console.log(updatePostDto);
     try {
       await this.postRepository.update({ id: postId }, updatePostDto);
-      return true;
     } catch {
-      return false;
+      throw new HttpException('서버 오류입니다.', 500);
     }
   }
 
