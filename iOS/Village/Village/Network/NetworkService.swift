@@ -7,16 +7,16 @@
 
 import Foundation
 
-final class NetworkService {
+enum NetworkError: Error {
+    case invalidURL
+}
+
+enum NetworkService {
     
-    func loadImage(from url: URL, completion: @escaping (Data?) -> Void) {
-        let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
-            guard let data = data, error == nil else {
-                completion(nil)
-                return
-            }
-            completion(data)
-        }
-        task.resume()
+    static func loadData(from urlString: String) async throws -> Data {
+        guard let url = URL(string: urlString) else { throw NetworkError.invalidURL }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return data
     }
+    
 }
