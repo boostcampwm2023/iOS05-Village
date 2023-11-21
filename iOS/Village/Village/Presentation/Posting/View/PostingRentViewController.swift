@@ -1,5 +1,5 @@
 //
-//  PostingRentViewController.swift
+//  PostingViewController.swift
 //  Village
 //
 //  Created by 조성민 on 11/15/23.
@@ -7,8 +7,17 @@
 
 import UIKit
 
-final class PostingRentViewController: UIViewController {
+enum PostType {
     
+    case rent
+    case request
+    
+}
+
+final class PostingViewController: UIViewController {
+    
+    private let viewModel: PostingViewModel
+    private let type: PostType
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar()
         let hideKeyboardButton = UIBarButtonItem(
@@ -42,9 +51,14 @@ final class PostingRentViewController: UIViewController {
         return label
     }()
     
-    private let periodStartHeaderLabel: UILabel = {
+    private lazy var periodStartHeaderLabel: UILabel = {
         let label = UILabel()
-        label.text = "대여 시작 가능"
+        switch type {
+        case .rent:
+            label.text = "대여 시작 가능"
+        case .request:
+            label.text = "대여 시작"
+        }
         label.font = .boldSystemFont(ofSize: 16)
         
         return label
@@ -115,12 +129,11 @@ final class PostingRentViewController: UIViewController {
         
         return view
     }()
-    private let detailTextViewPlaceHolder = "설명을 입력하세요."
     private lazy var detailTextView: UITextView = {
         let textView = UITextView()
         textView.setLayer()
         textView.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
-        textView.text = self.detailTextViewPlaceHolder
+        textView.text = "설명을 입력하세요."
         textView.textColor = .lightGray
         textView.font = UIFont.systemFont(ofSize: 18)
         textView.isScrollEnabled = false
@@ -152,9 +165,20 @@ final class PostingRentViewController: UIViewController {
         super.viewDidLoad()
     }
     
+    init(viewModel: PostingViewModel, type: PostType) {
+        self.viewModel = viewModel
+        self.type = type
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }
 
-@objc private extension PostingRentViewController {
+@objc
+private extension PostingViewController {
     
     func close(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
@@ -202,7 +226,7 @@ final class PostingRentViewController: UIViewController {
     
 }
 
-private extension PostingRentViewController {
+private extension PostingViewController {
     
     func setUpNotification() {
         NotificationCenter.default.addObserver(
@@ -232,7 +256,12 @@ private extension PostingRentViewController {
     
     func configureNavigation() {
         let titleLabel = UILabel()
-        titleLabel.setTitle("대여 등록")
+        switch type {
+        case .rent:
+            titleLabel.setTitle("대여 등록")
+        case .request:
+            titleLabel.setTitle("대여 요청 등록")
+        }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let close = self.navigationItem.makeSFSymbolButton(
             self, action: #selector(close), symbolName: .xmark
@@ -272,24 +301,31 @@ private extension PostingRentViewController {
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10),
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20)
         ])
         
         stackView.addArrangedSubview(titleHeaderLabel)
         stackView.addArrangedSubview(titleTextField)
         stackView.setCustomSpacing(25, after: titleTextField)
+        
         stackView.addArrangedSubview(periodStartHeaderLabel)
         stackView.addArrangedSubview(startTimePicker)
         stackView.setCustomSpacing(25, after: startTimePicker)
+        
         stackView.addArrangedSubview(periodEndHeaderLabel)
         stackView.addArrangedSubview(endTimePicker)
         stackView.setCustomSpacing(25, after: endTimePicker)
-        stackView.addArrangedSubview(priceHeaderLabel)
-        stackView.addArrangedSubview(priceTextFieldView)
-        stackView.setCustomSpacing(25, after: priceTextFieldView)
+        
+        if type == .rent {
+            stackView.addArrangedSubview(priceHeaderLabel)
+            stackView.addArrangedSubview(priceTextFieldView)
+            stackView.setCustomSpacing(25, after: priceTextFieldView)
+        }
+        
         stackView.addArrangedSubview(detailHeaderLabel)
         stackView.addArrangedSubview(detailTextView)
+        
         stackView.axis = .vertical
         stackView.spacing = 10
     }
@@ -322,55 +358,11 @@ private extension PostingRentViewController {
     func configureInputViews() {
         NSLayoutConstraint.activate([
             titleTextField.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
-            priceTextFieldView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
             detailTextView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
-    }
-    
-}
-
-extension PostingRentViewController: UITextViewDelegate {
-    
-    func textViewDidChange(_ textView: UITextView) {
-        let size = CGSize(width: view.frame.width, height: .infinity)
-        let estimatedSize = textView.sizeThatFits(size)
-        
-        textView.constraints.forEach { (constraint) in
-            if estimatedSize.height > 180 && constraint.firstAttribute == .height {
-                constraint.constant = estimatedSize.height
-            }
+        if type == .rent {
+            priceTextFieldView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50).isActive = true
         }
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == detailTextViewPlaceHolder {
-            textView.text = nil
-            textView.textColor = .label
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = detailTextViewPlaceHolder
-            textView.textColor = .lightGray
-        }
-    }
-    
-}
-
-extension PostingRentViewController: UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-}
-
-extension UIStackView {
-    
-    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        endEditing(true)
     }
     
 }

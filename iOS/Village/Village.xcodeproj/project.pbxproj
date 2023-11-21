@@ -8,18 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		440FCC2D2B04EB940011B637 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440FCC2C2B04EB940011B637 /* Constants.swift */; };
-		44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44425A632B038AEA00AAD64A /* FloatingButton.swift */; };
 		4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4491AA272B05D6C90016FC70 /* MenuView.swift */; };
 		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
 		5975E98C2B035919007CEF13 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* Users.json */; };
-		5979BA7C2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5979BA7B2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift */; };
+		5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */; };
+		59BD5DC72B0C746A00FEB80F /* PostingRentViewController+UITextViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DC62B0C746A00FEB80F /* PostingRentViewController+UITextViewDelegate.swift */; };
+		59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DC82B0C760500FEB80F /* UIStackView+.swift */; };
+		59BD5DCB2B0C764D00FEB80F /* PostingViewController+UITextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DCA2B0C764D00FEB80F /* PostingViewController+UITextFieldDelegate.swift */; };
+		59BD5DCC2B0C772200FEB80F /* PostingRentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */; };
+		59BD5DCD2B0C775200FEB80F /* FloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44425A632B038AEA00AAD64A /* FloatingButton.swift */; };
+		59BD5DCE2B0C775D00FEB80F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */; };
 		59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */; };
 		59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */; };
+		59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DC1B1E2B0C6AEC004C8C1A /* PostingViewModel.swift */; };
 		59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */; };
-		59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */; };
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
-		59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
@@ -50,10 +54,14 @@
 		5975E9872B035919007CEF13 /* Post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Post.json; sourceTree = "<group>"; };
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
 		5975E9892B035919007CEF13 /* Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Users.json; sourceTree = "<group>"; };
-		5979BA7B2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+PlaceHolderColor.swift"; sourceTree = "<group>"; };
+		5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+.swift"; sourceTree = "<group>"; };
 		59AA129A2B03726C00AFC766 /* VillageTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VillageTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		59BD5DC62B0C746A00FEB80F /* PostingRentViewController+UITextViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostingRentViewController+UITextViewDelegate.swift"; sourceTree = "<group>"; };
+		59BD5DC82B0C760500FEB80F /* UIStackView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+.swift"; sourceTree = "<group>"; };
+		59BD5DCA2B0C764D00FEB80F /* PostingViewController+UITextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostingViewController+UITextFieldDelegate.swift"; sourceTree = "<group>"; };
 		59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
 		59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layer.swift"; sourceTree = "<group>"; };
+		59DC1B1E2B0C6AEC004C8C1A /* PostingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingViewModel.swift; sourceTree = "<group>"; };
 		59E0C5F82AFBA3FC0073D494 /* Village.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Village.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -133,6 +141,40 @@
 			path = VillageTests;
 			sourceTree = "<group>";
 		};
+		59BD5DCF2B0C784300FEB80F /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				59BD5DC62B0C746A00FEB80F /* PostingRentViewController+UITextViewDelegate.swift */,
+				59BD5DCA2B0C764D00FEB80F /* PostingViewController+UITextFieldDelegate.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		59BD5DD02B0C785900FEB80F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				59BD5DD22B0C7A0A00FEB80F /* Custom */,
+				59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		59BD5DD12B0C786600FEB80F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				59DC1B1E2B0C6AEC004C8C1A /* PostingViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		59BD5DD22B0C7A0A00FEB80F /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
 		59E0C5EF2AFBA3FC0073D494 = {
 			isa = PBXGroup;
 			children = (
@@ -165,13 +207,14 @@
 			path = Village;
 			sourceTree = "<group>";
 		};
-		59E196C72B045EFA00BF7C5A /* PostingRent */ = {
+		59E196C72B045EFA00BF7C5A /* Posting */ = {
 			isa = PBXGroup;
 			children = (
-				59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */,
-				59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */,
+				59BD5DCF2B0C784300FEB80F /* Extension */,
+				59BD5DD12B0C786600FEB80F /* ViewModel */,
+				59BD5DD02B0C785900FEB80F /* View */,
 			);
-			path = PostingRent;
+			path = Posting;
 			sourceTree = "<group>";
 		};
 		8FBE3AEC2B03547E00660530 /* Application */ = {
@@ -193,7 +236,7 @@
 				44425A622B038AA700AAD64A /* CustomView */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
 				8FBE3B062B04763200660530 /* Home */,
-				59E196C72B045EFA00BF7C5A /* PostingRent */,
+				59E196C72B045EFA00BF7C5A /* Posting */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -230,7 +273,8 @@
 				8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */,
 				8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */,
 				59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */,
-				5979BA7B2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift */,
+				5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */,
+				59BD5DC82B0C760500FEB80F /* UIStackView+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -426,6 +470,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59BD5DCE2B0C775D00FEB80F /* SceneDelegate.swift in Sources */,
+				59BD5DCD2B0C775200FEB80F /* FloatingButton.swift in Sources */,
+				59BD5DCC2B0C772200FEB80F /* PostingRentViewController.swift in Sources */,
+				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
 				8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */,
@@ -436,17 +484,14 @@
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
-				59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */,
-				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
-				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
-				5979BA7C2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift in Sources */,
+				59BD5DC72B0C746A00FEB80F /* PostingRentViewController+UITextViewDelegate.swift in Sources */,
+				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
 				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
-				59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */,
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
-				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
-				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
+				59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */,
+				59BD5DCB2B0C764D00FEB80F /* PostingViewController+UITextFieldDelegate.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
