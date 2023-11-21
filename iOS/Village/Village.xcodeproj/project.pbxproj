@@ -26,6 +26,8 @@
 		8F95CF942B0C60E00024631F /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF932B0C60E00024631F /* HTTPMethod.swift */; };
 		8F95CF962B0C66910024631F /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF952B0C66910024631F /* Requestable.swift */; };
 		8F95CF982B0C7B270024631F /* Reponsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF972B0C7B270024631F /* Reponsable.swift */; };
+		8F95CF9A2B0C7C440024631F /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF992B0C7C440024631F /* EndPoint.swift */; };
+		8F95CF9C2B0C81640024631F /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF9B2B0C81640024631F /* Provider.swift */; };
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
@@ -72,6 +74,8 @@
 		8F95CF932B0C60E00024631F /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		8F95CF952B0C66910024631F /* Requestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
 		8F95CF972B0C7B270024631F /* Reponsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reponsable.swift; sourceTree = "<group>"; };
+		8F95CF992B0C7C440024631F /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
+		8F95CF9B2B0C81640024631F /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
@@ -277,11 +281,13 @@
 		8FC7FE762B06767600B91D3B /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				8FC7FE772B06768C00B91D3B /* NetworkService.swift */,
+				8F95CF912B0C57460024631F /* NetworkError.swift */,
 				8F95CF932B0C60E00024631F /* HTTPMethod.swift */,
 				8F95CF952B0C66910024631F /* Requestable.swift */,
 				8F95CF972B0C7B270024631F /* Reponsable.swift */,
-				8F95CF912B0C57460024631F /* NetworkError.swift */,
+				8F95CF992B0C7C440024631F /* EndPoint.swift */,
+				8FC7FE772B06768C00B91D3B /* NetworkService.swift */,
+				8F95CF9B2B0C81640024631F /* Provider.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -471,6 +477,7 @@
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
+				8F95CF9A2B0C7C440024631F /* EndPoint.swift in Sources */,
 				8F95CF942B0C60E00024631F /* HTTPMethod.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
@@ -487,6 +494,7 @@
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
+				8F95CF9C2B0C81640024631F /* Provider.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
