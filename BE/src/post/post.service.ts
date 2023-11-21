@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { Repository } from 'typeorm';
+import { UpdatePostDto } from './postUpdateDto';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class PostService {
@@ -48,6 +50,23 @@ export class PostService {
       return post;
     } catch {
       return null;
+    }
+  }
+
+  async updatePostById(postId: number, updatePostDto: UpdatePostDto) {
+    const isDataExists = await this.postRepository.findOne({
+      where: { id: postId },
+    });
+
+    if (!isDataExists) {
+      return null;
+    } else {
+      try {
+        await this.postRepository.update({ id: postId }, updatePostDto);
+        return true;
+      } catch {
+        return false;
+      }
     }
   }
 }
