@@ -21,6 +21,7 @@
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
 		59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
+		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
@@ -61,6 +62,7 @@
 		59E0C6092AFBA3FE0073D494 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59E196C82B045F4900BF7C5A /* PostingRentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingRentViewController.swift; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				8FC7FE772B06768C00B91D3B /* NetworkService.swift */,
+				8F95CF912B0C57460024631F /* NetworkError.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -428,6 +431,7 @@
 			files = (
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
+				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
 				8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
