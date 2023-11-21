@@ -14,32 +14,12 @@ enum PickerLocale: String {
 // TODO: 키보드 올리기, 시간 범위
 final class TimePickerView: UIView {
  
-    private lazy var dateTextField: UITextField = {
+    private let dateTextField: UITextField = {
         let textfield = UITextField()
         textfield.text = "날짜"
         textfield.textAlignment = .center
         textfield.tintColor = .clear
         textfield.setLayer()
-        
-        let toolBar = UIToolbar()
-        toolBar.translatesAutoresizingMaskIntoConstraints = false
-        let flexibleSpace = UIBarButtonItem(
-            barButtonSystemItem: .flexibleSpace,
-            target: nil,
-            action: nil
-        )
-        let doneButton = UIBarButtonItem(
-            barButtonSystemItem: .done,
-            target: self,
-            action: #selector(datePickerDoneTapped)
-        )
-        
-        toolBar.setItems([flexibleSpace, doneButton], animated: true)
-        toolBar.sizeToFit()
-
-        textfield.inputView = datePicker
-        textfield.inputAccessoryView = toolBar
-        
         return textfield
     }()
     private let datePicker: UIDatePicker = {
@@ -47,48 +27,19 @@ final class TimePickerView: UIView {
         datePicker.locale = Locale(identifier: PickerLocale.korea.rawValue)
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.datePickerMode = .date
-        
         return datePicker
     }()
     private var selectedDate: String?
     
-    private lazy var hourTextField: UITextField = {
+    private let hourTextField: UITextField = {
         let textfield = UITextField()
         textfield.text = "시간"
         textfield.textAlignment = .center
         textfield.tintColor = .clear
         textfield.setLayer()
-        
-        let toolBar = UIToolbar()
-        toolBar.translatesAutoresizingMaskIntoConstraints = false
-        let flexibleSpace = UIBarButtonItem(
-            barButtonSystemItem: .flexibleSpace,
-            target: nil,
-            action: nil
-        )
-        let doneButton = UIBarButtonItem(
-            barButtonSystemItem: .done,
-            target: self,
-            action: #selector(hourPickerDoneTapped)
-        )
-
-        toolBar.setItems([flexibleSpace, doneButton], animated: true)
-        toolBar.sizeToFit()
-
-        textfield.inputView = hourPicker
-        textfield.inputAccessoryView = toolBar
-        
         return textfield
     }()
-    
-    private lazy var hourPicker: UIPickerView = {
-        let pickerView = UIPickerView()
-        pickerView.delegate = self
-        pickerView.dataSource = self
-        
-        return pickerView
-    }()
-    
+    private let hourPicker = UIPickerView()
     private var selectedHour: String?
     private let hours = [
         "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
@@ -108,6 +59,8 @@ final class TimePickerView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setLayout()
+        setDatePicker()
+        setHourPicker()
     }
     
     required init?(coder: NSCoder) {
@@ -134,6 +87,49 @@ final class TimePickerView: UIView {
         ])
     }
     
+    private func setDatePicker() {
+        let toolBar = UIToolbar()
+        let flexibleSpace = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: nil,
+            action: nil
+        )
+        let doneButton = UIBarButtonItem(
+            barButtonSystemItem: .done, 
+            target: self,
+            action: #selector(datePickerDoneTapped)
+        )
+        
+        toolBar.setItems([flexibleSpace, doneButton], animated: true)
+        toolBar.sizeToFit()
+
+        dateTextField.inputAccessoryView = toolBar
+        dateTextField.inputView = datePicker
+    }
+    
+    private func setHourPicker() {
+        hourPicker.delegate = self
+        hourPicker.dataSource = self
+        
+        let toolBar = UIToolbar()
+        let flexibleSpace = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: nil,
+            action: nil
+        )
+        let doneButton = UIBarButtonItem(
+            barButtonSystemItem: .done,
+            target: self,
+            action: #selector(hourPickerDoneTapped)
+        )
+
+        toolBar.setItems([flexibleSpace, doneButton], animated: true)
+        toolBar.sizeToFit()
+
+        hourTextField.inputAccessoryView = toolBar
+        hourTextField.inputView = hourPicker
+    }
+    
     @objc func datePickerDoneTapped(_ sender: UIBarButtonItem) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"
@@ -154,7 +150,6 @@ final class TimePickerView: UIView {
 }
 
 extension TimePickerView: UIPickerViewDelegate, UIPickerViewDataSource {
-    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
     }
