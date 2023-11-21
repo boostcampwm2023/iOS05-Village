@@ -63,12 +63,12 @@ export class PostService {
   async changeImages(postId: number, images: string[]) {
     try {
       await this.postImageRepository.delete({ post_id: postId });
-      images.forEach(async (image) => {
+      for (const img of images) {
         await this.postImageRepository.save({
           post_id: postId,
-          image_url: image,
+          image_url: img,
         });
-      });
+      }
     } catch {
       throw new HttpException('서버 오류입니다.', 500);
     }
@@ -102,7 +102,8 @@ export class PostService {
       }
     } catch {
       return null;
-
+    }
+  }
   async uploadImages(files: Express.Multer.File[]): Promise<string[]> {
     const fileLocation: Array<string> = [];
     for (const file of files) {
