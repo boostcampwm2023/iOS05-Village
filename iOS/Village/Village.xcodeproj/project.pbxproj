@@ -198,6 +198,33 @@
 			path = Commons;
 			sourceTree = "<group>";
 		};
+		8F95CF9D2B0CF2AF0024631F /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				8F95CF912B0C57460024631F /* NetworkError.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		8F95CF9E2B0CF2BC0024631F /* EndPoint */ = {
+			isa = PBXGroup;
+			children = (
+				8F95CF932B0C60E00024631F /* HTTPMethod.swift */,
+				8F95CF952B0C66910024631F /* Requestable.swift */,
+				8F95CF972B0C7B270024631F /* Reponsable.swift */,
+				8F95CF992B0C7C440024631F /* EndPoint.swift */,
+			);
+			path = EndPoint;
+			sourceTree = "<group>";
+		};
+		8F95CF9F2B0CF2D40024631F /* Provider */ = {
+			isa = PBXGroup;
+			children = (
+				8F95CF9B2B0C81640024631F /* Provider.swift */,
+			);
+			path = Provider;
+			sourceTree = "<group>";
+		};
 		8FBE3AEC2B03547E00660530 /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -281,13 +308,10 @@
 		8FC7FE762B06767600B91D3B /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				8F95CF912B0C57460024631F /* NetworkError.swift */,
-				8F95CF932B0C60E00024631F /* HTTPMethod.swift */,
-				8F95CF952B0C66910024631F /* Requestable.swift */,
-				8F95CF972B0C7B270024631F /* Reponsable.swift */,
-				8F95CF992B0C7C440024631F /* EndPoint.swift */,
 				8FC7FE772B06768C00B91D3B /* NetworkService.swift */,
-				8F95CF9B2B0C81640024631F /* Provider.swift */,
+				8F95CF9D2B0CF2AF0024631F /* Common */,
+				8F95CF9E2B0CF2BC0024631F /* EndPoint */,
+				8F95CF9F2B0CF2D40024631F /* Provider */,
 			);
 			path = Network;
 			sourceTree = "<group>";
