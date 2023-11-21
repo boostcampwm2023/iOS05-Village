@@ -107,14 +107,21 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		44425A622B038AA700AAD64A /* CustomView */ = {
+		444A50952B0C905C00454397 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
-				44425A632B038AEA00AAD64A /* FloatingButton.swift */,
 				4491AA272B05D6C90016FC70 /* MenuView.swift */,
+				44425A632B038AEA00AAD64A /* FloatingButton.swift */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
+		444A50962B0C906900454397 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
 				444A508F2B0C60F900454397 /* ImagePageView.swift */,
 			);
-			path = CustomView;
+			path = Custom;
 			sourceTree = "<group>";
 		};
 		5975E98D2B03591E007CEF13 /* Data */ = {
@@ -209,7 +216,6 @@
 				8FD52A462B09D1AD005EE367 /* MyPage */,
 				8FD52A432B09D1A6005EE367 /* Chat */,
 				8FC7FE792B07A88400B91D3B /* PostDetail */,
-				44425A622B038AA700AAD64A /* CustomView */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
 				8FBE3B062B04763200660530 /* Home */,
 				59E196C72B045EFA00BF7C5A /* PostingRent */,
@@ -229,6 +235,7 @@
 		8FBE3B062B04763200660530 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				444A50952B0C905C00454397 /* Custom */,
 				8FC7FE722B05CE3000B91D3B /* ViewModel */,
 				8FC7FE712B05CE2300B91D3B /* View */,
 			);
@@ -283,6 +290,7 @@
 		8FC7FE792B07A88400B91D3B /* PostDetail */ = {
 			isa = PBXGroup;
 			children = (
+				444A50962B0C906900454397 /* Custom */,
 				8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */,
 			);
 			path = PostDetail;
