@@ -8,9 +8,10 @@
 import Foundation
 
 enum NetworkError: Error {
+    
     case unknownError
     case componentsError
-    case urlRequestError(Error)
+    case urlRequestError
     case serverError(ServerError)
     case emptyData
     case parsingError
@@ -22,8 +23,8 @@ enum NetworkError: Error {
             return "Unknown Error."
         case .componentsError:
             return "URL Components Error."
-        case .urlRequestError(let error):
-            return "URL Request Error: \(error)."
+        case .urlRequestError:
+            return "URL Request Error."
         case .serverError(let serverError):
             return "Server Error: \(serverError)."
         case .emptyData:
@@ -31,14 +32,14 @@ enum NetworkError: Error {
         case .parsingError:
             return "Parsing Error."
         case .decodingError(let error):
-            return "Decoding Error: \(error)"
+            return "Decoding Error: \(error)."
         }
-        
     }
     
 }
 
 enum ServerError: Int {
+    
     case unknown
     case badRequest = 400
     case unauthorized = 401

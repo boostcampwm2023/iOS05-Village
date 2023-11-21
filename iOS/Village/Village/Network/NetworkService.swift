@@ -7,14 +7,10 @@
 
 import Foundation
 
-enum NetworkError: Error {
-    case invalidURL
-}
-
 enum NetworkService {
     
     static func loadData(from urlString: String) async throws -> Data {
-        guard let url = URL(string: urlString) else { throw NetworkError.invalidURL }
+        guard let url = URL(string: urlString) else { throw NetworkError.urlRequestError }
         let (data, _) = try await URLSession.shared.data(from: url)
         return data
     }
