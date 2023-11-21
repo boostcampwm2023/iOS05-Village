@@ -368,7 +368,7 @@ extension PostingViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == priceTextField {
             guard var text = textField.text else { return true }
-            
+            if Int(string) == nil { return false }
             text = text.replacingOccurrences(of: "원", with: "")
             text = text.replacingOccurrences(of: ",", with: "")
             
@@ -398,6 +398,15 @@ extension PostingViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+}
+
+extension UITextField {
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        print("a")
+        return false
     }
     
 }
