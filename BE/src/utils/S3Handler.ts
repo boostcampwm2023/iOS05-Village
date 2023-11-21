@@ -5,7 +5,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { uuid } from 'uuidv4';
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class S3Handler {
@@ -28,10 +28,14 @@ export class S3Handler {
       ACL: 'public-read',
       Body: file.buffer,
     });
-    await this.s3.send(command);
-    return `${this.configService.get('S3_ENDPOINT')}/${this.configService.get(
-      'S3_BUCKET',
-    )}/${fileName}`;
+    try {
+      await this.s3.send(command);
+      return `${this.configService.get('S3_ENDPOINT')}/${this.configService.get(
+        'S3_BUCKET',
+      )}/${fileName}`;
+    } catch (e) {
+      throw new HttpException('업로드에 실패하였습니다.', 500);
+    }
   }
   async deleteFile(fileLocation: string) {
     const fileKey = fileLocation.split('/').pop();
@@ -39,6 +43,10 @@ export class S3Handler {
       Bucket: this.configService.get('S3_BUCKET'),
       Key: fileKey,
     });
-    await this.s3.send(command);
+    try {
+      await this.s3.send(command);
+    } catch (e) {
+      throw new HttpException('이미지 삭제에 실패하였습니다.', 500);
+    }
   }
 }
