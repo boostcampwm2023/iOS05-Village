@@ -69,7 +69,7 @@ final class ImagePageView: UIView {
                     let imageView = generateImageView(data: data, index: index)
                     imageStackView.addArrangedSubview(imageView)
                     imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
-                    imageView.heightAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+                    imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
                 } catch let error {
                     dump(error)
                 }
