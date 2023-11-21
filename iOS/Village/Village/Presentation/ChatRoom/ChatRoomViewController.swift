@@ -9,7 +9,7 @@ import UIKit
 
 final class ChatRoomViewController: UIViewController {
     
-    let chatStackView: UIStackView = {
+    private let chatStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
@@ -17,7 +17,7 @@ final class ChatRoomViewController: UIViewController {
         return stackView
     }()
     
-    let chatMoreButton: UIButton = {
+    private let chatMoreButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.plus.rawValue), for: .normal)
@@ -25,7 +25,7 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    let chatTextField: UITextField = {
+    private let chatTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "메시지를 입력해주세요."
@@ -35,7 +35,7 @@ final class ChatRoomViewController: UIViewController {
         return textField
     }()
     
-    let chatSendButton: UIButton = {
+    private let chatSendButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.paperplane.rawValue), for: .normal)
@@ -43,7 +43,7 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    let postSummaryView = PostSummaryView()
+    private let postSummaryView = PostSummaryView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
