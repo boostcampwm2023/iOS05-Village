@@ -8,7 +8,6 @@
 import UIKit
 
 final class PostingRentViewController: UIViewController {
-    
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar()
         let hideKeyboardButton = UIBarButtonItem(
@@ -92,10 +91,14 @@ final class PostingRentViewController: UIViewController {
     private lazy var priceTextFieldView: UIView = {
         let view = UIView()
         view.setLayer()
-        view.heightAnchor.constraint(equalToConstant: 48).isActive = true
-        
         let textField = UITextField()
         textField.setPlaceHolder("가격을 입력하세요")
+        let rightView = UILabel()
+        rightView.text = "원"
+        textField.rightView = rightView
+        textField.rightViewMode = .always
+        textField.delegate = self
+        view.heightAnchor.constraint(equalToConstant: 48).isActive = true
         view.addSubview(textField)
         textField.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -103,13 +106,6 @@ final class PostingRentViewController: UIViewController {
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             textField.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
-        
-        let rightView = UILabel()
-        rightView.text = "원"
-        textField.rightView = rightView
-        textField.rightViewMode = .always
-        
-        textField.delegate = self
         textField.inputAccessoryView = keyboardToolBar
         textField.keyboardType = .numberPad
         
@@ -152,23 +148,34 @@ final class PostingRentViewController: UIViewController {
         super.viewDidLoad()
     }
     
-}
-
-@objc private extension PostingRentViewController {
-    
-    func close(_ sender: UIBarButtonItem) {
+    @objc func close(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
     }
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
-    func post(_ sender: UIButton) {
+    @objc func post(_ sender: UIButton) {
     }
     
-    func hideKeyboard(_ sender: UIBarButtonItem) {
+    private func setUpNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func hideKeyboard(_ sender: UIBarButtonItem) {
         view.endEditing(true)
     }
     
-    func keyboardWillShow(_ notification: Notification) {
+    @objc private func keyboardWillShow(_ notification: Notification) {
         guard let userInfo = notification.userInfo as NSDictionary?,
               var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
             return
@@ -184,7 +191,7 @@ final class PostingRentViewController: UIViewController {
         NSLayoutConstraint.activate([scrollViewBottomConstraint])
         
     }
-    func keyboardWillHide(_ notification: Notification) {
+    @objc private func keyboardWillHide(_ notification: Notification) {
         guard let userInfo = notification.userInfo as NSDictionary?,
               var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
             return
@@ -203,21 +210,6 @@ final class PostingRentViewController: UIViewController {
 }
 
 private extension PostingRentViewController {
-    
-    func setUpNotification() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
-    }
     
     func configureUIComponents() {
         configureNavigation()
