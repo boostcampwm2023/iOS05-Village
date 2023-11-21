@@ -8,10 +8,11 @@ import {
   Patch,
   Req,
   Res,
-   Post,
+  Post,
   UploadedFiles,
   UseInterceptors,
   ValidationPipe,
+  Delete,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -74,6 +75,17 @@ export class PostController {
       throw new HttpException('게시글이 존재하지 않습니다.', 404);
     } else {
       throw new HttpException('서버 오류입니다.', 500);
+    }
+  }
+
+  @Delete('/:id')
+  async postRemove(@Param('id') id: number) {
+    const isRemoved = await this.postService.deletePostById(id);
+
+    if (isRemoved) {
+      return HttpCode(200);
+    } else {
+      throw new HttpException('게시글이 존재하지 않습니다.', 404);
     }
   }
 }
