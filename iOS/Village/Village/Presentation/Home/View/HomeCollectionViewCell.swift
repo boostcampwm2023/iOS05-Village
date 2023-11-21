@@ -21,83 +21,24 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         setUI()
     }
     
-    private let postImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.layer.cornerRadius = 16
-        
-        return imageView
-    }()
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16, weight: .bold)
-        
-        return label
-    }()
-    
-    private let priceLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        
-        return label
-    }()
-    
-    private let accessoryView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: ImageSystemName.chevronRight.rawValue)
-        
-        return imageView
-    }()
+    let postSummaryView = PostSummaryView()
     
     private func setUI() {
-        self.addSubview(postImageView)
-        self.addSubview(titleLabel)
-        self.addSubview(priceLabel)
-        self.addSubview(accessoryView)
-        configureConstraints()
-    }
-    
-    private func configureConstraints() {
-        NSLayoutConstraint.activate([
-            postImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            postImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
-            postImageView.widthAnchor.constraint(equalToConstant: 80),
-            postImageView.heightAnchor.constraint(equalToConstant: 80)
-        ])
-        
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 25),
-            titleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            priceLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            accessoryView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            accessoryView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16)
-        ])
+        self.addSubview(postSummaryView)
     }
     
     func configureData(post: Post) {
-        titleLabel.text = post.title
+        postSummaryView.postTitleLabel.text = post.title
         let price = post.price.map(String.init) ?? ""
-        priceLabel.text = price != "" ? "\(price)원" : ""
+        postSummaryView.postPriceLabel.text = price != "" ? "\(price)원" : ""
     }
     
     func configureImage(image: UIImage?) {
         if image != nil {
-            postImageView.image = image
+            postSummaryView.postImageView.image = image
         } else {
-            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
-            postImageView.backgroundColor = .primary100
+            postSummaryView.postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            postSummaryView.postImageView.backgroundColor = .primary100
         }
     }
 }
