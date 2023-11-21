@@ -20,7 +20,7 @@ export class PostController {
 
     if (post) {
       return post;
-    } else if (post == null) {
+    } else if (post === null) {
       throw new HttpException('게시글이 존재하지 않습니다.', 404);
     } else {
       throw new HttpException('서버 오류입니다.', 500);
