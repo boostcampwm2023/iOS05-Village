@@ -27,6 +27,8 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.15",
     "@nestjs/typeorm": "^10.0.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "multer-s3": "^3.0.1",
     "mysql2": "^3.6.3",
     "nest-winston": "^1.9.4",

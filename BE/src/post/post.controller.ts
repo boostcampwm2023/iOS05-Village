@@ -1,6 +1,18 @@
-import { Controller, Get, HttpException, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  Param,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+  ValidationPipe,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { CreatePostDto } from './createPost.dto';
+import { MultiPartBody } from '../utils/multiPartBody.decorator';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -11,6 +23,24 @@ export class PostController {
   async getPosts() {
     const posts = await this.postService.getPosts();
     return posts;
+  }
+
+  @Post()
+  @UseInterceptors(FilesInterceptor('image', 12))
+  async postsCreate(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @MultiPartBody(
+      'profile_info',
+      new ValidationPipe({ validateCustomDecorators: true }),
+    )
+    createPostDto: CreatePostDto,
+  ) {
+    const userId: string = 'qwe';
+    let imageLocation: Array<string> = [];
+    if (createPostDto.is_request === false && files !== undefined) {
+      imageLocation = await this.postService.uploadImages(files);
+    }
+    await this.postService.createPost(imageLocation, createPostDto, userId);
   }
 
   @Get('/:id')

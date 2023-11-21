@@ -34,7 +34,7 @@ export class PostEntity {
   user: UserEntity;
 
   @Column({ type: 'tinyint', nullable: false })
-  status: number;
+  status: boolean;
 
   @Column({ type: 'datetime', nullable: false })
   start_date: Date;
@@ -43,7 +43,7 @@ export class PostEntity {
   end_date: Date;
 
   @Column({ type: 'tinyint', nullable: false })
-  is_request: number;
+  is_request: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',
