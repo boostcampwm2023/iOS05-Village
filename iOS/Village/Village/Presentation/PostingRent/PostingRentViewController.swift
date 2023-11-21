@@ -107,6 +107,7 @@ final class PostingRentViewController: UIViewController {
             textField.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         textField.inputAccessoryView = keyboardToolBar
+        textField.keyboardType = .numberPad
         
         return view
     }()
@@ -139,8 +140,11 @@ final class PostingRentViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
+        
         configureUIComponents()
         setUpNotification()
+        
+        view.backgroundColor = .systemBackground
         super.viewDidLoad()
     }
     
@@ -202,6 +206,7 @@ final class PostingRentViewController: UIViewController {
             )
         NSLayoutConstraint.activate([scrollViewBottomConstraint])
     }
+    
 }
 
 private extension PostingRentViewController {
@@ -214,6 +219,7 @@ private extension PostingRentViewController {
         configurePicker()
         configureDetailTextView()
         configurePostButton()
+        configureInputViews()
     }
     
     func configureNavigation() {
@@ -239,14 +245,13 @@ private extension PostingRentViewController {
     }
     
     func configureScrollView() {
-        scrollView.keyboardDismissMode = .onDrag
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         
         NSLayoutConstraint.activate([
-            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
         NSLayoutConstraint.activate([scrollViewBottomConstraint])
@@ -260,8 +265,7 @@ private extension PostingRentViewController {
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20),
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20)
         ])
         
         stackView.addArrangedSubview(titleHeaderLabel)
@@ -307,6 +311,14 @@ private extension PostingRentViewController {
         ])
     }
     
+    func configureInputViews() {
+        NSLayoutConstraint.activate([
+            titleTextField.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            priceTextFieldView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            detailTextView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+        ])
+    }
+    
 }
 
 extension PostingRentViewController: UITextViewDelegate {
@@ -343,6 +355,14 @@ extension PostingRentViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+}
+
+extension UIStackView {
+    
+    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        endEditing(true)
     }
     
 }
