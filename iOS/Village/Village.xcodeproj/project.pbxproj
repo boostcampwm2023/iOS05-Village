@@ -24,6 +24,7 @@
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
 		8F95CF942B0C60E00024631F /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF932B0C60E00024631F /* HTTPMethod.swift */; };
+		8F95CF962B0C66910024631F /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF952B0C66910024631F /* Requestable.swift */; };
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
@@ -68,6 +69,7 @@
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		8F95CF932B0C60E00024631F /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		8F95CF952B0C66910024631F /* Requestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
@@ -203,10 +205,10 @@
 			isa = PBXGroup;
 			children = (
 				8F95CF8E2B0B97BA0024631F /* Commons */,
-				8FD52A4F2B0B51A2005EE367 /* ChatRoom */,
 				8FD52A492B0B0A20005EE367 /* Search */,
 				8FD52A462B09D1AD005EE367 /* MyPage */,
 				8FD52A432B09D1A6005EE367 /* Chat */,
+				8FD52A4F2B0B51A2005EE367 /* ChatRoom */,
 				8FC7FE792B07A88400B91D3B /* DetailPost */,
 				44425A622B038AA700AAD64A /* CustomView */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
@@ -275,6 +277,7 @@
 			children = (
 				8FC7FE772B06768C00B91D3B /* NetworkService.swift */,
 				8F95CF932B0C60E00024631F /* HTTPMethod.swift */,
+				8F95CF952B0C66910024631F /* Requestable.swift */,
 				8F95CF912B0C57460024631F /* NetworkError.swift */,
 			);
 			path = Network;
@@ -475,6 +478,7 @@
 				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
 				59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */,
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
+				8F95CF962B0C66910024631F /* Requestable.swift in Sources */,
 				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
