@@ -10,6 +10,8 @@ import Combine
 
 final class PostingViewModel {
     
+    @Published var titleInput: String = ""
+    
     struct Input {
         
         let title: AnyPublisher<String, Never>

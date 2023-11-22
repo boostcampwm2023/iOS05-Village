@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 enum PostType {
     
@@ -120,6 +121,7 @@ final class PostingViewController: UIViewController {
         configureUI()
         configureConstraints()
         setUpNotification()
+        bind()
         
         view.backgroundColor = .systemBackground
         super.viewDidLoad()
@@ -133,6 +135,15 @@ final class PostingViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private var cancellables: Set<AnyCancellable> = []
+    
+    func bind() {
+        postingTitleView.publisher
+            .receive(on: RunLoop.main)
+            .assign(to: \.titleInput, on: viewModel)
+            .store(in: &cancellables)
     }
     
 }

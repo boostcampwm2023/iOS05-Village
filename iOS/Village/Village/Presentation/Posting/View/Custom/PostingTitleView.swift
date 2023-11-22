@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class PostingTitleView: UIStackView {
     
@@ -37,7 +38,6 @@ final class PostingTitleView: UIStackView {
         return label
     }()
     
-    
     private lazy var titleTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -49,6 +49,7 @@ final class PostingTitleView: UIStackView {
         textField.rightViewMode = .always
         textField.inputAccessoryView = keyboardToolBar
         textField.delegate = self
+        textField.addTarget(self, action: #selector(textFieldDidChanged), for: .editingChanged)
         
         return textField
     }()
@@ -64,12 +65,6 @@ final class PostingTitleView: UIStackView {
         return label
     }()
     
-    private var isEmptyTitle: Bool {
-        guard let text = titleTextField.text else { return true }
-        
-        return text.isEmpty
-    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUp()
@@ -83,6 +78,15 @@ final class PostingTitleView: UIStackView {
     
     @objc private func hideKeyboard(_ sender: UIBarButtonItem) {
         endEditing(true)
+    }
+    
+    @objc private func textFieldDidChanged(_ sender: UITextField) {
+        guard let text = sender.text else { return }
+        if text.isEmpty {
+            titleWarningLabel.alpha = 1
+        } else {
+            titleWarningLabel.alpha = 0
+        }
     }
     
 }
@@ -123,6 +127,17 @@ extension PostingTitleView: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+}
+
+extension PostingTitleView {
+    
+    var publisher: AnyPublisher<String, Never> {
+        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: titleTextField)
+            .compactMap { $0.object as? UITextField }
+            .map { $0.text ?? "" }
+            .eraseToAnyPublisher()
     }
     
 }
