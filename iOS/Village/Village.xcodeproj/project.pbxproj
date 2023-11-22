@@ -14,6 +14,8 @@
 		5975E98C2B035919007CEF13 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* Users.json */; };
 		5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */; };
 		59AABDDD2B0CFBAE002F6D0E /* PostType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDDC2B0CFBAE002F6D0E /* PostType.swift */; };
+		59AABDDF2B0E1AE1002F6D0E /* PostingTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDDE2B0E1AE1002F6D0E /* PostingTitleView.swift */; };
+		59AABDE12B0E1BB8002F6D0E /* PostingPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE02B0E1BB8002F6D0E /* PostingPriceView.swift */; };
 		59BD5DC72B0C746A00FEB80F /* PostingViewController+UITextViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DC62B0C746A00FEB80F /* PostingViewController+UITextViewDelegate.swift */; };
 		59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DC82B0C760500FEB80F /* UIStackView+.swift */; };
 		59BD5DCC2B0C772200FEB80F /* PostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostingViewController.swift */; };
@@ -59,6 +61,8 @@
 		5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+.swift"; sourceTree = "<group>"; };
 		59AA129A2B03726C00AFC766 /* VillageTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VillageTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		59AABDDC2B0CFBAE002F6D0E /* PostType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostType.swift; sourceTree = "<group>"; };
+		59AABDDE2B0E1AE1002F6D0E /* PostingTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingTitleView.swift; sourceTree = "<group>"; };
+		59AABDE02B0E1BB8002F6D0E /* PostingPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingPriceView.swift; sourceTree = "<group>"; };
 		59BD5DC62B0C746A00FEB80F /* PostingViewController+UITextViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostingViewController+UITextViewDelegate.swift"; sourceTree = "<group>"; };
 		59BD5DC82B0C760500FEB80F /* UIStackView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+.swift"; sourceTree = "<group>"; };
 		59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
@@ -175,6 +179,8 @@
 			isa = PBXGroup;
 			children = (
 				59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */,
+				59AABDDE2B0E1AE1002F6D0E /* PostingTitleView.swift */,
+				59AABDE02B0E1BB8002F6D0E /* PostingPriceView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -506,6 +512,7 @@
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
+				59AABDDF2B0E1AE1002F6D0E /* PostingTitleView.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
 				59BD5DC72B0C746A00FEB80F /* PostingViewController+UITextViewDelegate.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
@@ -514,6 +521,7 @@
 				59AABDDD2B0CFBAE002F6D0E /* PostType.swift in Sources */,
 				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
+				59AABDE12B0E1BB8002F6D0E /* PostingPriceView.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
 				59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */,

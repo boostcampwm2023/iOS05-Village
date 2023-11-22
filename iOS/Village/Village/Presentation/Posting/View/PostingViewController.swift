@@ -96,6 +96,46 @@ final class PostingViewController: UIViewController {
         return label
     }()
     
+    private let titleWarningLabel: UILabel = {
+        let label = UILabel()
+        label.text = "제목을 작성해야 합니다."
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .negative400
+        label.alpha = 0
+        
+        return label
+    }()
+    
+    private let startTimeWarningLabel: UILabel = {
+        let label = UILabel()
+        label.text = "시간을 선택해야 합니다."
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .negative400
+        label.alpha = 0
+        
+        return label
+    }()
+    
+    private let endTimeWarningLabel: UILabel = {
+        let label = UILabel()
+        label.text = "시간을 선택해야 합니다."
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .negative400
+        label.alpha = 0
+        
+        return label
+    }()
+    
+    private let priceWarningLabel: UILabel = {
+        let label = UILabel()
+        label.text = "하루 대여 가격을 설정해야 합니다."
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .negative400
+        label.alpha = 0
+        
+        return label
+    }()
+    
     private lazy var titleTextField: UITextField = {
         let textField = UITextField()
         textField.setLayer()
@@ -179,6 +219,30 @@ final class PostingViewController: UIViewController {
         return button
     }()
     
+    private var isEmptyTitle: Bool {
+        guard let text = titleTextField.text else { return true }
+        return text.isEmpty
+    }
+    
+    private var isEmptyStartTime: Bool {
+        if startTimePicker.time == nil {
+            return true
+        }
+        return false
+    }
+    
+    private var isEmptyEndTime: Bool {
+        if endTimePicker.time == nil {
+            return true
+        }
+        return false
+    }
+    
+    private var isEmptyPrice: Bool {
+        guard let text = priceTextField.text else { return true }
+        return text.isEmpty
+    }
+    
     override func viewDidLoad() {
         
         configureNavigation()
@@ -211,6 +275,18 @@ private extension PostingViewController {
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
+        if isEmptyTitle {
+            titleWarningLabel.alpha = 1
+        }
+        if isEmptyStartTime {
+            startTimeWarningLabel.alpha = 1
+        }
+        if isEmptyEndTime {
+            endTimeWarningLabel.alpha = 1
+        }
+        if isEmptyPrice {
+            priceWarningLabel.alpha = 1
+        }
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {
@@ -277,20 +353,20 @@ private extension PostingViewController {
         
         stackView.addArrangedSubview(titleHeaderLabel)
         stackView.addArrangedSubview(titleTextField)
-        stackView.setCustomSpacing(25, after: titleTextField)
+        stackView.addArrangedSubview(titleWarningLabel)
         
         stackView.addArrangedSubview(periodStartHeaderLabel)
         stackView.addArrangedSubview(startTimePicker)
-        stackView.setCustomSpacing(25, after: startTimePicker)
+        stackView.addArrangedSubview(startTimeWarningLabel)
         
         stackView.addArrangedSubview(periodEndHeaderLabel)
         stackView.addArrangedSubview(endTimePicker)
-        stackView.setCustomSpacing(25, after: endTimePicker)
+        stackView.addArrangedSubview(endTimeWarningLabel)
         
         if type == .rent {
             stackView.addArrangedSubview(priceHeaderLabel)
             stackView.addArrangedSubview(priceTextField)
-            stackView.setCustomSpacing(25, after: priceTextField)
+            stackView.addArrangedSubview(priceWarningLabel)
         }
         
         stackView.addArrangedSubview(detailHeaderLabel)
@@ -374,8 +450,8 @@ extension PostingViewController: UITextFieldDelegate {
         shouldChangeCharactersIn range: NSRange,
         replacementString string: String
     ) -> Bool {
+        guard var text = textField.text else { return true }
         if textField == priceTextField {
-            guard var text = textField.text else { return true }
             text = text.replacingOccurrences(of: ",", with: "")
             if !string.isEmpty && Int(string) == nil || text.count + string.count > 15 { return false }
             let numberFormatter = NumberFormatter()
@@ -396,6 +472,7 @@ extension PostingViewController: UITextFieldDelegate {
             }
             return false
         }
+        if !string.isEmpty && text.count + string.count > 64 { return false }
         return true
     }
     
