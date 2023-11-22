@@ -13,13 +13,16 @@ final class DateView: UIView {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.alignment = .center
+        stackView.spacing = 5
         return stackView
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 12)
+        label.font = .systemFont(ofSize: 15)
         return label
     }()
     
