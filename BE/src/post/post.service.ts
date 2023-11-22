@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Query } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { Repository } from 'typeorm';
@@ -19,17 +19,21 @@ export class PostService {
     private postImageRepository: Repository<PostImageEntity>,
     private s3Handler: S3Handler,
   ) {}
+  makeWhereOption(query: PostListDto) {
+    const where = { status: true, is_request: undefined };
+    if (query.requestFilter !== undefined) {
+      where.is_request = query.requestFilter !== 0;
+    }
+    return where;
+  }
   async findPosts(query: PostListDto) {
     const page: number = query.page === undefined ? 1 : query.page;
-    const limit: number = 19;
+    const limit: number = 20;
     const offset: number = limit * (page - 1) + 1;
     const res = await this.postRepository.find({
       take: limit,
       skip: offset,
-      where: {
-        status: true,
-        is_request: query.requestFilter !== 0,
-      },
+      where: this.makeWhereOption(query),
       relations: ['post_images'],
     });
     const posts = [];
