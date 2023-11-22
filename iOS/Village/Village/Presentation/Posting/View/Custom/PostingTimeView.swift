@@ -14,7 +14,7 @@ enum TimeType {
     
 }
 
-class PostingTimeView: UIStackView {
+final class PostingTimeView: UIStackView {
 
     private let postType: PostType
     private let timeType: TimeType

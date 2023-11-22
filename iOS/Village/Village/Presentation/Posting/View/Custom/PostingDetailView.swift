@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PostingDetailView: UIStackView {
+final class PostingDetailView: UIStackView {
     
     private let detailHeaderLabel: UILabel = {
         let label = UILabel()
@@ -61,7 +61,7 @@ class PostingDetailView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func hideKeyboard(_ sender: UIBarButtonItem) {
+    @objc private func hideKeyboard(_ sender: UIBarButtonItem) {
         endEditing(true)
     }
     
