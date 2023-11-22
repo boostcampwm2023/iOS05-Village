@@ -102,7 +102,8 @@ final class TimePickerView: UIView {
         
         toolBar.setItems([flexibleSpace, doneButton], animated: true)
         toolBar.sizeToFit()
-
+        toolBar.tintColor = .label
+        
         dateTextField.inputAccessoryView = toolBar
         dateTextField.inputView = datePicker
     }
@@ -125,6 +126,7 @@ final class TimePickerView: UIView {
 
         toolBar.setItems([flexibleSpace, doneButton], animated: true)
         toolBar.sizeToFit()
+        toolBar.tintColor = .label
 
         hourTextField.inputAccessoryView = toolBar
         hourTextField.inputView = hourPicker
