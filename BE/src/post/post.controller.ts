@@ -37,7 +37,7 @@ export class PostController {
   async postsCreate(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @MultiPartBody(
-      'profile_info',
+      'post_info',
       new ValidationPipe({ validateCustomDecorators: true }),
     )
     body: PostCreateDto,
