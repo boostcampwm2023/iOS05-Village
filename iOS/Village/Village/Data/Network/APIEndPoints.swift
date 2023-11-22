@@ -22,12 +22,4 @@ struct APIEndPoints {
         return EndPoint(baseURL: url)
     }
     
-    static func getOnban(with request: TestRequestDTO) -> EndPoint<Onban> {
-        return EndPoint(
-            baseURL: "https://api.codesquad.kr/onban/",
-            path: "main",
-            method: .GET,
-            queryParameters: request
-        )
-    }
 }
