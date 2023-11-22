@@ -26,6 +26,7 @@ final class PostingViewController: UIViewController {
         )
         toolbar.sizeToFit()
         toolbar.setItems([flexibleSpaceButton, hideKeyboardButton], animated: false)
+        toolbar.tintColor = .label
         
         return toolbar
     }()
