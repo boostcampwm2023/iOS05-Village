@@ -10,6 +10,7 @@ import { winstonOptions, dailyOption } from './config/winston.config';
 import { MysqlConfigProvider } from './config/mysql.config';
 import { PostModule } from './post/post.module';
 import { APP_PIPE } from '@nestjs/core';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { APP_PIPE } from '@nestjs/core';
       useClass: MysqlConfigProvider,
     }),
     PostModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [
