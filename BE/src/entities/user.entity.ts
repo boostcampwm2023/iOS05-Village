@@ -48,7 +48,7 @@ export class UserEntity {
   })
   update_date: Date;
 
-  @Column({ type: 'tinyint', nullable: false })
+  @Column({ type: 'tinyint', nullable: false, default: 1 })
   status: boolean;
 
   @Column({ length: 2048, nullable: true, charset: 'utf8' })
