@@ -51,12 +51,11 @@ final class PostingViewController: UIViewController {
         return scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 0)
     }()
     
-    private let titleHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "제목"
-        label.font = .boldSystemFont(ofSize: 16)
+    private lazy var postingTitleView: PostingTitleView = {
+        let view = PostingTitleView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         
-        return label
+        return view
     }()
     
     private lazy var periodStartHeaderLabel: UILabel = {
@@ -96,16 +95,6 @@ final class PostingViewController: UIViewController {
         return label
     }()
     
-    private let titleWarningLabel: UILabel = {
-        let label = UILabel()
-        label.text = "제목을 작성해야 합니다."
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .negative400
-        label.alpha = 0
-        
-        return label
-    }()
-    
     private let startTimeWarningLabel: UILabel = {
         let label = UILabel()
         label.text = "시간을 선택해야 합니다."
@@ -134,20 +123,6 @@ final class PostingViewController: UIViewController {
         label.alpha = 0
         
         return label
-    }()
-    
-    private lazy var titleTextField: UITextField = {
-        let textField = UITextField()
-        textField.setLayer()
-        textField.setPlaceHolder("제목을 입력하세요")
-        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
-        textField.leftViewMode = .always
-        textField.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
-        textField.rightViewMode = .always
-        textField.inputAccessoryView = keyboardToolBar
-        textField.delegate = self
-        
-        return textField
     }()
     
     private let startTimePicker: TimePickerView = {
@@ -219,11 +194,6 @@ final class PostingViewController: UIViewController {
         return button
     }()
     
-    private var isEmptyTitle: Bool {
-        guard let text = titleTextField.text else { return true }
-        return text.isEmpty
-    }
-    
     private var isEmptyStartTime: Bool {
         if startTimePicker.time == nil {
             return true
@@ -275,9 +245,9 @@ private extension PostingViewController {
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
-        if isEmptyTitle {
-            titleWarningLabel.alpha = 1
-        }
+//        if isEmptyTitle {
+//            titleWarningLabel.alpha = 1
+//        }
         if isEmptyStartTime {
             startTimeWarningLabel.alpha = 1
         }
@@ -351,9 +321,7 @@ private extension PostingViewController {
         scrollView.addSubview(stackView)
         postButtonView.addSubview(postButton)
         
-        stackView.addArrangedSubview(titleHeaderLabel)
-        stackView.addArrangedSubview(titleTextField)
-        stackView.addArrangedSubview(titleWarningLabel)
+        stackView.addArrangedSubview(postingTitleView)
         
         stackView.addArrangedSubview(periodStartHeaderLabel)
         stackView.addArrangedSubview(startTimePicker)
@@ -413,8 +381,7 @@ private extension PostingViewController {
         ])
         
         NSLayoutConstraint.activate([
-            titleTextField.heightAnchor.constraint(equalToConstant: 48),
-            titleTextField.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postingTitleView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
             detailTextView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         

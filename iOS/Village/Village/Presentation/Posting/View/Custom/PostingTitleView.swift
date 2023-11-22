@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PostingTitleView: UIView {
+final class PostingTitleView: UIStackView {
     
     private let titleHeaderLabel: UILabel = {
         let label = UILabel()
@@ -63,17 +63,24 @@ final class PostingTitleView: UIView {
         return label
     }()
     
+    private var isEmptyTitle: Bool {
+        guard let text = titleTextField.text else { return true }
+        
+        return text.isEmpty
+    }
+    
     @objc func hideKeyboard(_ sender: UIBarButtonItem) {
         endEditing(true)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setUp()
         configureUI()
         configureConstraints()
     }
     
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -81,36 +88,32 @@ final class PostingTitleView: UIView {
 
 private extension PostingTitleView {
     
+    func setUp() {
+        spacing = 10
+        axis = .vertical
+    }
+    
     func configureUI() {
-        addSubview(titleHeaderLabel)
-        addSubview(titleTextField)
-        addSubview(titleWarningLabel)
+        addArrangedSubview(titleHeaderLabel)
+        addArrangedSubview(titleTextField)
+        addArrangedSubview(titleWarningLabel)
     }
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
-            titleHeaderLabel.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            titleHeaderLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0)
-        ])
-        
-        NSLayoutConstraint.activate([
-            titleTextField.topAnchor.constraint(equalTo: titleHeaderLabel.bottomAnchor, constant: 10),
-            titleTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            titleTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             titleTextField.heightAnchor.constraint(equalToConstant: 48)
-        ])
-        
-        NSLayoutConstraint.activate([
-            titleWarningLabel.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 10),
-            titleWarningLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0)
         ])
     }
 }
 
 extension PostingTitleView: UITextFieldDelegate {
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard var text = textField.text else { return true }
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        guard let text = textField.text else { return true }
         if !string.isEmpty && text.count + string.count > 64 { return false }
         return true
     }
