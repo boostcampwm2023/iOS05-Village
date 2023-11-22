@@ -12,6 +12,7 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
     private s3Handler: S3Handler,
   ) {}
+  
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
     const userEntity = new UserEntity();
     userEntity.nickname = createUserDto.nickname;
@@ -22,6 +23,17 @@ export class UsersService {
     const res = await this.userRepository.save(userEntity);
     return res;
   }
+  
+  async findUserById(userId: string) {
+    const user: UserEntity = await this.userRepository.findOne({
+      where: { user_hash: userId, status: true },
+    });
+    if (user) {
+      return { nickname: user.nickname, profile_img: user.profile_img };
+    } else {
+      return null;
+    }
+  }
 
   removeUser(id: number) {
     return `This action removes a #${id} user`;
@@ -29,7 +41,6 @@ export class UsersService {
 
   async uploadImages(file: Express.Multer.File) {
     const fileLocation = await this.s3Handler.uploadFile(file);
-    console.log(fileLocation);
     return fileLocation;
   }
 }

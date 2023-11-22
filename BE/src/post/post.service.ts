@@ -2,11 +2,11 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { Repository } from 'typeorm';
-import { UpdatePostDto } from './postUpdateDto';
-import { validate } from 'class-validator';
+import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../utils/S3Handler';
 import { UserEntity } from '../entities/user.entity';
+import { PostListDto } from './dto/postList.dto';
 
 @Injectable()
 export class PostService {
@@ -19,8 +19,23 @@ export class PostService {
     private postImageRepository: Repository<PostImageEntity>,
     private s3Handler: S3Handler,
   ) {}
-  async getPosts() {
-    const res = await this.postRepository.find();
+  makeWhereOption(query: PostListDto) {
+    const where = { status: true, is_request: undefined };
+    if (query.requestFilter !== undefined) {
+      where.is_request = query.requestFilter !== 0;
+    }
+    return where;
+  }
+  async findPosts(query: PostListDto) {
+    const page: number = query.page === undefined ? 1 : query.page;
+    const limit: number = 20;
+    const offset: number = limit * (page - 1) + 1;
+    const res = await this.postRepository.find({
+      take: limit,
+      skip: offset,
+      where: this.makeWhereOption(query),
+      relations: ['post_images'],
+    });
     const posts = [];
     res.forEach((re) => {
       const post = {
@@ -30,7 +45,7 @@ export class PostService {
         post_id: re.id,
         user_id: re.user_id,
         is_request: re.is_request,
-        images: re.post_images,
+        images: re.post_images.map((post_image) => post_image.image_url),
         start_date: re.start_date,
         end_date: re.end_date,
       };

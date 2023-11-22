@@ -6,20 +6,20 @@ import {
   HttpException,
   Param,
   Patch,
-  Req,
-  Res,
   Post,
   UploadedFiles,
   UseInterceptors,
   ValidationPipe,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdatePostDto } from './postUpdateDto';
+import { UpdatePostDto } from './dto/postUpdate.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { CreatePostDto } from './createPost.dto';
+import { PostCreateDto } from './dto/postCreate.dto';
 import { MultiPartBody } from '../utils/multiPartBody.decorator';
+import { PostListDto } from './dto/postList.dto';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -27,8 +27,8 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  async getPosts() {
-    const posts = await this.postService.getPosts();
+  async postsList(@Query() query: PostListDto) {
+    const posts = await this.postService.findPosts(query);
     return posts;
   }
 
@@ -37,17 +37,17 @@ export class PostController {
   async postsCreate(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @MultiPartBody(
-      'profile_info',
+      'post_info',
       new ValidationPipe({ validateCustomDecorators: true }),
     )
-    createPostDto: CreatePostDto,
+    body: PostCreateDto,
   ) {
     const userId: string = 'qwe';
     let imageLocation: Array<string> = [];
-    if (createPostDto.is_request === false && files !== undefined) {
+    if (body.is_request === false && files !== undefined) {
       imageLocation = await this.postService.uploadImages(files);
     }
-    await this.postService.createPost(imageLocation, createPostDto, userId);
+    await this.postService.createPost(imageLocation, body, userId);
   }
 
   @Get('/:id')
