@@ -9,15 +9,6 @@ import UIKit
 
 final class PostingTitleView: UIStackView {
     
-    private let titleHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "제목"
-        label.font = .boldSystemFont(ofSize: 16)
-        
-        return label
-    }()
-    
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar()
         let hideKeyboardButton = UIBarButtonItem(
@@ -36,6 +27,16 @@ final class PostingTitleView: UIStackView {
         
         return toolbar
     }()
+    
+    private let titleHeaderLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "제목"
+        label.font = .boldSystemFont(ofSize: 16)
+        
+        return label
+    }()
+    
     
     private lazy var titleTextField: UITextField = {
         let textField = UITextField()

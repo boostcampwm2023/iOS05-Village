@@ -58,6 +58,13 @@ final class PostingViewController: UIViewController {
         return view
     }()
     
+    private lazy var postingPriceView: PostingPriceView = {
+        let view = PostingPriceView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     private lazy var periodStartHeaderLabel: UILabel = {
         let label = UILabel()
         switch type {
@@ -74,14 +81,6 @@ final class PostingViewController: UIViewController {
     private let periodEndHeaderLabel: UILabel = {
         let label = UILabel()
         label.text = "대여 종료"
-        label.font = .boldSystemFont(ofSize: 16)
-        
-        return label
-    }()
-    
-    private let priceHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "하루 대여 가격"
         label.font = .boldSystemFont(ofSize: 16)
         
         return label
@@ -115,16 +114,6 @@ final class PostingViewController: UIViewController {
         return label
     }()
     
-    private let priceWarningLabel: UILabel = {
-        let label = UILabel()
-        label.text = "하루 대여 가격을 설정해야 합니다."
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .negative400
-        label.alpha = 0
-        
-        return label
-    }()
-    
     private let startTimePicker: TimePickerView = {
         let picker = TimePickerView()
         picker.translatesAutoresizingMaskIntoConstraints = false
@@ -139,25 +128,6 @@ final class PostingViewController: UIViewController {
         return picker
     }()
     
-    private lazy var priceTextField: UITextField = {
-        let textField = UITextField()
-        textField.setLayer()
-        textField.setPlaceHolder("가격을 입력하세요")
-        
-        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
-        textField.leftViewMode = .always
-        
-        let label = UILabel()
-        label.text = "원  "
-        textField.rightView = label
-        textField.rightViewMode = .always
-        
-        textField.inputAccessoryView = keyboardToolBar
-        textField.delegate = self
-        textField.keyboardType = .numberPad
-        
-        return textField
-    }()
     
     private lazy var detailTextView: UITextView = {
         let textView = UITextView()
@@ -208,11 +178,6 @@ final class PostingViewController: UIViewController {
         return false
     }
     
-    private var isEmptyPrice: Bool {
-        guard let text = priceTextField.text else { return true }
-        return text.isEmpty
-    }
-    
     override func viewDidLoad() {
         
         configureNavigation()
@@ -254,9 +219,9 @@ private extension PostingViewController {
         if isEmptyEndTime {
             endTimeWarningLabel.alpha = 1
         }
-        if isEmptyPrice {
-            priceWarningLabel.alpha = 1
-        }
+//        if isEmptyPrice {
+//            priceWarningLabel.alpha = 1
+//        }
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {
@@ -332,9 +297,7 @@ private extension PostingViewController {
         stackView.addArrangedSubview(endTimeWarningLabel)
         
         if type == .rent {
-            stackView.addArrangedSubview(priceHeaderLabel)
-            stackView.addArrangedSubview(priceTextField)
-            stackView.addArrangedSubview(priceWarningLabel)
+            stackView.addArrangedSubview(postingPriceView)
         }
         
         stackView.addArrangedSubview(detailHeaderLabel)
@@ -387,8 +350,7 @@ private extension PostingViewController {
         
         if type == .rent {
             NSLayoutConstraint.activate([
-                priceTextField.heightAnchor.constraint(equalToConstant: 48),
-                priceTextField.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+                postingPriceView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
             ])
         }
     }
@@ -411,37 +373,6 @@ private extension PostingViewController {
 }
 
 extension PostingViewController: UITextFieldDelegate {
-    
-    func textField(
-        _ textField: UITextField,
-        shouldChangeCharactersIn range: NSRange,
-        replacementString string: String
-    ) -> Bool {
-        guard var text = textField.text else { return true }
-        if textField == priceTextField {
-            text = text.replacingOccurrences(of: ",", with: "")
-            if !string.isEmpty && Int(string) == nil || text.count + string.count > 15 { return false }
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            
-            if string.isEmpty {
-                if text.count > 1 {
-                    guard let price = Int.init("\(text.prefix(text.count - 1))"),
-                          let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
-                    textField.text = "\(result)"
-                } else {
-                    textField.text = ""
-                }
-            } else {
-                guard let price = Int.init("\(text)\(string)"),
-                      let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
-                textField.text = "\(result)"
-            }
-            return false
-        }
-        if !string.isEmpty && text.count + string.count > 64 { return false }
-        return true
-    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()

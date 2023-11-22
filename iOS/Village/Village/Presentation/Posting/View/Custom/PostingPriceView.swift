@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PostingPriceView: UIView {
+final class PostingPriceView: UIStackView {
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar()
@@ -36,17 +36,6 @@ final class PostingPriceView: UIView {
         
         return label
     }()
-
-    private let priceWarningLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "하루 대여 가격을 설정해야 합니다."
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .negative400
-        label.alpha = 0
-        
-        return label
-    }()
     
     private lazy var priceTextField: UITextField = {
         let textField = UITextField()
@@ -69,15 +58,68 @@ final class PostingPriceView: UIView {
         return textField
     }()
     
+    private let priceWarningLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "하루 대여 가격을 설정해야 합니다."
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .negative400
+        label.alpha = 0
+        
+        return label
+    }()
+    
+    private var isEmptyPrice: Bool {
+        guard let text = priceTextField.text else { return true }
+        
+        return text.isEmpty
+    }
+    
     @objc func hideKeyboard(_ sender: UIBarButtonItem) {
         endEditing(true)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUp()
+        configureUI()
+        configureConstraints()
+    }
+    
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
+private extension PostingPriceView {
+    
+    func setUp() {
+        spacing = 10
+        axis = .vertical
+    }
+    
+    func configureUI() {
+        addArrangedSubview(priceHeaderLabel)
+        addArrangedSubview(priceTextField)
+        addArrangedSubview(priceWarningLabel)
+    }
+    
+    func configureConstraints() {
+        NSLayoutConstraint.activate([
+            priceTextField.heightAnchor.constraint(equalToConstant: 48)
+        ])
     }
     
 }
 
 extension PostingPriceView: UITextFieldDelegate {
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         guard var text = textField.text else { return true }
         text = text.replacingOccurrences(of: ",", with: "")
         if !string.isEmpty && Int(string) == nil || text.count + string.count > 15 { return false }
