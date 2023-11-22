@@ -7,6 +7,13 @@
 
 import UIKit
 
+enum PostType {
+    
+    case rent
+    case request
+    
+}
+
 final class PostingViewController: UIViewController {
     
     private let viewModel: PostingViewModel
@@ -79,26 +86,11 @@ final class PostingViewController: UIViewController {
         return view
     }()
     
-    private let detailHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "자세한 설명"
-        label.font = .boldSystemFont(ofSize: 16)
+    private lazy var postingDetailView: PostingDetailView = {
+        let view = PostingDetailView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         
-        return label
-    }()
-    
-    private lazy var detailTextView: UITextView = {
-        let textView = UITextView()
-        textView.setLayer()
-        textView.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
-        textView.text = "설명을 입력하세요."
-        textView.textColor = .lightGray
-        textView.font = UIFont.systemFont(ofSize: 18)
-        textView.isScrollEnabled = false
-        textView.inputAccessoryView = keyboardToolBar
-        textView.delegate = self
-        
-        return textView
+        return view
     }()
     
     private let postButtonView: UIView = {
@@ -224,25 +216,20 @@ private extension PostingViewController {
     }
     
     func configureUI() {
-        
         view.addSubview(postButtonView)
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
         postButtonView.addSubview(postButton)
         
         stackView.addArrangedSubview(postingTitleView)
-        
         stackView.addArrangedSubview(postingStartTimeView)
-        
         stackView.addArrangedSubview(postingEndTimeView)
         
         if type == .rent {
             stackView.addArrangedSubview(postingPriceView)
         }
         
-        stackView.addArrangedSubview(detailHeaderLabel)
-        stackView.addArrangedSubview(detailTextView)
-        
+        stackView.addArrangedSubview(postingDetailView)
     }
     
     func configureConstraints() {
@@ -267,15 +254,6 @@ private extension PostingViewController {
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20)
         ])
         
-//        NSLayoutConstraint.activate([
-//            startTimePicker.heightAnchor.constraint(equalToConstant: 50),
-//            endTimePicker.heightAnchor.constraint(equalToConstant: 50)
-//        ])
-        
-        NSLayoutConstraint.activate([
-            detailTextView.heightAnchor.constraint(equalToConstant: 180)
-        ])
-        
         NSLayoutConstraint.activate([
             postButton.topAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 18),
             postButton.leadingAnchor.constraint(equalTo: postButtonView.leadingAnchor, constant: 16),
@@ -285,7 +263,9 @@ private extension PostingViewController {
         
         NSLayoutConstraint.activate([
             postingTitleView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
-            detailTextView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+            postingStartTimeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postingEndTimeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postingDetailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         
         if type == .rent {
@@ -312,11 +292,11 @@ private extension PostingViewController {
     
 }
 
-extension PostingViewController: UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-}
+//extension PostingViewController: UITextFieldDelegate {
+//    
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        textField.resignFirstResponder()
+//        return true
+//    }
+//    
+//}
