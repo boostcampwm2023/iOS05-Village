@@ -11,6 +11,10 @@
 		44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44425A632B038AEA00AAD64A /* FloatingButton.swift */; };
 		444A50902B0C60F900454397 /* ImagePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A508F2B0C60F900454397 /* ImagePageView.swift */; };
 		444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50932B0C8D1900454397 /* UIView+Divider.swift */; };
+		444A50982B0CE25200454397 /* DurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50972B0CE25200454397 /* DurationView.swift */; };
+		444A509A2B0CE94E00454397 /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50992B0CE94E00454397 /* DateView.swift */; };
+		446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362C82B0DF9E800B74DA7 /* PriceLabel.swift */; };
+		446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CA2B0DFD4F00B74DA7 /* Int+.swift */; };
 		4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4491AA272B05D6C90016FC70 /* MenuView.swift */; };
 		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
@@ -52,6 +56,10 @@
 		44425A632B038AEA00AAD64A /* FloatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButton.swift; sourceTree = "<group>"; };
 		444A508F2B0C60F900454397 /* ImagePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePageView.swift; sourceTree = "<group>"; };
 		444A50932B0C8D1900454397 /* UIView+Divider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Divider.swift"; sourceTree = "<group>"; };
+		444A50972B0CE25200454397 /* DurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationView.swift; sourceTree = "<group>"; };
+		444A50992B0CE94E00454397 /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
+		446362C82B0DF9E800B74DA7 /* PriceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceLabel.swift; sourceTree = "<group>"; };
+		446362CA2B0DFD4F00B74DA7 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		4491AA272B05D6C90016FC70 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		5975E9872B035919007CEF13 /* Post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Post.json; sourceTree = "<group>"; };
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
@@ -120,6 +128,9 @@
 			isa = PBXGroup;
 			children = (
 				444A508F2B0C60F900454397 /* ImagePageView.swift */,
+				444A50972B0CE25200454397 /* DurationView.swift */,
+				444A50992B0CE94E00454397 /* DateView.swift */,
+				446362C82B0DF9E800B74DA7 /* PriceLabel.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -258,6 +269,7 @@
 				59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */,
 				5979BA7B2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift */,
 				444A50932B0C8D1900454397 /* UIView+Divider.swift */,
+				446362CA2B0DFD4F00B74DA7 /* Int+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -469,16 +481,20 @@
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
+				444A50982B0CE25200454397 /* DurationView.swift in Sources */,
 				444A50902B0C60F900454397 /* ImagePageView.swift in Sources */,
 				444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
+				446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */,
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
+				444A509A2B0CE94E00454397 /* DateView.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
 				8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */,
 				59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */,
 				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
+				446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift in Sources */,
 				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
 				59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */,
