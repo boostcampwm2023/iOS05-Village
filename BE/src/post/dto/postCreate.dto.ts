@@ -1,6 +1,6 @@
 import { IsBoolean, IsNumber, IsString, ValidateIf } from 'class-validator';
 
-export class CreatePostDto {
+export class PostCreateDto {
   @IsString()
   title: string;
 
