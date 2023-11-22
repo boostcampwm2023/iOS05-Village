@@ -9,9 +9,9 @@ import UIKit
 
 class PostDetailViewController: UIViewController {
     
-    var postData: Post?
+    var postData: PostResponseDTO?
     
-    init(postData: Post? = nil) {
+    init(postData: PostResponseDTO? = nil) {
         self.postData = postData
         super.init(nibName: nil, bundle: nil)
     }
