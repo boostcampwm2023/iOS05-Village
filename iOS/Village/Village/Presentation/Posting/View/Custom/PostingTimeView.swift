@@ -21,25 +21,32 @@ class PostingTimeView: UIStackView {
     
     private lazy var timeHeaderLabel: UILabel = {
         let label = UILabel()
-        switch postType {
-        case .rent:
-            label.text = "대여 시작 가능"
-        case .request:
-            label.text = "대여 시작"
+        
+        switch timeType {
+        case .start:
+            switch postType {
+            case .rent:
+                label.text = "대여 시작 가능"
+            case .request:
+                label.text = "대여 시작"
+            }
+        case .end:
+            label.text = "대여 종료"
         }
+        
         label.font = .boldSystemFont(ofSize: 16)
         
         return label
     }()
     
-    private let startTimePicker: TimePickerView = {
+    private let timePicker: TimePickerView = {
         let picker = TimePickerView()
         picker.translatesAutoresizingMaskIntoConstraints = false
         
         return picker
     }()
     
-    private let startTimeWarningLabel: UILabel = {
+    private let timeWarningLabel: UILabel = {
         let label = UILabel()
         label.text = "시간을 선택해야 합니다."
         label.font = .systemFont(ofSize: 14)
@@ -49,8 +56,8 @@ class PostingTimeView: UIStackView {
         return label
     }()
     
-    private var isEmptyStartTime: Bool {
-        if startTimePicker.time == nil {
+    private var isEmptyTime: Bool {
+        if timePicker.time == nil {
             return true
         }
         return false
@@ -80,13 +87,13 @@ private extension PostingTimeView {
     
     func configureUI() {
         addArrangedSubview(timeHeaderLabel)
-        addArrangedSubview(startTimePicker)
-        addArrangedSubview(startTimeWarningLabel)
+        addArrangedSubview(timePicker)
+        addArrangedSubview(timeWarningLabel)
     }
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
-            startTimePicker.heightAnchor.constraint(equalToConstant: 50)
+            timePicker.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     

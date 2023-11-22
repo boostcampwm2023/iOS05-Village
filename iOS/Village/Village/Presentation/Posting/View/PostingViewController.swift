@@ -58,32 +58,25 @@ final class PostingViewController: UIViewController {
         return view
     }()
     
-    private lazy var postingPriceView: PostingPriceView = {
-        let view = PostingPriceView()
+    private lazy var postingStartTimeView: PostingTimeView = {
+        let view = PostingTimeView(postType: type, timeType: .start)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private lazy var periodStartHeaderLabel: UILabel = {
-        let label = UILabel()
-        switch type {
-        case .rent:
-            label.text = "대여 시작 가능"
-        case .request:
-            label.text = "대여 시작"
-        }
-        label.font = .boldSystemFont(ofSize: 16)
+    private lazy var postingEndTimeView: PostingTimeView = {
+        let view = PostingTimeView(postType: type, timeType: .end)
+        view.translatesAutoresizingMaskIntoConstraints = false
         
-        return label
+        return view
     }()
     
-    private let periodEndHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "대여 종료"
-        label.font = .boldSystemFont(ofSize: 16)
+    private lazy var postingPriceView: PostingPriceView = {
+        let view = PostingPriceView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         
-        return label
+        return view
     }()
     
     private let detailHeaderLabel: UILabel = {
@@ -93,41 +86,6 @@ final class PostingViewController: UIViewController {
         
         return label
     }()
-    
-    private let startTimeWarningLabel: UILabel = {
-        let label = UILabel()
-        label.text = "시간을 선택해야 합니다."
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .negative400
-        label.alpha = 0
-        
-        return label
-    }()
-    
-    private let endTimeWarningLabel: UILabel = {
-        let label = UILabel()
-        label.text = "시간을 선택해야 합니다."
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .negative400
-        label.alpha = 0
-        
-        return label
-    }()
-    
-    private let startTimePicker: TimePickerView = {
-        let picker = TimePickerView()
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        
-        return picker
-    }()
-    
-    private let endTimePicker: TimePickerView = {
-        let picker = TimePickerView()
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        
-        return picker
-    }()
-    
     
     private lazy var detailTextView: UITextView = {
         let textView = UITextView()
@@ -164,20 +122,6 @@ final class PostingViewController: UIViewController {
         return button
     }()
     
-    private var isEmptyStartTime: Bool {
-        if startTimePicker.time == nil {
-            return true
-        }
-        return false
-    }
-    
-    private var isEmptyEndTime: Bool {
-        if endTimePicker.time == nil {
-            return true
-        }
-        return false
-    }
-    
     override func viewDidLoad() {
         
         configureNavigation()
@@ -213,12 +157,12 @@ private extension PostingViewController {
 //        if isEmptyTitle {
 //            titleWarningLabel.alpha = 1
 //        }
-        if isEmptyStartTime {
-            startTimeWarningLabel.alpha = 1
-        }
-        if isEmptyEndTime {
-            endTimeWarningLabel.alpha = 1
-        }
+//        if isEmptyStartTime {
+//            startTimeWarningLabel.alpha = 1
+//        }
+//        if isEmptyEndTime {
+//            endTimeWarningLabel.alpha = 1
+//        }
 //        if isEmptyPrice {
 //            priceWarningLabel.alpha = 1
 //        }
@@ -288,13 +232,9 @@ private extension PostingViewController {
         
         stackView.addArrangedSubview(postingTitleView)
         
-        stackView.addArrangedSubview(periodStartHeaderLabel)
-        stackView.addArrangedSubview(startTimePicker)
-        stackView.addArrangedSubview(startTimeWarningLabel)
+        stackView.addArrangedSubview(postingStartTimeView)
         
-        stackView.addArrangedSubview(periodEndHeaderLabel)
-        stackView.addArrangedSubview(endTimePicker)
-        stackView.addArrangedSubview(endTimeWarningLabel)
+        stackView.addArrangedSubview(postingEndTimeView)
         
         if type == .rent {
             stackView.addArrangedSubview(postingPriceView)
@@ -327,10 +267,10 @@ private extension PostingViewController {
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20)
         ])
         
-        NSLayoutConstraint.activate([
-            startTimePicker.heightAnchor.constraint(equalToConstant: 50),
-            endTimePicker.heightAnchor.constraint(equalToConstant: 50)
-        ])
+//        NSLayoutConstraint.activate([
+//            startTimePicker.heightAnchor.constraint(equalToConstant: 50),
+//            endTimePicker.heightAnchor.constraint(equalToConstant: 50)
+//        ])
         
         NSLayoutConstraint.activate([
             detailTextView.heightAnchor.constraint(equalToConstant: 180)

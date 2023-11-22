@@ -105,6 +105,7 @@ private extension PostingTitleView {
             titleTextField.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
+    
 }
 
 extension PostingTitleView: UITextFieldDelegate {
