@@ -146,18 +146,6 @@ private extension PostingViewController {
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
-//        if isEmptyTitle {
-//            titleWarningLabel.alpha = 1
-//        }
-//        if isEmptyStartTime {
-//            startTimeWarningLabel.alpha = 1
-//        }
-//        if isEmptyEndTime {
-//            endTimeWarningLabel.alpha = 1
-//        }
-//        if isEmptyPrice {
-//            priceWarningLabel.alpha = 1
-//        }
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {
@@ -291,12 +279,3 @@ private extension PostingViewController {
     }
     
 }
-
-//extension PostingViewController: UITextFieldDelegate {
-//    
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        textField.resignFirstResponder()
-//        return true
-//    }
-//    
-//}
