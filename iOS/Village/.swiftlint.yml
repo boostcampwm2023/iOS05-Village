@@ -1,7 +1,8 @@
 # 기본 적용되는 룰에서 사용하지 않는 룰
 disabled_rules:
     - trailing_whitespace                    # 후행 공백
-
+    - file_length
+    
 # 식별자 네이밍 커스텀 정의
 identifier_name:
     min_length: 2
