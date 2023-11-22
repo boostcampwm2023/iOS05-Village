@@ -9,11 +9,22 @@ import UIKit
 
 extension UIView {
     
-    static var divider: UIView {
+    enum DividerDirection {
+        case horizontal
+        case vertical
+    }
+    
+    static func divider(_ direction: DividerDirection, width: CGFloat = 1.0, color: UIColor = .grey100) -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
-        view.backgroundColor = .grey100
+        view.backgroundColor = color
+        
+        if direction == .horizontal {
+            view.heightAnchor.constraint(equalToConstant: width).isActive = true
+        } else {
+            view.widthAnchor.constraint(equalToConstant: width).isActive = true
+        }
+        
         return view
     }
     
