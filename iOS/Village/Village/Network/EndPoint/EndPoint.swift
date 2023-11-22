@@ -25,8 +25,7 @@ final class EndPoint<R>: RequestResponsable {
          method: HTTPMethod = .GET,
          queryParameters: Encodable? = nil,
          bodyParameters: Encodable? = nil,
-         headers: [String: String]? = [:],
-         sampleData: Data? = nil) {
+         headers: [String: String]? = [:]) {
         self.baseURL = baseURL
         self.path = path
         self.method = method
