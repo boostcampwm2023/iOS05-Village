@@ -1,14 +1,15 @@
-import { IsBoolean, IsNumber, IsString, ValidateIf } from 'class-validator';
+import { IsBoolean, IsString, MaxLength } from 'class-validator';
+import { IsPriceCorrect } from '../../utils/price.decorator';
 
 export class PostCreateDto {
   @IsString()
+  @MaxLength(100)
   title: string;
 
   @IsString()
   contents: string;
 
-  @IsNumber()
-  @ValidateIf((object) => object.is_request === false)
+  @IsPriceCorrect('is_request')
   price: number;
 
   @IsBoolean()
