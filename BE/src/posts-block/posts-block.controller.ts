@@ -15,5 +15,6 @@ export class PostsBlockController {
     const blockerId: string = 'qwe';
     const blockedPosts =
       await this.postsBlockService.findBlockedPosts(blockerId);
+    return blockedPosts;
   }
 }
