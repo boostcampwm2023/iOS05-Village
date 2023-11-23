@@ -17,7 +17,7 @@ export class BlockPostEntity {
   @JoinColumn({ name: 'blocker' })
   blockerUser: UserEntity;
 
-  @ManyToOne(() => UserEntity, (blocked_post) => blocked_post.id)
+  @ManyToOne(() => PostEntity, (blocked_post) => blocked_post.id)
   @JoinColumn({ name: 'blocked_post' })
   blockedPost: PostEntity;
 }
