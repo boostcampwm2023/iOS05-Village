@@ -9,13 +9,13 @@ import UIKit
 
 class ChatListViewController: UIViewController {
     
-    typealias ChatListDataSource = UICollectionViewDiffableDataSource<Section, PostResponseDTO>
+    typealias ChatListDataSource = UICollectionViewDiffableDataSource<Section, ChatListResponseDTO>
     
     private var dataSource: ChatListDataSource!
     private let reuseIdentifier = ChatListCollectionViewCell.identifier
     private var collectionView: UICollectionView!
     
-    private var viewModel = PostListItemViewModel()
+    private var viewModel = ChatListViewModel()
     
     enum Section {
         case chat
@@ -26,7 +26,7 @@ class ChatListViewController: UIViewController {
 
         setViewModel()
         setUI()
-//        generateData()
+        generateData()
     }
     
     private func setUI() {
@@ -34,37 +34,36 @@ class ChatListViewController: UIViewController {
         
         setNavigationUI()
         configureCollectionView()
-//        configureDataSource()
+        configureDataSource()
     }
     
     private func setViewModel() {
 //        MARK: 더미데이터를 위한 코드 채팅API 구현 후, 삭제 예정
-//        guard let path = Bundle.main.path(forResource: "Post", ofType: "json") else { return }
-//        
-//        guard let jsonString = try? String(contentsOfFile: path) else { return }
-//        do {
-//            let decoder = JSONDecoder()
-//            let data = jsonString.data(using: .utf8)
-//            
-//            guard let data = data else { return }
-//            let posts = try decoder.decode([PostResponseDTO].self, from: data)
-//            viewModel.updatePosts(posts)
-//            print(viewModel.getPosts())
-//        } catch {
-//            return
-//        }
+        guard let path = Bundle.main.path(forResource: "ChatList", ofType: "json") else { return }
         
-        let endpoint = APIEndPoints.getPosts(with: PostRequestDTO(page: 1))
-        Task {
-            do {
-                let data = try await Provider.shared.request(with: endpoint)
-                viewModel.updatePosts(data)
-                configureDataSource()
-                generateData()
-            } catch {
-                dump(error)
-            }
+        guard let jsonString = try? String(contentsOfFile: path) else { return }
+        do {
+            let decoder = JSONDecoder()
+            let data = jsonString.data(using: .utf8)
+            
+            guard let data = data else { return }
+            let chatList = try decoder.decode([ChatListResponseDTO].self, from: data)
+            viewModel.updateChatList(chatList)
+        } catch {
+            return
         }
+//        
+//        let endpoint = APIEndPoints.getPosts(with: ChatListResponseDTO)
+//        Task {
+//            do {
+//                let data = try await Provider.shared.request(with: endpoint)
+//                viewModel.updateChatList(data)
+//                configureDataSource()
+//                generateData()
+//            } catch {
+//                dump(error)
+//            }
+//        }
     }
 
     private func setNavigationUI() {
@@ -102,7 +101,7 @@ class ChatListViewController: UIViewController {
     
     private func configureDataSource() {
         collectionView.register(ChatListCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        dataSource = ChatListDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
+        dataSource = ChatListDataSource(collectionView: collectionView) { (collectionView, indexPath, chatList) ->
             UICollectionViewCell? in
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: self.reuseIdentifier,
@@ -111,19 +110,34 @@ class ChatListViewController: UIViewController {
                 return UICollectionViewCell()
             }
             
-            cell.configureData(data: post)
+            cell.configureData(data: chatList)
             
-            if let imageURL = post.images.first {
+            if let imageURL = chatList.userProfile {
+                let endpoint = APIEndPoints.getData(with: imageURL)
                 Task {
                     do {
-                        let data = try await NetworkService.loadData(from: imageURL)
-                        cell.configureImage(image: UIImage(data: data))
-                    } catch let error {
+                        let data = try await Provider.shared.request(from: endpoint.baseURL)
+                        cell.configureUserProfile(UIImage(data: data))
+                    } catch {
                         dump(error)
                     }
                 }
             } else {
-                cell.configureImage(image: nil)
+                cell.configureUserProfile(nil)
+            }
+            
+            if let imageURL = chatList.postImage {
+                let endpoint = APIEndPoints.getData(with: imageURL)
+                Task {
+                    do {
+                        let data = try await Provider.shared.request(from: endpoint.baseURL)
+                        cell.configurePostImage(UIImage(data: data))
+                    } catch {
+                        dump(error)
+                    }
+                }
+            } else {
+                cell.configurePostImage(nil)
             }
             
             return cell
@@ -131,9 +145,9 @@ class ChatListViewController: UIViewController {
     }
     
     private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, ChatListResponseDTO>()
         snapshot.appendSections([.chat])
-        snapshot.appendItems(viewModel.getPosts())
+        snapshot.appendItems(viewModel.getChatList())
         
         dataSource.apply(snapshot, animatingDifferences: true)
     }

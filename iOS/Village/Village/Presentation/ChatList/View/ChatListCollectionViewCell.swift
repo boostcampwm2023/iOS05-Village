@@ -119,21 +119,27 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configureData(data: PostResponseDTO) {
-        nicknameLabel.text = String(data.userId)
-        recentTimeLabel.text = data.endDate
-        recentChatLabel.text = data.contents.count > 10 ? String(data.contents.prefix(10)) + "..." : data.contents
+    func configureData(data: ChatListResponseDTO) {
+        nicknameLabel.text = data.user
+        recentTimeLabel.text = data.recentTime
+        recentChatLabel.text = data.recentChat.count > 10 ? String(data.recentChat.prefix(10)) + "..." : data.recentChat
     }
     
-    func configureImage(image: UIImage?) {
+    func configureUserProfile(_ image: UIImage?) {
+        if image != nil {
+            profileImageView.image = image
+        } else {
+            profileImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            profileImageView.backgroundColor = .primary100
+        }
+    }
+    
+    func configurePostImage(_ image: UIImage?) {
         if image != nil {
             postImageView.image = image
-            profileImageView.image = image
         } else {
             postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
             postImageView.backgroundColor = .primary100
-            profileImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
-            profileImageView.backgroundColor = .primary500
         }
     }
     

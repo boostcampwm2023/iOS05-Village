@@ -13,7 +13,7 @@ struct ChatListResponseDTO: Hashable, Codable {
     let userProfile: String?
     let recentTime: String
     let recentChat: String
-    let postImage: String
+    let postImage: String?
     
     enum CodingKeys: String, CodingKey {
         case user
@@ -27,11 +27,7 @@ struct ChatListResponseDTO: Hashable, Codable {
 
 final class ChatListViewModel {
     
-    private var chatList: [ChatListResponseDTO]
-    
-    init(chatList: [ChatListResponseDTO]) {
-        self.chatList = chatList
-    }
+    private var chatList: [ChatListResponseDTO] = []
     
     func updateChatList(_ updateChatList: [ChatListResponseDTO]) {
         chatList = updateChatList
