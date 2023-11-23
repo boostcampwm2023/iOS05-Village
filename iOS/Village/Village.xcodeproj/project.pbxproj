@@ -54,10 +54,11 @@
 		8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */; };
 		8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE772B06768C00B91D3B /* NetworkService.swift */; };
 		8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */; };
-		8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A442B09D1A6005EE367 /* ChatViewController.swift */; };
 		8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */; };
 		8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */; };
 		8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */; };
+		8FF7E60C2B0F38A500B6D678 /* ChatListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E60A2B0F38A500B6D678 /* ChatListCollectionViewCell.swift */; };
+		8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,10 +121,11 @@
 		8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListItemViewModel.swift; sourceTree = "<group>"; };
 		8FC7FE772B06768C00B91D3B /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentDetailViewController.swift; sourceTree = "<group>"; };
-		8FD52A442B09D1A6005EE367 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
+		8FF7E60A2B0F38A500B6D678 /* ChatListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListCollectionViewCell.swift; sourceTree = "<group>"; };
+		8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,16 +345,14 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				8FF7E6082B0F38A500B6D678 /* ChatList */,
 				8F95CF8E2B0B97BA0024631F /* Commons */,
+				8FBE3B062B04763200660530 /* Home */,
 				8FD52A492B0B0A20005EE367 /* Search */,
 				8FD52A462B09D1AD005EE367 /* MyPage */,
-				8FD52A432B09D1A6005EE367 /* Chat */,
 				8FD52A4F2B0B51A2005EE367 /* ChatRoom */,
-				8FC7FE792B07A88400B91D3B /* DetailPost */,
-				44425A622B038AA700AAD64A /* CustomView */,
 				8FC7FE792B07A88400B91D3B /* PostDetail */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
-				8FBE3B062B04763200660530 /* Home */,
 				59E196C72B045EFA00BF7C5A /* Posting */,
 			);
 			path = Presentation;
@@ -437,14 +437,6 @@
 			path = PostDetail;
 			sourceTree = "<group>";
 		};
-		8FD52A432B09D1A6005EE367 /* Chat */ = {
-			isa = PBXGroup;
-			children = (
-				8FD52A442B09D1A6005EE367 /* ChatViewController.swift */,
-			);
-			path = Chat;
-			sourceTree = "<group>";
-		};
 		8FD52A462B09D1AD005EE367 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
@@ -468,6 +460,23 @@
 				8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */,
 			);
 			path = ChatRoom;
+			sourceTree = "<group>";
+		};
+		8FF7E6082B0F38A500B6D678 /* ChatList */ = {
+			isa = PBXGroup;
+			children = (
+				8FF7E6092B0F38A500B6D678 /* View */,
+			);
+			path = ChatList;
+			sourceTree = "<group>";
+		};
+		8FF7E6092B0F38A500B6D678 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8FF7E60A2B0F38A500B6D678 /* ChatListCollectionViewCell.swift */,
+				8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -614,7 +623,6 @@
 				8F95CF982B0C7B270024631F /* Reponsable.swift in Sources */,
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
 				8F1B53362B0E0396006D8982 /* PostRequestDTO.swift in Sources */,
-				8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
 				446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */,
@@ -651,8 +659,10 @@
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
+				8FF7E60C2B0F38A500B6D678 /* ChatListCollectionViewCell.swift in Sources */,
 				59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
+				8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */,
 				446362D12B0F050600B74DA7 /* UserInfoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
