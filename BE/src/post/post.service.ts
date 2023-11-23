@@ -64,6 +64,7 @@ export class PostService {
         price: res.price,
         user_id: res.user_id,
         images: res.post_images,
+        post_image: res.thumbnail,
         is_request: res.is_request,
         start_date: res.start_date,
         end_date: res.end_date,
@@ -140,6 +141,7 @@ export class PostService {
     post.end_date = createPostDto.end_date;
     post.status = true;
     post.user_id = user.id;
+    post.thumbnail = imageLocations.length > 0 ? imageLocations[0] : null;
     // 이미지 추가
     const res = await this.postRepository.save(post);
     if (res.is_request === false) {
