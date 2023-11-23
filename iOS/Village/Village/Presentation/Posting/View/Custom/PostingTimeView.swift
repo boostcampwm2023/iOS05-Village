@@ -177,10 +177,6 @@ final class PostingTimeView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func warn() {
-        timeWarningLabel.alpha = 1
-    }
-    
 }
 
 private extension PostingTimeView {

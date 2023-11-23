@@ -84,10 +84,6 @@ final class PostingTitleView: UIStackView {
         titleWarningLabel.alpha = 0
     }
     
-    func warn() {
-        titleWarningLabel.alpha = 1
-    }
-    
 }
 
 private extension PostingTitleView {

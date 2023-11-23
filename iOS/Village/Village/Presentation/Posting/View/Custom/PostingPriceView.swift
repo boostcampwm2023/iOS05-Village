@@ -98,10 +98,6 @@ final class PostingPriceView: UIStackView {
         sender.text = string
     }
     
-    func warn() {
-        priceWarningLabel.alpha = 1
-    }
-    
 }
 
 private extension PostingPriceView {
