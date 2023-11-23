@@ -14,7 +14,7 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
     private s3Handler: S3Handler,
   ) {}
-  
+
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
     const userEntity = new UserEntity();
     userEntity.nickname = createUserDto.nickname;
@@ -25,7 +25,7 @@ export class UsersService {
     const res = await this.userRepository.save(userEntity);
     return res;
   }
-  
+
   async findUserById(userId: string) {
     const user: UserEntity = await this.userRepository.findOne({
       where: { user_hash: userId, status: true },
