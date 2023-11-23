@@ -7,6 +7,8 @@ import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../utils/S3Handler';
 import { UserEntity } from '../entities/user.entity';
 import { PostListDto } from './dto/postList.dto';
+import { BlockUserEntity } from '../entities/blockUser.entity';
+import { BlockPostEntity } from '../entities/blockPost.entity';
 
 @Injectable()
 export class PostService {
@@ -17,6 +19,10 @@ export class PostService {
     private userRepository: Repository<UserEntity>,
     @InjectRepository(PostImageEntity)
     private postImageRepository: Repository<PostImageEntity>,
+    @InjectRepository(BlockUserEntity)
+    private blockUserRepository: Repository<BlockUserEntity>,
+    @InjectRepository(BlockPostEntity)
+    private blockPostRepository: Repository<BlockPostEntity>,
     private s3Handler: S3Handler,
   ) {}
   makeWhereOption(query: PostListDto) {
@@ -26,16 +32,44 @@ export class PostService {
     }
     return where;
   }
-  async findPosts(query: PostListDto) {
+
+  filterBlocked(
+    posts: PostEntity[],
+    blockedUsers: BlockUserEntity[],
+    blockedPosts: BlockPostEntity[],
+  ) {
+    const blockedPostsId = blockedPosts.map((blockedPost) => {
+      return blockedPost.blocked_post;
+    });
+    const blockedUsersId = blockedUsers.map((blockedUser) => {
+      return blockedUser.blockedUser.id;
+    });
+    return posts.filter((post) => {
+      const writerId = post.user_id;
+      const postId = post.id;
+      return !(
+        blockedPostsId.includes(postId) || blockedUsersId.includes(writerId)
+      );
+    });
+  }
+  async findPosts(query: PostListDto, userId: string) {
     const page: number = query.page === undefined ? 1 : query.page;
     const limit: number = 20;
     const offset: number = limit * (page - 1) + 1;
-    const res = await this.postRepository.find({
+    const blockedUsers = await this.blockUserRepository.find({
+      where: { blocker: userId },
+      relations: ['blockedUser'],
+    });
+    const blockedPosts = await this.blockPostRepository.find({
+      where: { blocker: userId },
+    });
+    let res = await this.postRepository.find({
       take: limit,
       skip: offset,
       where: this.makeWhereOption(query),
       relations: ['post_images'],
     });
+    res = this.filterBlocked(res, blockedUsers, blockedPosts);
     const posts = [];
     res.forEach((re) => {
       const post = {
