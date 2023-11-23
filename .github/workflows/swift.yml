@@ -21,3 +21,4 @@ jobs:
           -scheme Village \
           -destination 'platform=iOS Simulator,name=iPhone 13,OS=latest'
           -allowProvisioningUpdates
+          -skipPackagePluginValidation
