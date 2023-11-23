@@ -24,7 +24,7 @@ export class UsersBlockService {
     }
 
     const isBlockedUser = await this.blockUserRepository.findOne({
-      where: { blocked_user: id, blocker: 'qwe' },
+      where: { blocked_user: id, blocker: 'qwe', status: 1 },
     });
 
     console.log(isBlockedUser);
