@@ -40,26 +40,29 @@ export class UsersService {
     const isDataExists = await this.userRepository.findOne({
       where: { user_hash: userId },
     });
-    const isChangingImage = file !== undefined;
-    const isChangingBody = body !== undefined;
-
     if (!isDataExists) {
       throw new HttpException('유저가 존재하지 않습니다.', 404);
-    } else if (!isChangingImage && isChangingBody) {
-      await this.changeExceptImages(userId, body);
-    } else if (!isChangingBody && !isChangingImage) {
+    }
+    if (body === undefined) {
       throw new HttpException('수정 할 것이 없는데 요청을 보냈습니다.', 400);
-    } else if (!isChangingBody && isChangingImage) {
-      await this.changeImages(userId, file);
-    } else {
-      await this.changeExceptImages(userId, body);
+    }
+
+    const nickname = body.nickname;
+    const isImageChanged = body.is_image_changed;
+    if (nickname) {
+      await this.changeNickname(userId, nickname);
+    }
+    if (isImageChanged !== undefined) {
       await this.changeImages(userId, file);
     }
   }
 
-  async changeExceptImages(userId: string, body: UpdateUsersDto) {
+  async changeNickname(userId: string, nickname: string) {
     try {
-      await this.userRepository.update({ user_hash: userId }, body);
+      await this.userRepository.update(
+        { user_hash: userId },
+        { nickname: nickname },
+      );
     } catch (e) {
       throw new HttpException('서버 오류입니다. db', 500);
     }
@@ -67,7 +70,7 @@ export class UsersService {
 
   async changeImages(userId: string, file: Express.Multer.File) {
     try {
-      if (file === null) {
+      if (file === undefined) {
         await this.userRepository.update(
           { user_hash: userId },
           { profile_img: null },
