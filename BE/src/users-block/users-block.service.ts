@@ -46,8 +46,24 @@ export class UsersBlockService {
     }
   }
 
-  findAll() {
-    return `This action returns all usersBlock`;
+  async getBlockUser(id: string) {
+    const res = await this.blockUserRepository.find({
+      where: { blocker: id, status: true },
+      relations: ['blockedUser'],
+    });
+
+    const blockedUsers = res.reduce((acc, cur) => {
+      const user = {
+        nickname: cur.blockedUser.nickname,
+        profile_img: cur.blockedUser.profile_img,
+        user_id: cur.blockedUser.user_hash,
+      };
+
+      acc.push(user);
+      return acc;
+    }, []);
+
+    return blockedUsers;
   }
 
   remove(id: number) {

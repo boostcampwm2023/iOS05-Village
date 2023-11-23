@@ -17,6 +17,6 @@ export class BlockUserEntity {
   blockerUser: UserEntity;
 
   @ManyToOne(() => UserEntity, (blocked) => blocked.user_hash)
-  @JoinColumn({ name: 'blocked_user' })
+  @JoinColumn({ name: 'blocked_user', referencedColumnName: 'user_hash' })
   blockedUser: UserEntity;
 }
