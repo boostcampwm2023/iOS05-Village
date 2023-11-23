@@ -98,6 +98,13 @@ final class PostingPriceView: UIStackView {
         sender.text = string
     }
     
+    func warn() {
+        guard let text = priceTextField.text else { return }
+        if text.isEmpty {
+            priceWarningLabel.alpha = 1
+        }
+    }
+    
 }
 
 private extension PostingPriceView {
