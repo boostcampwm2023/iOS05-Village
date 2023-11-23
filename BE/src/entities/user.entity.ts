@@ -18,7 +18,7 @@ export class UserEntity {
   @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blocker)
   blocker: BlockUserEntity[];
 
-  @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blocked)
+  @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blocked_user)
   blocked: BlockUserEntity[];
 
   @OneToMany(() => BlockPostEntity, (blockUser) => blockUser.blocker)
@@ -54,6 +54,6 @@ export class UserEntity {
   @Column({ length: 2048, nullable: true, charset: 'utf8' })
   profile_img: string;
 
-  @Column({ length: 45, nullable: false, charset: 'utf8' })
+  @Column({ length: 45, nullable: false, charset: 'utf8', unique: true })
   user_hash: string;
 }

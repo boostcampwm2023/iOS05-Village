@@ -5,7 +5,7 @@ import { PostEntity } from './post.entity';
 @Entity('block_post')
 export class BlockPostEntity {
   @PrimaryColumn()
-  blocker: number;
+  blocker: string;
 
   @PrimaryColumn()
   blocked_post: number;
@@ -13,7 +13,7 @@ export class BlockPostEntity {
   @Column({ nullable: false, default: 1 })
   status: number;
 
-  @ManyToOne(() => UserEntity, (blocker) => blocker.id)
+  @ManyToOne(() => UserEntity, (blocker) => blocker.user_hash)
   @JoinColumn({ name: 'blocker' })
   blockerUser: UserEntity;
 
