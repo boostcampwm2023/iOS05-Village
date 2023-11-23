@@ -67,7 +67,6 @@ final class PostingTimeView: UIStackView {
         
         textfield.inputView = datePicker
         textfield.inputAccessoryView = dateToolBar
-        textfield.addTarget(self, action: #selector(timeChanged), for: .editingChanged)
         
         return textfield
     }()
@@ -109,7 +108,6 @@ final class PostingTimeView: UIStackView {
         
         textfield.inputView = hourPicker
         textfield.inputAccessoryView = hourToolBar
-        textfield.addTarget(self, action: #selector(timeChanged), for: .editingChanged)
         
         return textfield
     }()
@@ -220,6 +218,10 @@ private extension PostingTimeView {
         selectedDate = formatter.string(from: datePicker.date)
         dateTextField.text = formatter.string(from: datePicker.date)
         dateTextField.resignFirstResponder()
+        
+        if time != nil {
+            timeWarningLabel.alpha = 0
+        }
     }
     
     func hourPickerDoneTapped(_ sender: UIBarButtonItem) {
@@ -228,10 +230,10 @@ private extension PostingTimeView {
         }
         hourTextField.text = selectedHour
         hourTextField.resignFirstResponder()
-    }
-    
-    func timeChanged(_ sender: UITextField) {
-        timeWarningLabel.alpha = 0
+        
+        if time != nil {
+            timeWarningLabel.alpha = 0
+        }
     }
     
 }

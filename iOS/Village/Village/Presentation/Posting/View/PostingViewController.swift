@@ -164,6 +164,10 @@ private extension PostingViewController {
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
+        postingTitleView.warn()
+        postingStartTimeView.warn()
+        postingEndTimeView.warn()
+        postingPriceView.warn()
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {

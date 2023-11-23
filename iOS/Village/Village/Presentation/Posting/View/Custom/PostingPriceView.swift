@@ -154,7 +154,6 @@ extension PostingPriceView {
         NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: priceTextField)
             .compactMap { $0.object as? UITextField }
             .map { ($0.text ?? "") }
-            .print()
             .eraseToAnyPublisher()
     }
     
