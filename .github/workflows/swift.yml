@@ -54,6 +54,6 @@ jobs:
           echo Using default scheme: $default
       - name: Build
         run: |
-          xcodebuild clean test -project ./iOS/Village.xcodeproj \
+          xcodebuild clean test -project ./iOS/Village/Village.xcodeproj \
           -scheme Village \
           -destination 'platform=iOS Simulator,name=iPhone 13,OS=latest'
