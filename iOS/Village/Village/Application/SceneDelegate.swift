@@ -18,11 +18,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let tabBarController = UITabBarController()
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
-        let chatViewController = UINavigationController(rootViewController: ChatViewController())
+        let chatListViewController = UINavigationController(rootViewController: ChatListViewController())
         let myPageViewController = UINavigationController(rootViewController: MyPageViewController())
         
         tabBarController.setViewControllers(
-            [homeViewController, chatViewController, myPageViewController],
+            [homeViewController, chatListViewController, myPageViewController],
             animated: true
         )
         
