@@ -8,6 +8,7 @@
 import Foundation
 
 struct ChatListResponseDTO: Hashable, Codable {
+    
     let user: String
     let userProfile: String?
     let recentTime: String
@@ -21,8 +22,23 @@ struct ChatListResponseDTO: Hashable, Codable {
         case recentChat = "recent_chat"
         case postImage = "post_image"
     }
+    
 }
 
 final class ChatListViewModel {
+    
+    private var chatList: [ChatListResponseDTO]
+    
+    init(chatList: [ChatListResponseDTO]) {
+        self.chatList = chatList
+    }
+    
+    func updateChatList(_ updateChatList: [ChatListResponseDTO]) {
+        chatList = updateChatList
+    }
+    
+    func getChatList() -> [ChatListResponseDTO] {
+        return chatList
+    }
     
 }
