@@ -66,4 +66,52 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         fatalError("Should not be called")
     }
 
+    private func configureUI() {
+        self.addSubview(chatView)
+        chatView.addSubview(profileImageView)
+        chatView.addSubview(nicknameLabel)
+        chatView.addSubview(recentTimeLabel)
+        chatView.addSubview(recentChatLabel)
+        chatView.addSubview(postImageView)
+        
+        configureConstraints()
+    }
+    
+    private func configureConstraints() {
+        NSLayoutConstraint.activate([
+            chatView.topAnchor.constraint(equalTo: self.topAnchor),
+            chatView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
+            chatView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15),
+            chatView.heightAnchor.constraint(equalToConstant: 80)
+        ])
+        
+        NSLayoutConstraint.activate([
+            profileImageView.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 16),
+            profileImageView.leadingAnchor.constraint(equalTo: chatView.leadingAnchor, constant: 16),
+            profileImageView.widthAnchor.constraint(equalToConstant: 48),
+            profileImageView.heightAnchor.constraint(equalToConstant: 48)
+        ])
+        
+        NSLayoutConstraint.activate([
+            nicknameLabel.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 16),
+            nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20),
+            nicknameLabel.widthAnchor.constraint(equalToConstant: 80)
+        ])
+        
+        NSLayoutConstraint.activate([
+            recentTimeLabel.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 16),
+            recentTimeLabel.leadingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor, constant: 4)
+        ])
+        
+        NSLayoutConstraint.activate([
+            recentChatLabel.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 4),
+            recentChatLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            postImageView.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 10),
+            postImageView.trailingAnchor.constraint(equalTo: chatView.leadingAnchor, constant: -15)
+        ])
+    }
+    
 }
