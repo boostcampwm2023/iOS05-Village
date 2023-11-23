@@ -1,3 +1,3 @@
 {
-    "user":"dlwlrma","chat_log":["dlwlrma:안녕하세요.", "me:안녕하세요."]
+    "user":"dlwlrma","chat_log":[{"sender":"user", "body":"안녕하세요."}, {"sender":"me", "body":"안녕하세요."}, {"sender":"user", "body":"네고 가능?"}]
 }
