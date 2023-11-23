@@ -37,7 +37,8 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         if image != nil {
             postSummaryView.postImageView.image = image
         } else {
-            postSummaryView.postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            postSummaryView.postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?
+                .withTintColor(.primary500, renderingMode: .alwaysOriginal)
             postSummaryView.postImageView.backgroundColor = .primary100
         }
     }
