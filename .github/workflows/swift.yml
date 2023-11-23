@@ -23,4 +23,6 @@ jobs:
       run: |
         xcodebuild clean test -project iOS/Village/Village.xcodeproj \
         -scheme Village \
-        -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=latest'
+        -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=latest' \
+        --skipPackagePluginValidation \
+        -skipMacroValidation
