@@ -38,12 +38,12 @@ jobs:
     runs-on: macos-13-xlarge
     defaults:
       run:
-        working-directory: ./iOS/Village
+        working-directory: ./iOS/Village
 
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.0.1'
+          xcode-version: '14.3.0'
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set Default Scheme
