@@ -131,11 +131,9 @@ private extension RentDetailViewController {
     }
     
     func configureNavigationItem() {
-        let rightBarButton = UIBarButtonItem(image: UIImage(systemName: ImageSystemName.ellipsis.rawValue),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(moreBarButtonTapped))
-        
+        let rightBarButton = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(moreBarButtonTapped), symbolName: .ellipsis
+        )
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
