@@ -62,6 +62,7 @@ class ChatListCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        configureUI()
     }
     
     required init?(coder: NSCoder) {
@@ -82,8 +83,8 @@ class ChatListCollectionViewCell: UICollectionViewCell {
     private func configureConstraints() {
         NSLayoutConstraint.activate([
             chatView.topAnchor.constraint(equalTo: self.topAnchor),
-            chatView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
-            chatView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15),
+            chatView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            chatView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             chatView.heightAnchor.constraint(equalToConstant: 80)
         ])
         
@@ -106,14 +107,34 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         ])
         
         NSLayoutConstraint.activate([
-            recentChatLabel.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 4),
+            recentChatLabel.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 10),
             recentChatLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20)
         ])
         
         NSLayoutConstraint.activate([
             postImageView.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 10),
-            postImageView.trailingAnchor.constraint(equalTo: chatView.leadingAnchor, constant: -15)
+            postImageView.trailingAnchor.constraint(equalTo: chatView.trailingAnchor, constant: -15),
+            postImageView.widthAnchor.constraint(equalToConstant: 60),
+            postImageView.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    func configureData(data: Post) {
+        nicknameLabel.text = data.userId
+        recentTimeLabel.text = data.endDate
+        recentChatLabel.text = data.contents.count > 10 ? String(data.contents.prefix(10)) + "..." : data.contents
+    }
+    
+    func configureImage(image: UIImage?) {
+        if image != nil {
+            postImageView.image = image
+            profileImageView.image = image
+        } else {
+            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            postImageView.backgroundColor = .primary100
+            profileImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            profileImageView.backgroundColor = .primary500
+        }
     }
     
 }
