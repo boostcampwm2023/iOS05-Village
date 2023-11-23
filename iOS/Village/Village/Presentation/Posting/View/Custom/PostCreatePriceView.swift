@@ -1,5 +1,5 @@
 //
-//  PostingTitleView.swift
+//  PostCreatePriceView.swift
 //  Village
 //
 //  Created by 조성민 on 11/22/23.
@@ -8,9 +8,9 @@
 import UIKit
 import Combine
 
-final class PostingTitleView: UIStackView {
+final class PostCreatePriceView: UIStackView {
     
-    var currentTextSubject = CurrentValueSubject<String, Never>("")
+    var currentPriceSubject = CurrentValueSubject<String, Never>("")
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar()
@@ -31,35 +31,41 @@ final class PostingTitleView: UIStackView {
         return toolbar
     }()
     
-    private let titleHeaderLabel: UILabel = {
+    private let priceHeaderLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "제목"
+        label.text = "하루 대여 가격"
         label.font = .boldSystemFont(ofSize: 16)
         
         return label
     }()
     
-    private lazy var titleTextField: UITextField = {
+    private lazy var priceTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLayer()
-        textField.setPlaceHolder("제목을 입력하세요")
+        textField.setPlaceHolder("가격을 입력하세요")
+        
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
         textField.leftViewMode = .always
-        textField.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
+        
+        let label = UILabel()
+        label.text = "원  "
+        textField.rightView = label
         textField.rightViewMode = .always
+        
         textField.inputAccessoryView = keyboardToolBar
         textField.delegate = self
+        textField.keyboardType = .numberPad
         textField.addTarget(self, action: #selector(textFieldDidChanged), for: .editingChanged)
         
         return textField
     }()
     
-    private let titleWarningLabel: UILabel = {
+    private let priceWarningLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "제목을 작성해야 합니다."
+        label.text = "하루 대여 가격을 설정해야 합니다."
         label.font = .systemFont(ofSize: 14)
         label.textColor = .negative400
         label.alpha = 0
@@ -82,18 +88,24 @@ final class PostingTitleView: UIStackView {
         endEditing(true)
     }
     
-    @objc private func textFieldDidChanged() {
-        currentTextSubject.send(titleTextField.text ?? "")
+    @objc private func textFieldDidChanged(_ sender: UITextField) {
+        currentPriceSubject.send(priceTextField.text ?? "")
     }
     
-    func warn(_ enable: Bool) {
-        let alpha: CGFloat = enable ? 1 : 0
-        titleWarningLabel.alpha = alpha
+    func warn() {
+        guard let text = priceTextField.text else { return }
+        if text.isEmpty {
+            priceWarningLabel.alpha = 1
+        }
+    }
+    
+    func revertChange(text: String) {
+        priceTextField.text = text
     }
     
 }
 
-private extension PostingTitleView {
+private extension PostCreatePriceView {
     
     func setUp() {
         spacing = 10
@@ -101,20 +113,20 @@ private extension PostingTitleView {
     }
     
     func configureUI() {
-        addArrangedSubview(titleHeaderLabel)
-        addArrangedSubview(titleTextField)
-        addArrangedSubview(titleWarningLabel)
+        addArrangedSubview(priceHeaderLabel)
+        addArrangedSubview(priceTextField)
+        addArrangedSubview(priceWarningLabel)
     }
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
-            titleTextField.heightAnchor.constraint(equalToConstant: 48)
+            priceTextField.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
     
 }
 
-extension PostingTitleView: UITextFieldDelegate {
+extension PostCreatePriceView: UITextFieldDelegate {
     
     func textField(
         _ textField: UITextField,
@@ -122,7 +134,7 @@ extension PostingTitleView: UITextFieldDelegate {
         replacementString string: String
     ) -> Bool {
         guard let text = textField.text else { return true }
-        if !string.isEmpty && text.count + string.count > 64 { return false }
+        if text.count + string.count > 15 { return false }
         return true
     }
     

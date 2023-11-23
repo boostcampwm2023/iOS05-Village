@@ -1,5 +1,5 @@
 //
-//  PostingTimeView.swift
+//  PostCreateTimeView.swift
 //  Village
 //
 //  Created by 조성민 on 11/22/23.
@@ -19,7 +19,7 @@ enum PickerLocale: String {
     case korea = "ko-KR"
 }
 
-final class PostingTimeView: UIStackView {
+final class PostCreateTimeView: UIStackView {
     
     var currentTimeSubject = CurrentValueSubject<Date?, Never>(nil)
     
@@ -193,7 +193,7 @@ final class PostingTimeView: UIStackView {
     
 }
 
-private extension PostingTimeView {
+private extension PostCreateTimeView {
     
     func setUp() {
         spacing = 10
@@ -228,7 +228,7 @@ private extension PostingTimeView {
 }
 
 @objc
-private extension PostingTimeView {
+private extension PostCreateTimeView {
     
     func datePickerDoneTapped(_ sender: UIBarButtonItem) {
         let formatter = DateFormatter()
@@ -261,7 +261,7 @@ private extension PostingTimeView {
     
 }
 
-extension PostingTimeView: UIPickerViewDelegate, UIPickerViewDataSource {
+extension PostCreateTimeView: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
@@ -281,7 +281,7 @@ extension PostingTimeView: UIPickerViewDelegate, UIPickerViewDataSource {
     
 }
 
-extension PostingTimeView: UITextFieldDelegate {
+extension PostCreateTimeView: UITextFieldDelegate {
     
     func textField(
         _ textField: UITextField,
