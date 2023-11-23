@@ -8,6 +8,7 @@
 import UIKit
 
 class ChatListViewController: UIViewController {
+    private let reuseIdentifier = ChatListCollectionViewCell.identifier
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -9,6 +9,8 @@ import UIKit
 
 class ChatListCollectionViewCell: UICollectionViewCell {
     
+    static let identifier = "ChatListCollectionViewCell"
+    
     private let chatView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
