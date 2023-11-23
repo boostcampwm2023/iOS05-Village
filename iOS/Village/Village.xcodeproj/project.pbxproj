@@ -465,7 +465,7 @@
 		8FD52A4F2B0B51A2005EE367 /* ChatRoom */ = {
 			isa = PBXGroup;
 			children = (
-				8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */,
+				8FF7E6152B0FC0EE00B6D678 /* View */,
 			);
 			path = ChatRoom;
 			sourceTree = "<group>";
@@ -494,6 +494,22 @@
 				8FF7E6132B0F9FE500B6D678 /* ChatListViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		8FF7E6152B0FC0EE00B6D678 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8FF7E6162B0FC0F600B6D678 /* CustomView */,
+				8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8FF7E6162B0FC0F600B6D678 /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CustomView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
