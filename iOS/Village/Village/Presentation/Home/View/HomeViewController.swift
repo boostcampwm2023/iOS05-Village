@@ -208,7 +208,7 @@ extension HomeViewController: UICollectionViewDelegate {
         let post = viewModel.getPost(indexPath.row)
         
         if post.isRequest {
-            // TODO: 요청 게시글 상세 화면으로 이동
+            self.navigationController?.pushViewController(RequestDetailViewController(post: post), animated: true)
         } else {
             self.navigationController?.pushViewController(RentDetailViewController(postData: post), animated: true)
         }
