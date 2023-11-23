@@ -1,43 +1,28 @@
 //
-//  RentDetailViewController.swift
+//  RequestDetailViewController.swift
 //  Village
 //
-//  Created by 박동재 on 2023/11/17.
+//  Created by 정상윤 on 11/22/23.
 //
 
 import UIKit
 
-final class RentDetailViewController: UIViewController {
+final class RequestDetailViewController: UIViewController {
     
-    private var post: PostResponseDTO
+    private let post: PostResponseDTO
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.contentInset = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         return scrollView
     }()
     
-    private var scrollViewContainerView: UIStackView = {
+    private var containerView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
         stackView.axis = .vertical
-        return stackView
-    }()
-    
-    private var imagePageView: ImagePageView = {
-        let imagePageView = ImagePageView()
-        imagePageView.translatesAutoresizingMaskIntoConstraints = false
-        return imagePageView
-    }()
-    
-    private var postContentView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.spacing = 10
-        stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.axis = .vertical
-        stackView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
         return stackView
     }()
     
@@ -65,13 +50,6 @@ final class RentDetailViewController: UIViewController {
         return view
     }()
     
-    private var priceLabel: PriceLabel = {
-        let priceLabel = PriceLabel()
-        priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        return priceLabel
-    }()
-    
     private var chatButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -81,38 +59,36 @@ final class RentDetailViewController: UIViewController {
                                                     .foregroundColor: UIColor.white])
         button.setAttributedTitle(title, for: .normal)
         button.layer.cornerRadius = 6
-        button.widthAnchor.constraint(equalToConstant: 110).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 35).isActive = true
         return button
     }()
     
-    init(postData: PostResponseDTO) {
-        self.post = postData
+    init(post: PostResponseDTO) {
+        self.post = post
         
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("Should not be called")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUI()
         configureNavigationItem()
-        setContents()
         setLayoutConstraints()
+        setContent()
     }
     
     @objc
     private func moreBarButtonTapped() {
         // TODO: 더보기 버튼 기능 구현
     }
-
+    
 }
 
-private extension RentDetailViewController {
+private extension RequestDetailViewController {
     
     func configureUI() {
         view.backgroundColor = .systemBackground
@@ -120,14 +96,19 @@ private extension RentDetailViewController {
         
         view.addSubview(scrollView)
         view.addSubview(footerView)
-        scrollView.addSubview(scrollViewContainerView)
-        scrollViewContainerView.addArrangedSubview(imagePageView)
-        scrollViewContainerView.addArrangedSubview(postContentView)
-        postContentView.addArrangedSubview(userInfoView)
-        postContentView.addArrangedSubview(UIView.divider(.horizontal))
-        postContentView.addArrangedSubview(postInfoView)
-        footerView.addSubview(priceLabel)
+        scrollView.addSubview(containerView)
+        containerView.addArrangedSubview(userInfoView)
+        containerView.addArrangedSubview(UIView.divider(.horizontal))
+        containerView.addArrangedSubview(postInfoView)
         footerView.addSubview(chatButton)
+    }
+    
+    func setContent() {
+        postInfoView.setContent(title: post.title,
+                                startDate: post.startDate, endDate: post.endDate,
+                                description: post.contents)
+        let dummyURL = "https://img.gqkorea.co.kr/gq/2022/08/style_63073140eea70.jpg"
+        userInfoView.setContent(imageURL: dummyURL, nickname: "이지금 [IU Official]")
     }
     
     func configureNavigationItem() {
@@ -139,20 +120,6 @@ private extension RentDetailViewController {
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
-    func setContents() {
-        if post.images.isEmpty {
-            imagePageView.isHidden = true
-        } else {
-            imagePageView.setImageURL(post.images)
-        }
-        let dummyURL = "https://img.gqkorea.co.kr/gq/2022/08/style_63073140eea70.jpg"
-        userInfoView.setContent(imageURL: dummyURL, nickname: "이지금 [IU Official]")
-        postInfoView.setContent(title: post.title,
-                                startDate: post.startDate, endDate: post.endDate,
-                                description: post.contents)
-        priceLabel.setPrice(price: post.price)
-    }
-    
     func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -162,15 +129,10 @@ private extension RentDetailViewController {
         ])
         
         NSLayoutConstraint.activate([
-            scrollViewContainerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            scrollViewContainerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            scrollViewContainerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            scrollViewContainerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            imagePageView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            imagePageView.heightAnchor.constraint(equalTo: imagePageView.widthAnchor, multiplier: 0.85)
+            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 15),
+            containerView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -15),
+            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -180,11 +142,10 @@ private extension RentDetailViewController {
         ])
         
         NSLayoutConstraint.activate([
-            chatButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -25),
+            chatButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
             chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor),
-            priceLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 25),
-            priceLabel.trailingAnchor.constraint(lessThanOrEqualTo: chatButton.leadingAnchor, constant: -10),
-            priceLabel.centerYAnchor.constraint(equalTo: chatButton.centerYAnchor)
+            chatButton.widthAnchor.constraint(equalTo: footerView.widthAnchor, multiplier: 0.8),
+            chatButton.heightAnchor.constraint(equalTo: footerView.heightAnchor, multiplier: 0.7)
         ])
     }
     

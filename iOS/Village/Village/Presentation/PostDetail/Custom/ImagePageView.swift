@@ -87,7 +87,6 @@ final class ImagePageView: UIView {
     
     private func configurePageControl() {
         pageControl.numberOfPages = imageURL.count
-        
     }
     
     private func setLayoutConstraints() {
