@@ -43,7 +43,7 @@ final class PriceLabel: UIView {
     func setPrice(price: Int?) {
         guard let price = price,
               let priceText = price.priceText() else { return }
-        dump(priceText)
+        
         priceLabel.text = "\(priceText)원"
     }
     

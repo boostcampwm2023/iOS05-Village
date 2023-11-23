@@ -25,76 +25,32 @@ final class RentDetailViewController: UIViewController {
         return stackView
     }()
     
-    private var postInfoContainerView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.spacing = 10
-        stackView.axis = .vertical
-        stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
-        return stackView
-    }()
-    
     private var imagePageView: ImagePageView = {
         let imagePageView = ImagePageView()
         imagePageView.translatesAutoresizingMaskIntoConstraints = false
         return imagePageView
     }()
     
-    private var userInfoContainerView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        return view
-    }()
-    
-    private var userProfileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        imageView.setLayer(borderColor: .grey100, cornerRadius: 26)
-        return imageView
-    }()
-    
-    private var userNicknameLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 18, weight: .bold)
-        return label
-    }()
-    
-    private var postLabelStackView: UIStackView = {
+    private var postContentView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.spacing = 20
+        stackView.spacing = 10
+        stackView.isLayoutMarginsRelativeArrangement = true
         stackView.axis = .vertical
+        stackView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
         return stackView
     }()
     
-    private var postTitleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .boldSystemFont(ofSize: 20)
-        label.numberOfLines = 0
-        return label
+    private var userInfoView: UserInfoView = {
+        let view = UserInfoView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
-    private var postDurationView: DurationView = {
-        let durationView = DurationView()
-        durationView.translatesAutoresizingMaskIntoConstraints = false
-        durationView.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        return durationView
-    }()
-    
-    private var postContentLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        return label
+    private var postInfoView: PostInfoView = {
+        let view = PostInfoView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     private var footerView: UIView = {
@@ -144,6 +100,9 @@ final class RentDetailViewController: UIViewController {
         super.viewDidLoad()
         
         configureUI()
+        configureNavigationItem()
+        setContents()
+        setLayoutConstraints()
     }
     
     @objc
@@ -162,11 +121,13 @@ private extension RentDetailViewController {
         view.addSubview(scrollView)
         view.addSubview(footerView)
         scrollView.addSubview(scrollViewContainerView)
-        
-        configureNavigationItem()
-        configureScrollView()
-        setContents()
-        setLayoutConstraints()
+        scrollViewContainerView.addArrangedSubview(imagePageView)
+        scrollViewContainerView.addArrangedSubview(postContentView)
+        postContentView.addArrangedSubview(userInfoView)
+        postContentView.addArrangedSubview(UIView.divider(.horizontal))
+        postContentView.addArrangedSubview(postInfoView)
+        footerView.addSubview(priceLabel)
+        footerView.addSubview(chatButton)
     }
     
     func configureNavigationItem() {
@@ -178,67 +139,18 @@ private extension RentDetailViewController {
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
-    func configureScrollView() {
-        scrollViewContainerView.addArrangedSubview(imagePageView)
-        scrollViewContainerView.addArrangedSubview(postInfoContainerView)
-        postInfoContainerView.addArrangedSubview(userInfoContainerView)
-        userInfoContainerView.addSubview(userProfileImageView)
-        userInfoContainerView.addSubview(userNicknameLabel)
-        postInfoContainerView.addArrangedSubview(UIView.divider(.horizontal, width: 0.5))
-        postInfoContainerView.addArrangedSubview(postLabelStackView)
-        postLabelStackView.addArrangedSubview(postTitleLabel)
-        postLabelStackView.addArrangedSubview(postDurationView)
-        postLabelStackView.addArrangedSubview(postContentLabel)
-        footerView.addSubview(priceLabel)
-        footerView.addSubview(chatButton)
-    }
-    
     func setContents() {
-        setUserInfoContents()
-        setPostInfoContents()
-    }
-    
-    func setUserInfoContents() {
         if post.images.isEmpty {
             imagePageView.isHidden = true
         } else {
-            Task {
-                do {
-                    let dummyURL = "https://img.gqkorea.co.kr/gq/2022/08/style_63073140eea70.jpg"
-                    let data = try await NetworkService.loadData(from: dummyURL)
-                    userProfileImageView.image = UIImage(data: data)
-                } catch let error {
-                    dump(error)
-                }
-            }
+            imagePageView.setImageURL(post.images)
         }
-        
-        userNicknameLabel.text = "이지금 [IU Official]"
-    }
-    
-    func setPostInfoContents() {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        imagePageView.setImageURL(post.images)
-        postTitleLabel.text = post.title
-        postDurationView.setDuration(from: dateFormatter.date(from: post.startDate)!,
-                                     to: dateFormatter.date(from: post.startDate)!)
-        setPostConetentsLabel()
+        let dummyURL = "https://img.gqkorea.co.kr/gq/2022/08/style_63073140eea70.jpg"
+        userInfoView.setContent(imageURL: dummyURL, nickname: "이지금 [IU Official]")
+        postInfoView.setContent(title: post.title,
+                                startDate: post.startDate, endDate: post.endDate,
+                                description: post.contents)
         priceLabel.setPrice(price: post.price)
-    }
-    
-    func setPostConetentsLabel() {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 7
-        
-        let attributedText = NSAttributedString(
-            string: post.contents,
-            attributes: [
-                .font: UIFont.systemFont(ofSize: 17),
-                .paragraphStyle: paragraphStyle
-        ])
-        
-        postContentLabel.attributedText = attributedText
     }
     
     func setLayoutConstraints() {
@@ -259,16 +171,6 @@ private extension RentDetailViewController {
         NSLayoutConstraint.activate([
             imagePageView.widthAnchor.constraint(equalTo: view.widthAnchor),
             imagePageView.heightAnchor.constraint(equalTo: imagePageView.widthAnchor, multiplier: 0.85)
-        ])
-        
-        NSLayoutConstraint.activate([
-            userProfileImageView.centerYAnchor.constraint(equalTo: userInfoContainerView.centerYAnchor),
-            userProfileImageView.leadingAnchor.constraint(equalTo: userInfoContainerView.leadingAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            userNicknameLabel.leadingAnchor.constraint(equalTo: userProfileImageView.trailingAnchor, constant: 15),
-            userNicknameLabel.centerYAnchor.constraint(equalTo: userInfoContainerView.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
