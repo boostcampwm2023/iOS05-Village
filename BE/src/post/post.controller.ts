@@ -28,7 +28,8 @@ export class PostController {
 
   @Get()
   async postsList(@Query() query: PostListDto) {
-    const posts = await this.postService.findPosts(query);
+    const userId = 'qwe';
+    const posts = await this.postService.findPosts(query, userId);
     return posts;
   }
 
