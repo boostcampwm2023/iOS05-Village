@@ -23,6 +23,7 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 24
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -130,10 +131,14 @@ class ChatListCollectionViewCell: UICollectionViewCell {
             postImageView.image = image
             profileImageView.image = image
         } else {
-            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?.withTintColor(
+                .primary500, renderingMode: .alwaysOriginal
+            )
             postImageView.backgroundColor = .primary100
-            profileImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
-            profileImageView.backgroundColor = .primary500
+            profileImageView.image = UIImage(systemName: ImageSystemName.personFill.rawValue)?.withTintColor(
+                .primary500, renderingMode: .alwaysOriginal
+            )
+            profileImageView.backgroundColor = .primary100
         }
     }
     
