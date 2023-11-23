@@ -41,6 +41,23 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         setViewModel()
+        setupUI()
+        generateData()
+    }
+    
+    private func setupUI() {
+        setNavigationUI()
+        setMenuUI()
+        bindFloatingButton()
+        configureCollectionView()
+        configureDataSource()
+        
+        view.addSubview(floatingButton)
+        view.addSubview(menuView)
+        setLayoutConstraint()
+    }
+    
+    private func bindFloatingButton() {
         floatingButton.$isActive
             .sink(receiveValue: { [weak self] isActive in
                 switch isActive {
@@ -51,18 +68,7 @@ final class HomeViewController: UIViewController {
                 }
             })
             .store(in: &cancellableBag)
-        
-        setupUI()
-    }
-    
-    private func setupUI() {
-        setNavigationUI()
-        setMenuUI()
-        configureCollectionView()
-        
-        view.addSubview(floatingButton)
-        view.addSubview(menuView)
-        setLayoutConstraint()
+
     }
     
     private func setViewModel() {
@@ -83,6 +89,7 @@ final class HomeViewController: UIViewController {
         let titleLabel = UILabel()
         titleLabel.setTitle("홈")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        self.navigationItem.backButtonDisplayMode = .minimal
         let search = self.navigationItem.makeSFSymbolButton(
             self, action: #selector(searchButtonTapped), symbolName: .magnifyingGlass
         )
@@ -198,9 +205,13 @@ final class HomeViewController: UIViewController {
 extension HomeViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let nextVC = PostDetailViewController()
-        nextVC.postData = viewModel.getPost(indexPath.row)
+        let post = viewModel.getPost(indexPath.row)
         
-        self.navigationController?.pushViewController(nextVC, animated: false)
+        if post.isRequest {
+            // TODO: 요청 게시글 상세 화면으로 이동
+        } else {
+            self.navigationController?.pushViewController(RentDetailViewController(postData: post), animated: true)
+        }
     }
+    
 }

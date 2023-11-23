@@ -8,6 +8,7 @@
 import Foundation
 
 enum ImageSystemName: String {
+    
     case plus
     case photo
     case magnifyingGlass = "magnifyingglass"
@@ -22,5 +23,6 @@ enum ImageSystemName: String {
     case arrowLeft = "arrow.left"
     case ellipsis
     case paperplane
+    case checkmark
     
 }

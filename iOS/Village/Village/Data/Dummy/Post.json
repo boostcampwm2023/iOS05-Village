@@ -3,7 +3,7 @@
       {
         "title": "닌텐도 스위치",
         "price": 10000,
-        "contents": "빌려드립니다.빌려드립니다.빌려드립니다.빌려드립니다.빌려드립니다.빌려드립니다.빌려드립니다.빌려드립니다.",
+        "contents": "빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n빌려드립니다.\n",
         "post_id": 1,
         "user_id": "undefined",
         "is_request": false,
@@ -12,8 +12,8 @@
             "https://cdn-icons-png.flaticon.com/512/12719/12719172.png",
             "https://cdn-icons-png.flaticon.com/512/12719/12719172.png"
         ],
-        "start_date": "string",
-        "end_date": "string"
+        "start_date": "2023-11-21T12:34:56",
+        "end_date": "2023-12-21T12:34:56"
       },
       {
         "title": "플레이스테이션 5",
@@ -23,8 +23,8 @@
         "user_id": "undefined",
         "is_request": true,
         "images": [],
-        "start_date": "string",
-        "end_date": "string"
+        "start_date": "2023-11-21T12:34:56",
+        "end_date": "2023-12-21T12:34:56"
       },
       {
         "title": "에어팟 맥스",
@@ -38,8 +38,8 @@
             "https://cdn-icons-png.flaticon.com/512/12719/12719172.png",
             "https://cdn-icons-png.flaticon.com/512/12719/12719172.png"
         ],
-        "start_date": "string",
-        "end_date": "string"
+        "start_date": "2023-11-21T12:34:56",
+        "end_date": "2023-12-21T12:34:56"
       }
     ]
 }

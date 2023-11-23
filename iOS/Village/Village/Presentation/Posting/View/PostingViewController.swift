@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 enum PostType {
     
@@ -33,6 +34,7 @@ final class PostingViewController: UIViewController {
         )
         toolbar.sizeToFit()
         toolbar.setItems([flexibleSpaceButton, hideKeyboardButton], animated: false)
+        toolbar.tintColor = .label
         
         return toolbar
     }()
@@ -57,115 +59,39 @@ final class PostingViewController: UIViewController {
         return scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 0)
     }()
     
-    private let titleHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "제목"
-        label.font = .boldSystemFont(ofSize: 16)
-        
-        return label
-    }()
-    
-    private lazy var periodStartHeaderLabel: UILabel = {
-        let label = UILabel()
-        switch type {
-        case .rent:
-            label.text = "대여 시작 가능"
-        case .request:
-            label.text = "대여 시작"
-        }
-        label.font = .boldSystemFont(ofSize: 16)
-        
-        return label
-    }()
-    
-    private let periodEndHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "대여 종료"
-        label.font = .boldSystemFont(ofSize: 16)
-        
-        return label
-    }()
-    
-    private let priceHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "하루 대여 가격"
-        label.font = .boldSystemFont(ofSize: 16)
-        
-        return label
-    }()
-    
-    private let detailHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "자세한 설명"
-        label.font = .boldSystemFont(ofSize: 16)
-        
-        return label
-    }()
-    
-    private lazy var titleTextField: UITextField = {
-        let textField = UITextField()
-        textField.setLayer()
-        textField.setPlaceHolder("제목을 입력하세요")
-        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
-        textField.leftViewMode = .always
-        textField.inputAccessoryView = keyboardToolBar
-        textField.delegate = self
-        
-        return textField
-    }()
-    
-    private let startTimePicker: TimePickerView = {
-        let picker = TimePickerView()
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        
-        return picker
-    }()
-    
-    private let endTimePicker: TimePickerView = {
-        let picker = TimePickerView()
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        
-        return picker
-    }()
-    
-    private lazy var priceTextFieldView: UIView = {
-        let view = UIView()
-        view.setLayer()
-        
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(textField)
-        textField.setPlaceHolder("가격을 입력하세요")
-        NSLayoutConstraint.activate([
-            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            textField.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-        
-        let rightView = UILabel()
-        rightView.text = "원"
-        textField.rightView = rightView
-        textField.rightViewMode = .always
-        
-        textField.delegate = self
-        textField.inputAccessoryView = keyboardToolBar
-        textField.keyboardType = .numberPad
+    private lazy var postingTitleView: PostingTitleView = {
+        let view = PostingTitleView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private lazy var detailTextView: UITextView = {
-        let textView = UITextView()
-        textView.setLayer()
-        textView.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
-        textView.text = "설명을 입력하세요."
-        textView.textColor = .lightGray
-        textView.font = UIFont.systemFont(ofSize: 18)
-        textView.isScrollEnabled = false
-        textView.inputAccessoryView = keyboardToolBar
-        textView.delegate = self
+    private lazy var postingStartTimeView: PostingTimeView = {
+        let view = PostingTimeView(postType: type, timeType: .start)
+        view.translatesAutoresizingMaskIntoConstraints = false
         
-        return textView
+        return view
+    }()
+    
+    private lazy var postingEndTimeView: PostingTimeView = {
+        let view = PostingTimeView(postType: type, timeType: .end)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    private lazy var postingPriceView: PostingPriceView = {
+        let view = PostingPriceView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    private lazy var postingDetailView: PostingDetailView = {
+        let view = PostingDetailView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
     }()
     
     private let postButtonView: UIView = {
@@ -195,6 +121,7 @@ final class PostingViewController: UIViewController {
         configureUI()
         configureConstraints()
         setUpNotification()
+        bind()
         
         view.backgroundColor = .systemBackground
         super.viewDidLoad()
@@ -210,6 +137,22 @@ final class PostingViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private var cancellables: Set<AnyCancellable> = []
+    
+    func bind() {
+        postingTitleView.publisher
+            .receive(on: RunLoop.main)
+            .assign(to: \.titleInput, on: viewModel)
+            .store(in: &cancellables)
+        if type == .rent {
+            postingPriceView.publisher
+                .receive(on: RunLoop.main)
+                .assign(to: \.priceInput, on: viewModel)
+                .store(in: &cancellables)
+        }
+        
+    }
+    
 }
 
 @objc
@@ -221,6 +164,10 @@ private extension PostingViewController {
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
+        postingTitleView.warn()
+        postingStartTimeView.warn()
+        postingEndTimeView.warn()
+        postingPriceView.warn()
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {
@@ -279,33 +226,20 @@ private extension PostingViewController {
     }
     
     func configureUI() {
-        
         view.addSubview(postButtonView)
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
         postButtonView.addSubview(postButton)
         
-        stackView.addArrangedSubview(titleHeaderLabel)
-        stackView.addArrangedSubview(titleTextField)
-        stackView.setCustomSpacing(25, after: titleTextField)
-        
-        stackView.addArrangedSubview(periodStartHeaderLabel)
-        stackView.addArrangedSubview(startTimePicker)
-        stackView.setCustomSpacing(25, after: startTimePicker)
-        
-        stackView.addArrangedSubview(periodEndHeaderLabel)
-        stackView.addArrangedSubview(endTimePicker)
-        stackView.setCustomSpacing(25, after: endTimePicker)
+        stackView.addArrangedSubview(postingTitleView)
+        stackView.addArrangedSubview(postingStartTimeView)
+        stackView.addArrangedSubview(postingEndTimeView)
         
         if type == .rent {
-            stackView.addArrangedSubview(priceHeaderLabel)
-            stackView.addArrangedSubview(priceTextFieldView)
-            stackView.setCustomSpacing(25, after: priceTextFieldView)
+            stackView.addArrangedSubview(postingPriceView)
         }
         
-        stackView.addArrangedSubview(detailHeaderLabel)
-        stackView.addArrangedSubview(detailTextView)
-        
+        stackView.addArrangedSubview(postingDetailView)
     }
     
     func configureConstraints() {
@@ -331,15 +265,6 @@ private extension PostingViewController {
         ])
         
         NSLayoutConstraint.activate([
-            startTimePicker.heightAnchor.constraint(equalToConstant: 50),
-            endTimePicker.heightAnchor.constraint(equalToConstant: 50)
-        ])
-        
-        NSLayoutConstraint.activate([
-            detailTextView.heightAnchor.constraint(equalToConstant: 180)
-        ])
-        
-        NSLayoutConstraint.activate([
             postButton.topAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 18),
             postButton.leadingAnchor.constraint(equalTo: postButtonView.leadingAnchor, constant: 16),
             postButton.trailingAnchor.constraint(equalTo: postButtonView.trailingAnchor, constant: -16),
@@ -347,15 +272,15 @@ private extension PostingViewController {
         ])
         
         NSLayoutConstraint.activate([
-            titleTextField.heightAnchor.constraint(equalToConstant: 48),
-            titleTextField.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
-            detailTextView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+            postingTitleView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postingStartTimeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postingEndTimeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postingDetailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         
         if type == .rent {
             NSLayoutConstraint.activate([
-                priceTextFieldView.heightAnchor.constraint(equalToConstant: 48),
-                priceTextFieldView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+                postingPriceView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
             ])
         }
     }

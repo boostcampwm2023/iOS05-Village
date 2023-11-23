@@ -1,14 +1,34 @@
 //
-//  TimePickerView.swift
+//  PostingTimeView.swift
 //  Village
 //
-//  Created by 조성민 on 11/17/23.
+//  Created by 조성민 on 11/22/23.
 //
 
 import UIKit
 
-// TODO: 키보드 올리기, 시간 범위
-final class TimePickerView: UIView {
+enum TimeType {
+    
+    case start
+    case end
+    
+}
+
+enum PickerLocale: String {
+    case korea = "ko-KR"
+}
+
+final class PostingTimeView: UIStackView {
+    
+    private let timeStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.spacing = 20
+        stackView.distribution = .fillEqually
+        
+        return stackView
+    }()
     
     private let datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
@@ -47,7 +67,6 @@ final class TimePickerView: UIView {
         
         textfield.inputView = datePicker
         textfield.inputAccessoryView = dateToolBar
-//        textfield.addTarget(self, action: #selector(dateChanged), for: .editingChanged)
         
         return textfield
     }()
@@ -89,7 +108,6 @@ final class TimePickerView: UIView {
         
         textfield.inputView = hourPicker
         textfield.inputAccessoryView = hourToolBar
-//        textfield.addTarget(self, action: #selector(hourChanged), for: .editingChanged)
         
         return textfield
     }()
@@ -111,37 +129,79 @@ final class TimePickerView: UIView {
         return formatter.date(from: date + hour)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private let postType: PostType
+    private let timeType: TimeType
+    
+    private lazy var timeHeaderLabel: UILabel = {
+        let label = UILabel()
+        
+        switch timeType {
+        case .start:
+            switch postType {
+            case .rent:
+                label.text = "대여 시작 가능"
+            case .request:
+                label.text = "대여 시작"
+            }
+        case .end:
+            label.text = "대여 종료"
+        }
+        
+        label.font = .boldSystemFont(ofSize: 16)
+        
+        return label
+    }()
+    
+    private let timeWarningLabel: UILabel = {
+        let label = UILabel()
+        label.text = "시간을 선택해야 합니다."
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .negative400
+        label.alpha = 0
+        
+        return label
+    }()
+    
+    init(postType: PostType, timeType: TimeType) {
+        self.postType = postType
+        self.timeType = timeType
+        super.init(frame: .zero)
+        setUp()
         configureUI()
         configureConstraints()
     }
     
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func warn() {
+        if time == nil {
+            timeWarningLabel.alpha = 1
+        }
     }
     
 }
 
-private extension TimePickerView {
+private extension PostingTimeView {
+    
+    func setUp() {
+        spacing = 10
+        axis = .vertical
+    }
     
     func configureUI() {
-        addSubview(dateTextField)
-        addSubview(hourTextField)
+        timeStackView.addArrangedSubview(dateTextField)
+        timeStackView.addArrangedSubview(hourTextField)
+        
+        addArrangedSubview(timeHeaderLabel)
+        addArrangedSubview(timeStackView)
+        addArrangedSubview(timeWarningLabel)
     }
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
-            dateTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            dateTextField.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -10),
-            dateTextField.centerYAnchor.constraint(equalTo: centerYAnchor),
-            dateTextField.heightAnchor.constraint(equalToConstant: 48)
-        ])
-        
-        NSLayoutConstraint.activate([
-            hourTextField.leadingAnchor.constraint(equalTo: centerXAnchor, constant: 10),
-            hourTextField.trailingAnchor.constraint(equalTo: trailingAnchor),
-            hourTextField.centerYAnchor.constraint(equalTo: centerYAnchor),
+            dateTextField.heightAnchor.constraint(equalToConstant: 48),
             hourTextField.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
@@ -149,7 +209,7 @@ private extension TimePickerView {
 }
 
 @objc
-private extension TimePickerView {
+private extension PostingTimeView {
     
     func datePickerDoneTapped(_ sender: UIBarButtonItem) {
         let formatter = DateFormatter()
@@ -158,6 +218,10 @@ private extension TimePickerView {
         selectedDate = formatter.string(from: datePicker.date)
         dateTextField.text = formatter.string(from: datePicker.date)
         dateTextField.resignFirstResponder()
+        
+        if time != nil {
+            timeWarningLabel.alpha = 0
+        }
     }
     
     func hourPickerDoneTapped(_ sender: UIBarButtonItem) {
@@ -166,11 +230,15 @@ private extension TimePickerView {
         }
         hourTextField.text = selectedHour
         hourTextField.resignFirstResponder()
+        
+        if time != nil {
+            timeWarningLabel.alpha = 0
+        }
     }
     
 }
 
-extension TimePickerView: UIPickerViewDelegate, UIPickerViewDataSource {
+extension PostingTimeView: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
