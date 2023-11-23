@@ -10,13 +10,16 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, PostResponseDTO>
+    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, PostListItem>
+    typealias ViewModel = HomeViewModel
+    typealias Input = ViewModel.Input
     
     private var dataSource: HomeDataSource!
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     private var collectionView: UICollectionView!
     
-    private var viewModel = PostListItemViewModel()
+    private var currentPage = CurrentValueSubject<Int, Never>(1)
+    private var viewModel = ViewModel()
 
     private let floatingButton: FloatingButton = {
         let button = FloatingButton(frame: .zero)
@@ -40,7 +43,7 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setViewModel()
+        bindViewModel()
         setupUI()
     }
     
@@ -66,21 +69,17 @@ final class HomeViewController: UIViewController {
                 }
             })
             .store(in: &cancellableBag)
-
     }
     
-    private func setViewModel() {
-        let endpoint = APIEndPoints.getPosts(with: PostRequestDTO(page: 1))
-        Task {
-            do {
-                let data = try await Provider.shared.request(with: endpoint)
-                viewModel.updatePosts(data)
-                configureDataSource()
-                generateData()
-            } catch {
-                dump(error)
-            }
-        }
+    private func bindViewModel() {
+        viewModel.transform(input: Input(currentPage: currentPage))
+            .postList
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] list in
+                self?.configureDataSource()
+                self?.generateData(postList: list)
+            })
+            .store(in: &cancellableBag)
     }
     
     private func setNavigationUI() {
@@ -157,7 +156,7 @@ final class HomeViewController: UIViewController {
             
             cell.configureData(post: post)
             
-            if let imageURL = post.images.first {
+            if let imageURL = post.imageURL {
                 let endpoint = APIEndPoints.getData(with: imageURL)
                 Task {
                     do {
@@ -175,11 +174,11 @@ final class HomeViewController: UIViewController {
         }
     }
     
-    private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
+    private func generateData(postList: [PostListItem]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
         snapshot.appendSections([.main])
         
-        snapshot.appendItems(viewModel.getPosts())
+        snapshot.appendItems(postList)
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
@@ -203,12 +202,14 @@ final class HomeViewController: UIViewController {
 extension HomeViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let post = viewModel.getPost(indexPath.row)
+        guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
         if (post.isRequest != 0) {
-            self.navigationController?.pushViewController(RequestDetailViewController(post: post), animated: true)
+            let requestVC = RequestDetailViewController(postID: post.postID, userID: post.userID)
+            self.navigationController?.pushViewController(requestVC, animated: true)
         } else {
-            self.navigationController?.pushViewController(RentDetailViewController(postData: post), animated: true)
+            let rentVC = RequestDetailViewController(postID: post.postID, userID: post.userID)
+            self.navigationController?.pushViewController(rentVC, animated: true)
         }
     }
     
