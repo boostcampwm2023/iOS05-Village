@@ -20,13 +20,13 @@ export class PostsBlockService {
       throw new HttpException('없는 게시물입니다.', 404);
     }
     const blockPostEntity = new BlockPostEntity();
-    const isExist = await this.blockPostRepository.exist({
+    const isExist = await this.blockPostRepository.findOne({
       where: {
         blocker: blockerId,
         blocked_post: postId,
       },
     });
-    if (isExist) {
+    if (isExist.status === true) {
       throw new HttpException('이미 차단 되었습니다.', 400);
     }
     blockPostEntity.blocked_post = postId;
