@@ -7,7 +7,8 @@ export class UsersBlockController {
 
   @Get()
   async blockUserList() {
-    return this.usersBlockService.getBlockUser();
+    const id = 'qwe';
+    return this.usersBlockService.getBlockUser(id);
   }
 
   @Post('/:id')

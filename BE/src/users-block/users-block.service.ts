@@ -46,9 +46,9 @@ export class UsersBlockService {
     }
   }
 
-  async getBlockUser() {
+  async getBlockUser(id: string) {
     const res = await this.blockUserRepository.find({
-      where: { blocker: 'qwe', status: true },
+      where: { blocker: id, status: true },
       relations: ['blockedUser'],
     });
 
