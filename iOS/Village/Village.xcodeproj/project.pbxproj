@@ -59,6 +59,8 @@
 		8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */; };
 		8FF7E60C2B0F38A500B6D678 /* ChatListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E60A2B0F38A500B6D678 /* ChatListCollectionViewCell.swift */; };
 		8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */; };
+		8FF7E60F2B0F9A6900B6D678 /* ChatList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8FF7E60E2B0F9A6900B6D678 /* ChatList.json */; };
+		8FF7E6112B0F9BE400B6D678 /* Chat.json in Resources */ = {isa = PBXBuildFile; fileRef = 8FF7E6102B0F9BE400B6D678 /* Chat.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +128,8 @@
 		8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
 		8FF7E60A2B0F38A500B6D678 /* ChatListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
+		8FF7E60E2B0F9A6900B6D678 /* ChatList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatList.json; sourceTree = "<group>"; };
+		8FF7E6102B0F9BE400B6D678 /* Chat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Chat.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +195,8 @@
 				5975E9872B035919007CEF13 /* Post.json */,
 				5975E9882B035919007CEF13 /* Posts.json */,
 				5975E9892B035919007CEF13 /* Users.json */,
+				8FF7E60E2B0F9A6900B6D678 /* ChatList.json */,
+				8FF7E6102B0F9BE400B6D678 /* Chat.json */,
 			);
 			path = Dummy;
 			sourceTree = "<group>";
@@ -569,8 +575,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5975E98A2B035919007CEF13 /* Post.json in Resources */,
+				8FF7E6112B0F9BE400B6D678 /* Chat.json in Resources */,
 				8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */,
 				5975E98B2B035919007CEF13 /* Posts.json in Resources */,
+				8FF7E60F2B0F9A6900B6D678 /* ChatList.json in Resources */,
 				59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */,
 				5975E98C2B035919007CEF13 /* Users.json in Resources */,
 			);
