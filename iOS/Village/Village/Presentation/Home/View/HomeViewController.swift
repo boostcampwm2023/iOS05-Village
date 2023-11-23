@@ -10,7 +10,7 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, Post>
+    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, PostResponseDTO>
     
     private var dataSource: HomeDataSource!
     private let reuseIdentifier = HomeCollectionViewCell.identifier
@@ -68,21 +68,20 @@ final class HomeViewController: UIViewController {
                 }
             })
             .store(in: &cancellableBag)
+
     }
     
     private func setViewModel() {
-        guard let path = Bundle.main.path(forResource: "Post", ofType: "json") else { return }
-        
-        guard let jsonString = try? String(contentsOfFile: path) else { return }
-        do {
-            let decoder = JSONDecoder()
-            let data = jsonString.data(using: .utf8)
-            
-            guard let data = data else { return }
-            let posts = try decoder.decode(PostResponse.self, from: data)
-            viewModel.updatePosts(updatePosts: posts.body)
-        } catch {
-            return
+        let endpoint = APIEndPoints.getPosts(with: PostRequestDTO(page: 1))
+        Task {
+            do {
+                let data = try await Provider.shared.request(with: endpoint)
+                viewModel.updatePosts(data)
+                configureDataSource()
+                generateData()
+            } catch {
+                dump(error)
+            }
         }
     }
     
@@ -161,11 +160,12 @@ final class HomeViewController: UIViewController {
             cell.configureData(post: post)
             
             if let imageURL = post.images.first {
+                let endpoint = APIEndPoints.getData(with: imageURL)
                 Task {
                     do {
-                        let data = try await NetworkService.loadData(from: imageURL)
+                        let data = try await Provider.shared.request(from: endpoint.baseURL)
                         cell.configureImage(image: UIImage(data: data))
-                    } catch let error {
+                    } catch {
                         dump(error)
                     }
                 }
@@ -178,10 +178,10 @@ final class HomeViewController: UIViewController {
     }
     
     private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
         snapshot.appendSections([.main])
         
-        snapshot.appendItems(viewModel.getPosts())
+        snapshot.appendItems(viewModel.getTest())
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     

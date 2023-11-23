@@ -36,17 +36,17 @@ struct Post: Hashable, Codable {
 }
 
 final class PostListItemViewModel {
-    private var posts: [Post] = []
+    private var posts: [PostResponseDTO] = []
     
-    func updatePosts(updatePosts: [Post]) {
+    func updatePosts(_ updatePosts: [PostResponseDTO]) {
         self.posts = updatePosts
     }
     
-    func getPosts() -> [Post] {
+    func getTest() -> [PostResponseDTO] {
         return posts
     }
     
-    func getPost(_ index: Int) -> Post {
+    func getPost(_ index: Int) -> PostResponseDTO {
         return posts[index]
     }
     
