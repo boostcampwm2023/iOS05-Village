@@ -26,7 +26,7 @@ export class PostsBlockService {
         blocked_post: postId,
       },
     });
-    if (isExist.status === true) {
+    if (isExist !== null && isExist.status === true) {
       throw new HttpException('이미 차단 되었습니다.', 400);
     }
     blockPostEntity.blocked_post = postId;
