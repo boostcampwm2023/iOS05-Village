@@ -9,7 +9,7 @@ import UIKit
 
 final class RequestDetailViewController: UIViewController {
     
-    private let post: Post
+    private let post: PostResponseDTO
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -62,7 +62,7 @@ final class RequestDetailViewController: UIViewController {
         return button
     }()
     
-    init(post: Post) {
+    init(post: PostResponseDTO) {
         self.post = post
         
         super.init(nibName: nil, bundle: nil)

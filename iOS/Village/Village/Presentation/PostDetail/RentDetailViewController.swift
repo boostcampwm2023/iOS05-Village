@@ -9,7 +9,7 @@ import UIKit
 
 final class RentDetailViewController: UIViewController {
     
-    private var post: Post
+    private var post: PostResponseDTO
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -86,7 +86,7 @@ final class RentDetailViewController: UIViewController {
         return button
     }()
     
-    init(postData: Post) {
+    init(postData: PostResponseDTO) {
         self.post = postData
         
         super.init(nibName: nil, bundle: nil)

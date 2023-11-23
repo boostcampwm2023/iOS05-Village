@@ -42,7 +42,6 @@ final class HomeViewController: UIViewController {
         
         setViewModel()
         setupUI()
-        generateData()
     }
     
     private func setupUI() {
@@ -50,7 +49,6 @@ final class HomeViewController: UIViewController {
         setMenuUI()
         bindFloatingButton()
         configureCollectionView()
-        configureDataSource()
         
         view.addSubview(floatingButton)
         view.addSubview(menuView)
@@ -207,7 +205,7 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let post = viewModel.getPost(indexPath.row)
         
-        if post.isRequest {
+        if (post.isRequest != 0) {
             self.navigationController?.pushViewController(RequestDetailViewController(post: post), animated: true)
         } else {
             self.navigationController?.pushViewController(RentDetailViewController(postData: post), animated: true)
