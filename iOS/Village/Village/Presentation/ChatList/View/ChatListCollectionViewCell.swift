@@ -119,8 +119,8 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configureData(data: Post) {
-        nicknameLabel.text = data.userId
+    func configureData(data: PostResponseDTO) {
+        nicknameLabel.text = String(data.userId)
         recentTimeLabel.text = data.endDate
         recentChatLabel.text = data.contents.count > 10 ? String(data.contents.prefix(10)) + "..." : data.contents
     }

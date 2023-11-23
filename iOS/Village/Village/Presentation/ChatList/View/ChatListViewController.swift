@@ -9,7 +9,7 @@ import UIKit
 
 class ChatListViewController: UIViewController {
     
-    typealias ChatListDataSource = UICollectionViewDiffableDataSource<Section, Post>
+    typealias ChatListDataSource = UICollectionViewDiffableDataSource<Section, PostResponseDTO>
     
     private var dataSource: ChatListDataSource!
     private let reuseIdentifier = ChatListCollectionViewCell.identifier
@@ -26,7 +26,7 @@ class ChatListViewController: UIViewController {
 
         setViewModel()
         setUI()
-        generateData()
+//        generateData()
     }
     
     private func setUI() {
@@ -34,23 +34,36 @@ class ChatListViewController: UIViewController {
         
         setNavigationUI()
         configureCollectionView()
-        configureDataSource()
+//        configureDataSource()
     }
     
     private func setViewModel() {
-        guard let path = Bundle.main.path(forResource: "Post", ofType: "json") else { return }
+//        MARK: 더미데이터를 위한 코드 채팅API 구현 후, 삭제 예정
+//        guard let path = Bundle.main.path(forResource: "Post", ofType: "json") else { return }
+//        
+//        guard let jsonString = try? String(contentsOfFile: path) else { return }
+//        do {
+//            let decoder = JSONDecoder()
+//            let data = jsonString.data(using: .utf8)
+//            
+//            guard let data = data else { return }
+//            let posts = try decoder.decode([PostResponseDTO].self, from: data)
+//            viewModel.updatePosts(posts)
+//            print(viewModel.getPosts())
+//        } catch {
+//            return
+//        }
         
-        guard let jsonString = try? String(contentsOfFile: path) else { return }
-        do {
-            let decoder = JSONDecoder()
-            let data = jsonString.data(using: .utf8)
-            
-            guard let data = data else { return }
-            let posts = try decoder.decode(PostResponse.self, from: data)
-            viewModel.updatePosts(updatePosts: posts.body)
-            print(viewModel.getPosts())
-        } catch {
-            return
+        let endpoint = APIEndPoints.getPosts(with: PostRequestDTO(page: 1))
+        Task {
+            do {
+                let data = try await Provider.shared.request(with: endpoint)
+                viewModel.updatePosts(data)
+                configureDataSource()
+                generateData()
+            } catch {
+                dump(error)
+            }
         }
     }
 
@@ -118,7 +131,7 @@ class ChatListViewController: UIViewController {
     }
     
     private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
         snapshot.appendSections([.chat])
         snapshot.appendItems(viewModel.getPosts())
         

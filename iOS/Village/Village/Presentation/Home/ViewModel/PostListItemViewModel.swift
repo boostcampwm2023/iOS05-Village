@@ -14,7 +14,7 @@ final class PostListItemViewModel {
         self.posts = updatePosts
     }
     
-    func getTest() -> [PostResponseDTO] {
+    func getPosts() -> [PostResponseDTO] {
         return posts
     }
     
