@@ -16,6 +16,8 @@ protocol ProviderProtocol {
 
 final class Provider: ProviderProtocol {
     
+    static let shared = Provider()
+    
     let session: URLSession
     
     init(session: URLSession = URLSession.shared) {
