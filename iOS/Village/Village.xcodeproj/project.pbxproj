@@ -31,6 +31,7 @@
 		59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DC1B1E2B0C6AEC004C8C1A /* PostingViewModel.swift */; };
 		59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */; };
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
+		8F1B53432B0F10F9006D8982 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53422B0F10F9006D8982 /* ChatListViewController.swift */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
@@ -83,6 +84,7 @@
 		59E0C6042AFBA3FE0073D494 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		59E0C6092AFBA3FE0073D494 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59E196C82B045F4900BF7C5A /* PostingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingViewController.swift; sourceTree = "<group>"; };
+		8F1B53422B0F10F9006D8982 /* ChatListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -245,6 +247,22 @@
 			path = Posting;
 			sourceTree = "<group>";
 		};
+		8F1B53402B0F10DF006D8982 /* ChatList */ = {
+			isa = PBXGroup;
+			children = (
+				8F1B53412B0F10EE006D8982 /* View */,
+			);
+			path = ChatList;
+			sourceTree = "<group>";
+		};
+		8F1B53412B0F10EE006D8982 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8F1B53422B0F10F9006D8982 /* ChatListViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		8F95CF8E2B0B97BA0024631F /* Commons */ = {
 			isa = PBXGroup;
 			children = (
@@ -265,6 +283,7 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				8F1B53402B0F10DF006D8982 /* ChatList */,
 				8F95CF8E2B0B97BA0024631F /* Commons */,
 				8FD52A4F2B0B51A2005EE367 /* ChatRoom */,
 				8FD52A492B0B0A20005EE367 /* Search */,
@@ -311,7 +330,6 @@
 				8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */,
 				8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */,
 				59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */,
-				5979BA7B2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift */,
 				444A50932B0C8D1900454397 /* UIView+Divider.swift */,
 				446362CA2B0DFD4F00B74DA7 /* Int+.swift */,
 				5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */,
@@ -526,6 +544,7 @@
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
+				8F1B53432B0F10F9006D8982 /* ChatListViewController.swift in Sources */,
 				8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
@@ -543,11 +562,9 @@
 				59BD5DC72B0C746A00FEB80F /* PostingViewController+UITextViewDelegate.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
 				8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */,
-				59E196C92B045F4900BF7C5A /* PostingRentViewController.swift in Sources */,
-				59E0C5FE2AFBA3FC0073D494 /* SceneDelegate.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */,
-				5979BA7C2B08AE3C00FFF215 /* UITextField+PlaceHolderColor.swift in Sources */,
+				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
 				59AABDDD2B0CFBAE002F6D0E /* PostType.swift in Sources */,
 				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
@@ -556,7 +573,7 @@
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
 				59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */,
-				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
+				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
