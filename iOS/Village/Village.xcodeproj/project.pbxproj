@@ -258,8 +258,8 @@
 		8F1B53412B0F10EE006D8982 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				8F1B53422B0F10F9006D8982 /* ChatListViewController.swift */,
 				8F1B53442B0F1343006D8982 /* ChatListCollectionViewCell.swift */,
+				8F1B53422B0F10F9006D8982 /* ChatListViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
