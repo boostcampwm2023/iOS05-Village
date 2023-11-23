@@ -103,7 +103,7 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             recentTimeLabel.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 16),
-            recentTimeLabel.leadingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor, constant: 4)
+            recentTimeLabel.trailingAnchor.constraint(equalTo: postImageView.leadingAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
@@ -121,7 +121,34 @@ class ChatListCollectionViewCell: UICollectionViewCell {
     
     func configureData(data: ChatListResponseDTO) {
         nicknameLabel.text = data.user
-        recentTimeLabel.text = data.recentTime
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        
+        let currentData = Date()
+        
+        if let date = dateFormatter.date(from: data.recentTime) {
+            let timeInterval = currentData.timeIntervalSince(date)
+            let minuteInterval = Int(timeInterval/60)
+            
+            if minuteInterval >= 60 * 24 {
+                dateFormatter.dateFormat = "yy.MM.dd"
+                let formattedDate = dateFormatter.string(from: date)
+                let formattedCurrentDate = dateFormatter.string(from: currentData)
+                
+                if let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: currentData),
+                   formattedDate == dateFormatter.string(from: yesterday) {
+                    recentTimeLabel.text = "어제"
+                } else {
+                    recentTimeLabel.text = "\(formattedDate)"
+                }
+            } else if minuteInterval >= 60 {
+                recentTimeLabel.text = "\(minuteInterval / 60)시간전"
+            } else {
+                recentTimeLabel.text = "\(minuteInterval)분전"
+            }
+        }
+        
         recentChatLabel.text = data.recentChat.count > 10 ? String(data.recentChat.prefix(10)) + "..." : data.recentChat
     }
     
