@@ -10,8 +10,8 @@ export class BlockPostEntity {
   @PrimaryColumn()
   blocked_post: number;
 
-  @Column({ nullable: false, default: 1 })
-  status: number;
+  @Column({ nullable: false, default: true })
+  status: boolean;
 
   @ManyToOne(() => UserEntity, (blocker) => blocker.user_hash)
   @JoinColumn({ name: 'blocker' })
