@@ -61,6 +61,7 @@
 		8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */; };
 		8FF7E60F2B0F9A6900B6D678 /* ChatList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8FF7E60E2B0F9A6900B6D678 /* ChatList.json */; };
 		8FF7E6112B0F9BE400B6D678 /* Chat.json in Resources */ = {isa = PBXBuildFile; fileRef = 8FF7E6102B0F9BE400B6D678 /* Chat.json */; };
+		8FF7E6142B0F9FE500B6D678 /* ChatListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E6132B0F9FE500B6D678 /* ChatListViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +131,7 @@
 		8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
 		8FF7E60E2B0F9A6900B6D678 /* ChatList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatList.json; sourceTree = "<group>"; };
 		8FF7E6102B0F9BE400B6D678 /* Chat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Chat.json; sourceTree = "<group>"; };
+		8FF7E6132B0F9FE500B6D678 /* ChatListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -471,6 +473,7 @@
 		8FF7E6082B0F38A500B6D678 /* ChatList */ = {
 			isa = PBXGroup;
 			children = (
+				8FF7E6122B0F9FCA00B6D678 /* ViewModel */,
 				8FF7E6092B0F38A500B6D678 /* View */,
 			);
 			path = ChatList;
@@ -483,6 +486,14 @@
 				8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		8FF7E6122B0F9FCA00B6D678 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				8FF7E6132B0F9FE500B6D678 /* ChatListViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -642,6 +653,7 @@
 				446362CD2B0E445C00B74DA7 /* RequestDetailViewController.swift in Sources */,
 				444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
+				8FF7E6142B0F9FE500B6D678 /* ChatListViewModel.swift in Sources */,
 				446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */,
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
 				8F95CF9A2B0C7C440024631F /* EndPoint.swift in Sources */,
