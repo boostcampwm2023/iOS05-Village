@@ -12,6 +12,8 @@ import { PostModule } from './post/post.module';
 import { APP_PIPE } from '@nestjs/core';
 import { UsersModule } from './users/users.module';
 import { PostsBlockModule } from './posts-block/posts-block.module';
+import { UsersBlockModule } from './users-block/users-block.module';
+
 
 @Module({
   imports: [
@@ -25,9 +27,10 @@ import { PostsBlockModule } from './posts-block/posts-block.module';
     TypeOrmModule.forRootAsync({
       useClass: MysqlConfigProvider,
     }),
+    PostsBlockModule,
+    UsersBlockModule,
     PostModule,
     UsersModule,
-    PostsBlockModule,
   ],
   controllers: [AppController],
   providers: [
