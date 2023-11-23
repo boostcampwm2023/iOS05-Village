@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class PostingPriceView: UIStackView {
     
@@ -54,6 +55,7 @@ final class PostingPriceView: UIStackView {
         textField.inputAccessoryView = keyboardToolBar
         textField.delegate = self
         textField.keyboardType = .numberPad
+        textField.addTarget(self, action: #selector(textFieldDidChanged), for: .editingChanged)
         
         return textField
     }()
@@ -69,12 +71,6 @@ final class PostingPriceView: UIStackView {
         return label
     }()
     
-    private var isEmptyPrice: Bool {
-        guard let text = priceTextField.text else { return true }
-        
-        return text.isEmpty
-    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUp()
@@ -88,6 +84,22 @@ final class PostingPriceView: UIStackView {
     
     @objc private func hideKeyboard(_ sender: UIBarButtonItem) {
         endEditing(true)
+    }
+    
+    @objc private func textFieldDidChanged(_ sender: UITextField) {
+        guard var text = sender.text else { return }
+        if text.isEmpty {
+            priceWarningLabel.alpha = 1
+        } else {
+            priceWarningLabel.alpha = 0
+            
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            text = text.replacingOccurrences(of: ",", with: "")
+            guard let price = Int.init(text),
+                    let string = numberFormatter.string(from: NSNumber(value: price)) else { return }
+            sender.text = string
+        }
     }
     
 }
@@ -123,28 +135,24 @@ extension PostingPriceView: UITextFieldDelegate {
         guard var text = textField.text else { return true }
         text = text.replacingOccurrences(of: ",", with: "")
         if !string.isEmpty && Int(string) == nil || text.count + string.count > 15 { return false }
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        
-        if string.isEmpty {
-            if text.count > 1 {
-                guard let price = Int.init("\(text.prefix(text.count - 1))"),
-                      let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
-                textField.text = "\(result)"
-            } else {
-                textField.text = ""
-            }
-        } else {
-            guard let price = Int.init("\(text)\(string)"),
-                  let result = numberFormatter.string(from: NSNumber(value: price)) else { return true }
-            textField.text = "\(result)"
-        }
-        return false
+        return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+}
+
+extension PostingPriceView {
+    
+    var publisher: AnyPublisher<String, Never> {
+        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: priceTextField)
+            .compactMap { $0.object as? UITextField }
+            .map { ($0.text ?? "") }
+            .print()
+            .eraseToAnyPublisher()
     }
     
 }

@@ -144,6 +144,13 @@ final class PostingViewController: UIViewController {
             .receive(on: RunLoop.main)
             .assign(to: \.titleInput, on: viewModel)
             .store(in: &cancellables)
+        if type == .rent {
+            postingPriceView.publisher
+                .receive(on: RunLoop.main)
+                .assign(to: \.priceInput, on: viewModel)
+                .store(in: &cancellables)
+        }
+        
     }
     
 }

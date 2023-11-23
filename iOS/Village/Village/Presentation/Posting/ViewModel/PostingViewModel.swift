@@ -11,6 +11,8 @@ import Combine
 final class PostingViewModel {
     
     @Published var titleInput: String = ""
+    @Published var priceInput: String = ""
+    @Published var detailInput: String = ""
     
     struct Input {
         
