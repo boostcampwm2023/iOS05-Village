@@ -58,7 +58,7 @@ final class RentDetailViewController: UIViewController {
         let divider = UIView.divider(.horizontal)
         view.addSubview(divider)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 65).isActive = true
+        view.heightAnchor.constraint(equalToConstant: 70).isActive = true
         divider.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         divider.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         divider.topAnchor.constraint(equalTo: view.topAnchor).isActive = true

@@ -16,6 +16,8 @@
 		446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362C82B0DF9E800B74DA7 /* PriceLabel.swift */; };
 		446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CA2B0DFD4F00B74DA7 /* Int+.swift */; };
 		446362CD2B0E445C00B74DA7 /* RequestDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CC2B0E445C00B74DA7 /* RequestDetailViewController.swift */; };
+		446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CE2B0F042500B74DA7 /* PostInfoView.swift */; };
+		446362D12B0F050600B74DA7 /* UserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362D02B0F050600B74DA7 /* UserInfoView.swift */; };
 		4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4491AA272B05D6C90016FC70 /* MenuView.swift */; };
 		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
@@ -67,6 +69,8 @@
 		446362C82B0DF9E800B74DA7 /* PriceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceLabel.swift; sourceTree = "<group>"; };
 		446362CA2B0DFD4F00B74DA7 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		446362CC2B0E445C00B74DA7 /* RequestDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailViewController.swift; sourceTree = "<group>"; };
+		446362CE2B0F042500B74DA7 /* PostInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoView.swift; sourceTree = "<group>"; };
+		446362D02B0F050600B74DA7 /* UserInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoView.swift; sourceTree = "<group>"; };
 		4491AA272B05D6C90016FC70 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		5975E9872B035919007CEF13 /* Post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Post.json; sourceTree = "<group>"; };
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
@@ -142,6 +146,8 @@
 				444A50972B0CE25200454397 /* DurationView.swift */,
 				444A50992B0CE94E00454397 /* DateView.swift */,
 				446362C82B0DF9E800B74DA7 /* PriceLabel.swift */,
+				446362CE2B0F042500B74DA7 /* PostInfoView.swift */,
+				446362D02B0F050600B74DA7 /* UserInfoView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -531,6 +537,7 @@
 				8FD52A452B09D1A6005EE367 /* ChatViewController.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
+				446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				444A50982B0CE25200454397 /* DurationView.swift in Sources */,
@@ -558,6 +565,7 @@
 				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
 				59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
+				446362D12B0F050600B74DA7 /* UserInfoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
