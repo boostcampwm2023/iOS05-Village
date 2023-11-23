@@ -268,13 +268,13 @@
 			path = Village;
 			sourceTree = "<group>";
 		};
-		59E196C72B045EFA00BF7C5A /* Posting */ = {
+		59E196C72B045EFA00BF7C5A /* PostCreate */ = {
 			isa = PBXGroup;
 			children = (
 				59BD5DD12B0C786600FEB80F /* ViewModel */,
 				59BD5DD02B0C785900FEB80F /* View */,
 			);
-			path = Posting;
+			path = PostCreate;
 			sourceTree = "<group>";
 		};
 		8F1B53302B0DE0B3006D8982 /* Network */ = {
@@ -357,7 +357,7 @@
 				8FD52A4F2B0B51A2005EE367 /* ChatRoom */,
 				8FC7FE792B07A88400B91D3B /* PostDetail */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
-				59E196C72B045EFA00BF7C5A /* Posting */,
+				59E196C72B045EFA00BF7C5A /* PostCreate */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
