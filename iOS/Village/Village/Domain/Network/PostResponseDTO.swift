@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct PostResponseDTO: Hashable, Codable {
+struct PostResponseDTO: Codable {
     
     let title: String
     let price: Int?
     let contents: String
-    let postId: Int
-    let userId: Int
+    let postID: Int
+    let userID: Int
     let isRequest: Int
     let images: [String]
     let startDate: String
@@ -23,8 +23,8 @@ struct PostResponseDTO: Hashable, Codable {
         case title
         case price
         case contents
-        case postId = "post_id"
-        case userId = "user_id"
+        case postID = "post_id"
+        case userID = "user_id"
         case isRequest = "is_request"
         case images
         case startDate = "start_date"
