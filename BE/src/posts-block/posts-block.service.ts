@@ -34,4 +34,22 @@ export class PostsBlockService {
     blockPostEntity.status = true;
     await this.blockPostRepository.save(blockPostEntity);
   }
+
+  async findBlockedPosts(blockerId: string) {
+    const blockLists = await this.blockPostRepository.find({
+      where: {
+        blocker: blockerId,
+        status: true,
+      },
+      relations: ['blockedPost'],
+    });
+    return blockLists.map((blockList) => {
+      const blockedPost = blockList.blockedPost;
+      return {
+        title: blockedPost.title,
+        post_image: blockedPost.thumbnail,
+        post_id: blockedPost.id,
+      };
+    });
+  }
 }
