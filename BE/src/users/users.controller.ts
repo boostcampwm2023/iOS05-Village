@@ -10,12 +10,12 @@ import {
   ValidationPipe,
   UploadedFile,
   HttpException,
-
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './createUser.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MultiPartBody } from 'src/utils/multiPartBody.decorator';
+import { UpdateUsersDto } from './usersUpdate.dto';
 
 @Controller('users')
 export class UsersController {
@@ -52,5 +52,15 @@ export class UsersController {
   @Delete(':id')
   usersRemove(@Param('id') id: string) {
     return this.usersService.removeUser(+id);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('image'))
+  async usersModify(
+    @Param('id') userId: string,
+    @MultiPartBody('profile') body: UpdateUsersDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    await this.usersService.updateUserById(userId, body, file);
   }
 }

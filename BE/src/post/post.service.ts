@@ -92,7 +92,7 @@ export class PostService {
   async changeExceptImages(postId: number, updatePostDto: UpdatePostDto) {
     try {
       await this.postRepository.update({ id: postId }, updatePostDto);
-    } catch {
+    } catch (e) {
       throw new HttpException('서버 오류입니다.', 500);
     }
   }
@@ -115,7 +115,7 @@ export class PostService {
         await this.changeImages(postId, updatePostDto.images);
         return true;
       }
-    } catch {
+    } catch (e) {
       return null;
     }
   }
