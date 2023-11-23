@@ -7,10 +7,6 @@
 
 import UIKit
 
-enum PickerLocale: String {
-    case korea = "ko-KR"
-}
-
 // TODO: 키보드 올리기, 시간 범위
 final class TimePickerView: UIView {
     
@@ -51,6 +47,7 @@ final class TimePickerView: UIView {
         
         textfield.inputView = datePicker
         textfield.inputAccessoryView = dateToolBar
+//        textfield.addTarget(self, action: #selector(dateChanged), for: .editingChanged)
         
         return textfield
     }()
@@ -92,6 +89,7 @@ final class TimePickerView: UIView {
         
         textfield.inputView = hourPicker
         textfield.inputAccessoryView = hourToolBar
+//        textfield.addTarget(self, action: #selector(hourChanged), for: .editingChanged)
         
         return textfield
     }()

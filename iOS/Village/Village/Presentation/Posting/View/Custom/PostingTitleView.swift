@@ -81,12 +81,7 @@ final class PostingTitleView: UIStackView {
     }
     
     @objc private func textFieldDidChanged(_ sender: UITextField) {
-        guard let text = sender.text else { return }
-        if text.isEmpty {
-            titleWarningLabel.alpha = 1
-        } else {
-            titleWarningLabel.alpha = 0
-        }
+        titleWarningLabel.alpha = 0
     }
     
 }

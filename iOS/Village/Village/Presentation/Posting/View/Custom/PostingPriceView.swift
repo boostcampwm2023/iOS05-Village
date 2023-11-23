@@ -88,18 +88,14 @@ final class PostingPriceView: UIStackView {
     
     @objc private func textFieldDidChanged(_ sender: UITextField) {
         guard var text = sender.text else { return }
-        if text.isEmpty {
-            priceWarningLabel.alpha = 1
-        } else {
-            priceWarningLabel.alpha = 0
-            
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            text = text.replacingOccurrences(of: ",", with: "")
-            guard let price = Int.init(text),
-                    let string = numberFormatter.string(from: NSNumber(value: price)) else { return }
-            sender.text = string
-        }
+        priceWarningLabel.alpha = 0
+        
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        text = text.replacingOccurrences(of: ",", with: "")
+        guard let price = Int.init(text),
+              let string = numberFormatter.string(from: NSNumber(value: price)) else { return }
+        sender.text = string
     }
     
 }
