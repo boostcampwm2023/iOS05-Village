@@ -17,6 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: xcodebuild -scheme Village -destination 'platform=iOS Simulator,name=iPhone 13' -project Village.xcodeproj build
+      run: xcodebuild -scheme Village -destination 'platform=iOS Simulator,name=iPhone 13' -project iOS/Village/Village.xcodeproj build
     - name: Run tests
-      run: xcodebuild -scheme Village -destination 'platform=iOS Simulator,name=iPhone 13' -project Village.xcodeproj test
+      run: xcodebuild -scheme Village -destination 'platform=iOS Simulator,name=iPhone 13' -project iOS/Village/Village.xcodeproj test
