@@ -14,10 +14,10 @@ export class BlockPostEntity {
   status: boolean;
 
   @ManyToOne(() => UserEntity, (blocker) => blocker.user_hash)
-  @JoinColumn({ name: 'blocker' })
+  @JoinColumn({ name: 'blocker', referencedColumnName: 'user_hash' })
   blockerUser: UserEntity;
 
-  @ManyToOne(() => UserEntity, (blocked_post) => blocked_post.id)
+  @ManyToOne(() => PostEntity, (blocked_post) => blocked_post.id)
   @JoinColumn({ name: 'blocked_post' })
   blockedPost: PostEntity;
 }

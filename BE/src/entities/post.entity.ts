@@ -64,5 +64,5 @@ export class PostEntity {
   post_images: PostImageEntity[];
 
   @OneToMany(() => BlockPostEntity, (post_image) => post_image.blocked_post)
-  blocked_posts: PostImageEntity[];
+  blocked_posts: BlockPostEntity[];
 }
