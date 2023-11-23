@@ -24,7 +24,7 @@ export class UsersBlockService {
     }
 
     const isBlockedUser = await this.blockUserRepository.findOne({
-      where: { blocked_user: id, blocker: 'qwe', status: 1 },
+      where: { blocked_user: id, blocker: 'qwe', status: true },
     });
 
     console.log(isBlockedUser);
@@ -36,7 +36,7 @@ export class UsersBlockService {
     const blockUserEntity = new BlockUserEntity();
     blockUserEntity.blocker = 'qwe';
     blockUserEntity.blocked_user = id;
-    blockUserEntity.status = 1;
+    blockUserEntity.status = true;
 
     try {
       const res = await this.blockUserRepository.save(blockUserEntity);
