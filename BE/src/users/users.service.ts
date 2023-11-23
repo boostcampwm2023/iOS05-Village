@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { UpdatePostDto } from '../post/dto/postUpdate.dto';
 import { UpdateUsersDto } from './usersUpdate.dto';
 import { S3Handler } from '../utils/S3Handler';
+import { hashMaker } from 'src/utils/hashMaker';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +22,8 @@ export class UsersService {
     userEntity.social_email = createUserDto.social_email;
     userEntity.OAuth_domain = createUserDto.OAuth_domain;
     userEntity.profile_img = imageLocation;
-    userEntity.user_hash = 'asdf';
+    userEntity.user_hash = hashMaker(createUserDto.nickname).slice(0, 8);
+    userEntity.status = true;
     const res = await this.userRepository.save(userEntity);
     return res;
   }
