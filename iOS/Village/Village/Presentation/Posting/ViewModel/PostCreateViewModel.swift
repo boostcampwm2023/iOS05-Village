@@ -1,5 +1,5 @@
 //
-//  PostingViewModel.swift
+//  PostCreateViewModel.swift
 //  Village
 //
 //  Created by 조성민 on 11/21/23.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class PostingViewModel {
+final class PostCreateViewModel {
     
     private var titleInput: String = ""
     private var startTimeInput: Date?
@@ -25,9 +25,9 @@ final class PostingViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     
-    private let repository: PostingRepository
+    private let repository: PostCreateRepository
     
-    init(repository: PostingRepository) {
+    init(repository: PostCreateRepository) {
         self.repository = repository
     }
     
@@ -89,7 +89,7 @@ final class PostingViewModel {
     
 }
 
-private extension PostingViewModel {
+private extension PostCreateViewModel {
     
     func validateTitle() {
         let result = !titleInput.isEmpty
@@ -113,7 +113,7 @@ private extension PostingViewModel {
     
 }
 
-extension PostingViewModel {
+extension PostCreateViewModel {
     
     struct Input {
         
