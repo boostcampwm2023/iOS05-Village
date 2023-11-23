@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './createUser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from '../post/dto/postUpdate.dto';
 import { UpdateUsersDto } from './usersUpdate.dto';
@@ -14,6 +14,18 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
     private s3Handler: S3Handler,
   ) {}
+  
+  async createUser(imageLocation: string, createUserDto: CreateUserDto) {
+    const userEntity = new UserEntity();
+    userEntity.nickname = createUserDto.nickname;
+    userEntity.social_email = createUserDto.social_email;
+    userEntity.OAuth_domain = createUserDto.OAuth_domain;
+    userEntity.profile_img = imageLocation;
+    userEntity.user_hash = 'asdf';
+    const res = await this.userRepository.save(userEntity);
+    return res;
+  }
+  
   async findUserById(userId: string) {
     const user: UserEntity = await this.userRepository.findOne({
       where: { user_hash: userId, status: true },
@@ -23,9 +35,6 @@ export class UsersService {
     } else {
       return null;
     }
-  }
-  createUser(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
   }
 
   removeUser(id: number) {
@@ -85,5 +94,10 @@ export class UsersService {
     } catch (e) {
       throw new HttpException('서버 오류입니다. ima', 500);
     }
+  }
+
+  async uploadImages(file: Express.Multer.File) {
+    const fileLocation = await this.s3Handler.uploadFile(file);
+    return fileLocation;
   }
 }

@@ -7,11 +7,9 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
   ValidationPipe,
-  HttpException,
   UploadedFile,
-  HttpCode,
+  HttpException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './createUser.dto';
@@ -36,15 +34,19 @@ export class UsersController {
   @Post()
   @UseInterceptors(FileInterceptor('profileImage'))
   async usersCreate(
-    @UploadedFiles() files: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @MultiPartBody(
       'profile',
       new ValidationPipe({ validateCustomDecorators: true }),
     )
     createUserDto: CreateUserDto,
   ) {
-    const user = await this.usersService.createUser(createUserDto);
-    return user;
+    let imageLocation: string;
+
+    if (file !== undefined) {
+      imageLocation = await this.usersService.uploadImages(file);
+    }
+    await this.usersService.createUser(imageLocation, createUserDto);
   }
 
   @Delete(':id')
