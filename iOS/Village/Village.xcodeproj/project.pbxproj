@@ -32,6 +32,7 @@
 		59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */; };
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
 		8F1B53432B0F10F9006D8982 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53422B0F10F9006D8982 /* ChatListViewController.swift */; };
+		8F1B53452B0F1343006D8982 /* ChatListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53442B0F1343006D8982 /* ChatListCollectionViewCell.swift */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
@@ -84,6 +85,7 @@
 		59E0C6092AFBA3FE0073D494 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59E196C82B045F4900BF7C5A /* PostingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingViewController.swift; sourceTree = "<group>"; };
 		8F1B53422B0F10F9006D8982 /* ChatListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
+		8F1B53442B0F1343006D8982 /* ChatListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListCollectionViewCell.swift; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 			isa = PBXGroup;
 			children = (
 				8F1B53422B0F10F9006D8982 /* ChatListViewController.swift */,
+				8F1B53442B0F1343006D8982 /* ChatListCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -559,6 +562,7 @@
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
+				8F1B53452B0F1343006D8982 /* ChatListCollectionViewCell.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
 				59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
