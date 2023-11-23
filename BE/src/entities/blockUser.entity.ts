@@ -4,19 +4,19 @@ import { UserEntity } from './user.entity';
 @Entity('block_user')
 export class BlockUserEntity {
   @PrimaryColumn()
-  blocker: number;
+  blocker: string;
 
   @PrimaryColumn()
-  blocked: number;
+  blocked_user: string;
 
   @Column({ nullable: false, default: 1 })
   status: number;
 
-  @ManyToOne(() => UserEntity, (blocker) => blocker.id)
+  @ManyToOne(() => UserEntity, (blocker) => blocker.user_hash)
   @JoinColumn({ name: 'blocker' })
   blockerUser: UserEntity;
 
-  @ManyToOne(() => UserEntity, (blocked) => blocked.id)
-  @JoinColumn({ name: 'blocked' })
+  @ManyToOne(() => UserEntity, (blocked) => blocked.user_hash)
+  @JoinColumn({ name: 'blocked_user' })
   blockedUser: UserEntity;
 }

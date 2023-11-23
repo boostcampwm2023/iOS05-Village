@@ -26,7 +26,7 @@ export class MysqlConfigProvider implements TypeOrmOptionsFactory {
         BlockUserEntity,
         BlockPostEntity,
       ],
-      synchronize: true,
+      synchronize: false,
     };
   }
 }
