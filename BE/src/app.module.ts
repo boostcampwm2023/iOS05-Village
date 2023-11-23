@@ -11,6 +11,7 @@ import { MysqlConfigProvider } from './config/mysql.config';
 import { PostModule } from './post/post.module';
 import { APP_PIPE } from '@nestjs/core';
 import { UsersModule } from './users/users.module';
+import { PostsBlockModule } from './posts-block/posts-block.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
     }),
     PostModule,
     UsersModule,
+    PostsBlockModule,
   ],
   controllers: [AppController],
   providers: [
