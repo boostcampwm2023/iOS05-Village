@@ -5,7 +5,7 @@ import { PostEntity } from './post.entity';
 @Entity('block_post')
 export class BlockPostEntity {
   @PrimaryColumn()
-  blocker: number;
+  blocker: string;
 
   @PrimaryColumn()
   blocked_post: number;
