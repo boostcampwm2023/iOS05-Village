@@ -16,7 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Xcode Select Version
+      uses: mobiledevops/xcode-select-version-action@v1
+      with:
+          xcode-select-version: 14.2
     - name: Build
-      run: xcodebuild clean build -project iOS/Village/Village.xcodeproj -scheme Village -destination 'platform=iOS Simulator,name=iPhone 13,OS=latest'
+      run: xcodebuild clean build -project iOS/Village/Village.xcodeproj -scheme Village -destination 'platform=iOS Simulator,name=iPhone 13, OS=latest'
       
-    
