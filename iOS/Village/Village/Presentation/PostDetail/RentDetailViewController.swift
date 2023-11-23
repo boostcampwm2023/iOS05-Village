@@ -31,7 +31,7 @@ final class RentDetailViewController: UIViewController {
         stackView.spacing = 10
         stackView.axis = .vertical
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        stackView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
         return stackView
     }()
     
