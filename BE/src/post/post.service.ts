@@ -67,7 +67,7 @@ export class PostService {
       take: limit,
       skip: offset,
       where: this.makeWhereOption(query),
-      relations: ['post_images'],
+      relations: ['post_images', 'user'],
     });
     res = this.filterBlocked(res, blockedUsers, blockedPosts);
     const posts = [];
@@ -77,7 +77,7 @@ export class PostService {
         price: re.price,
         description: re.contents,
         post_id: re.id,
-        user_id: re.user_id,
+        user_id: re.user.user_hash,
         is_request: re.is_request === true ? true : false,
         images: re.post_images.map((post_image) => post_image.image_url),
         start_date: re.start_date,
@@ -92,14 +92,14 @@ export class PostService {
     try {
       const res = await this.postRepository.findOne({
         where: { id: postId },
-        relations: ['post_images'],
+        relations: ['post_images', 'user'],
       });
 
       const post = {
         title: res.title,
         description: res.contents,
         price: res.price,
-        user_id: res.user_id,
+        user_id: res.user.user_hash,
         images: res.post_images.map((post_image) => post_image.image_url),
         is_request: res.is_request === true ? true : false,
         start_date: res.start_date,
