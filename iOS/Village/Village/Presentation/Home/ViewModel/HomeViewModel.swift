@@ -20,11 +20,11 @@ final class HomeViewModel {
             })
             .store(in: &cancellableBag)
         
-        return Output(postList: postList)
+        return Output(postList: postList.eraseToAnyPublisher())
     }
     
     private func getPosts(page: Int) {
-        let request = PostRequestDTO(page: page)
+        let request = PostListRequestDTO(page: page)
         let endpoint = APIEndPoints.getPosts(with: request)
         
         Task {
@@ -46,7 +46,7 @@ extension HomeViewModel {
     }
     
     struct Output {
-        var postList: PassthroughSubject<[PostListItem], Never>
+        var postList: AnyPublisher<[PostListItem], Never>
     }
     
 }

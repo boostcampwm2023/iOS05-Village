@@ -206,11 +206,11 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        if (post.isRequest != 0) {
+        if (post.isRequest == 1) {
             let requestVC = RequestDetailViewController(postID: post.postID, userID: post.userID)
             self.navigationController?.pushViewController(requestVC, animated: true)
         } else {
-            let rentVC = RequestDetailViewController(postID: post.postID, userID: post.userID)
+            let rentVC = RentDetailViewController(postID: post.postID, userID: post.userID)
             self.navigationController?.pushViewController(rentVC, animated: true)
         }
     }

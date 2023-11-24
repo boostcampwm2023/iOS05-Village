@@ -2,29 +2,32 @@
 //  PostResponseDTO.swift
 //  Village
 //
-//  Created by 정상윤 on 11/24/23.
+//  Created by 박동재 on 2023/11/22.
 //
 
 import Foundation
 
-struct PostResponseDTO: Decodable {
+struct PostListResponseDTO: Codable {
     
     let title: String
-    let contents: String
     let price: Int?
+    let contents: String
+    let postID: Int
     let userID: Int
-    let imageURL: String?
     let isRequest: Int
+    let images: [String]
     let startDate: String
     let endDate: String
     
     enum CodingKeys: String, CodingKey {
-        case title, contents, price
+        case title
+        case price
+        case contents
+        case postID = "post_id"
         case userID = "user_id"
-        case imageURL = "post_image"
         case isRequest = "is_request"
+        case images
         case startDate = "start_date"
         case endDate = "end_date"
     }
-    
 }
