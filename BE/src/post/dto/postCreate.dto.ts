@@ -7,7 +7,7 @@ export class PostCreateDto {
   title: string;
 
   @IsString()
-  contents: string;
+  description: string;
 
   @IsPriceCorrect('is_request')
   price: number;
