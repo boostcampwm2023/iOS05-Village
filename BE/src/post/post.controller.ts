@@ -83,7 +83,7 @@ export class PostController {
 
   @Delete('/:id')
   async postRemove(@Param('id') id: number) {
-    const isRemoved = await this.postService.deletePostById(id);
+    const isRemoved = await this.postService.removePost(id);
 
     if (isRemoved) {
       return HttpCode(200);

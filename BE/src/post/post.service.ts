@@ -226,7 +226,7 @@ export class PostService {
     }
   }
 
-  async deletePostById(postId: number) {
+  async removePost(postId: number) {
     const isDataExists = await this.postRepository.findOne({
       where: { id: postId, status: true },
     });
@@ -234,8 +234,13 @@ export class PostService {
     if (!isDataExists) {
       return false;
     } else {
-      await this.postRepository.softDelete({ id: postId });
+      await this.deleteCascadingPost(postId);
       return true;
     }
+  }
+  async deleteCascadingPost(postId: number) {
+    await this.postImageRepository.softDelete({ post_id: postId });
+    await this.blockPostRepository.softDelete({ blocked_post: postId });
+    await this.postRepository.softDelete({ id: postId });
   }
 }
