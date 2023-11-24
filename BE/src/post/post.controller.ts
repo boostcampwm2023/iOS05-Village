@@ -66,8 +66,18 @@ export class PostController {
 
   @Patch('/:id')
   @ApiOperation({ summary: 'fix post context', description: '게시글 수정' })
-  async postModify(@Param('id') id: number, @Body() body: UpdatePostDto) {
-    const isFixed = await this.postService.updatePostById(id, body);
+  @UseInterceptors(FilesInterceptor('image', 12))
+  async postModify(
+    @Param('id') id: number,
+    @UploadedFiles()
+    files: Array<Express.Multer.File>,
+    @MultiPartBody(
+      'post_info',
+      new ValidationPipe({ validateCustomDecorators: true }),
+    )
+    body: UpdatePostDto,
+  ) {
+    const isFixed = await this.postService.updatePostById(id, body, files);
 
     if (isFixed) {
       return HttpCode(200);

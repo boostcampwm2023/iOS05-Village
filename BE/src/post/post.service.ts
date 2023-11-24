@@ -60,12 +60,12 @@ export class PostService {
 
       const post = {
         title: res.title,
-        contents: res.contents,
+        description: res.contents,
         price: res.price,
         user_id: res.user_id,
         images: res.post_images,
         post_image: res.thumbnail,
-        is_request: res.is_request,
+        is_request: res.is_request === true ? true : false,
         start_date: res.start_date,
         end_date: res.end_date,
       };
@@ -98,12 +98,27 @@ export class PostService {
     }
   }
 
-  async updatePostById(postId: number, updatePostDto: UpdatePostDto) {
+  async updatePostById(
+    postId: number,
+    updatePostDto: UpdatePostDto,
+    files: Express.Multer.File[],
+  ) {
     const isDataExists = await this.postRepository.findOne({
       where: { id: postId },
     });
 
-    const isChangingImages = 'images' in updatePostDto; // images 가 존재여부 확인
+    if (!isDataExists) {
+      return false;
+    }
+
+    const isChangingImages = files !== undefined;
+
+    if (!isChangingImages) {
+      await this.changeExceptImages(postId, updatePostDto);
+      return true;
+    } else {
+      await this.changeExceptImages(postId, updatePostDto);
+    }
 
     try {
       if (!isDataExists) {
@@ -113,7 +128,10 @@ export class PostService {
         return true;
       } else {
         await this.changeExceptImages(postId, updatePostDto);
-        await this.changeImages(postId, updatePostDto.images);
+
+        const imageLocations = await this.uploadImages(files);
+
+        await this.changeImages(postId, imageLocations);
         return true;
       }
     } catch (e) {
@@ -134,7 +152,7 @@ export class PostService {
       where: { user_hash: userHash },
     });
     post.title = createPostDto.title;
-    post.contents = createPostDto.contents;
+    post.contents = createPostDto.description;
     post.price = createPostDto.price;
     post.is_request = createPostDto.is_request;
     post.start_date = createPostDto.start_date;

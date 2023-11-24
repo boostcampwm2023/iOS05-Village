@@ -13,8 +13,4 @@ export class UpdatePostDto {
   @IsNumber() // 전화번호 형식 검증
   price?: number;
 
-  @IsArray()
-  @IsOptional()
-  @IsString({ each: true })
-  images?: string[];
 }
