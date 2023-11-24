@@ -75,10 +75,10 @@ export class PostService {
       const post = {
         title: re.title,
         price: re.price,
-        contents: re.contents,
+        description: re.contents,
         post_id: re.id,
         user_id: re.user_id,
-        is_request: re.is_request,
+        is_request: re.is_request === true ? true : false,
         images: re.post_images.map((post_image) => post_image.image_url),
         start_date: re.start_date,
         end_date: re.end_date,
