@@ -206,13 +206,9 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        if (post.isRequest == 1) {
-            let requestVC = RequestDetailViewController(postID: post.postID, userID: post.userID)
-            self.navigationController?.pushViewController(requestVC, animated: true)
-        } else {
-            let rentVC = RentDetailViewController(postID: post.postID, userID: post.userID)
-            self.navigationController?.pushViewController(rentVC, animated: true)
-        }
+        let postDetailVC = PostDetailViewController(postID: post.postID, userID: post.userID)
+        self.navigationController?.pushViewController(postDetailVC, animated: true)
+        
     }
     
 }

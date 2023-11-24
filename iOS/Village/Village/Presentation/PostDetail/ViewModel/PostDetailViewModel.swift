@@ -36,7 +36,6 @@ final class PostDetailViewModel {
         Task {
             do {
                 let data = try await Provider.shared.request(with: endpoint)
-                dump(data)
                 post.send(data)
             } catch let error as NetworkError {
                 post.send(completion: .failure(error))
