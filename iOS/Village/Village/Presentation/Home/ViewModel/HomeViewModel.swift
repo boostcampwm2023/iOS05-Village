@@ -20,19 +20,18 @@ final class HomeViewModel {
             })
             .store(in: &cancellableBag)
         
-        return Output(postList: postList)
+        return Output(postList: postList.eraseToAnyPublisher())
     }
     
     private func getPosts(page: Int) {
-        let request = PostRequestDTO(page: page)
+        let request = PostListRequestDTO(page: page)
         let endpoint = APIEndPoints.getPosts(with: request)
         
         Task {
             do {
                 let data = try await Provider.shared.request(with: endpoint)
-                postList.send(data.map{ PostListItem(dto: $0) })
-            }
-            catch let error {
+                postList.send(data.map { PostListItem(dto: $0) })
+            } catch let error {
                 dump(error)
             }
         }
@@ -47,7 +46,7 @@ extension HomeViewModel {
     }
     
     struct Output {
-        var postList: PassthroughSubject<[PostListItem], Never>
+        var postList: AnyPublisher<[PostListItem], Never>
     }
     
 }
