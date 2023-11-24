@@ -33,82 +33,95 @@ export class PostService {
     return where;
   }
 
-  filterBlocked(
+  async getFilteredList(userId: string) {
+    const blockedUsersId: number[] = (
+      await this.blockUserRepository.find({
+        where: { blocker: userId },
+        relations: ['blockedUser'],
+      })
+    ).map((blockedUser) => blockedUser.blockedUser.id);
+
+    const blockedPostsId: number[] = (
+      await this.blockPostRepository.find({
+        where: { blocker: userId },
+      })
+    ).map((blockedPost) => blockedPost.blocked_post);
+    return { blockedUsersId, blockedPostsId };
+  }
+
+  async filterBlockedPosts(
+    userId: string,
     posts: PostEntity[],
-    blockedUsers: BlockUserEntity[],
-    blockedPosts: BlockPostEntity[],
-  ) {
-    const blockedPostsId = blockedPosts.map((blockedPost) => {
-      return blockedPost.blocked_post;
-    });
-    const blockedUsersId = blockedUsers.map((blockedUser) => {
-      return blockedUser.blockedUser.id;
-    });
+  ): Promise<PostEntity[]> {
+    const { blockedUsersId, blockedPostsId } =
+      await this.getFilteredList(userId);
     return posts.filter((post) => {
-      const writerId = post.user_id;
-      const postId = post.id;
       return !(
-        blockedPostsId.includes(postId) || blockedUsersId.includes(writerId)
+        blockedPostsId.includes(post.id) ||
+        blockedUsersId.includes(post.user_id)
       );
     });
   }
+
+  async isFiltered(post: PostEntity, userId: string) {
+    const { blockedUsersId, blockedPostsId } =
+      await this.getFilteredList(userId);
+    return (
+      blockedPostsId.includes(post.id) || blockedUsersId.includes(post.user_id)
+    );
+  }
+
   async findPosts(query: PostListDto, userId: string) {
     const page: number = query.page === undefined ? 1 : query.page;
     const limit: number = 20;
     const offset: number = limit * (page - 1);
-    const blockedUsers = await this.blockUserRepository.find({
-      where: { blocker: userId },
-      relations: ['blockedUser'],
-    });
-    const blockedPosts = await this.blockPostRepository.find({
-      where: { blocker: userId },
-    });
-    let res = await this.postRepository.find({
+
+    const posts = await this.postRepository.find({
       take: limit,
       skip: offset,
       where: this.makeWhereOption(query),
       relations: ['post_images', 'user'],
     });
-    res = this.filterBlocked(res, blockedUsers, blockedPosts);
-    const posts = [];
-    res.forEach((re) => {
-      const post = {
-        title: re.title,
-        price: re.price,
-        description: re.contents,
-        post_id: re.id,
-        user_id: re.user.user_hash,
-        is_request: re.is_request,
-        images: re.post_images.map((post_image) => post_image.image_url),
-        start_date: re.start_date,
-        end_date: re.end_date,
+    const filteredPosts = await this.filterBlockedPosts(userId, posts);
+    return filteredPosts.map((filteredPost) => {
+      return {
+        title: filteredPost.title,
+        price: filteredPost.price,
+        description: filteredPost.contents,
+        post_id: filteredPost.id,
+        user_id: filteredPost.user.user_hash,
+        is_request: filteredPost.is_request,
+        images: filteredPost.post_images.map(
+          (post_image) => post_image.image_url,
+        ),
+        start_date: filteredPost.start_date,
+        end_date: filteredPost.end_date,
       };
-      posts.push(post);
     });
-    return posts;
   }
 
-  async findPostById(postId: number) {
-    try {
-      const res = await this.postRepository.findOne({
-        where: { id: postId },
-        relations: ['post_images', 'user'],
-      });
-
-      return {
-        title: res.title,
-        description: res.contents,
-        price: res.price,
-        user_id: res.user.user_hash,
-        images: res.post_images.map((post_image) => post_image.image_url),
-        is_request: res.is_request,
-        start_date: res.start_date,
-        end_date: res.end_date,
-        post_id: res.id,
-      };
-    } catch {
-      return null;
+  async findPostById(postId: number, userId: string) {
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: ['post_images', 'user'],
+    });
+    if (post === null) {
+      throw new HttpException('없는 게시물입니다.', 400);
     }
+    if (await this.isFiltered(post, userId)) {
+      throw new HttpException('차단한 게시물입니다.', 400);
+    }
+    return {
+      title: post.title,
+      description: post.contents,
+      price: post.price,
+      user_id: post.user.user_hash,
+      images: post.post_images.map((post_image) => post_image.image_url),
+      is_request: post.is_request,
+      start_date: post.start_date,
+      end_date: post.end_date,
+      post_id: post.id,
+    };
   }
 
   async changeImages(postId: number, images: string[]) {
