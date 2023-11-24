@@ -15,7 +15,6 @@
 		444A509A2B0CE94E00454397 /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50992B0CE94E00454397 /* DateView.swift */; };
 		446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362C82B0DF9E800B74DA7 /* PriceLabel.swift */; };
 		446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CA2B0DFD4F00B74DA7 /* Int+.swift */; };
-		446362CD2B0E445C00B74DA7 /* RequestDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CC2B0E445C00B74DA7 /* RequestDetailViewController.swift */; };
 		446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CE2B0F042500B74DA7 /* PostInfoView.swift */; };
 		446362D12B0F050600B74DA7 /* UserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362D02B0F050600B74DA7 /* UserInfoView.swift */; };
 		4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4491AA272B05D6C90016FC70 /* MenuView.swift */; };
@@ -59,7 +58,7 @@
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
 		8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* HomeViewModel.swift */; };
 		8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE772B06768C00B91D3B /* NetworkService.swift */; };
-		8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */; };
+		8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */; };
 		8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */; };
 		8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */; };
 		8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */; };
@@ -86,7 +85,6 @@
 		444A50992B0CE94E00454397 /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
 		446362C82B0DF9E800B74DA7 /* PriceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceLabel.swift; sourceTree = "<group>"; };
 		446362CA2B0DFD4F00B74DA7 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
-		446362CC2B0E445C00B74DA7 /* RequestDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailViewController.swift; sourceTree = "<group>"; };
 		446362CE2B0F042500B74DA7 /* PostInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoView.swift; sourceTree = "<group>"; };
 		446362D02B0F050600B74DA7 /* UserInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoView.swift; sourceTree = "<group>"; };
 		4491AA272B05D6C90016FC70 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
@@ -131,7 +129,7 @@
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
 		8FC7FE732B05CE9A00B91D3B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		8FC7FE772B06768C00B91D3B /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
-		8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentDetailViewController.swift; sourceTree = "<group>"; };
+		8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
 		8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
@@ -463,8 +461,7 @@
 			children = (
 				44C1F5E42B0FE3670047A436 /* ViewModel */,
 				444A50962B0C906900454397 /* Custom */,
-				8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */,
-				446362CC2B0E445C00B74DA7 /* RequestDetailViewController.swift */,
+				8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */,
 			);
 			path = PostDetail;
 			sourceTree = "<group>";
@@ -652,7 +649,7 @@
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */,
-				8F1B53382B0E03AE006D8982 /* PostResponseDTO.swift in Sources */,
+				8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */,
 				5980D75F2B0FB6DB00A6B370 /* PostingRepository.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
 				8F95CF982B0C7B270024631F /* Reponsable.swift in Sources */,
@@ -668,7 +665,6 @@
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				444A50982B0CE25200454397 /* DurationView.swift in Sources */,
 				444A50902B0C60F900454397 /* ImagePageView.swift in Sources */,
-				446362CD2B0E445C00B74DA7 /* RequestDetailViewController.swift in Sources */,
 				444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
 				446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */,
@@ -696,11 +692,11 @@
 				59AABDE12B0E1BB8002F6D0E /* PostingPriceView.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */,
-				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
+				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
 				44C1F5E62B0FE37C0047A436 /* PostDetailViewModel.swift in Sources */,
 				8FF7E60C2B0F38A500B6D678 /* ChatListCollectionViewCell.swift in Sources */,
 				59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */,
-				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
+				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
 				8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */,
 				446362D12B0F050600B74DA7 /* UserInfoView.swift in Sources */,
 			);

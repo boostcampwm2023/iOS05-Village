@@ -13,7 +13,7 @@ struct PostListItem: Hashable {
     let price: Int?
     let postID: Int
     let userID: Int
-    let isRequest: Int
+    let isRequest: Bool
     let imageURL: String?
     
     init(dto: PostListResponseDTO) {
