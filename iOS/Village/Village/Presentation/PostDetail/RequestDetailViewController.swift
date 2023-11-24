@@ -6,11 +6,18 @@
 //
 
 import UIKit
+import Combine
 
 final class RequestDetailViewController: UIViewController {
     
-    private let postID: String
-    private let userID: String
+    typealias ViewModel = PostDetailViewModel
+    typealias Input = ViewModel.Input
+    
+    private let postID: Just<Int>
+    private let userID: Just<Int>
+    
+    private var cancellableBag = Set<AnyCancellable>()
+    private let viewModel = ViewModel()
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -63,9 +70,9 @@ final class RequestDetailViewController: UIViewController {
         return button
     }()
     
-    init(postID: String, userID: String) {
-        self.postID = postID
-        self.userID = userID
+    init(postID: Int, userID: Int) {
+        self.postID = Just(postID)
+        self.userID = Just(userID)
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -80,7 +87,41 @@ final class RequestDetailViewController: UIViewController {
         configureUI()
         configureNavigationItem()
         setLayoutConstraints()
-        setContent()
+        bindViewModel()
+    }
+    
+    private func bindViewModel() {
+        let output = viewModel.transform(input: Input(postID: postID.eraseToAnyPublisher(),
+                                                      userID: userID.eraseToAnyPublisher()))
+        output.post
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] post in
+                self?.postInfoView.setContent(title: post.title,
+                                        startDate: post.startDate, endDate: post.endDate,
+                                        description: post.contents)
+            })
+            .store(in: &cancellableBag)
+        
+        output.user
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] user in
+                self?.userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+            })
+            .store(in: &cancellableBag)
     }
     
     @objc
@@ -103,14 +144,6 @@ private extension RequestDetailViewController {
         containerView.addArrangedSubview(UIView.divider(.horizontal))
         containerView.addArrangedSubview(postInfoView)
         footerView.addSubview(chatButton)
-    }
-    
-    func setContent() {
-        postInfoView.setContent(title: post.title,
-                                startDate: post.startDate, endDate: post.endDate,
-                                description: post.contents)
-        let dummyURL = "https://img.gqkorea.co.kr/gq/2022/08/style_63073140eea70.jpg"
-        userInfoView.setContent(imageURL: dummyURL, nickname: "이지금 [IU Official]")
     }
     
     func configureNavigationItem() {

@@ -6,11 +6,18 @@
 //
 
 import UIKit
+import Combine
 
 final class RentDetailViewController: UIViewController {
     
-    private let postID: String
-    private let userID: String
+    typealias ViewModel = PostDetailViewModel
+    typealias Input = ViewModel.Input
+    
+    private let postID: Just<Int>
+    private let userID: Just<Int>
+    
+    private let viewModel = ViewModel()
+    private var cancellableBag = Set<AnyCancellable>()
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -87,9 +94,9 @@ final class RentDetailViewController: UIViewController {
         return button
     }()
     
-    init(postID: String, userID: String) {
-        self.postID = postID
-        self.userID = userID
+    init(postID: Int, userID: Int) {
+        self.postID = Just(postID)
+        self.userID = Just(userID)
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -103,8 +110,8 @@ final class RentDetailViewController: UIViewController {
         
         configureUI()
         configureNavigationItem()
-        setContents()
         setLayoutConstraints()
+        bindViewModel()
     }
     
     @objc
@@ -139,18 +146,38 @@ private extension RentDetailViewController {
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
-    func setContents() {
-        if post.images.isEmpty {
-            imagePageView.isHidden = true
-        } else {
-            imagePageView.setImageURL(post.images)
-        }
-        let dummyURL = "https://img.gqkorea.co.kr/gq/2022/08/style_63073140eea70.jpg"
-        userInfoView.setContent(imageURL: dummyURL, nickname: "이지금 [IU Official]")
-        postInfoView.setContent(title: post.title,
-                                startDate: post.startDate, endDate: post.endDate,
-                                description: post.contents)
-        priceLabel.setPrice(price: post.price)
+    private func bindViewModel() {
+        let output = viewModel.transform(input: Input(postID: postID.eraseToAnyPublisher(),
+                                                      userID: userID.eraseToAnyPublisher()))
+        output.post
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] post in
+                self?.postInfoView.setContent(title: post.title,
+                                        startDate: post.startDate, endDate: post.endDate,
+                                        description: post.contents)
+            })
+            .store(in: &cancellableBag)
+        
+        output.user
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] user in
+                self?.userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+            })
+            .store(in: &cancellableBag)
     }
     
     func setLayoutConstraints() {
