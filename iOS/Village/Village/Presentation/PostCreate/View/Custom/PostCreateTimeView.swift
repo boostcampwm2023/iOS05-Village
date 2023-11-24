@@ -42,7 +42,7 @@ final class PostCreateTimeView: UIStackView {
     }()
     
     private lazy var dateToolBar: UIToolbar = {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
             barButtonSystemItem: .done,
             target: nil,
@@ -84,7 +84,7 @@ final class PostCreateTimeView: UIStackView {
     }()
     
     private lazy var hourToolBar: UIToolbar = {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
             barButtonSystemItem: .done,
             target: nil,

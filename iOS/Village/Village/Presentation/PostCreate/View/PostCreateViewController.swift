@@ -22,7 +22,7 @@ final class PostCreateViewController: UIViewController {
     private let type: PostType
     
     private lazy var keyboardToolBar: UIToolbar = {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
             barButtonSystemItem: .close,
             target: nil,
