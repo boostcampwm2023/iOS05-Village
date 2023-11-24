@@ -55,7 +55,7 @@ export class PostService {
   async findPosts(query: PostListDto, userId: string) {
     const page: number = query.page === undefined ? 1 : query.page;
     const limit: number = 20;
-    const offset: number = limit * (page - 1) + 1;
+    const offset: number = limit * (page - 1);
     const blockedUsers = await this.blockUserRepository.find({
       where: { blocker: userId },
       relations: ['blockedUser'],
