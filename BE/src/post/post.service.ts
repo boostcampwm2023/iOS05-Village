@@ -90,15 +90,17 @@ export class PostService {
 
   async findPostById(postId: number) {
     try {
-      const res = await this.postRepository.findOne({ where: { id: postId } });
+      const res = await this.postRepository.findOne({
+        where: { id: postId },
+        relations: ['post_images'],
+      });
 
       const post = {
         title: res.title,
         description: res.contents,
         price: res.price,
         user_id: res.user_id,
-        images: res.post_images,
-        post_image: res.thumbnail,
+        images: res.post_images.map((post_image) => post_image.image_url),
         is_request: res.is_request === true ? true : false,
         start_date: res.start_date,
         end_date: res.end_date,
