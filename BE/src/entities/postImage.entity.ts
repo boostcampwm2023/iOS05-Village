@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { PostEntity } from './post.entity';
 
@@ -17,6 +18,9 @@ export class PostImageEntity {
 
   @Column({ nullable: false })
   post_id: number;
+
+  @DeleteDateColumn()
+  delete_date: Date;
 
   @ManyToOne(() => PostEntity, (post) => post.id)
   @JoinColumn({ name: 'post_id' })

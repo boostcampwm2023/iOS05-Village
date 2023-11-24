@@ -1,5 +1,13 @@
-import { Entity, Column, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  PrimaryColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { UserEntity } from './user.entity';
+import { Delete } from '@nestjs/common';
 
 @Entity('block_user')
 export class BlockUserEntity {
@@ -11,6 +19,9 @@ export class BlockUserEntity {
 
   @Column({ nullable: false, default: true })
   status: boolean;
+
+  @DeleteDateColumn()
+  delete_date: Date;
 
   @ManyToOne(() => UserEntity, (blocker) => blocker.user_hash)
   @JoinColumn({ name: 'blocker' })
