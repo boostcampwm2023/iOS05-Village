@@ -137,20 +137,30 @@ final class PostingViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var cancellables: Set<AnyCancellable> = []
+    private var cancellableBag: Set<AnyCancellable> = []
     
     func bind() {
-        postingTitleView.publisher
-            .receive(on: RunLoop.main)
-            .assign(to: \.titleInput, on: viewModel)
-            .store(in: &cancellables)
-        if type == .rent {
-            postingPriceView.publisher
-                .receive(on: RunLoop.main)
-                .assign(to: \.priceInput, on: viewModel)
-                .store(in: &cancellables)
-        }
-        
+        let input = PostingViewModel.Input(
+            titleSubject: postingTitleView.currentTextSubject,
+            startTimeSubject: postingStartTimeView.currentTimeSubject,
+            endTimeSubject: postingEndTimeView.currentTimeSubject,
+            priceSubject: postingPriceView.currentPriceSubject,
+            detailSubject: postingDetailView.currentDetailSubject
+        )
+        handleViewModelOutput(output: viewModel.transform(input: input))
+    }
+    
+    func handleViewModelOutput(output: PostingViewModel.Output) {
+        subscribePriceOutput(output: output)
+    }
+    
+    func subscribePriceOutput(output: PostingViewModel.Output) {
+        output.priceValidationResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] prevPriceString in
+                self?.postingPriceView.revertChange(text: prevPriceString)
+            }
+            .store(in: &cancellableBag)
     }
     
 }
@@ -164,10 +174,6 @@ private extension PostingViewController {
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
-        postingTitleView.warn()
-        postingStartTimeView.warn()
-        postingEndTimeView.warn()
-        postingPriceView.warn()
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {

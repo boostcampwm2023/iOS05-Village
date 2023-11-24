@@ -10,6 +10,8 @@ import Combine
 
 final class PostingPriceView: UIStackView {
     
+    var currentPriceSubject = CurrentValueSubject<String, Never>("")
+    
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar()
         let hideKeyboardButton = UIBarButtonItem(
@@ -87,15 +89,7 @@ final class PostingPriceView: UIStackView {
     }
     
     @objc private func textFieldDidChanged(_ sender: UITextField) {
-        guard var text = sender.text else { return }
-        priceWarningLabel.alpha = 0
-        
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        text = text.replacingOccurrences(of: ",", with: "")
-        guard let price = Int.init(text),
-              let string = numberFormatter.string(from: NSNumber(value: price)) else { return }
-        sender.text = string
+        currentPriceSubject.send(priceTextField.text ?? "")
     }
     
     func warn() {
@@ -103,6 +97,10 @@ final class PostingPriceView: UIStackView {
         if text.isEmpty {
             priceWarningLabel.alpha = 1
         }
+    }
+    
+    func revertChange(text: String) {
+        priceTextField.text = text
     }
     
 }
@@ -135,26 +133,14 @@ extension PostingPriceView: UITextFieldDelegate {
         shouldChangeCharactersIn range: NSRange,
         replacementString string: String
     ) -> Bool {
-        guard var text = textField.text else { return true }
-        text = text.replacingOccurrences(of: ",", with: "")
-        if !string.isEmpty && Int(string) == nil || text.count + string.count > 15 { return false }
+        guard let text = textField.text else { return true }
+        if text.count + string.count > 15 { return false }
         return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
-    }
-    
-}
-
-extension PostingPriceView {
-    
-    var publisher: AnyPublisher<String, Never> {
-        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: priceTextField)
-            .compactMap { $0.object as? UITextField }
-            .map { ($0.text ?? "") }
-            .eraseToAnyPublisher()
     }
     
 }
