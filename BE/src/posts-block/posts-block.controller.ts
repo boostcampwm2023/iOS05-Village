@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { PostsBlockService } from './posts-block.service';
 
 @Controller('posts/block')
@@ -13,8 +13,12 @@ export class PostsBlockController {
   @Get()
   async postsBlockList() {
     const blockerId: string = 'qwe';
-    const blockedPosts =
-      await this.postsBlockService.findBlockedPosts(blockerId);
-    return blockedPosts;
+    return await this.postsBlockService.findBlockedPosts(blockerId);
+  }
+
+  @Delete(':id')
+  async blockUserRemove(@Param('id') id: number) {
+    const userId = 'qwe';
+    await this.postsBlockService.removeBlockPosts(id, userId);
   }
 }
