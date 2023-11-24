@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlockUserEntity } from 'src/entities/blockUser.entity';
 import { Repository } from 'typeorm';
-import { HttpException } from '@nestjs/common';
 import { UserEntity } from 'src/entities/user.entity';
 
 @Injectable()
@@ -14,35 +13,42 @@ export class UsersBlockService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async addBlockUser(id: string) {
+  async addBlockUser(id: string, userId: string) {
     const isExistUser = await this.userRepository.findOne({
       where: { user_hash: id },
     });
 
     if (!isExistUser) {
-      throw new HttpException('존재하지 않는 유저입니다', 400);
+      throw new HttpException('존재하지 않는 유저입니다', 404);
     }
 
     const isBlockedUser = await this.blockUserRepository.findOne({
-      where: { blocked_user: id, blocker: 'qwe', status: true },
+      where: { blocked_user: id, blocker: userId },
+      withDeleted: true,
     });
-
-    console.log(isBlockedUser);
-
     if (isBlockedUser) {
-      throw new HttpException('이미 차단된 유저입니다', 400);
-    }
+      if (isBlockedUser.delete_date === null) {
+        throw new HttpException('이미 차단된 유저입니다', 400);
+      } else {
+        await this.blockUserRepository.update(
+          {
+            blocker: userId,
+            blocked_user: id,
+          },
+          { delete_date: null },
+        );
+      }
+    } else {
+      const blockUserEntity = new BlockUserEntity();
+      blockUserEntity.blocker = userId;
+      blockUserEntity.blocked_user = id;
+      blockUserEntity.status = true;
 
-    const blockUserEntity = new BlockUserEntity();
-    blockUserEntity.blocker = 'qwe';
-    blockUserEntity.blocked_user = id;
-    blockUserEntity.status = true;
-
-    try {
-      const res = await this.blockUserRepository.save(blockUserEntity);
-      return res;
-    } catch (e) {
-      throw new HttpException('서버 오류입니다', 500);
+      try {
+        return await this.blockUserRepository.save(blockUserEntity);
+      } catch (e) {
+        throw new HttpException('서버 오류입니다', 500);
+      }
     }
   }
 
@@ -66,7 +72,16 @@ export class UsersBlockService {
     return blockedUsers;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} usersBlock`;
+  async removeBlockUser(blockedUserId: string, userId: string) {
+    const blockedUser = await this.blockUserRepository.findOne({
+      where: { blocked_user: blockedUserId, blocker: userId },
+    });
+    if (!blockedUser) {
+      throw new HttpException('차단된 유저가 없습니다.', 404);
+    }
+    await this.blockUserRepository.softDelete({
+      blocked_user: blockedUserId,
+      blocker: userId,
+    });
   }
 }
