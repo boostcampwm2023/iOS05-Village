@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Patch,
   Param,
   Delete,
@@ -50,8 +49,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  usersRemove(@Param('id') id: string) {
-    return this.usersService.removeUser(+id);
+  async usersRemove(@Param('id') id: string) {
+    await this.usersService.removeUser(id);
   }
 
   @Patch(':id')

@@ -3,16 +3,28 @@ import { CreateUserDto } from './createUser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { UpdatePostDto } from '../post/dto/postUpdate.dto';
 import { UpdateUsersDto } from './usersUpdate.dto';
 import { S3Handler } from '../utils/S3Handler';
 import { hashMaker } from 'src/utils/hashMaker';
+import { PostEntity } from '../entities/post.entity';
+import { PostImageEntity } from '../entities/postImage.entity';
+import { BlockUserEntity } from '../entities/blockUser.entity';
+import { BlockPostEntity } from '../entities/blockPost.entity';
+import { UsersController } from './users.controller';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @InjectRepository(PostEntity)
+    private postRepository: Repository<PostEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(PostImageEntity)
+    private postImageRepository: Repository<PostImageEntity>,
+    @InjectRepository(BlockUserEntity)
+    private blockUserRepository: Repository<BlockUserEntity>,
+    @InjectRepository(BlockPostEntity)
+    private blockPostRepository: Repository<BlockPostEntity>,
     private s3Handler: S3Handler,
   ) {}
 
@@ -39,8 +51,34 @@ export class UsersService {
     }
   }
 
-  removeUser(id: number) {
-    return `This action removes a #${id} user`;
+  async removeUser(id: string) {
+    const isDataExists = await this.userRepository.findOne({
+      where: { user_hash: id, status: true },
+    });
+    if (!isDataExists) {
+      return false;
+    } else {
+      await this.deleteCascadingUser(isDataExists);
+      return true;
+    }
+  }
+
+  async deleteCascadingUser(user: UserEntity) {
+    const postsByUser = await this.postRepository.find({
+      where: { user_id: user.id },
+    });
+    for (const postByUser of postsByUser) {
+      await this.deleteCascadingPost(postByUser.id);
+    }
+    await this.blockPostRepository.softDelete({ blocker: user.user_hash });
+    await this.blockUserRepository.softDelete({ blocker: user.user_hash });
+    await this.userRepository.softDelete({ id: user.id });
+  }
+
+  async deleteCascadingPost(postId: number) {
+    await this.postImageRepository.softDelete({ post_id: postId });
+    await this.blockPostRepository.softDelete({ blocked_post: postId });
+    await this.postRepository.softDelete({ id: postId });
   }
 
   async updateUserById(
