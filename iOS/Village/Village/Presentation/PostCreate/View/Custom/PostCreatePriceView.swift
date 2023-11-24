@@ -92,11 +92,9 @@ final class PostCreatePriceView: UIStackView {
         currentPriceSubject.send(priceTextField.text ?? "")
     }
     
-    func warn() {
-        guard let text = priceTextField.text else { return }
-        if text.isEmpty {
-            priceWarningLabel.alpha = 1
-        }
+    func warn(_ enable: Bool) {
+        let alpha: CGFloat = enable ? 1 : 0
+        priceWarningLabel.alpha = alpha
     }
     
     func revertChange(text: String) {
@@ -135,6 +133,7 @@ extension PostCreatePriceView: UITextFieldDelegate {
     ) -> Bool {
         guard let text = textField.text else { return true }
         if text.count + string.count > 15 { return false }
+        warn(false)
         return true
     }
     

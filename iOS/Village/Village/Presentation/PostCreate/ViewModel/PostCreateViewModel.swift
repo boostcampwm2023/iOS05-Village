@@ -20,15 +20,48 @@ final class PostCreateViewModel {
     private var isValidStartTime: Bool = false
     private var isValidEndTime: Bool = false
     private var isValidPrice: Bool = false
+    private var isValidPostCreate: Bool {
+        isValidTitle &&
+        isValidStartTime &&
+        isValidEndTime &&
+        isValidPrice
+    }
     
     private let priceOutput = PassthroughSubject<String, Never>()
+    private let postButtonTappedTitleWarningOutput = PassthroughSubject<Bool, Never>()
+    private let postButtonTappedStartTimeWarningOutput = PassthroughSubject<Bool, Never>()
+    private let postButtonTappedEndTimeWarningOutput = PassthroughSubject<Bool, Never>()
+    private let postButtonTappedPriceWarningOutput = PassthroughSubject<Bool, Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
-    private let repository: PostCreateRepository
+    private let useCase: PostCreateUseCase
+    private var postCreateTask: Cancellable? {
+        willSet {
+            postCreateTask?.cancel()
+        }
+    }
     
-    init(repository: PostCreateRepository) {
-        self.repository = repository
+    func postCreate() {
+        
+//        postCreateTask = useCase.execute(
+//            requestValue: PostCreateDTO(
+//                title: <#T##String#>,
+//                contents: <#T##String#>,
+//                price: <#T##Int?#>,
+//                isRequest: <#T##Bool#>,
+//                images: <#T##[String]#>,
+//                startDate: <#T##String#>,
+//                endDate: <#T##String#>
+//            ),
+//            completion: {
+//                <#code#>
+//            }
+//        )
+    }
+    
+    init(useCase: PostCreateUseCase) {
+        self.useCase = useCase
     }
     
     func transform(input: Input) -> Output {
@@ -82,8 +115,30 @@ final class PostCreateViewModel {
             }
             .store(in: &cancellableBag)
         
+        input.postButtonTappedSubject
+            .sink { [weak self] () in
+                if let titleValidation = self?.isValidTitle {
+                    self?.postButtonTappedTitleWarningOutput.send(titleValidation)
+                }
+                if let startTimeValidation = self?.isValidStartTime {
+                    self?.postButtonTappedStartTimeWarningOutput.send(startTimeValidation)
+                }
+                if let endTimeValidation = self?.isValidEndTime {
+                    self?.postButtonTappedEndTimeWarningOutput.send(endTimeValidation)
+                }
+                if let priceValidation = self?.isValidPrice {
+                    self?.postButtonTappedPriceWarningOutput.send(priceValidation)
+                }
+                guard let validation = self?.isValidPostCreate else { return }
+                // TODO: post객체 만들어서 네트워킹
+            }
+            .store(in: &cancellableBag)
         return Output(
-            priceValidationResult: priceOutput.eraseToAnyPublisher()
+            priceValidationResult: priceOutput.eraseToAnyPublisher(),
+            postButtonTappedTitleWarningResult: postButtonTappedTitleWarningOutput.eraseToAnyPublisher(),
+            postButtonTappedStartTimeWarningResult: postButtonTappedStartTimeWarningOutput.eraseToAnyPublisher(),
+            postButtonTappedEndTimeWarningResult: postButtonTappedEndTimeWarningOutput.eraseToAnyPublisher(),
+            postButtonTappedPriceWarningResult: postButtonTappedPriceWarningOutput.eraseToAnyPublisher()
         )
     }
     
@@ -122,12 +177,17 @@ extension PostCreateViewModel {
         var endTimeSubject: CurrentValueSubject<Date?, Never>
         var priceSubject: CurrentValueSubject<String, Never>
         var detailSubject: CurrentValueSubject<String, Never>
+        var postButtonTappedSubject: PassthroughSubject<Void, Never>
         
     }
     
     struct Output {
         
         var priceValidationResult: AnyPublisher<String, Never>
+        var postButtonTappedTitleWarningResult: AnyPublisher<Bool, Never>
+        var postButtonTappedStartTimeWarningResult: AnyPublisher<Bool, Never>
+        var postButtonTappedEndTimeWarningResult: AnyPublisher<Bool, Never>
+        var postButtonTappedPriceWarningResult: AnyPublisher<Bool, Never>
         
     }
     

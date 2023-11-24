@@ -18,6 +18,7 @@ enum PostType {
 final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
+    private var postButtonTappedSubject = PassthroughSubject<Void, Never>()
     private let type: PostType
     
     private lazy var keyboardToolBar: UIToolbar = {
@@ -145,7 +146,8 @@ final class PostCreateViewController: UIViewController {
             startTimeSubject: postCreateStartTimeView.currentTimeSubject,
             endTimeSubject: postCreateEndTimeView.currentTimeSubject,
             priceSubject: postCreatePriceView.currentPriceSubject,
-            detailSubject: postCreateDetailView.currentDetailSubject
+            detailSubject: postCreateDetailView.currentDetailSubject,
+            postButtonTappedSubject: postButtonTappedSubject
         )
         handleViewModelOutput(output: viewModel.transform(input: input))
     }
@@ -161,6 +163,34 @@ final class PostCreateViewController: UIViewController {
                 self?.postCreatePriceView.revertChange(text: prevPriceString)
             }
             .store(in: &cancellableBag)
+        
+        output.postButtonTappedTitleWarningResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] bool in
+                self?.postCreateTitleView.warn(!bool)
+            }
+            .store(in: &cancellableBag)
+        
+        output.postButtonTappedStartTimeWarningResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] bool in
+                self?.postCreateStartTimeView.warn(!bool)
+            }
+            .store(in: &cancellableBag)
+        
+        output.postButtonTappedEndTimeWarningResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] bool in
+                self?.postCreateEndTimeView.warn(!bool)
+            }
+            .store(in: &cancellableBag)
+        
+        output.postButtonTappedPriceWarningResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] bool in
+                self?.postCreatePriceView.warn(!bool)
+            }
+            .store(in: &cancellableBag)
     }
     
 }
@@ -174,6 +204,7 @@ private extension PostCreateViewController {
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
+        postButtonTappedSubject.send()
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {

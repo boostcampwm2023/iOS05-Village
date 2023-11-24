@@ -123,6 +123,7 @@ extension PostCreateTitleView: UITextFieldDelegate {
     ) -> Bool {
         guard let text = textField.text else { return true }
         if !string.isEmpty && text.count + string.count > 64 { return false }
+        warn(false)
         return true
     }
     

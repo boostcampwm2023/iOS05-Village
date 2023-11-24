@@ -36,6 +36,8 @@
 		59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */; };
 		59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */; };
 		59D8F1032B0FC4F700A08E02 /* PostCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1022B0FC4F700A08E02 /* PostCreateViewModel.swift */; };
+		59D8F1052B103A7200A08E02 /* PostCreateDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1042B103A7200A08E02 /* PostCreateDTO.swift */; };
+		59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */; };
 		59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */; };
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
 		8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */; };
@@ -100,6 +102,8 @@
 		59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
 		59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layer.swift"; sourceTree = "<group>"; };
 		59D8F1022B0FC4F700A08E02 /* PostCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateViewModel.swift; sourceTree = "<group>"; };
+		59D8F1042B103A7200A08E02 /* PostCreateDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateDTO.swift; sourceTree = "<group>"; };
+		59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateUseCase.swift; sourceTree = "<group>"; };
 		59E0C5F82AFBA3FC0073D494 /* Village.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Village.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -218,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				5980D75E2B0FB6DB00A6B370 /* PostCreateRepository.swift */,
+				59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */,
 				59D8F1022B0FC4F700A08E02 /* PostCreateViewModel.swift */,
 			);
 			path = ViewModel;
@@ -298,6 +303,7 @@
 			children = (
 				8F1B53352B0E0396006D8982 /* PostRequestDTO.swift */,
 				8F1B53372B0E03AE006D8982 /* PostResponseDTO.swift */,
+				59D8F1042B103A7200A08E02 /* PostCreateDTO.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -653,12 +659,14 @@
 				8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				59D8F1032B0FC4F700A08E02 /* PostCreateViewModel.swift in Sources */,
+				59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */,
 				446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
 				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
 				8F95CF962B0C66910024631F /* Requestable.swift in Sources */,
+				59D8F1052B103A7200A08E02 /* PostCreateDTO.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
 				8F95CF9C2B0C81640024631F /* Provider.swift in Sources */,
