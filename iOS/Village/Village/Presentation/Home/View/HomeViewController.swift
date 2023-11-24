@@ -206,9 +206,10 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let postDetailVC = PostDetailViewController(postID: post.postID, userID: post.userID)
+        let postDetailVC = PostDetailViewController(postID: post.postID,
+                                                    userID: post.userID,
+                                                    isRequest: post.isRequest)
         self.navigationController?.pushViewController(postDetailVC, animated: true)
-        
     }
     
 }

@@ -15,6 +15,7 @@ final class PostDetailViewController: UIViewController {
     
     private let postID: Just<Int>
     private let userID: Just<Int>
+    private let isRequest: Bool
     
     private let viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
@@ -22,6 +23,7 @@ final class PostDetailViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
         return scrollView
     }()
     
@@ -30,12 +32,14 @@ final class PostDetailViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
         stackView.axis = .vertical
+        
         return stackView
     }()
     
     private var imagePageView: ImagePageView = {
         let imagePageView = ImagePageView()
         imagePageView.translatesAutoresizingMaskIntoConstraints = false
+        
         return imagePageView
     }()
     
@@ -46,18 +50,21 @@ final class PostDetailViewController: UIViewController {
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.axis = .vertical
         stackView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
+        
         return stackView
     }()
     
     private var userInfoView: UserInfoView = {
         let view = UserInfoView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        
         return view
     }()
     
     private var postInfoView: PostInfoView = {
         let view = PostInfoView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        
         return view
     }()
     
@@ -70,6 +77,7 @@ final class PostDetailViewController: UIViewController {
         divider.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         divider.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         divider.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        
         return view
     }()
     
@@ -77,6 +85,7 @@ final class PostDetailViewController: UIViewController {
         let priceLabel = PriceLabel()
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        
         return priceLabel
     }()
     
@@ -89,14 +98,14 @@ final class PostDetailViewController: UIViewController {
                                                     .foregroundColor: UIColor.white])
         button.setAttributedTitle(title, for: .normal)
         button.layer.cornerRadius = 6
-        button.widthAnchor.constraint(equalToConstant: 110).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        
         return button
     }()
     
-    init(postID: Int, userID: Int) {
+    init(postID: Int, userID: Int, isRequest: Bool) {
         self.postID = Just(postID)
         self.userID = Just(userID)
+        self.isRequest = isRequest
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -117,6 +126,22 @@ final class PostDetailViewController: UIViewController {
     @objc
     private func moreBarButtonTapped() {
         // TODO: 더보기 버튼 기능 구현
+    }
+    
+    private func setPostContent(post: PostResponseDTO) {
+        if let imageURL = post.imageURL, !imageURL.isEmpty {
+            imagePageView.setImageURL(imageURL)
+        } else {
+            imagePageView.isHidden = true
+        }
+        postInfoView.setContent(title: post.title,
+                                startDate: post.startDate, endDate: post.endDate,
+                                description: post.description)
+        setPriceLabel(price: post.price)
+    }
+    
+    private func setUserContent(user: UserResponseDTO) {
+        userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
     }
 
 }
@@ -159,14 +184,7 @@ private extension PostDetailViewController {
                     dump(error)
                 }
             }, receiveValue: { [weak self] post in
-                if let imageURL = post.imageURL, !imageURL.isEmpty {
-                    self?.imagePageView.setImageURL(imageURL)
-                } else {
-                    self?.imagePageView.isHidden = true
-                }
-                self?.postInfoView.setContent(title: post.title,
-                                        startDate: post.startDate, endDate: post.endDate,
-                                        description: post.description)
+                self?.setPostContent(post: post)
             })
             .store(in: &cancellableBag)
         
@@ -180,9 +198,17 @@ private extension PostDetailViewController {
                     dump(error)
                 }
             }, receiveValue: { [weak self] user in
-                self?.userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+                self?.setUserContent(user: user)
             })
             .store(in: &cancellableBag)
+    }
+    
+    func setPriceLabel(price: Int?) {
+        if let price {
+            priceLabel.setPrice(price: price)
+        } else {
+            priceLabel.removeFromSuperview()
+        }
     }
     
     func setLayoutConstraints() {
@@ -211,8 +237,21 @@ private extension PostDetailViewController {
             footerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
+        if isRequest {
+            NSLayoutConstraint.activate([
+                chatButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
+                chatButton.widthAnchor.constraint(equalTo: footerView.widthAnchor, multiplier: 0.8),
+                chatButton.heightAnchor.constraint(equalTo: footerView.heightAnchor, multiplier: 0.7)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                chatButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -25),
+                chatButton.widthAnchor.constraint(equalToConstant: 110),
+                chatButton.heightAnchor.constraint(equalToConstant: 40)
+            ])
+        }
+        
         NSLayoutConstraint.activate([
-            chatButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -25),
             chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor),
             priceLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 25),
             priceLabel.trailingAnchor.constraint(lessThanOrEqualTo: chatButton.leadingAnchor, constant: -10),
