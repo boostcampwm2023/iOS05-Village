@@ -105,6 +105,8 @@ export class PostService {
       where: { id: postId },
       relations: ['post_images', 'user'],
     });
+
+    console.log(post);
     if (post === null) {
       throw new HttpException('없는 게시물입니다.', 400);
     }
@@ -232,7 +234,7 @@ export class PostService {
     if (!isDataExists) {
       return false;
     } else {
-      await this.postRepository.update({ id: postId }, { status: false });
+      await this.postRepository.softDelete({ id: postId });
       return true;
     }
   }

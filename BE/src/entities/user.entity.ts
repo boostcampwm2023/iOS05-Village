@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -56,4 +57,7 @@ export class UserEntity {
 
   @Column({ length: 45, nullable: false, charset: 'utf8', unique: true })
   user_hash: string;
+
+  @DeleteDateColumn()
+  delete_date: Date;
 }

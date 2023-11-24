@@ -7,6 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  DeleteDateColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { PostImageEntity } from './postImage.entity';
@@ -56,6 +57,9 @@ export class PostEntity {
     nullable: true,
   })
   update_date: Date;
+
+  @DeleteDateColumn()
+  delete_date: Date;
 
   @Column({ length: 2048, nullable: true, charset: 'utf8' })
   thumbnail: string;
