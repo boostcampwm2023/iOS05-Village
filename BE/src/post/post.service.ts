@@ -108,7 +108,7 @@ export class PostService {
 
     console.log(post);
     if (post === null) {
-      throw new HttpException('없는 게시물입니다.', 400);
+      throw new HttpException('없는 게시물입니다.', 404);
     }
     if (await this.isFiltered(post, userId)) {
       throw new HttpException('차단한 게시물입니다.', 400);
