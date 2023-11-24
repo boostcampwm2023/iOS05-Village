@@ -27,7 +27,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         self.addSubview(postSummaryView)
     }
     
-    func configureData(post: PostResponseDTO) {
+    func configureData(post: PostListItem) {
         postSummaryView.postTitleLabel.text = post.title
         let price = post.price.map(String.init) ?? ""
         postSummaryView.postPriceLabel.text = price != "" ? "\(price)원" : ""

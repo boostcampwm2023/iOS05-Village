@@ -9,7 +9,8 @@ import UIKit
 
 final class RequestDetailViewController: UIViewController {
     
-    private let post: PostResponseDTO
+    private let postID: String
+    private let userID: String
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -62,8 +63,9 @@ final class RequestDetailViewController: UIViewController {
         return button
     }()
     
-    init(post: PostResponseDTO) {
-        self.post = post
+    init(postID: String, userID: String) {
+        self.postID = postID
+        self.userID = userID
         
         super.init(nibName: nil, bundle: nil)
     }

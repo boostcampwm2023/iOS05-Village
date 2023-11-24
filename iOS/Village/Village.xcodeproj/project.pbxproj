@@ -25,6 +25,7 @@
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
 		5975E98C2B035919007CEF13 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* Users.json */; };
 		5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */; };
+		5980D75F2B0FB6DB00A6B370 /* PostingRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5980D75E2B0FB6DB00A6B370 /* PostingRepository.swift */; };
 		59AABDDF2B0E1AE1002F6D0E /* PostingTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDDE2B0E1AE1002F6D0E /* PostingTitleView.swift */; };
 		59AABDE12B0E1BB8002F6D0E /* PostingPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE02B0E1BB8002F6D0E /* PostingPriceView.swift */; };
 		59AABDE32B0E272C002F6D0E /* PostingTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE22B0E272C002F6D0E /* PostingTimeView.swift */; };
@@ -53,7 +54,7 @@
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
-		8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */; };
+		8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* HomeViewModel.swift */; };
 		8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE772B06768C00B91D3B /* NetworkService.swift */; };
 		8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */; };
 		8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */; };
@@ -91,6 +92,7 @@
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
 		5975E9892B035919007CEF13 /* Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Users.json; sourceTree = "<group>"; };
 		5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+.swift"; sourceTree = "<group>"; };
+		5980D75E2B0FB6DB00A6B370 /* PostingRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingRepository.swift; sourceTree = "<group>"; };
 		59AA129A2B03726C00AFC766 /* VillageTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VillageTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		59AABDDE2B0E1AE1002F6D0E /* PostingTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingTitleView.swift; sourceTree = "<group>"; };
 		59AABDE02B0E1BB8002F6D0E /* PostingPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingPriceView.swift; sourceTree = "<group>"; };
@@ -121,7 +123,7 @@
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
-		8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListItemViewModel.swift; sourceTree = "<group>"; };
+		8FC7FE732B05CE9A00B91D3B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		8FC7FE772B06768C00B91D3B /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		8FC7FE7A2B07A89A00B91D3B /* RentDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentDetailViewController.swift; sourceTree = "<group>"; };
 		8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 			isa = PBXGroup;
 			children = (
 				59DC1B1E2B0C6AEC004C8C1A /* PostingViewModel.swift */,
+				5980D75E2B0FB6DB00A6B370 /* PostingRepository.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -423,7 +426,7 @@
 		8FC7FE722B05CE3000B91D3B /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				8FC7FE732B05CE9A00B91D3B /* PostListItemViewModel.swift */,
+				8FC7FE732B05CE9A00B91D3B /* HomeViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -632,6 +635,7 @@
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				8F1B53382B0E03AE006D8982 /* PostResponseDTO.swift in Sources */,
+				5980D75F2B0FB6DB00A6B370 /* PostingRepository.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
 				8F95CF982B0C7B270024631F /* Reponsable.swift in Sources */,
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
@@ -667,11 +671,11 @@
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
 				8F95CF962B0C66910024631F /* Requestable.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
-				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
+				8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */,
 				8F95CF9C2B0C81640024631F /* Provider.swift in Sources */,
 				59AABDE12B0E1BB8002F6D0E /* PostingPriceView.swift in Sources */,
 				8FC7FE782B06768C00B91D3B /* NetworkService.swift in Sources */,
-				8FC7FE742B05CE9A00B91D3B /* PostListItemViewModel.swift in Sources */,
+				8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* RentDetailViewController.swift in Sources */,
 				8FF7E60C2B0F38A500B6D678 /* ChatListCollectionViewCell.swift in Sources */,
 				59DC1B1F2B0C6AEC004C8C1A /* PostingViewModel.swift in Sources */,

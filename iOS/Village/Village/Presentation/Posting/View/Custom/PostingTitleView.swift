@@ -10,6 +10,8 @@ import Combine
 
 final class PostingTitleView: UIStackView {
     
+    var currentTextSubject = CurrentValueSubject<String, Never>("")
+    
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar()
         let hideKeyboardButton = UIBarButtonItem(
@@ -80,15 +82,13 @@ final class PostingTitleView: UIStackView {
         endEditing(true)
     }
     
-    @objc private func textFieldDidChanged(_ sender: UITextField) {
-        titleWarningLabel.alpha = 0
+    @objc private func textFieldDidChanged() {
+        currentTextSubject.send(titleTextField.text ?? "")
     }
     
-    func warn() {
-        guard let text = titleTextField.text else { return }
-        if text.isEmpty {
-            titleWarningLabel.alpha = 1
-        }
+    func warn(_ enable: Bool) {
+        let alpha: CGFloat = enable ? 1 : 0
+        titleWarningLabel.alpha = alpha
     }
     
 }
@@ -129,17 +129,6 @@ extension PostingTitleView: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
-    }
-    
-}
-
-extension PostingTitleView {
-    
-    var publisher: AnyPublisher<String, Never> {
-        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: titleTextField)
-            .compactMap { $0.object as? UITextField }
-            .map { $0.text ?? "" }
-            .eraseToAnyPublisher()
     }
     
 }
