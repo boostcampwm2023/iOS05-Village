@@ -27,7 +27,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         self.addSubview(postSummaryView)
     }
     
-    func configureData(post: PostResponseDTO) {
+    func configureData(post: PostListItem) {
         postSummaryView.postTitleLabel.text = post.title
         let price = post.price.map(String.init) ?? ""
         postSummaryView.postPriceLabel.text = price != "" ? "\(price)원" : ""
@@ -37,7 +37,8 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         if image != nil {
             postSummaryView.postImageView.image = image
         } else {
-            postSummaryView.postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            postSummaryView.postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?
+                .withTintColor(.primary500, renderingMode: .alwaysOriginal)
             postSummaryView.postImageView.backgroundColor = .primary100
         }
     }

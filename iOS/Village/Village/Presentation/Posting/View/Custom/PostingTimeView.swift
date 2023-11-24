@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 enum TimeType {
     
@@ -19,6 +20,8 @@ enum PickerLocale: String {
 }
 
 final class PostingTimeView: UIStackView {
+    
+    var currentTimeSubject = CurrentValueSubject<Date?, Never>(nil)
     
     private let timeStackView: UIStackView = {
         let stackView = UIStackView()
@@ -67,6 +70,7 @@ final class PostingTimeView: UIStackView {
         
         textfield.inputView = datePicker
         textfield.inputAccessoryView = dateToolBar
+        textfield.delegate = self
         
         return textfield
     }()
@@ -108,6 +112,7 @@ final class PostingTimeView: UIStackView {
         
         textfield.inputView = hourPicker
         textfield.inputAccessoryView = hourToolBar
+        textfield.delegate = self
         
         return textfield
     }()
@@ -121,13 +126,19 @@ final class PostingTimeView: UIStackView {
         "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
     ]
     var time: Date? {
-        guard let date = selectedDate, let hour = selectedHour else { return nil }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.ddHH:mm"
-        formatter.locale = Locale(identifier: PickerLocale.korea.rawValue)
-        
-        return formatter.date(from: date + hour)
+        didSet {
+            currentTimeSubject.send(time)
+        }
     }
+    
+//    {
+//        guard let date = selectedDate, let hour = selectedHour else { return nil }
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy.MM.ddHH:mm"
+//        formatter.locale = Locale(identifier: PickerLocale.korea.rawValue)
+//
+//        return formatter.date(from: date + hour)
+//    }
     
     private let postType: PostType
     private let timeType: TimeType
@@ -175,10 +186,9 @@ final class PostingTimeView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func warn() {
-        if time == nil {
-            timeWarningLabel.alpha = 1
-        }
+    func warn(_ enable: Bool) {
+        let alpha: CGFloat = enable ? 1 : 0
+        timeWarningLabel.alpha = alpha
     }
     
 }
@@ -206,6 +216,15 @@ private extension PostingTimeView {
         ])
     }
     
+    func setTime() {
+        guard let date = selectedDate, let hour = selectedHour else { return }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.ddHH:mm"
+        formatter.locale = Locale(identifier: PickerLocale.korea.rawValue)
+        
+        time = formatter.date(from: date + hour)
+    }
+    
 }
 
 @objc
@@ -219,6 +238,8 @@ private extension PostingTimeView {
         dateTextField.text = formatter.string(from: datePicker.date)
         dateTextField.resignFirstResponder()
         
+        setTime()
+        
         if time != nil {
             timeWarningLabel.alpha = 0
         }
@@ -230,6 +251,8 @@ private extension PostingTimeView {
         }
         hourTextField.text = selectedHour
         hourTextField.resignFirstResponder()
+        
+        setTime()
         
         if time != nil {
             timeWarningLabel.alpha = 0
@@ -254,6 +277,18 @@ extension PostingTimeView: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         selectedHour = hours[row]
+    }
+    
+}
+
+extension PostingTimeView: UITextFieldDelegate {
+    
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        return false
     }
     
 }

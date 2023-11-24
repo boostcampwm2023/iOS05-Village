@@ -9,7 +9,8 @@ import UIKit
 
 final class RentDetailViewController: UIViewController {
     
-    private var post: PostResponseDTO
+    private let postID: String
+    private let userID: String
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -86,8 +87,9 @@ final class RentDetailViewController: UIViewController {
         return button
     }()
     
-    init(postData: PostResponseDTO) {
-        self.post = postData
+    init(postID: String, userID: String) {
+        self.postID = postID
+        self.userID = userID
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -131,11 +133,9 @@ private extension RentDetailViewController {
     }
     
     func configureNavigationItem() {
-        let rightBarButton = UIBarButtonItem(image: UIImage(systemName: ImageSystemName.ellipsis.rawValue),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(moreBarButtonTapped))
-        
+        let rightBarButton = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(moreBarButtonTapped), symbolName: .ellipsis
+        )
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     

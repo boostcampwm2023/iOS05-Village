@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import Combine
 
 final class PostingDetailView: UIStackView {
+    
+    var currentDetailSubject = CurrentValueSubject<String, Never>("")
     
     private let detailHeaderLabel: UILabel = {
         let label = UILabel()
@@ -98,6 +101,7 @@ extension PostingDetailView: UITextViewDelegate {
                 constraint.constant = estimatedSize.height
             }
         }
+        currentDetailSubject.send(textView.text)
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {

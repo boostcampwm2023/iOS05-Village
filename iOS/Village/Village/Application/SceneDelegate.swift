@@ -26,6 +26,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             animated: true
         )
         
+        tabBarController.tabBar.tintColor = .primary500
+        tabBarController.tabBar.unselectedItemTintColor = .primary500
+        
         if let items = tabBarController.tabBar.items {
             items[0].selectedImage = UIImage(systemName: ImageSystemName.houseFill.rawValue)
             items[0].image = UIImage(systemName: ImageSystemName.house.rawValue)
