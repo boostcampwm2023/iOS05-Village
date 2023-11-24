@@ -1,14 +1,14 @@
 //
-//  RequestDetailViewController.swift
+//  PostDetailViewController.swift
 //  Village
 //
-//  Created by 정상윤 on 11/22/23.
+//  Created by 박동재 on 2023/11/17.
 //
 
 import UIKit
 import Combine
 
-final class RequestDetailViewController: UIViewController {
+final class PostDetailViewController: UIViewController {
     
     typealias ViewModel = PostDetailViewModel
     typealias Input = ViewModel.Input
@@ -16,21 +16,36 @@ final class RequestDetailViewController: UIViewController {
     private let postID: Just<Int>
     private let userID: Just<Int>
     
-    private var cancellableBag = Set<AnyCancellable>()
     private let viewModel = ViewModel()
+    private var cancellableBag = Set<AnyCancellable>()
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.contentInset = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         return scrollView
     }()
     
-    private var containerView: UIStackView = {
+    private var scrollViewContainerView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
         stackView.axis = .vertical
+        return stackView
+    }()
+    
+    private var imagePageView: ImagePageView = {
+        let imagePageView = ImagePageView()
+        imagePageView.translatesAutoresizingMaskIntoConstraints = false
+        return imagePageView
+    }()
+    
+    private var postContentView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.spacing = 10
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.axis = .vertical
+        stackView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
         return stackView
     }()
     
@@ -58,6 +73,13 @@ final class RequestDetailViewController: UIViewController {
         return view
     }()
     
+    private var priceLabel: PriceLabel = {
+        let priceLabel = PriceLabel()
+        priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        priceLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        return priceLabel
+    }()
+    
     private var chatButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -67,6 +89,8 @@ final class RequestDetailViewController: UIViewController {
                                                     .foregroundColor: UIColor.white])
         button.setAttributedTitle(title, for: .normal)
         button.layer.cornerRadius = 6
+        button.widthAnchor.constraint(equalToConstant: 110).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 35).isActive = true
         return button
     }()
     
@@ -77,10 +101,10 @@ final class RequestDetailViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("Should not be called")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -88,6 +112,38 @@ final class RequestDetailViewController: UIViewController {
         configureNavigationItem()
         setLayoutConstraints()
         bindViewModel()
+    }
+    
+    @objc
+    private func moreBarButtonTapped() {
+        // TODO: 더보기 버튼 기능 구현
+    }
+
+}
+
+private extension PostDetailViewController {
+    
+    func configureUI() {
+        view.backgroundColor = .systemBackground
+        tabBarController?.tabBar.isHidden = true
+        
+        view.addSubview(scrollView)
+        view.addSubview(footerView)
+        scrollView.addSubview(scrollViewContainerView)
+        scrollViewContainerView.addArrangedSubview(imagePageView)
+        scrollViewContainerView.addArrangedSubview(postContentView)
+        postContentView.addArrangedSubview(userInfoView)
+        postContentView.addArrangedSubview(UIView.divider(.horizontal))
+        postContentView.addArrangedSubview(postInfoView)
+        footerView.addSubview(priceLabel)
+        footerView.addSubview(chatButton)
+    }
+    
+    func configureNavigationItem() {
+        let rightBarButton = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(moreBarButtonTapped), symbolName: .ellipsis
+        )
+        self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
     private func bindViewModel() {
@@ -103,9 +159,14 @@ final class RequestDetailViewController: UIViewController {
                     dump(error)
                 }
             }, receiveValue: { [weak self] post in
+                if let imageURL = post.imageURL, !imageURL.isEmpty {
+                    self?.imagePageView.setImageURL(imageURL)
+                } else {
+                    self?.imagePageView.isHidden = true
+                }
                 self?.postInfoView.setContent(title: post.title,
                                         startDate: post.startDate, endDate: post.endDate,
-                                        description: post.contents)
+                                        description: post.description)
             })
             .store(in: &cancellableBag)
         
@@ -124,37 +185,6 @@ final class RequestDetailViewController: UIViewController {
             .store(in: &cancellableBag)
     }
     
-    @objc
-    private func moreBarButtonTapped() {
-        // TODO: 더보기 버튼 기능 구현
-    }
-    
-}
-
-private extension RequestDetailViewController {
-    
-    func configureUI() {
-        view.backgroundColor = .systemBackground
-        tabBarController?.tabBar.isHidden = true
-        
-        view.addSubview(scrollView)
-        view.addSubview(footerView)
-        scrollView.addSubview(containerView)
-        containerView.addArrangedSubview(userInfoView)
-        containerView.addArrangedSubview(UIView.divider(.horizontal))
-        containerView.addArrangedSubview(postInfoView)
-        footerView.addSubview(chatButton)
-    }
-    
-    func configureNavigationItem() {
-        let rightBarButton = UIBarButtonItem(image: UIImage(systemName: ImageSystemName.ellipsis.rawValue),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(moreBarButtonTapped))
-        
-        self.navigationItem.rightBarButtonItem = rightBarButton
-    }
-    
     func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -164,10 +194,15 @@ private extension RequestDetailViewController {
         ])
         
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 15),
-            containerView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -15),
-            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+            scrollViewContainerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollViewContainerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            scrollViewContainerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            scrollViewContainerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            imagePageView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            imagePageView.heightAnchor.constraint(equalTo: imagePageView.widthAnchor, multiplier: 0.85)
         ])
         
         NSLayoutConstraint.activate([
@@ -177,10 +212,11 @@ private extension RequestDetailViewController {
         ])
         
         NSLayoutConstraint.activate([
-            chatButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
+            chatButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -25),
             chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor),
-            chatButton.widthAnchor.constraint(equalTo: footerView.widthAnchor, multiplier: 0.8),
-            chatButton.heightAnchor.constraint(equalTo: footerView.heightAnchor, multiplier: 0.7)
+            priceLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 25),
+            priceLabel.trailingAnchor.constraint(lessThanOrEqualTo: chatButton.leadingAnchor, constant: -10),
+            priceLabel.centerYAnchor.constraint(equalTo: chatButton.centerYAnchor)
         ])
     }
     
