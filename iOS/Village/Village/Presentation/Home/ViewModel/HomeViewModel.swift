@@ -30,9 +30,8 @@ final class HomeViewModel {
         Task {
             do {
                 let data = try await Provider.shared.request(with: endpoint)
-                postList.send(data.map{ PostListItem(dto: $0) })
-            }
-            catch let error {
+                postList.send(data.map { PostListItem(dto: $0) })
+            } catch let error {
                 dump(error)
             }
         }
