@@ -78,7 +78,7 @@ export class PostService {
         description: re.contents,
         post_id: re.id,
         user_id: re.user.user_hash,
-        is_request: re.is_request === true ? true : false,
+        is_request: re.is_request,
         images: re.post_images.map((post_image) => post_image.image_url),
         start_date: re.start_date,
         end_date: re.end_date,
@@ -95,18 +95,17 @@ export class PostService {
         relations: ['post_images', 'user'],
       });
 
-      const post = {
+      return {
         title: res.title,
         description: res.contents,
         price: res.price,
         user_id: res.user.user_hash,
         images: res.post_images.map((post_image) => post_image.image_url),
-        is_request: res.is_request === true ? true : false,
+        is_request: res.is_request,
         start_date: res.start_date,
         end_date: res.end_date,
+        post_id: res.id,
       };
-
-      return post;
     } catch {
       return null;
     }

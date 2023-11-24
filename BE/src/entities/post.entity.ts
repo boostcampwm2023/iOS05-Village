@@ -33,7 +33,7 @@ export class PostEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @Column({ type: 'tinyint', nullable: false })
+  @Column({ type: 'boolean', nullable: false })
   status: boolean;
 
   @Column({ type: 'datetime', nullable: false })
@@ -42,7 +42,7 @@ export class PostEntity {
   @Column({ type: 'datetime', nullable: false })
   end_date: Date;
 
-  @Column({ type: 'tinyint', nullable: false })
+  @Column({ type: 'boolean', nullable: false })
   is_request: boolean;
 
   @CreateDateColumn({
