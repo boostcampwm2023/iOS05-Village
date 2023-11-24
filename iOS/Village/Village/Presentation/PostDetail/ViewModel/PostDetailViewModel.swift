@@ -52,7 +52,7 @@ final class PostDetailViewModel {
                 let data = try await Provider.shared.request(with: endpoint)
                 user.send(data)
             } catch let error as NetworkError {
-                post.send(completion: .failure(error))
+                user.send(completion: .failure(error))
             }
         }
     }
