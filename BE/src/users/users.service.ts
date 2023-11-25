@@ -35,14 +35,13 @@ export class UsersService {
     userEntity.OAuth_domain = createUserDto.OAuth_domain;
     userEntity.profile_img = imageLocation;
     userEntity.user_hash = hashMaker(createUserDto.nickname).slice(0, 8);
-    userEntity.status = true;
     const res = await this.userRepository.save(userEntity);
     return res;
   }
 
   async findUserById(userId: string) {
     const user: UserEntity = await this.userRepository.findOne({
-      where: { user_hash: userId, status: true },
+      where: { user_hash: userId },
     });
     if (user) {
       return { nickname: user.nickname, profile_img: user.profile_img };
@@ -53,7 +52,7 @@ export class UsersService {
 
   async removeUser(id: string) {
     const isDataExists = await this.userRepository.findOne({
-      where: { user_hash: id, status: true },
+      where: { user_hash: id },
     });
     if (!isDataExists) {
       return false;

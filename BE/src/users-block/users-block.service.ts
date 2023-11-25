@@ -42,7 +42,6 @@ export class UsersBlockService {
       const blockUserEntity = new BlockUserEntity();
       blockUserEntity.blocker = userId;
       blockUserEntity.blocked_user = id;
-      blockUserEntity.status = true;
 
       try {
         return await this.blockUserRepository.save(blockUserEntity);
@@ -54,7 +53,7 @@ export class UsersBlockService {
 
   async getBlockUser(id: string) {
     const res = await this.blockUserRepository.find({
-      where: { blocker: id, status: true },
+      where: { blocker: id },
       relations: ['blockedUser'],
     });
 

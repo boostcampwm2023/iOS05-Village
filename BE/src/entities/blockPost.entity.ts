@@ -17,9 +17,6 @@ export class BlockPostEntity {
   @PrimaryColumn()
   blocked_post: number;
 
-  @Column({ nullable: false, default: true })
-  status: boolean;
-
   @DeleteDateColumn()
   delete_date: Date;
 

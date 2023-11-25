@@ -43,7 +43,6 @@ export class PostsBlockService {
       const blockPostEntity = new BlockPostEntity();
       blockPostEntity.blocked_post = postId;
       blockPostEntity.blocker = blockerId;
-      blockPostEntity.status = true;
       await this.blockPostRepository.save(blockPostEntity);
     }
   }
