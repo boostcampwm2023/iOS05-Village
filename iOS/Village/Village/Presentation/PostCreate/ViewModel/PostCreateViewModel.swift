@@ -10,6 +10,8 @@ import Combine
 
 final class PostCreateViewModel {
     
+    private var postType: PostType
+    
     private var titleInput: String = ""
     private var startTimeInput: Date?
     private var endTimeInput: Date?
@@ -21,10 +23,19 @@ final class PostCreateViewModel {
     private var isValidEndTime: Bool = false
     private var isValidPrice: Bool = false
     private var isValidPostCreate: Bool {
+        let rentBool = 
+        postType == .rent &&
         isValidTitle &&
         isValidStartTime &&
         isValidEndTime &&
         isValidPrice
+        let requestBool = 
+        postType == .request &&
+        isValidTitle &&
+        isValidStartTime &&
+        isValidEndTime
+        
+        return rentBool || requestBool
     }
     
     private let priceOutput = PassthroughSubject<String, Never>()
@@ -36,78 +47,87 @@ final class PostCreateViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     
     private let useCase: PostCreateUseCase
-    private var postCreateTask: Cancellable? {
-        willSet {
-            postCreateTask?.cancel()
-        }
-    }
+//    private var postCreateTask: Cancellable? {
+//        willSet {
+//            postCreateTask?.cancel()
+//        }
+//    }
     
     func postCreate() {
         
-//        postCreateTask = useCase.execute(
-//            requestValue: PostCreateDTO(
-//                title: <#T##String#>,
-//                contents: <#T##String#>,
-//                price: <#T##Int?#>,
-//                isRequest: <#T##Bool#>,
-//                images: <#T##[String]#>,
-//                startDate: <#T##String#>,
-//                endDate: <#T##String#>
-//            ),
-//            completion: {
-//                <#code#>
-//            }
-//        )
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        guard let startTime = startTimeInput,
+              let endTime = endTimeInput else { return }
+        let startTimeString = formatter.string(from: startTime)
+        let endTimeString = formatter.string(from: endTime)
+        
+        let endPoint = APIEndPoints.createPosts(
+            with: PostCreateDTO(
+                title: titleInput,
+                description: detailInput,
+                price: priceInput,
+                isRequest: postType == .request,
+                image: [], // TODO: image 추가
+                startDate: startTimeString,
+                endDate: endTimeString
+            )
+        )
+        Task {
+            do {
+                let createdPost = try await Provider.shared.request(with: endPoint)
+                dump(createdPost)
+            } catch {
+                dump(error)
+            }
+        }
     }
     
-    init(useCase: PostCreateUseCase) {
+    init(useCase: PostCreateUseCase, postType: PostType) {
         self.useCase = useCase
+        self.postType = postType
     }
     
     func transform(input: Input) -> Output {
         input.titleSubject
             .sink { [weak self] text in
                 self?.titleInput = text
-                self?.validateTitle()
             }
             .store(in: &cancellableBag)
         
         input.startTimeSubject
             .sink { [weak self] date in
                 self?.startTimeInput = date
-                self?.validateStartTime()
             }
             .store(in: &cancellableBag)
         
         input.endTimeSubject
             .sink { [weak self] date in
                 self?.endTimeInput = date
-                self?.validateEndTime()
             }
             .store(in: &cancellableBag)
         
-        input.priceSubject
-            .sink(receiveValue: { [weak self] priceString in
-                let price = priceString.replacingOccurrences(of: ",", with: "")
-                if let priceInt = Int(price) {
-                    self?.priceOutput.send(priceInt.priceText())
-                    self?.priceInput = priceInt
-                    self?.validatePrice()
-                } else if priceString.isEmpty {
-                    self?.priceOutput.send("")
-                    self?.priceInput = nil
-                    self?.validatePrice()
-                } else {
-                    guard let prevPriceInt = self?.priceInput else {
+        if postType == .rent {
+            input.priceSubject
+                .sink(receiveValue: { [weak self] priceString in
+                    let price = priceString.replacingOccurrences(of: ",", with: "")
+                    if let priceInt = Int(price) {
+                        self?.priceOutput.send(priceInt.priceText())
+                        self?.priceInput = priceInt
+                    } else if priceString.isEmpty {
                         self?.priceOutput.send("")
                         self?.priceInput = nil
-                        self?.validatePrice()
-                        return
+                    } else {
+                        guard let prevPriceInt = self?.priceInput else {
+                            self?.priceOutput.send("")
+                            self?.priceInput = nil
+                            return
+                        }
+                        self?.priceOutput.send(prevPriceInt.priceText())
                     }
-                    self?.priceOutput.send(prevPriceInt.priceText())
-                }
-            })
-            .store(in: &cancellableBag)
+                })
+                .store(in: &cancellableBag)
+        }
         
         input.detailSubject
             .sink { [weak self] detailText in
@@ -117,20 +137,18 @@ final class PostCreateViewModel {
         
         input.postButtonTappedSubject
             .sink { [weak self] () in
-                if let titleValidation = self?.isValidTitle {
-                    self?.postButtonTappedTitleWarningOutput.send(titleValidation)
+                guard let self = self else { return }
+                validate()
+                if isValidPostCreate {
+                    postCreate()
+                } else {
+                    postButtonTappedTitleWarningOutput.send(isValidTitle)
+                    postButtonTappedStartTimeWarningOutput.send(isValidStartTime)
+                    postButtonTappedEndTimeWarningOutput.send(isValidEndTime)
+                    if postType == .rent {
+                        postButtonTappedPriceWarningOutput.send(isValidPrice)
+                    }
                 }
-                if let startTimeValidation = self?.isValidStartTime {
-                    self?.postButtonTappedStartTimeWarningOutput.send(startTimeValidation)
-                }
-                if let endTimeValidation = self?.isValidEndTime {
-                    self?.postButtonTappedEndTimeWarningOutput.send(endTimeValidation)
-                }
-                if let priceValidation = self?.isValidPrice {
-                    self?.postButtonTappedPriceWarningOutput.send(priceValidation)
-                }
-                guard let validation = self?.isValidPostCreate else { return }
-                // TODO: post객체 만들어서 네트워킹
             }
             .store(in: &cancellableBag)
         return Output(
@@ -145,6 +163,13 @@ final class PostCreateViewModel {
 }
 
 private extension PostCreateViewModel {
+    
+    func validate() {
+        validateTitle()
+        validateStartTime()
+        validateEndTime()
+        validatePrice()
+    }
     
     func validateTitle() {
         let result = !titleInput.isEmpty

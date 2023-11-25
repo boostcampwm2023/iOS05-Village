@@ -7,22 +7,22 @@
 
 import Foundation
 
-struct PostCreateDTO {
+struct PostCreateDTO: Codable {
     
     let title: String
-    let contents: String
+    let description: String
     let price: Int?
     let isRequest: Bool
-    let images: [String]
+    let image: [Data]
     let startDate: String
     let endDate: String    
     
     enum CodingKeys: String, CodingKey {
         case title
         case price
-        case contents
+        case description
         case isRequest = "is_request"
-        case images
+        case image
         case startDate = "start_date"
         case endDate = "end_date"
     }

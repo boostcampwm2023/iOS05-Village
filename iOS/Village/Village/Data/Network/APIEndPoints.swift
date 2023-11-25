@@ -22,4 +22,13 @@ struct APIEndPoints {
         return EndPoint(baseURL: url)
     }
     
+    static func createPosts(with post: PostCreateDTO) -> EndPoint<PostCreateDTO> {
+        return EndPoint(
+            baseURL: "http://118.67.130.107:3000/",
+            path: "posts",
+            method: .POST,
+            queryParameters: post
+        )
+    }
+    
 }

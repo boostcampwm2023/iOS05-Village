@@ -10,9 +10,14 @@ import Combine
 
 final class PostCreateRepository {
     
-//    func postCreate(postCreateDTO: PostCreateDTO) -> Cancellable? {
+//    func postCreate(
+//        postCreateDTO: PostCreateDTO,
+//        completion: @escaping (Result<Void, Error>) -> Void
+//    ) -> Cancellable? {
 //        
+//        let postDTO = 
 //        
+//        return
 //    }
     
 }
