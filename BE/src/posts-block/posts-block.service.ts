@@ -19,19 +19,23 @@ export class PostsBlockService {
     if (!blockedPost) {
       throw new HttpException('없는 게시물입니다.', 404);
     }
-    const blockPostEntity = new BlockPostEntity();
+
     const isExist = await this.blockPostRepository.findOne({
       where: {
         blocker: blockerId,
         blocked_post: postId,
       },
+      withDeleted: true,
     });
-    if (isExist !== null && isExist.status === true) {
+
+    if (isExist !== null && isExist.delete_date === null) {
       throw new HttpException('이미 차단 되었습니다.', 400);
     }
+
+    const blockPostEntity = new BlockPostEntity();
     blockPostEntity.blocked_post = postId;
     blockPostEntity.blocker = blockerId;
-    blockPostEntity.status = true;
+    blockPostEntity.delete_date = null;
     await this.blockPostRepository.save(blockPostEntity);
   }
 
@@ -39,7 +43,6 @@ export class PostsBlockService {
     const blockLists = await this.blockPostRepository.find({
       where: {
         blocker: blockerId,
-        status: true,
       },
       relations: ['blockedPost'],
     });
@@ -50,6 +53,19 @@ export class PostsBlockService {
         post_image: blockedPost.thumbnail,
         post_id: blockedPost.id,
       };
+    });
+  }
+
+  async removeBlockPosts(blockedPostId: number, userId: string) {
+    const blockedPost = await this.blockPostRepository.findOne({
+      where: { blocked_post: blockedPostId, blocker: userId },
+    });
+    if (!blockedPost) {
+      throw new HttpException('차단된 유저가 없습니다.', 404);
+    }
+    await this.blockPostRepository.softDelete({
+      blocked_post: blockedPostId,
+      blocker: userId,
     });
   }
 }

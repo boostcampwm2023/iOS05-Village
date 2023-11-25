@@ -26,7 +26,7 @@ export class PostService {
     private s3Handler: S3Handler,
   ) {}
   makeWhereOption(query: PostListDto) {
-    const where = { status: true, is_request: undefined };
+    const where = { is_request: undefined };
     if (query.requestFilter !== undefined) {
       where.is_request = query.requestFilter !== 0;
     }
@@ -106,9 +106,8 @@ export class PostService {
       relations: ['post_images', 'user'],
     });
 
-    console.log(post);
     if (post === null) {
-      throw new HttpException('없는 게시물입니다.', 400);
+      throw new HttpException('없는 게시물입니다.', 404);
     }
     if (await this.isFiltered(post, userId)) {
       throw new HttpException('차단한 게시물입니다.', 400);
@@ -207,7 +206,6 @@ export class PostService {
     post.is_request = createPostDto.is_request;
     post.start_date = createPostDto.start_date;
     post.end_date = createPostDto.end_date;
-    post.status = true;
     post.user_id = user.id;
     post.thumbnail = imageLocations.length > 0 ? imageLocations[0] : null;
     // 이미지 추가
@@ -226,16 +224,21 @@ export class PostService {
     }
   }
 
-  async deletePostById(postId: number) {
+  async removePost(postId: number) {
     const isDataExists = await this.postRepository.findOne({
-      where: { id: postId, status: true },
+      where: { id: postId },
     });
 
     if (!isDataExists) {
       return false;
     } else {
-      await this.postRepository.softDelete({ id: postId });
+      await this.deleteCascadingPost(postId);
       return true;
     }
+  }
+  async deleteCascadingPost(postId: number) {
+    await this.postImageRepository.softDelete({ post_id: postId });
+    await this.blockPostRepository.softDelete({ blocked_post: postId });
+    await this.postRepository.softDelete({ id: postId });
   }
 }

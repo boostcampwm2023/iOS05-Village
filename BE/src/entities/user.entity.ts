@@ -49,9 +49,6 @@ export class UserEntity {
   })
   update_date: Date;
 
-  @Column({ type: 'tinyint', nullable: false, default: true })
-  status: boolean;
-
   @Column({ length: 2048, nullable: true, charset: 'utf8' })
   profile_img: string;
 

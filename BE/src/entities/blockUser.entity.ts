@@ -17,9 +17,6 @@ export class BlockUserEntity {
   @PrimaryColumn()
   blocked_user: string;
 
-  @Column({ nullable: false, default: true })
-  status: boolean;
-
   @DeleteDateColumn()
   delete_date: Date;
 

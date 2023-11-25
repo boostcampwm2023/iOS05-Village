@@ -34,9 +34,6 @@ export class PostEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @Column({ type: 'boolean', nullable: false })
-  status: boolean;
-
   @Column({ type: 'datetime', nullable: false })
   start_date: Date;
 
