@@ -17,7 +17,7 @@ async function bootstrap() {
       ],
     }),
   });
-  app.useGlobalInterceptors(new HttpLoggerInterceptor());
+  // app.useGlobalInterceptors(new HttpLoggerInterceptor());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useGlobalPipes(
     new ValidationPipe({

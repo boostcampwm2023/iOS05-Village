@@ -155,35 +155,27 @@ export class PostService {
     const isDataExists = await this.postRepository.findOne({
       where: { id: postId },
     });
-
     if (!isDataExists) {
       return false;
     }
-
-    const isChangingImages = files !== undefined;
-
-    if (!isChangingImages) {
-      await this.changeExceptImages(postId, updatePostDto);
-      return true;
-    } else {
-      await this.changeExceptImages(postId, updatePostDto);
+    if (files) {
+      const fileLocation = await this.uploadImages(files);
+      await this.createImages(fileLocation, postId);
     }
 
     try {
-      if (!isDataExists) {
-        return false;
-      } else if (!isChangingImages) {
-        await this.changeExceptImages(postId, updatePostDto);
-        return true;
-      } else {
-        await this.changeExceptImages(postId, updatePostDto);
-
-        const imageLocations = await this.uploadImages(files);
-
-        await this.changeImages(postId, imageLocations);
-        return true;
+      if (updatePostDto.deleted_images !== undefined) {
+        for (const deleted_image of updatePostDto.deleted_images) {
+          await this.postImageRepository.softDelete({
+            image_url: deleted_image,
+          });
+        }
       }
+      delete updatePostDto.deleted_images;
+      await this.postRepository.update({ id: postId }, { ...updatePostDto });
+      return true;
     } catch (e) {
+      console.log(e);
       return null;
     }
   }

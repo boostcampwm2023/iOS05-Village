@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdatePostDto {
   @IsOptional() // 이 필드는 선택적으로 업데이트할 수 있도록 설정
@@ -13,4 +13,10 @@ export class UpdatePostDto {
   @IsNumber() // 전화번호 형식 검증
   price?: number;
 
+  @IsOptional()
+  @IsString({ each: true })
+  deleted_images: string[];
+
+  @IsBoolean()
+  is_request: boolean;
 }
