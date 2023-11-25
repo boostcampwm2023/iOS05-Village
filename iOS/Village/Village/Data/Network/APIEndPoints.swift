@@ -38,4 +38,12 @@ struct APIEndPoints {
         return EndPoint(baseURL: url)
     }
     
+    static func getChatList(with chatListResponse: ChatListRequestDTO) -> EndPoint<[ChatListResponseDTO]> {
+        return EndPoint(
+            baseURL: "http://118.67.130.107:3000/",
+            path: "chat",
+            method: .GET,
+            queryParameters: chatListResponse
+        )
+    }
 }
