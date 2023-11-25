@@ -5,7 +5,7 @@ import {
 } from 'nest-winston';
 
 export const winstonOptions = new winston.transports.Console({
-  level: process.env.NODE_ENV === 'prod' ? 'info' : 'silly',
+  level: process.env.NODE_ENV === 'prod' ? 'http' : 'silly',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.colorize({ all: true }),
