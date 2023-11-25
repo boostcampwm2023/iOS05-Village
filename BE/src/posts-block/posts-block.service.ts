@@ -27,24 +27,16 @@ export class PostsBlockService {
       },
       withDeleted: true,
     });
-    if (isExist) {
-      if (isExist.delete_date === null) {
-        throw new HttpException('이미 차단 되었습니다.', 400);
-      } else {
-        await this.blockPostRepository.update(
-          {
-            blocker: blockerId,
-            blocked_post: postId,
-          },
-          { delete_date: null },
-        );
-      }
-    } else {
-      const blockPostEntity = new BlockPostEntity();
-      blockPostEntity.blocked_post = postId;
-      blockPostEntity.blocker = blockerId;
-      await this.blockPostRepository.save(blockPostEntity);
+
+    if (isExist !== null && isExist.delete_date === null) {
+      throw new HttpException('이미 차단 되었습니다.', 400);
     }
+
+    const blockPostEntity = new BlockPostEntity();
+    blockPostEntity.blocked_post = postId;
+    blockPostEntity.blocker = blockerId;
+    blockPostEntity.delete_date = null;
+    await this.blockPostRepository.save(blockPostEntity);
   }
 
   async findBlockedPosts(blockerId: string) {

@@ -26,28 +26,19 @@ export class UsersBlockService {
       where: { blocked_user: id, blocker: userId },
       withDeleted: true,
     });
-    if (isBlockedUser) {
-      if (isBlockedUser.delete_date === null) {
-        throw new HttpException('이미 차단된 유저입니다', 400);
-      } else {
-        await this.blockUserRepository.update(
-          {
-            blocker: userId,
-            blocked_user: id,
-          },
-          { delete_date: null },
-        );
-      }
-    } else {
-      const blockUserEntity = new BlockUserEntity();
-      blockUserEntity.blocker = userId;
-      blockUserEntity.blocked_user = id;
 
-      try {
-        return await this.blockUserRepository.save(blockUserEntity);
-      } catch (e) {
-        throw new HttpException('서버 오류입니다', 500);
-      }
+    if (isBlockedUser !== null && isBlockedUser.delete_date === null) {
+      throw new HttpException('이미 차단된 유저입니다', 400);
+    }
+    const blockUserEntity = new BlockUserEntity();
+    blockUserEntity.blocker = userId;
+    blockUserEntity.blocked_user = id;
+    blockUserEntity.delete_date = null;
+
+    try {
+      return await this.blockUserRepository.save(blockUserEntity);
+    } catch (e) {
+      throw new HttpException('서버 오류입니다', 500);
     }
   }
 
