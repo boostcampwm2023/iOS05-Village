@@ -4,5 +4,5 @@ export const hashMaker = (nickname: string) => {
   return crypto
     .createHash('sha256')
     .update(nickname + new Date().getTime())
-    .digest('base64');
+    .digest('base64url');
 };
