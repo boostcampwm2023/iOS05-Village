@@ -172,6 +172,12 @@ private extension PostDetailViewController {
     private func bindViewModel() {
         let output = viewModel.transform(input: Input(postID: postID.eraseToAnyPublisher(),
                                                       userID: userID.eraseToAnyPublisher()))
+        
+        bindPostOutput(output)
+        bindUserOutput(output)
+    }
+    
+    private func bindPostOutput(_ output: ViewModel.Output) {
         output.post
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -185,7 +191,9 @@ private extension PostDetailViewController {
                 self?.setPostContent(post: post)
             })
             .store(in: &cancellableBag)
-        
+    }
+    
+    private func bindUserOutput(_ output: ViewModel.Output) {
         output.user
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
