@@ -102,34 +102,10 @@ class ChatListViewController: UIViewController {
                 return UICollectionViewCell()
             }
             
-            cell.configureData(data: chatList)
-
-            if let imageURL = chatList.userProfile {
-                let endpoint = APIEndPoints.getData(with: imageURL)
-                Task {
-                    do {
-                        let data = try await Provider.shared.request(from: endpoint.baseURL)
-                        cell.configureUserProfile(UIImage(data: data))
-                    } catch {
-                        dump(error)
-                    }
+            Task {
+                do {
+                    await cell.configureData(data: chatList)
                 }
-            } else {
-                cell.configureUserProfile(nil)
-            }
-            
-            if let imageURL = chatList.postImage {
-                let endpoint = APIEndPoints.getData(with: imageURL)
-                Task {
-                    do {
-                        let data = try await Provider.shared.request(from: endpoint.baseURL)
-                        cell.configurePostImage(UIImage(data: data))
-                    } catch {
-                        dump(error)
-                    }
-                }
-            } else {
-                cell.configurePostImage(nil)
             }
             
             return cell
