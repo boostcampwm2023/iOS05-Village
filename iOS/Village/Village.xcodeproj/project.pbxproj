@@ -331,6 +331,22 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		8F3D79DA2B135BF000370536 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */,
+				8F3D79DB2B135BF000370536 /* CustomView */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8F3D79DB2B135BF000370536 /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CustomView;
+			sourceTree = "<group>";
+		};
 		8F95CF8E2B0B97BA0024631F /* Commons */ = {
 			isa = PBXGroup;
 			children = (
@@ -491,7 +507,7 @@
 		8FD52A4F2B0B51A2005EE367 /* ChatRoom */ = {
 			isa = PBXGroup;
 			children = (
-				8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */,
+				8F3D79DA2B135BF000370536 /* View */,
 			);
 			path = ChatRoom;
 			sourceTree = "<group>";
