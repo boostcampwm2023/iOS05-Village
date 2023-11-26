@@ -129,16 +129,23 @@ final class PostDetailViewController: UIViewController {
         // TODO: 더보기 버튼 기능 구현
     }
     
+    @objc
+    private func chatButtonTapped() {
+        // TODO: 채팅하기 버튼 기능 구현
+    }
+    
     private func setPostContent(post: PostResponseDTO) {
-        if !post.imageURL.isEmpty {
-            imagePageView.setImageURL(post.imageURL)
-        } else {
+        if post.imageURL.isEmpty {
             imagePageView.isHidden = true
+        }
+        if post.price == nil {
+            priceLabel.isHidden = true
         }
         postInfoView.setContent(title: post.title,
                                 startDate: post.startDate, endDate: post.endDate,
                                 description: post.description)
-        setPriceLabel(price: post.price)
+        imagePageView.setImageURL(post.imageURL)
+        priceLabel.setPrice(price: post.price)
     }
     
     private func setUserContent(user: UserResponseDTO) {
@@ -209,14 +216,6 @@ private extension PostDetailViewController {
             .store(in: &cancellableBag)
     }
     
-    func setPriceLabel(price: Int?) {
-        if let price {
-            priceLabel.setPrice(price: price)
-        } else {
-            priceLabel.removeFromSuperview()
-        }
-    }
-    
     func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -253,16 +252,14 @@ private extension PostDetailViewController {
             NSLayoutConstraint.activate([
                 chatButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -25),
                 chatButton.widthAnchor.constraint(equalToConstant: 110),
-                chatButton.heightAnchor.constraint(equalToConstant: 40)
+                chatButton.heightAnchor.constraint(equalToConstant: 40),
+                priceLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 25),
+                priceLabel.trailingAnchor.constraint(lessThanOrEqualTo: chatButton.leadingAnchor, constant: -10),
+                priceLabel.centerYAnchor.constraint(equalTo: chatButton.centerYAnchor)
             ])
         }
         
-        NSLayoutConstraint.activate([
-            chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor),
-            priceLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 25),
-            priceLabel.trailingAnchor.constraint(lessThanOrEqualTo: chatButton.leadingAnchor, constant: -10),
-            priceLabel.centerYAnchor.constraint(equalTo: chatButton.centerYAnchor)
-        ])
+        chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor).isActive = true
     }
     
 }
