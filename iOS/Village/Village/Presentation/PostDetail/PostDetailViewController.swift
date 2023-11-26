@@ -117,6 +117,7 @@ final class PostDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .systemBackground
         configureUI()
         configureNavigationItem()
         setLayoutConstraints()
@@ -149,9 +150,6 @@ final class PostDetailViewController: UIViewController {
 private extension PostDetailViewController {
     
     func configureUI() {
-        view.backgroundColor = .systemBackground
-        tabBarController?.tabBar.isHidden = true
-        
         view.addSubview(scrollView)
         view.addSubview(footerView)
         scrollView.addSubview(scrollViewContainerView)

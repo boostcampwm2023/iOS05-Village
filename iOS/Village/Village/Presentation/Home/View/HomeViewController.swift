@@ -209,6 +209,7 @@ extension HomeViewController: UICollectionViewDelegate {
         let postDetailVC = PostDetailViewController(postID: post.postID,
                                                     userID: post.userID,
                                                     isRequest: post.isRequest)
+        postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
     }
     
