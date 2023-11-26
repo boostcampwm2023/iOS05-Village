@@ -45,7 +45,7 @@ final class Provider: ProviderProtocol {
         guard let response = response as? HTTPURLResponse else {
             throw NetworkError.unknownError
         }
-        
+        print(response.statusCode)
         guard (200..<300).contains(response.statusCode) else {
             let serverError = ServerError(rawValue: response.statusCode) ?? .unknown
             throw NetworkError.serverError(serverError)

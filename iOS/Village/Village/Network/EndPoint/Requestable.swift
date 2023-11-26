@@ -29,7 +29,7 @@ extension Requestable {
         //            }
         //        }
         
-        let boundary = "Boundary-\(UUID().uuidString)"
+        let boundary = "----WebKitFormBoundary\(UUID().uuidString)"
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method.rawValue
@@ -51,14 +51,14 @@ extension Requestable {
         
         httpBody.appendString(fieldString)
         httpBody.append(convertImage(images: bodyParameters?.images ?? [], boundary: boundary))
-        httpBody.appendString("--\(boundary)\r\n")
+        httpBody.appendString("--\(boundary)--")
         print("\n\n")
         print(String(data: httpBody as Data, encoding: .utf8))
         print("\n\n")
         urlRequest.httpBody = httpBody as Data
         headers?.forEach { urlRequest.setValue($1, forHTTPHeaderField: $0) }
         
-        dump(urlRequest)
+        dump(urlRequest.allHTTPHeaderFields)
         
         return urlRequest
     }
