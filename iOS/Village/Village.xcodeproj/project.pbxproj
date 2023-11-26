@@ -44,6 +44,7 @@
 		8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */; };
 		8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */; };
 		8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */; };
+		8F3D79DD2B135D1500370536 /* ChatRoom.json in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D79DC2B135D1500370536 /* ChatRoom.json */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
@@ -117,6 +118,7 @@
 		8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndPoints.swift; sourceTree = "<group>"; };
 		8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListRequestDTO.swift; sourceTree = "<group>"; };
 		8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListResponseDTO.swift; sourceTree = "<group>"; };
+		8F3D79DC2B135D1500370536 /* ChatRoom.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatRoom.json; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 				5975E9882B035919007CEF13 /* Posts.json */,
 				5975E9892B035919007CEF13 /* Users.json */,
 				8FF7E6192B106FBB00B6D678 /* ChatList.json */,
+				8F3D79DC2B135D1500370536 /* ChatRoom.json */,
 			);
 			path = Dummy;
 			sourceTree = "<group>";
@@ -630,6 +633,7 @@
 				5975E98A2B035919007CEF13 /* Post.json in Resources */,
 				8FF7E61A2B106FBB00B6D678 /* ChatList.json in Resources */,
 				8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */,
+				8F3D79DD2B135D1500370536 /* ChatRoom.json in Resources */,
 				5975E98B2B035919007CEF13 /* Posts.json in Resources */,
 				59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */,
 				5975E98C2B035919007CEF13 /* Users.json in Resources */,
