@@ -124,7 +124,11 @@ class ChatListViewController: UIViewController {
 extension ChatListViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let chat = dataSource.itemIdentifier(for: indexPath) else { return }
         
+        let chatRoomVC = ChatRoomViewController()
+        chatRoomVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(chatRoomVC, animated: true)
     }
     
 }
