@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return "Village API Server"', () => {
+      expect(appController.home()).toBe('Village API Server');
     });
   });
 });
