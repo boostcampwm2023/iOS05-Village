@@ -10,7 +10,6 @@ import { PostEntity } from '../entities/post.entity';
 import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
-import { UsersController } from './users.controller';
 
 @Injectable()
 export class UsersService {
@@ -112,7 +111,7 @@ export class UsersService {
         { nickname: nickname },
       );
     } catch (e) {
-      throw new HttpException('서버 오류입니다. db', 500);
+      throw new HttpException('서버 오류입니다.', 500);
     }
   }
 
@@ -131,7 +130,7 @@ export class UsersService {
         );
       }
     } catch (e) {
-      throw new HttpException('서버 오류입니다. ima', 500);
+      throw new HttpException('서버 오류입니다.', 500);
     }
   }
 

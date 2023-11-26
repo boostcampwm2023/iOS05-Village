@@ -19,8 +19,6 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { PostCreateDto } from './dto/postCreate.dto';
 import { MultiPartBody } from '../utils/multiPartBody.decorator';
 import { PostListDto } from './dto/postList.dto';
-import { http } from 'winston';
-import { HttpLoggerInterceptor } from 'src/utils/httpLogger.interceptor';
 
 @Controller('posts')
 @ApiTags('posts')

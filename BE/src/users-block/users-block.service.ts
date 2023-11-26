@@ -67,7 +67,7 @@ export class UsersBlockService {
       where: { blocked_user: blockedUserId, blocker: userId },
     });
     if (!blockedUser) {
-      throw new HttpException('차단된 유저가 없습니다.', 404);
+      throw new HttpException('없는 사용자 입니다.', 404);
     }
     await this.blockUserRepository.softDelete({
       blocked_user: blockedUserId,

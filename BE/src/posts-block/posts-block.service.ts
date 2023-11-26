@@ -61,7 +61,7 @@ export class PostsBlockService {
       where: { blocked_post: blockedPostId, blocker: userId },
     });
     if (!blockedPost) {
-      throw new HttpException('차단된 유저가 없습니다.', 404);
+      throw new HttpException('게시글이 존재하지 않습니다.', 404);
     }
     await this.blockPostRepository.softDelete({
       blocked_post: blockedPostId,
