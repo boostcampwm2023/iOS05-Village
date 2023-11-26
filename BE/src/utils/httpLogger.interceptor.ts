@@ -5,11 +5,9 @@ import {
   Injectable,
   Logger,
   HttpException,
-  BadGatewayException,
 } from '@nestjs/common';
-import { request } from 'http';
 import { Observable, throwError } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class HttpLoggerInterceptor implements NestInterceptor {
