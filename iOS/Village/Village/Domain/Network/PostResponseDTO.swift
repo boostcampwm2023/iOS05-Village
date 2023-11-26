@@ -12,8 +12,8 @@ struct PostResponseDTO: Decodable {
     let title: String
     let description: String
     let price: Int?
-    let userID: Int
-    let imageURL: [String]?
+    let userID: String
+    let imageURL: [String]
     let isRequest: Bool
     let startDate: String
     let endDate: String

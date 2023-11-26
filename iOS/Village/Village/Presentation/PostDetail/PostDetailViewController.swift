@@ -14,7 +14,7 @@ final class PostDetailViewController: UIViewController {
     typealias Input = ViewModel.Input
     
     private let postID: Just<Int>
-    private let userID: Just<Int>
+    private let userID: Just<String>
     private let isRequest: Bool
     
     private let viewModel = ViewModel()
@@ -102,7 +102,7 @@ final class PostDetailViewController: UIViewController {
         return button
     }()
     
-    init(postID: Int, userID: Int, isRequest: Bool) {
+    init(postID: Int, userID: String, isRequest: Bool) {
         self.postID = Just(postID)
         self.userID = Just(userID)
         self.isRequest = isRequest
@@ -129,8 +129,8 @@ final class PostDetailViewController: UIViewController {
     }
     
     private func setPostContent(post: PostResponseDTO) {
-        if let imageURL = post.imageURL, !imageURL.isEmpty {
-            imagePageView.setImageURL(imageURL)
+        if !post.imageURL.isEmpty {
+            imagePageView.setImageURL(post.imageURL)
         } else {
             imagePageView.isHidden = true
         }

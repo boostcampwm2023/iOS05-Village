@@ -43,7 +43,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func getUser(id: Int) {
+    private func getUser(id: String) {
         let endpoint = APIEndPoints.getUser(id: id)
         
         Task {
@@ -62,7 +62,7 @@ extension PostDetailViewModel {
     
     struct Input {
         var postID: AnyPublisher<Int, Never>
-        var userID: AnyPublisher<Int, Never>
+        var userID: AnyPublisher<String, Never>
     }
     
     struct Output {

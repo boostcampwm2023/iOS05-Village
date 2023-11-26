@@ -13,7 +13,7 @@ struct PostListResponseDTO: Codable {
     let price: Int?
     let description: String
     let postID: Int
-    let userID: Int
+    let userID: String
     let isRequest: Bool
     let images: [String]
     let startDate: String

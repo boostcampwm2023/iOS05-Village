@@ -26,7 +26,7 @@ struct APIEndPoints {
         )
     }
     
-    static func getUser(id: Int) -> EndPoint<UserResponseDTO> {
+    static func getUser(id: String) -> EndPoint<UserResponseDTO> {
         return EndPoint(
             baseURL: "http://118.67.130.107:3000/",
             path: "users/\(id)",

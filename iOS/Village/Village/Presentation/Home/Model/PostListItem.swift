@@ -12,7 +12,7 @@ struct PostListItem: Hashable {
     let title: String
     let price: Int?
     let postID: Int
-    let userID: Int
+    let userID: String
     let isRequest: Bool
     let imageURL: String?
     
