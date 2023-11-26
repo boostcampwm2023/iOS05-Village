@@ -11,10 +11,10 @@ struct PostListResponseDTO: Codable {
     
     let title: String
     let price: Int?
-    let contents: String
+    let description: String
     let postID: Int
-    let userID: Int
-    let isRequest: Int
+    let userID: String
+    let isRequest: Bool
     let images: [String]
     let startDate: String
     let endDate: String
@@ -22,7 +22,7 @@ struct PostListResponseDTO: Codable {
     enum CodingKeys: String, CodingKey {
         case title
         case price
-        case contents
+        case description
         case postID = "post_id"
         case userID = "user_id"
         case isRequest = "is_request"

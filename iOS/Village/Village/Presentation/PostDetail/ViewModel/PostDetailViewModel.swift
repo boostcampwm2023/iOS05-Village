@@ -36,7 +36,6 @@ final class PostDetailViewModel {
         Task {
             do {
                 let data = try await Provider.shared.request(with: endpoint)
-                dump(data)
                 post.send(data)
             } catch let error as NetworkError {
                 post.send(completion: .failure(error))
@@ -44,7 +43,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func getUser(id: Int) {
+    private func getUser(id: String) {
         let endpoint = APIEndPoints.getUser(id: id)
         
         Task {
@@ -52,7 +51,7 @@ final class PostDetailViewModel {
                 let data = try await Provider.shared.request(with: endpoint)
                 user.send(data)
             } catch let error as NetworkError {
-                post.send(completion: .failure(error))
+                user.send(completion: .failure(error))
             }
         }
     }
@@ -63,7 +62,7 @@ extension PostDetailViewModel {
     
     struct Input {
         var postID: AnyPublisher<Int, Never>
-        var userID: AnyPublisher<Int, Never>
+        var userID: AnyPublisher<String, Never>
     }
     
     struct Output {
