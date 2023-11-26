@@ -7,24 +7,40 @@
 
 import Foundation
 
-struct PostCreateDTO: Codable {
+struct PostCreateInfo: Codable {
+    
+    let postInfo: PostInfoDTO
+    let images: [ImageDTO]
+    
+}
+
+struct PostInfoDTO: Codable {
     
     let title: String
     let description: String
     let price: Int?
     let isRequest: Bool
-    let image: [Data]
     let startDate: String
-    let endDate: String    
+    let endDate: String
     
     enum CodingKeys: String, CodingKey {
         case title
         case price
         case description
         case isRequest = "is_request"
-        case image
         case startDate = "start_date"
         case endDate = "end_date"
     }
+}
+
+struct ImageDTO: Codable {
+    let fileName: String
+    let type: String
+    let data: Data
     
+    enum CodingKeys: String, CodingKey {
+        case fileName = "filename"
+        case type
+        case data
+    }
 }

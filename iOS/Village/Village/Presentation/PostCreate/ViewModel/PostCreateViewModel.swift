@@ -63,14 +63,22 @@ final class PostCreateViewModel {
         let endTimeString = formatter.string(from: endTime)
         
         let endPoint = APIEndPoints.createPosts(
-            with: PostCreateDTO(
-                title: titleInput,
-                description: detailInput,
-                price: priceInput,
-                isRequest: postType == .request,
-                image: [], // TODO: image 추가
-                startDate: startTimeString,
-                endDate: endTimeString
+            with: PostCreateInfo(
+                postInfo: PostInfoDTO(
+                    title: titleInput,
+                    description: detailInput,
+                    price: priceInput,
+                    isRequest: postType == .request,
+                    startDate: startTimeString,
+                    endDate: endTimeString
+                ),
+                images: [
+//                    ImageDTO(
+//                        fileName: "aa",
+//                        type: "image/png", // TODO: image type (png? jpg?)
+//                        data: Data() // TODO: image Data ?
+//                    )
+                ]
             )
         )
         Task {
