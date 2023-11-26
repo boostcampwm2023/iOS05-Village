@@ -28,6 +28,7 @@ final class ImagePageView: UIView {
     private var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.translatesAutoresizingMaskIntoConstraints = false
+        pageControl.hidesForSinglePage = true
         pageControl.backgroundStyle = .minimal
         return pageControl
     }()
@@ -79,9 +80,9 @@ final class ImagePageView: UIView {
     
     private func generateImageView(data: Data, index: Int) -> UIImageView {
         let imageView = UIImageView()
-        imageView.image = UIImage(data: data)
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(data: data)
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }
     
