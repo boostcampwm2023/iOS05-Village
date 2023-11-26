@@ -9,7 +9,7 @@ import UIKit
 
 final class ChatRoomViewController: UIViewController {
     
-    private let chatStackView: UIStackView = {
+    private let keyboardStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
@@ -17,7 +17,7 @@ final class ChatRoomViewController: UIViewController {
         return stackView
     }()
     
-    private let chatMoreButton: UIButton = {
+    private let keyboardMoreButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.plus.rawValue), for: .normal)
@@ -25,7 +25,7 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    private let chatTextField: UITextField = {
+    private let keyboardTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "메시지를 입력해주세요."
@@ -35,7 +35,7 @@ final class ChatRoomViewController: UIViewController {
         return textField
     }()
     
-    private let chatSendButton: UIButton = {
+    private let keyboardSendButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.paperplane.rawValue), for: .normal)
@@ -57,12 +57,12 @@ final class ChatRoomViewController: UIViewController {
     private func setUI() {
         view.addSubview(postSummaryView)
         
-        chatTextField.delegate = self
+        keyboardTextField.delegate = self
         
-        chatStackView.addArrangedSubview(chatMoreButton)
-        chatStackView.addArrangedSubview(chatTextField)
-        chatStackView.addArrangedSubview(chatSendButton)
-        view.addSubview(chatStackView)
+        keyboardStackView.addArrangedSubview(keyboardMoreButton)
+        keyboardStackView.addArrangedSubview(keyboardTextField)
+        keyboardStackView.addArrangedSubview(keyboardSendButton)
+        view.addSubview(keyboardStackView)
         
         configureConstraints()
     }
@@ -70,21 +70,21 @@ final class ChatRoomViewController: UIViewController {
     private func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            chatStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            chatStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            chatStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            keyboardStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
-            chatMoreButton.widthAnchor.constraint(equalToConstant: 40)
+            keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40)
         ])
         
         NSLayoutConstraint.activate([
-            chatTextField.heightAnchor.constraint(equalToConstant: 40)
+            keyboardTextField.heightAnchor.constraint(equalToConstant: 40)
         ])
         
         NSLayoutConstraint.activate([
-            chatSendButton.widthAnchor.constraint(equalToConstant: 40)
+            keyboardSendButton.widthAnchor.constraint(equalToConstant: 40)
         ])
         
     }
