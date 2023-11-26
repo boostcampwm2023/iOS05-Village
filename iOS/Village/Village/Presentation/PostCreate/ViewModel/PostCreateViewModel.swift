@@ -72,19 +72,12 @@ final class PostCreateViewModel {
                     startDate: startTimeString,
                     endDate: endTimeString
                 ),
-                images: [
-//                    ImageDTO(
-//                        fileName: "aa",
-//                        type: "image/png", // TODO: image type (png? jpg?)
-//                        data: Data() // TODO: image Data ?
-//                    )
-                ]
+                images: []
             )
         )
         Task {
             do {
-                let createdPost = try await Provider.shared.request(with: endPoint)
-                dump(createdPost)
+                let _ = try await Provider.shared.request(with: endPoint)
             } catch {
                 dump(error)
             }

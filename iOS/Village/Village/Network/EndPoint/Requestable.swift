@@ -28,37 +28,39 @@ extension Requestable {
         //                urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: bodyParameters)
         //            }
         //        }
-        
-        let boundary = "----WebKitFormBoundary\(UUID().uuidString)"
-        
         var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = method.rawValue
-        urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type") // header
         
-        let httpBody = NSMutableData()
-        
-        var fieldString = "--\(boundary)\r\n"
-        fieldString += "Content-Disposition: form-data; name=\"post_info\"\r\n"
-        fieldString += "\r\n"
-        
-        if let postInfo = try bodyParameters?.postInfo.toDictionary() {
-            if !postInfo.isEmpty,
-               let postInfoValue = try? JSONSerialization.data(withJSONObject: postInfo),
-               let string = String(data: postInfoValue, encoding: .utf8) {
-                fieldString += "\(string)\r\n"
+        if let bodyParameter = bodyParameters {
+            let boundary = "\(UUID().uuidString)"
+            let httpBody = NSMutableData()
+            
+            urlRequest.setValue(
+                "multipart/form-data; boundary=\(boundary)",
+                forHTTPHeaderField: "Content-Type"
+            ) // header
+            
+            var fieldString = "--\(boundary)\r\n"
+            fieldString += "Content-Disposition: form-data; name=\"post_info\"\r\n"
+            fieldString += "\r\n"
+            
+            if let postInfo = try bodyParameter.postInfo.toDictionary() {
+                if !postInfo.isEmpty,
+                   let postInfoValue = try? JSONSerialization.data(withJSONObject: postInfo),
+                   let string = String(data: postInfoValue, encoding: .utf8) {
+                    fieldString += "\(string)\r\n"
+                }
             }
+            
+            httpBody.appendString(fieldString)
+            httpBody.append(convertImage(images: bodyParameter.images, boundary: boundary))
+            
+            httpBody.appendString("--\(boundary)--")
+            urlRequest.httpBody = httpBody as Data
         }
         
-        httpBody.appendString(fieldString)
-        httpBody.append(convertImage(images: bodyParameters?.images ?? [], boundary: boundary))
-        httpBody.appendString("--\(boundary)--")
-        print("\n\n")
-        print(String(data: httpBody as Data, encoding: .utf8))
-        print("\n\n")
-        urlRequest.httpBody = httpBody as Data
-        headers?.forEach { urlRequest.setValue($1, forHTTPHeaderField: $0) }
+        urlRequest.httpMethod = method.rawValue
         
-        dump(urlRequest.allHTTPHeaderFields)
+        headers?.forEach { urlRequest.setValue($1, forHTTPHeaderField: $0) }
         
         return urlRequest
     }
@@ -99,7 +101,6 @@ extension Encodable {
     func toDictionary() throws -> [String: Any]? {
         let data = try JSONEncoder().encode(self)
         let jsonData = try JSONSerialization.jsonObject(with: data)
-        dump(jsonData)
         return jsonData as? [String: Any]
     }
     
@@ -112,14 +113,5 @@ extension NSMutableData {
             self.append(data)
         }
     }
-    
-}
-
-struct FileDTO {
-    
-    let fieldName: String
-    let fileName: String
-    let mimeType: String
-    let fileData: Data
     
 }

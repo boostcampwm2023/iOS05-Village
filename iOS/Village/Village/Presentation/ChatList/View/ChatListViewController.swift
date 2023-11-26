@@ -57,7 +57,7 @@ class ChatListViewController: UIViewController {
         let endpoint = APIEndPoints.getPosts(with: PostRequestDTO(page: 1))
         Task {
             do {
-                let data = try await Provider.shared.request(with: endpoint)
+                guard let data = try await Provider.shared.request(with: endpoint) else { return }
                 viewModel.updatePosts(data)
                 configureDataSource()
                 generateData()
