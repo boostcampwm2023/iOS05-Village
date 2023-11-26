@@ -65,7 +65,7 @@
 		8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */; };
 		8FF7E60C2B0F38A500B6D678 /* ChatListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E60A2B0F38A500B6D678 /* ChatListCollectionViewCell.swift */; };
 		8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */; };
-		8FF7E61A2B106FBB00B6D678 /* ChatLst.json in Resources */ = {isa = PBXBuildFile; fileRef = 8FF7E6192B106FBB00B6D678 /* ChatLst.json */; };
+		8FF7E61A2B106FBB00B6D678 /* ChatList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8FF7E6192B106FBB00B6D678 /* ChatList.json */; };
 		8FF7E61D2B10721400B6D678 /* ChatListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E61C2B10721400B6D678 /* ChatListViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -139,7 +139,7 @@
 		8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
 		8FF7E60A2B0F38A500B6D678 /* ChatListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
-		8FF7E6192B106FBB00B6D678 /* ChatLst.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatLst.json; sourceTree = "<group>"; };
+		8FF7E6192B106FBB00B6D678 /* ChatList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatList.json; sourceTree = "<group>"; };
 		8FF7E61C2B10721400B6D678 /* ChatListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -222,7 +222,7 @@
 				5975E9872B035919007CEF13 /* Post.json */,
 				5975E9882B035919007CEF13 /* Posts.json */,
 				5975E9892B035919007CEF13 /* Users.json */,
-				8FF7E6192B106FBB00B6D678 /* ChatLst.json */,
+				8FF7E6192B106FBB00B6D678 /* ChatList.json */,
 			);
 			path = Dummy;
 			sourceTree = "<group>";
@@ -615,7 +615,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5975E98A2B035919007CEF13 /* Post.json in Resources */,
-				8FF7E61A2B106FBB00B6D678 /* ChatLst.json in Resources */,
+				8FF7E61A2B106FBB00B6D678 /* ChatList.json in Resources */,
 				8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */,
 				5975E98B2B035919007CEF13 /* Posts.json in Resources */,
 				59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */,
