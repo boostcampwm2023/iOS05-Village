@@ -44,11 +44,12 @@ struct ChatListRequestDTO: Codable {
     
 }
 
-
 final class ChatListViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     private var chatList = PassthroughSubject<[ChatListResponseDTO], Never>()
+    
+    private var test: [ChatListResponseDTO] = []
     
     func transform(input: Input) -> Output {
         input.currentPage
@@ -72,6 +73,14 @@ final class ChatListViewModel {
                 dump(error)
             }
         }
+    }
+    
+    func updateTest(list: [ChatListResponseDTO]) {
+        test = list
+    }
+    
+    func getTest() -> [ChatListResponseDTO] {
+        return test
     }
 
 }
