@@ -90,20 +90,12 @@ final class ChatRoomViewController: UIViewController {
     }
     
     private func setNavigationUI() {
-        let arrowLeft = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(backButtonTapped), symbolName: .arrowLeft
-        )
         let ellipsis = self.navigationItem.makeSFSymbolButton(
             self, action: #selector(ellipsisTapped), symbolName: .ellipsis
         )
         
         navigationItem.title = "다른 사용자"
-        navigationItem.leftBarButtonItem = arrowLeft
         navigationItem.rightBarButtonItem = ellipsis
-    }
-    
-    @objc private func backButtonTapped() {
-        self.dismiss(animated: true)
     }
     
     @objc private func ellipsisTapped() {

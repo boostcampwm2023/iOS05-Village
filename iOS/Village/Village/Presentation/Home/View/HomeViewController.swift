@@ -10,13 +10,16 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, PostResponseDTO>
+    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, PostListItem>
+    typealias ViewModel = HomeViewModel
+    typealias Input = ViewModel.Input
     
     private var dataSource: HomeDataSource!
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     private var collectionView: UICollectionView!
     
-    private var viewModel = PostListItemViewModel()
+    private var currentPage = CurrentValueSubject<Int, Never>(1)
+    private var viewModel = ViewModel()
 
     private let floatingButton: FloatingButton = {
         let button = FloatingButton(frame: .zero)
@@ -40,8 +43,14 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setViewModel()
+        bindViewModel()
         setupUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        floatingButton.isActive = false
     }
     
     private func setupUI() {
@@ -66,21 +75,17 @@ final class HomeViewController: UIViewController {
                 }
             })
             .store(in: &cancellableBag)
-
     }
     
-    private func setViewModel() {
-        let endpoint = APIEndPoints.getPosts(with: PostRequestDTO(page: 1))
-        Task {
-            do {
-                guard let data = try await Provider.shared.request(with: endpoint) else { return }
-                viewModel.updatePosts(data)
-                configureDataSource()
-                generateData()
-            } catch {
-                dump(error)
-            }
-        }
+    private func bindViewModel() {
+        viewModel.transform(input: Input(currentPage: currentPage))
+            .postList
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] list in
+                self?.configureDataSource()
+                self?.generateData(postList: list)
+            })
+            .store(in: &cancellableBag)
     }
     
     private func setNavigationUI() {
@@ -92,7 +97,6 @@ final class HomeViewController: UIViewController {
             self, action: #selector(searchButtonTapped), symbolName: .magnifyingGlass
         )
         self.navigationItem.rightBarButtonItems = [search]
-        
     }
     
     private func setMenuUI() {
@@ -114,76 +118,11 @@ final class HomeViewController: UIViewController {
         menuView.setMenuActions([presentPostRequestNC, presentPostRentNC])
     }
     
-    @objc func searchButtonTapped() {
+    @objc private func searchButtonTapped() {
         let nextVC = SearchViewController()
         let presentSearchNV = UINavigationController(rootViewController: nextVC)
         presentSearchNV.modalPresentationStyle = .fullScreen
         self.present(presentSearchNV, animated: true)
-    }
-    
-    private func configureCollectionView() {
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.delegate = self
-        view.addSubview(collectionView)
-    }
-    
-    private func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(100.0)
-        )
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 4.0, trailing: 0.0)
-        section.interGroupSpacing = 8.0
-        
-        return UICollectionViewCompositionalLayout(section: section)
-    }
-    
-    private func configureDataSource() {
-        collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
-            UICollectionViewCell? in
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: self.reuseIdentifier,
-                for: indexPath
-            ) as? HomeCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            
-            cell.configureData(post: post)
-            
-            if let imageURL = post.images.first {
-                let endpoint = APIEndPoints.getData(with: imageURL)
-                Task {
-                    do {
-                        let data = try await Provider.shared.request(from: endpoint.baseURL)
-                        cell.configureImage(image: UIImage(data: data))
-                    } catch {
-                        dump(error)
-                    }
-                }
-            } else {
-                cell.configureImage(image: nil)
-            }
-            
-            return cell
-        }
-    }
-    
-    private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
-        snapshot.appendSections([.main])
-        
-        snapshot.appendItems(viewModel.getPosts())
-        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     private func setLayoutConstraint() {
@@ -203,16 +142,89 @@ final class HomeViewController: UIViewController {
     }
 }
 
+private extension HomeViewController {
+    
+    func configureCollectionView() {
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.delegate = self
+        view.addSubview(collectionView)
+    }
+    
+    func createLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(100.0)
+        )
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 4.0, trailing: 0.0)
+        section.interGroupSpacing = 8.0
+        
+        return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    func configureDataSource() {
+        collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
+            UICollectionViewCell? in
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: self.reuseIdentifier,
+                for: indexPath
+            ) as? HomeCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            
+            cell.configureData(post: post)
+            
+            if let imageURL = post.imageURL {
+                let endpoint = APIEndPoints.getData(with: imageURL)
+                Task {
+                    do {
+                        let data = try await Provider.shared.request(from: endpoint.baseURL)
+                        cell.configureImage(image: UIImage(data: data))
+                    } catch {
+                        dump(error)
+                    }
+                }
+            } else {
+                cell.configureImage(image: nil)
+            }
+            
+            return cell
+        }
+    }
+    
+    func generateData(postList: [PostListItem]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
+        snapshot.appendSections([.main])
+        
+        snapshot.appendItems(postList)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+}
+
 extension HomeViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let post = viewModel.getPost(indexPath.row)
+        guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        if (post.isRequest != 0) {
-            self.navigationController?.pushViewController(RequestDetailViewController(post: post), animated: true)
-        } else {
-            self.navigationController?.pushViewController(RentDetailViewController(postData: post), animated: true)
-        }
+        let postDetailVC = PostDetailViewController(postID: post.postID,
+                                                    userID: post.userID,
+                                                    isRequest: post.isRequest)
+        postDetailVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(postDetailVC, animated: true)
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        floatingButton.isActive = false
     }
     
 }

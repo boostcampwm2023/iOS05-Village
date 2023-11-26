@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PostRequestDTO: Codable {
+struct PostListRequestDTO: Codable {
     
     let page: Int
     

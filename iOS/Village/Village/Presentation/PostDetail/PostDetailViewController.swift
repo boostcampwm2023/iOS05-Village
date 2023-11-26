@@ -1,19 +1,29 @@
 //
-//  RentDetailViewController.swift
+//  PostDetailViewController.swift
 //  Village
 //
 //  Created by 박동재 on 2023/11/17.
 //
 
 import UIKit
+import Combine
 
-final class RentDetailViewController: UIViewController {
+final class PostDetailViewController: UIViewController {
     
-    private var post: PostResponseDTO
+    typealias ViewModel = PostDetailViewModel
+    typealias Input = ViewModel.Input
+    
+    private let postID: Just<Int>
+    private let userID: Just<String>
+    private let isRequest: Bool
+    
+    private let viewModel = ViewModel()
+    private var cancellableBag = Set<AnyCancellable>()
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
         return scrollView
     }()
     
@@ -22,12 +32,14 @@ final class RentDetailViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
         stackView.axis = .vertical
+        
         return stackView
     }()
     
     private var imagePageView: ImagePageView = {
         let imagePageView = ImagePageView()
         imagePageView.translatesAutoresizingMaskIntoConstraints = false
+        
         return imagePageView
     }()
     
@@ -38,18 +50,21 @@ final class RentDetailViewController: UIViewController {
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.axis = .vertical
         stackView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
+        
         return stackView
     }()
     
     private var userInfoView: UserInfoView = {
         let view = UserInfoView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        
         return view
     }()
     
     private var postInfoView: PostInfoView = {
         let view = PostInfoView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        
         return view
     }()
     
@@ -62,6 +77,7 @@ final class RentDetailViewController: UIViewController {
         divider.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         divider.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         divider.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        
         return view
     }()
     
@@ -69,6 +85,7 @@ final class RentDetailViewController: UIViewController {
         let priceLabel = PriceLabel()
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        
         return priceLabel
     }()
     
@@ -81,13 +98,14 @@ final class RentDetailViewController: UIViewController {
                                                     .foregroundColor: UIColor.white])
         button.setAttributedTitle(title, for: .normal)
         button.layer.cornerRadius = 6
-        button.widthAnchor.constraint(equalToConstant: 110).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        
         return button
     }()
     
-    init(postData: PostResponseDTO) {
-        self.post = postData
+    init(postID: Int, userID: String, isRequest: Bool) {
+        self.postID = Just(postID)
+        self.userID = Just(userID)
+        self.isRequest = isRequest
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -99,25 +117,46 @@ final class RentDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .systemBackground
         configureUI()
         configureNavigationItem()
-        setContents()
         setLayoutConstraints()
+        bindViewModel()
     }
     
     @objc
     private func moreBarButtonTapped() {
         // TODO: 더보기 버튼 기능 구현
     }
+    
+    @objc
+    private func chatButtonTapped() {
+        // TODO: 채팅하기 버튼 기능 구현
+    }
+    
+    private func setPostContent(post: PostResponseDTO) {
+        if post.imageURL.isEmpty {
+            imagePageView.isHidden = true
+        }
+        if post.price == nil {
+            priceLabel.isHidden = true
+        }
+        postInfoView.setContent(title: post.title,
+                                startDate: post.startDate, endDate: post.endDate,
+                                description: post.description)
+        imagePageView.setImageURL(post.imageURL)
+        priceLabel.setPrice(price: post.price)
+    }
+    
+    private func setUserContent(user: UserResponseDTO) {
+        userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+    }
 
 }
 
-private extension RentDetailViewController {
+private extension PostDetailViewController {
     
     func configureUI() {
-        view.backgroundColor = .systemBackground
-        tabBarController?.tabBar.isHidden = true
-        
         view.addSubview(scrollView)
         view.addSubview(footerView)
         scrollView.addSubview(scrollViewContainerView)
@@ -137,18 +176,44 @@ private extension RentDetailViewController {
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
-    func setContents() {
-        if post.images.isEmpty {
-            imagePageView.isHidden = true
-        } else {
-            imagePageView.setImageURL(post.images)
-        }
-        let dummyURL = "https://img.gqkorea.co.kr/gq/2022/08/style_63073140eea70.jpg"
-        userInfoView.setContent(imageURL: dummyURL, nickname: "이지금 [IU Official]")
-        postInfoView.setContent(title: post.title,
-                                startDate: post.startDate, endDate: post.endDate,
-                                description: post.contents)
-        priceLabel.setPrice(price: post.price)
+    private func bindViewModel() {
+        let output = viewModel.transform(input: Input(postID: postID.eraseToAnyPublisher(),
+                                                      userID: userID.eraseToAnyPublisher()))
+        
+        bindPostOutput(output)
+        bindUserOutput(output)
+    }
+    
+    private func bindPostOutput(_ output: ViewModel.Output) {
+        output.post
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] post in
+                self?.setPostContent(post: post)
+            })
+            .store(in: &cancellableBag)
+    }
+    
+    private func bindUserOutput(_ output: ViewModel.Output) {
+        output.user
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] user in
+                self?.setUserContent(user: user)
+            })
+            .store(in: &cancellableBag)
     }
     
     func setLayoutConstraints() {
@@ -177,13 +242,24 @@ private extension RentDetailViewController {
             footerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
-        NSLayoutConstraint.activate([
-            chatButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -25),
-            chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor),
-            priceLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 25),
-            priceLabel.trailingAnchor.constraint(lessThanOrEqualTo: chatButton.leadingAnchor, constant: -10),
-            priceLabel.centerYAnchor.constraint(equalTo: chatButton.centerYAnchor)
-        ])
+        if isRequest {
+            NSLayoutConstraint.activate([
+                chatButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
+                chatButton.widthAnchor.constraint(equalTo: footerView.widthAnchor, multiplier: 0.8),
+                chatButton.heightAnchor.constraint(equalTo: footerView.heightAnchor, multiplier: 0.7)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                chatButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -25),
+                chatButton.widthAnchor.constraint(equalToConstant: 110),
+                chatButton.heightAnchor.constraint(equalToConstant: 40),
+                priceLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 25),
+                priceLabel.trailingAnchor.constraint(lessThanOrEqualTo: chatButton.leadingAnchor, constant: -10),
+                priceLabel.centerYAnchor.constraint(equalTo: chatButton.centerYAnchor)
+            ])
+        }
+        
+        chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor).isActive = true
     }
     
 }

@@ -40,6 +40,7 @@ class ChatListCollectionViewCell: UICollectionViewCell {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.textColor = .systemGray3
         
         return label
     }()
@@ -104,7 +105,7 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             recentTimeLabel.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 16),
-            recentTimeLabel.leadingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor, constant: 4)
+            recentTimeLabel.trailingAnchor.constraint(equalTo: postImageView.leadingAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
@@ -120,25 +121,68 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configureData(data: PostResponseDTO) {
-        nicknameLabel.text = String(data.userId)
-        recentTimeLabel.text = data.endDate
-        recentChatLabel.text = data.contents.count > 10 ? String(data.contents.prefix(10)) + "..." : data.contents
+    func configureData(data: ChatListResponseDTO) async {
+        nicknameLabel.text = data.user
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+
+        let currentData = Date()
+
+        if let date = dateFormatter.date(from: data.recentTime) {
+            let timeInterval = currentData.timeIntervalSince(date)
+            let minuteInterval = Int(timeInterval/60)
+
+            if minuteInterval >= 60 * 24 {
+                dateFormatter.dateFormat = "yy.MM.dd"
+                let formattedDate = dateFormatter.string(from: date)
+                let formattedCurrentDate = dateFormatter.string(from: currentData)
+
+                if let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: currentData),
+                    formattedDate == dateFormatter.string(from: yesterday) {
+                    recentTimeLabel.text = "어제"
+                } else {
+                    recentTimeLabel.text = "\(formattedDate)"
+                }
+            } else if minuteInterval >= 60 {
+                recentTimeLabel.text = "\(minuteInterval / 60)시간전"
+            } else {
+                recentTimeLabel.text = "\(minuteInterval)분전"
+            }
+        }
+        
+        recentChatLabel.text = data.recentChat.count > 10 ? String(data.recentChat.prefix(10)) + "..." : data.recentChat
+        await configureUserProfile(data.userProfile)
+        await configurePostImage(data.postImage)
     }
     
-    func configureImage(image: UIImage?) {
-        if image != nil {
-            postImageView.image = image
-            profileImageView.image = image
+    func configureUserProfile(_ url: String?) async {
+        if let url = url {
+            let endpoint = APIEndPoints.getData(with: url)
+            do {
+                let data = try await Provider.shared.request(from: endpoint.baseURL)
+                profileImageView.image = UIImage(data: data)
+            } catch {
+                dump(error)
+            }
         } else {
-            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?.withTintColor(
-                .primary500, renderingMode: .alwaysOriginal
-            )
-            postImageView.backgroundColor = .primary100
-            profileImageView.image = UIImage(systemName: ImageSystemName.personFill.rawValue)?.withTintColor(
-                .primary500, renderingMode: .alwaysOriginal
-            )
+            profileImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
             profileImageView.backgroundColor = .primary100
+        }
+    }
+    
+    func configurePostImage(_ url: String?) async {
+        if let url = url {
+            let endpoint = APIEndPoints.getData(with: url)
+            do {
+                let data = try await Provider.shared.request(from: endpoint.baseURL)
+                postImageView.image = UIImage(data: data)
+            } catch {
+                dump(error)
+            }
+        } else {
+            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)
+            postImageView.backgroundColor = .primary100
         }
     }
     
