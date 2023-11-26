@@ -124,14 +124,33 @@ final class HomeViewController: UIViewController {
         self.present(presentSearchNV, animated: true)
     }
     
-    private func configureCollectionView() {
+    private func setLayoutConstraint() {
+        NSLayoutConstraint.activate([
+            floatingButton.widthAnchor.constraint(equalToConstant: 65),
+            floatingButton.heightAnchor.constraint(equalToConstant: 65),
+            floatingButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            menuView.widthAnchor.constraint(equalToConstant: 150),
+            menuView.heightAnchor.constraint(equalToConstant: 100),
+            menuView.trailingAnchor.constraint(equalTo: floatingButton.trailingAnchor, constant: 0),
+            menuView.bottomAnchor.constraint(equalTo: floatingButton.topAnchor, constant: -15)
+        ])
+    }
+}
+
+private extension HomeViewController {
+    
+    func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.delegate = self
         view.addSubview(collectionView)
     }
     
-    private func createLayout() -> UICollectionViewLayout {
+    func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
@@ -150,7 +169,7 @@ final class HomeViewController: UIViewController {
         return UICollectionViewCompositionalLayout(section: section)
     }
     
-    private func configureDataSource() {
+    func configureDataSource() {
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
             UICollectionViewCell? in
@@ -181,7 +200,7 @@ final class HomeViewController: UIViewController {
         }
     }
     
-    private func generateData(postList: [PostListItem]) {
+    func generateData(postList: [PostListItem]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
         snapshot.appendSections([.main])
         
@@ -189,21 +208,6 @@ final class HomeViewController: UIViewController {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
-    private func setLayoutConstraint() {
-        NSLayoutConstraint.activate([
-            floatingButton.widthAnchor.constraint(equalToConstant: 65),
-            floatingButton.heightAnchor.constraint(equalToConstant: 65),
-            floatingButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
-        ])
-        
-        NSLayoutConstraint.activate([
-            menuView.widthAnchor.constraint(equalToConstant: 150),
-            menuView.heightAnchor.constraint(equalToConstant: 100),
-            menuView.trailingAnchor.constraint(equalTo: floatingButton.trailingAnchor, constant: 0),
-            menuView.bottomAnchor.constraint(equalTo: floatingButton.topAnchor, constant: -15)
-        ])
-    }
 }
 
 extension HomeViewController: UICollectionViewDelegate {
