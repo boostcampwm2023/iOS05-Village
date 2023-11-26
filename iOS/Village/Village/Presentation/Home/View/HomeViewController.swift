@@ -47,6 +47,12 @@ final class HomeViewController: UIViewController {
         setupUI()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        floatingButton.isActive = false
+    }
+    
     private func setupUI() {
         setNavigationUI()
         setMenuUI()
@@ -91,7 +97,6 @@ final class HomeViewController: UIViewController {
             self, action: #selector(searchButtonTapped), symbolName: .magnifyingGlass
         )
         self.navigationItem.rightBarButtonItems = [search]
-        
     }
     
     private func setMenuUI() {
@@ -112,7 +117,7 @@ final class HomeViewController: UIViewController {
         menuView.setMenuActions([presentPostRequestNC, presentPostRentNC])
     }
     
-    @objc func searchButtonTapped() {
+    @objc private func searchButtonTapped() {
         let nextVC = SearchViewController()
         let presentSearchNV = UINavigationController(rootViewController: nextVC)
         presentSearchNV.modalPresentationStyle = .fullScreen
@@ -211,6 +216,10 @@ extension HomeViewController: UICollectionViewDelegate {
                                                     isRequest: post.isRequest)
         postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        floatingButton.isActive = false
     }
     
 }
