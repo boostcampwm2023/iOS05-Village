@@ -6,8 +6,36 @@
 //
 
 import UIKit
+import Combine
 
 final class ChatRoomViewController: UIViewController {
+    
+    typealias ChatRoomDataSource = UICollectionViewDiffableDataSource<Section, ChatRoomResponseDTO>
+    typealias ViewModel = ChatRoomViewModel
+    typealias Input = ViewModel.Input
+    
+    private var dataSource: ChatRoomDataSource!
+    private let reuseIdentifier = ChatListCollectionViewCell.identifier
+    private var collectionView: UICollectionView!
+    
+    private var viewModel = ViewModel()
+    private var cancellableBag = Set<AnyCancellable>()
+    
+    enum Section {
+        case room
+    }
+    
+    private let roomID: Just<Int>
+    
+    init(roomID: Int) {
+        self.roomID = Just(roomID)
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("Should not be called")
+    }
     
     private let keyboardStackView: UIStackView = {
         let stackView = UIStackView()
@@ -50,8 +78,31 @@ final class ChatRoomViewController: UIViewController {
         
         setNavigationUI()
         setUI()
+        bindViewModel()
         
         view.backgroundColor = .systemBackground
+    }
+    
+    private func bindViewModel() {
+        let output = viewModel.transform(input: ViewModel.Input(roomID: roomID.eraseToAnyPublisher()))
+        
+        bindRoomOutput(output)
+    }
+    
+    private func bindRoomOutput(_ output: ViewModel.Output) {
+        output.chatRoom
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] room in
+                self?.setPostContent(room: room)
+            })
+            .store(in: &cancellableBag)
     }
     
     private func setUI() {
@@ -110,6 +161,9 @@ final class ChatRoomViewController: UIViewController {
         // TODO: 더보기 버튼 클릭 액션
     }
     
+    private func setPostContent(room: ChatRoomResponseDTO) {
+        print(room)
+    }
 }
 
 extension ChatRoomViewController: UITextFieldDelegate {
