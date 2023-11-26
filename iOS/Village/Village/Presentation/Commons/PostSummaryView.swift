@@ -87,7 +87,8 @@ final class PostSummaryView: UIView {
         
         NSLayoutConstraint.activate([
             postTitleLabel.topAnchor.constraint(equalTo: postView.topAnchor, constant: 25),
-            postTitleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
+            postTitleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20),
+            postTitleLabel.widthAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([
@@ -97,7 +98,7 @@ final class PostSummaryView: UIView {
         
         NSLayoutConstraint.activate([
             postAccessoryView.topAnchor.constraint(equalTo: postView.topAnchor, constant: 39),
-            postAccessoryView.trailingAnchor.constraint(equalTo: postView.trailingAnchor, constant: -16)
+            postAccessoryView.leadingAnchor.constraint(equalTo: postTitleLabel.trailingAnchor, constant: 50)
         ])
     }
 }
