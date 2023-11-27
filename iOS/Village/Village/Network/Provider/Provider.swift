@@ -9,7 +9,7 @@ import Foundation
 
 protocol ProviderProtocol {
     
-    func request<R: Decodable, E: RequestResponsable>(with endpoint: E) async throws -> R where E.Response == R
+    func request<R: Decodable, E: RequestResponsable>(with endpoint: E) async throws -> R? where E.Response == R
     func request(from url: String) async throws -> Data
     
 }
@@ -24,13 +24,15 @@ final class Provider: ProviderProtocol {
         self.session = session
     }
     
-    func request<R: Decodable, E: RequestResponsable>(with endpoint: E) async throws -> R where E.Response == R {
+    func request<R: Decodable, E: RequestResponsable>(with endpoint: E) async throws -> R? where E.Response == R {
         var urlRequest = try endpoint.makeURLRequest()
         
         let (data, response) = try await session.data(for: urlRequest)
         
         try self.checkStatusCode(response)
-
+        if data.isEmpty {
+            return nil
+        }
         return try self.decode(data)
     }
     
@@ -45,7 +47,7 @@ final class Provider: ProviderProtocol {
         guard let response = response as? HTTPURLResponse else {
             throw NetworkError.unknownError
         }
-        
+        print(response.statusCode)
         guard (200..<300).contains(response.statusCode) else {
             let serverError = ServerError(rawValue: response.statusCode) ?? .unknown
             throw NetworkError.serverError(serverError)

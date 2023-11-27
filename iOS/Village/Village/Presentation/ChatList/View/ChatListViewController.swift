@@ -44,7 +44,7 @@ class ChatListViewController: UIViewController {
     private func setViewModel() {
 //        MARK: 더미데이터를 위한 코드 채팅API 구현 후, 삭제 예정
         guard let path = Bundle.main.path(forResource: "ChatList", ofType: "json") else { return }
-        
+
         guard let jsonString = try? String(contentsOfFile: path) else { return }
         do {
             let decoder = JSONDecoder()

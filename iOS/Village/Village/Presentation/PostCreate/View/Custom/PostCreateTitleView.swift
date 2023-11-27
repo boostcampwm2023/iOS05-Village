@@ -1,5 +1,5 @@
 //
-//  PostingTitleView.swift
+//  PostCreateTitleView.swift
 //  Village
 //
 //  Created by 조성민 on 11/22/23.
@@ -8,12 +8,12 @@
 import UIKit
 import Combine
 
-final class PostingTitleView: UIStackView {
+final class PostCreateTitleView: UIStackView {
     
     var currentTextSubject = CurrentValueSubject<String, Never>("")
     
     private lazy var keyboardToolBar: UIToolbar = {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
             barButtonSystemItem: .close,
             target: nil,
@@ -93,7 +93,7 @@ final class PostingTitleView: UIStackView {
     
 }
 
-private extension PostingTitleView {
+private extension PostCreateTitleView {
     
     func setUp() {
         spacing = 10
@@ -114,7 +114,7 @@ private extension PostingTitleView {
     
 }
 
-extension PostingTitleView: UITextFieldDelegate {
+extension PostCreateTitleView: UITextFieldDelegate {
     
     func textField(
         _ textField: UITextField,
@@ -123,6 +123,7 @@ extension PostingTitleView: UITextFieldDelegate {
     ) -> Bool {
         guard let text = textField.text else { return true }
         if !string.isEmpty && text.count + string.count > 64 { return false }
+        warn(false)
         return true
     }
     

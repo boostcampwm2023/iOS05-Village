@@ -38,6 +38,15 @@ struct APIEndPoints {
         return EndPoint(baseURL: url)
     }
     
+    static func createPosts(with post: PostCreateInfo) -> EndPoint<PostCreateInfo> {
+        return EndPoint(
+            baseURL: "http://118.67.130.107:3000/",
+            path: "posts",
+            method: .POST,
+            bodyParameters: post
+        )
+    }
+    
     static func getChatList(with chatListResponse: ChatListRequestDTO) -> EndPoint<[ChatListResponseDTO]> {
         return EndPoint(
             baseURL: "http://118.67.130.107:3000/",
@@ -46,4 +55,5 @@ struct APIEndPoints {
             queryParameters: chatListResponse
         )
     }
+  
 }

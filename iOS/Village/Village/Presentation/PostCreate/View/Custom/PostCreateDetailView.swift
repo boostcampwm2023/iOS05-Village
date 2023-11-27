@@ -1,5 +1,5 @@
 //
-//  PostingDetailView.swift
+//  PostCreateDetailView.swift
 //  Village
 //
 //  Created by 조성민 on 11/22/23.
@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-final class PostingDetailView: UIStackView {
+final class PostCreateDetailView: UIStackView {
     
     var currentDetailSubject = CurrentValueSubject<String, Never>("")
     
@@ -35,7 +35,7 @@ final class PostingDetailView: UIStackView {
     }()
     
     private lazy var keyboardToolBar: UIToolbar = {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
             barButtonSystemItem: .close,
             target: nil,
@@ -70,7 +70,7 @@ final class PostingDetailView: UIStackView {
     
 }
 
-private extension PostingDetailView {
+private extension PostCreateDetailView {
     
     func setUp() {
         spacing = 10
@@ -90,7 +90,7 @@ private extension PostingDetailView {
     
 }
 
-extension PostingDetailView: UITextViewDelegate {
+extension PostCreateDetailView: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         let size = CGSize(width: frame.width, height: .infinity)

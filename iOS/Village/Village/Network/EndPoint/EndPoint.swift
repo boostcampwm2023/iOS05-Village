@@ -17,14 +17,14 @@ final class EndPoint<R>: RequestResponsable {
     var path: String
     var method: HTTPMethod
     var queryParameters: Encodable?
-    var bodyParameters: Encodable?
+    var bodyParameters: PostCreateInfo?
     var headers: [String: String]?
 
     init(baseURL: String,
          path: String = "",
          method: HTTPMethod = .GET,
          queryParameters: Encodable? = nil,
-         bodyParameters: Encodable? = nil,
+         bodyParameters: PostCreateInfo? = nil,
          headers: [String: String]? = [:]) {
         self.baseURL = baseURL
         self.path = path

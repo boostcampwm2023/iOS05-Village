@@ -1,5 +1,5 @@
 //
-//  PostingViewController.swift
+//  PostCreateViewController.swift
 //  Village
 //
 //  Created by 조성민 on 11/15/23.
@@ -15,13 +15,14 @@ enum PostType {
     
 }
 
-final class PostingViewController: UIViewController {
+final class PostCreateViewController: UIViewController {
     
-    private let viewModel: PostingViewModel
+    private let viewModel: PostCreateViewModel
+    private var postButtonTappedSubject = PassthroughSubject<Void, Never>()
     private let type: PostType
     
     private lazy var keyboardToolBar: UIToolbar = {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
             barButtonSystemItem: .close,
             target: nil,
@@ -59,36 +60,36 @@ final class PostingViewController: UIViewController {
         return scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 0)
     }()
     
-    private lazy var postingTitleView: PostingTitleView = {
-        let view = PostingTitleView()
+    private lazy var postCreateTitleView: PostCreateTitleView = {
+        let view = PostCreateTitleView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private lazy var postingStartTimeView: PostingTimeView = {
-        let view = PostingTimeView(postType: type, timeType: .start)
+    private lazy var postCreateStartTimeView: PostCreateTimeView = {
+        let view = PostCreateTimeView(postType: type, timeType: .start)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private lazy var postingEndTimeView: PostingTimeView = {
-        let view = PostingTimeView(postType: type, timeType: .end)
+    private lazy var postCreateEndTimeView: PostCreateTimeView = {
+        let view = PostCreateTimeView(postType: type, timeType: .end)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private lazy var postingPriceView: PostingPriceView = {
-        let view = PostingPriceView()
+    private lazy var postCreatePriceView: PostCreatePriceView = {
+        let view = PostCreatePriceView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private lazy var postingDetailView: PostingDetailView = {
-        let view = PostingDetailView()
+    private lazy var postCreateDetailView: PostCreateDetailView = {
+        let view = PostCreateDetailView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -127,7 +128,7 @@ final class PostingViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    init(viewModel: PostingViewModel, type: PostType) {
+    init(viewModel: PostCreateViewModel, type: PostType) {
         self.viewModel = viewModel
         self.type = type
         super.init(nibName: nil, bundle: nil)
@@ -140,25 +141,54 @@ final class PostingViewController: UIViewController {
     private var cancellableBag: Set<AnyCancellable> = []
     
     func bind() {
-        let input = PostingViewModel.Input(
-            titleSubject: postingTitleView.currentTextSubject,
-            startTimeSubject: postingStartTimeView.currentTimeSubject,
-            endTimeSubject: postingEndTimeView.currentTimeSubject,
-            priceSubject: postingPriceView.currentPriceSubject,
-            detailSubject: postingDetailView.currentDetailSubject
+        let input = PostCreateViewModel.Input(
+            titleSubject: postCreateTitleView.currentTextSubject,
+            startTimeSubject: postCreateStartTimeView.currentTimeSubject,
+            endTimeSubject: postCreateEndTimeView.currentTimeSubject,
+            priceSubject: postCreatePriceView.currentPriceSubject,
+            detailSubject: postCreateDetailView.currentDetailSubject,
+            postButtonTappedSubject: postButtonTappedSubject
         )
         handleViewModelOutput(output: viewModel.transform(input: input))
     }
     
-    func handleViewModelOutput(output: PostingViewModel.Output) {
+    func handleViewModelOutput(output: PostCreateViewModel.Output) {
         subscribePriceOutput(output: output)
     }
     
-    func subscribePriceOutput(output: PostingViewModel.Output) {
+    func subscribePriceOutput(output: PostCreateViewModel.Output) {
         output.priceValidationResult
             .receive(on: DispatchQueue.main)
             .sink { [weak self] prevPriceString in
-                self?.postingPriceView.revertChange(text: prevPriceString)
+                self?.postCreatePriceView.revertChange(text: prevPriceString)
+            }
+            .store(in: &cancellableBag)
+        
+        output.postButtonTappedTitleWarningResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] bool in
+                self?.postCreateTitleView.warn(!bool)
+            }
+            .store(in: &cancellableBag)
+        
+        output.postButtonTappedStartTimeWarningResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] bool in
+                self?.postCreateStartTimeView.warn(!bool)
+            }
+            .store(in: &cancellableBag)
+        
+        output.postButtonTappedEndTimeWarningResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] bool in
+                self?.postCreateEndTimeView.warn(!bool)
+            }
+            .store(in: &cancellableBag)
+        
+        output.postButtonTappedPriceWarningResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] bool in
+                self?.postCreatePriceView.warn(!bool)
             }
             .store(in: &cancellableBag)
     }
@@ -166,7 +196,7 @@ final class PostingViewController: UIViewController {
 }
 
 @objc
-private extension PostingViewController {
+private extension PostCreateViewController {
     
     func close(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
@@ -174,6 +204,7 @@ private extension PostingViewController {
     
     // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
+        postButtonTappedSubject.send()
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {
@@ -214,7 +245,7 @@ private extension PostingViewController {
     
 }
 
-private extension PostingViewController {
+private extension PostCreateViewController {
     
     func setUpNotification() {
         NotificationCenter.default.addObserver(
@@ -237,15 +268,15 @@ private extension PostingViewController {
         scrollView.addSubview(stackView)
         postButtonView.addSubview(postButton)
         
-        stackView.addArrangedSubview(postingTitleView)
-        stackView.addArrangedSubview(postingStartTimeView)
-        stackView.addArrangedSubview(postingEndTimeView)
+        stackView.addArrangedSubview(postCreateTitleView)
+        stackView.addArrangedSubview(postCreateStartTimeView)
+        stackView.addArrangedSubview(postCreateEndTimeView)
         
         if type == .rent {
-            stackView.addArrangedSubview(postingPriceView)
+            stackView.addArrangedSubview(postCreatePriceView)
         }
         
-        stackView.addArrangedSubview(postingDetailView)
+        stackView.addArrangedSubview(postCreateDetailView)
     }
     
     func configureConstraints() {
@@ -278,15 +309,15 @@ private extension PostingViewController {
         ])
         
         NSLayoutConstraint.activate([
-            postingTitleView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
-            postingStartTimeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
-            postingEndTimeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
-            postingDetailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+            postCreateTitleView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postCreateStartTimeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postCreateEndTimeView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50),
+            postCreateDetailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         
         if type == .rent {
             NSLayoutConstraint.activate([
-                postingPriceView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
+                postCreatePriceView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
             ])
         }
     }

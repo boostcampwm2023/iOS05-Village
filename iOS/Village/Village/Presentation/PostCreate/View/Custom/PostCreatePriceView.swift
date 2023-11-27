@@ -1,5 +1,5 @@
 //
-//  PostingPriceView.swift
+//  PostCreatePriceView.swift
 //  Village
 //
 //  Created by 조성민 on 11/22/23.
@@ -8,12 +8,12 @@
 import UIKit
 import Combine
 
-final class PostingPriceView: UIStackView {
+final class PostCreatePriceView: UIStackView {
     
     var currentPriceSubject = CurrentValueSubject<String, Never>("")
     
     private lazy var keyboardToolBar: UIToolbar = {
-        let toolbar = UIToolbar()
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
             barButtonSystemItem: .close,
             target: nil,
@@ -92,11 +92,9 @@ final class PostingPriceView: UIStackView {
         currentPriceSubject.send(priceTextField.text ?? "")
     }
     
-    func warn() {
-        guard let text = priceTextField.text else { return }
-        if text.isEmpty {
-            priceWarningLabel.alpha = 1
-        }
+    func warn(_ enable: Bool) {
+        let alpha: CGFloat = enable ? 1 : 0
+        priceWarningLabel.alpha = alpha
     }
     
     func revertChange(text: String) {
@@ -105,7 +103,7 @@ final class PostingPriceView: UIStackView {
     
 }
 
-private extension PostingPriceView {
+private extension PostCreatePriceView {
     
     func setUp() {
         spacing = 10
@@ -126,7 +124,7 @@ private extension PostingPriceView {
     
 }
 
-extension PostingPriceView: UITextFieldDelegate {
+extension PostCreatePriceView: UITextFieldDelegate {
     
     func textField(
         _ textField: UITextField,
@@ -135,6 +133,7 @@ extension PostingPriceView: UITextFieldDelegate {
     ) -> Bool {
         guard let text = textField.text else { return true }
         if text.count + string.count > 15 { return false }
+        warn(false)
         return true
     }
     
