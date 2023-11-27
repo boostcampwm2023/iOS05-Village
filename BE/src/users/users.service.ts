@@ -30,7 +30,7 @@ export class UsersService {
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
     const userEntity = new UserEntity();
     userEntity.nickname = createUserDto.nickname;
-    userEntity.social_email = createUserDto.social_email;
+    userEntity.social_id = createUserDto.social_email;
     userEntity.OAuth_domain = createUserDto.OAuth_domain;
     userEntity.profile_img = imageLocation;
     userEntity.user_hash = hashMaker(createUserDto.nickname).slice(0, 8);
