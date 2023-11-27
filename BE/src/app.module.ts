@@ -13,6 +13,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { UsersModule } from './users/users.module';
 import { PostsBlockModule } from './posts-block/posts-block.module';
 import { UsersBlockModule } from './users-block/users-block.module';
+import { LoginModule } from './login/login.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UsersBlockModule } from './users-block/users-block.module';
     UsersBlockModule,
     PostModule,
     UsersModule,
+    LoginModule,
   ],
   controllers: [AppController],
   providers: [
