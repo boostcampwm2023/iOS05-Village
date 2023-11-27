@@ -21,17 +21,17 @@ export interface JwtTokens {
 
 @Injectable()
 export class LoginService {
-   private jwksClient: jwksClient.JwksClient;
+  private jwksClient: jwksClient.JwksClient;
   constructor(
     private jwtService: JwtService,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private configService: ConfigService,
   ) {
-      this.jwksClient = jwksClient({
+    this.jwksClient = jwksClient({
       jwksUri: 'https://appleid.apple.com/auth/keys',
     });
-    }
+  }
   async login(socialProperties: SocialProperties): Promise<JwtTokens> {
     let user: UserEntity = await this.VerifyUserRegistration(socialProperties);
     if (!user) {
@@ -119,30 +119,30 @@ export class LoginService {
     return signingKey;
   }
 
-  async appleOAuth(body: AppleLoginDto) {
-    console.log(body);
+  async appleOAuth(body: AppleLoginDto): Promise<SocialProperties> {
     const payloadClaims = this.decodeIdentityToken(body.identity_token); // 토큰을 디코딩해서 페이로드를 가져옴
     const payloadClaimsJson = JSON.parse(payloadClaims);
 
-    const applePublicKey = await this.getApplePublicKey(payloadClaimsJson.kid);
+    const kid = this.getkid(body.identity_token); // 토큰을 디코딩해서 kid를 가져옴
+    const applePublicKey = await this.getApplePublicKey(kid);
 
-    const isVerified: any = jwt.verify(
-      body.identity_token,
-      applePublicKey,
-      {},
-      (err, decoded) => {
-        if (err) {
-          return false;
-        }
-        console.log(decoded);
-        return decoded;
-      },
-    );
+    const isVerified: any = jwt.verify(body.identity_token, applePublicKey);
 
     if (isVerified) {
-      return { oAuthDomain: 'apple', sociald: payloadClaimsJson.sub };
+      return { OAuthDomain: 'apple', socialId: payloadClaimsJson.sub };
     } else {
       return null;
     }
-  } 
+  }
+
+  getkid(identityToken: string) {
+    const identityTokenParts = identityToken.split('.');
+    const identityTokenHeader = identityTokenParts[0];
+
+    const headerClaims = Buffer.from(identityTokenHeader, 'base64').toString();
+
+    const headerClaimsJson = JSON.parse(headerClaims);
+
+    return headerClaimsJson.kid;
+  }
 }
