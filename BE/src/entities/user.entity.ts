@@ -32,7 +32,7 @@ export class UserEntity {
   nickname: string;
 
   @Column({ length: 320, nullable: false, charset: 'utf8' })
-  social_email: string;
+  social_id: string;
 
   @Column({ length: 15, nullable: false, charset: 'utf8' })
   OAuth_domain: string;
