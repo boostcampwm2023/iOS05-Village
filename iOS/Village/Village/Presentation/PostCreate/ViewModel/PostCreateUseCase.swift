@@ -16,13 +16,4 @@ final class PostCreateUseCase {
         self.postCreateRepository = postCreateRepository
     }
     
-//    func execute(
-//        requestValue: PostCreateDTO,
-//        completion: @escaping (Result<Void, Error>) -> Void
-//    ) -> Cancellable? {
-//        return postCreateRepository.postCreate(
-//            postCreateDTO: requestValue
-//        )
-//    }
-    
 }
