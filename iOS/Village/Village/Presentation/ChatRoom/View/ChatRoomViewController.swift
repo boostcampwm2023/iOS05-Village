@@ -71,7 +71,7 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    private let postSummaryView = PostSummaryView()
+    private let postView = PostView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,23 +90,19 @@ final class ChatRoomViewController: UIViewController {
     }
     
     private func bindRoomOutput(_ output: ViewModel.Output) {
-        output.chatRoom
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    dump(error)
-                }
-            }, receiveValue: { [weak self] room in
-                self?.setPostContent(room: room)
-            })
-            .store(in: &cancellableBag)
+        if let room = viewModel.getTest() {
+            self.setRoomContent(room: room)
+        }
+//        output.chatRoom
+//            .receive(on: DispatchQueue.main)
+//            .sink(receiveValue: { room in
+//                self.setRoomContent(room: room)
+//            })
+//            .store(in: &cancellableBag)
     }
     
     private func setUI() {
-        view.addSubview(postSummaryView)
+        view.addSubview(postView)
         
         keyboardTextField.delegate = self
         
@@ -153,8 +149,14 @@ final class ChatRoomViewController: UIViewController {
         // TODO: 더보기 버튼 클릭 액션
     }
     
-    private func setPostContent(room: ChatRoomResponseDTO) {
-        print(room)
+    private func setRoomContent(room: ChatRoomResponseDTO) {
+//        if room.postImage.isEmpty {
+//            postSummaryView.postImageView.isHidden = true
+//        }
+//        if room.postPrice.isEmpty {
+//            postSummaryView.postPriceLabel.isHidden = true
+//        }
+        postView.setContent(url: room.postImage, title: room.postName, price: room.postPrice)
     }
 }
 

@@ -54,8 +54,10 @@ struct ChatRoomResponseDTO: Hashable, Codable {
 
 final class ChatRoomViewModel {
     
-    private var chatRoom = PassthroughSubject<ChatRoomResponseDTO, NetworkError>()
+    private var chatRoom = PassthroughSubject<ChatRoomResponseDTO, Never>()
     private var cancellableBag = Set<AnyCancellable>()
+    
+    private var test: ChatRoomResponseDTO?
     
     func transform(input: Input) -> Output {
         input.roomID
@@ -87,11 +89,15 @@ final class ChatRoomViewModel {
             
             guard let data = data else { return }
             let room = try decoder.decode(ChatRoomResponseDTO.self, from: data)
-            print(room)
+            test = room
             chatRoom.send(room)
         } catch {
             dump(error)
         }
+    }
+    
+    func getTest() -> ChatRoomResponseDTO? {
+        return test
     }
     
 }
@@ -103,7 +109,7 @@ extension ChatRoomViewModel {
     }
     
     struct Output {
-        var chatRoom: AnyPublisher<ChatRoomResponseDTO, NetworkError>
+        var chatRoom: AnyPublisher<ChatRoomResponseDTO, Never>
     }
     
 }
