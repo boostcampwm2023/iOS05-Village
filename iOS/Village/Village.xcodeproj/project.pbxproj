@@ -299,6 +299,7 @@
 		59E0C5FA2AFBA3FC0073D494 /* Village */ = {
 			isa = PBXGroup;
 			children = (
+				4416D4482B1485A60052BF33 /* Village.entitlements */,
 				8F1B53332B0E037C006D8982 /* Domain */,
 				8FC7FE762B06767600B91D3B /* Network */,
 				8FBE3AEC2B03547E00660530 /* Application */,
@@ -920,6 +921,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Village/Village.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
@@ -947,6 +949,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Village/Village.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
