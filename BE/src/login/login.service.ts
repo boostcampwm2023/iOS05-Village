@@ -4,8 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { AppleLoginDto } from './appleLoginDto';
 import { hashMaker } from '../utils/hashMaker';
+import { AppleLoginDto } from './dto/appleLogin.dto';
+import * as jwt from 'jsonwebtoken';
+import * as jwksClient from 'jwks-rsa';
 
 export interface SocialProperties {
   OAuthDomain: string;
@@ -19,12 +21,17 @@ export interface JwtTokens {
 
 @Injectable()
 export class LoginService {
+   private jwksClient: jwksClient.JwksClient;
   constructor(
     private jwtService: JwtService,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private configService: ConfigService,
-  ) {}
+  ) {
+      this.jwksClient = jwksClient({
+      jwksUri: 'https://appleid.apple.com/auth/keys',
+    });
+    }
   async login(socialProperties: SocialProperties): Promise<JwtTokens> {
     let user: UserEntity = await this.VerifyUserRegistration(socialProperties);
     if (!user) {
@@ -89,7 +96,53 @@ export class LoginService {
     );
   }
 
-  async appleOAuth(body: AppleLoginDto): Promise<SocialProperties> {
-    return null;
+  decodeIdentityToken(identityToken: string) {
+    const identityTokenParts = identityToken.split('.');
+    const identityTokenPayload = identityTokenParts[1];
+
+    const payloadClaims = Buffer.from(
+      identityTokenPayload,
+      'base64',
+    ).toString();
+
+    return payloadClaims;
   }
+
+  async getApplePublicKey(kid: string) {
+    const client = jwksClient({
+      jwksUri: 'https://appleid.apple.com/auth/keys',
+    });
+
+    const key = await client.getSigningKey(kid);
+    const signingKey = key.getPublicKey();
+
+    return signingKey;
+  }
+
+  async appleOAuth(body: AppleLoginDto) {
+    console.log(body);
+    const payloadClaims = this.decodeIdentityToken(body.identity_token); // 토큰을 디코딩해서 페이로드를 가져옴
+    const payloadClaimsJson = JSON.parse(payloadClaims);
+
+    const applePublicKey = await this.getApplePublicKey(payloadClaimsJson.kid);
+
+    const isVerified: any = jwt.verify(
+      body.identity_token,
+      applePublicKey,
+      {},
+      (err, decoded) => {
+        if (err) {
+          return false;
+        }
+        console.log(decoded);
+        return decoded;
+      },
+    );
+
+    if (isVerified) {
+      return { oAuthDomain: 'apple', sociald: payloadClaimsJson.sub };
+    } else {
+      return null;
+    }
+  } 
 }
