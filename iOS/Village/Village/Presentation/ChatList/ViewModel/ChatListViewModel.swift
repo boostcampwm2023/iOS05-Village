@@ -67,7 +67,7 @@ final class ChatListViewModel {
         
         Task {
             do {
-                let data = try await Provider.shared.request(with: endpoint)
+                guard let data = try await Provider.shared.request(with: endpoint) else { return }
                 chatList.send(data.map { ChatListResponseDTO(dto: $0) })
             } catch let error {
                 dump(error)
