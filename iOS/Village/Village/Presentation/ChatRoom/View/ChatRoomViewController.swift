@@ -111,7 +111,6 @@ final class ChatRoomViewController: UIViewController {
         bindViewModel()
         setNavigationUI()
         setUI()
-        configureDataSource()
         generateData()
         view.backgroundColor = .systemBackground
     }
@@ -200,28 +199,6 @@ private extension ChatRoomViewController {
         imageURL = room.postImage
         setNavigationTitle(title: room.user)
         postView.setContent(url: room.postImage, title: room.postName, price: room.postPrice)
-    }
-    
-    func configureDataSource() {
-        //        chatTableView.register(ChatRoomTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        //
-        //        dataSource = ChatRoomDataSource(
-        //            tableView: chatTableView,
-        //            cellProvider: { [weak self] (tableView, indexPath, message) in
-        //                    guard let self = self else { return ChatRoomTableViewCell() }
-        //                    guard let cell = tableView.dequeueReusableCell(
-        //                        withIdentifier: self.reuseIdentifier,
-        //                        for: indexPath) as? ChatRoomTableViewCell else {
-        //                        return ChatRoomTableViewCell()
-        //                    }
-        //                    cell.configureData(
-        //                        message: message.body,
-        //                        profileImageURL: self.imageURL!,
-        //                        isMine: message.sender == "me"
-        //                    )
-        //                    return cell
-        //                }
-        //        )
     }
     
     func generateData() {
