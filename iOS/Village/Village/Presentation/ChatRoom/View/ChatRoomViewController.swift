@@ -10,33 +10,39 @@ import Combine
 
 final class ChatRoomViewController: UIViewController {
     
-    typealias ChatRoomDataSource = UICollectionViewDiffableDataSource<Section, Message>
+    typealias ChatRoomDataSource = UITableViewDiffableDataSource<Section, Message>
     typealias ViewModel = ChatRoomViewModel
     typealias Input = ViewModel.Input
     
-    private var dataSource: ChatRoomDataSource!
-    private let reuseIdentifier = ChatRoomCollectionViewCell.identifier
-    private var collectionView: UICollectionView!
-    private let collectionViewLayout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
-
-      let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                            heightDimension: .estimated(30))
-      let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-      let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                             heightDimension: .estimated(30))
-
-      let group = NSCollectionLayoutGroup.horizontal(
-        layoutSize: groupSize,
-        subitem: item,
-        count: 1
-      )
-      
-      let section = NSCollectionLayoutSection(group: group)
-      section.interGroupSpacing = 8
-
-      return section
-    })
+    private lazy var dataSource: ChatRoomDataSource = ChatRoomDataSource(
+        tableView: chatTableView,
+        cellProvider: { [weak self] (tableView, indexPath, message) in
+            guard let self = self else { return ChatRoomTableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: self.reuseIdentifier,
+                for: indexPath) as? ChatRoomTableViewCell else {
+                return ChatRoomTableViewCell()
+            }
+            cell.configureData(
+                message: message.body,
+                profileImageURL: self.imageURL!,
+                isMine: message.sender == "me"
+            )
+            cell.selectionStyle = .none
+            return cell
+        }
+    )
+    private let reuseIdentifier = ChatRoomTableViewCell.identifier
+    private lazy var chatTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 80
+        tableView.register(ChatRoomTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        
+        return tableView
+    }()
+    
     private var viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -55,6 +61,10 @@ final class ChatRoomViewController: UIViewController {
         
         return stackView
     }()
+    private lazy var keyBoardStackViewBottomConstraint = keyboardStackView.bottomAnchor.constraint(
+        equalTo: view.safeAreaLayoutGuide.bottomAnchor, 
+        constant: -20
+    )
     
     private let keyboardMoreButton: UIButton = {
         let button = UIButton()
@@ -88,7 +98,7 @@ final class ChatRoomViewController: UIViewController {
         
         return postView
     }()
-
+    
     init(roomID: Int) {
         self.roomID = Just(roomID)
         
@@ -104,10 +114,9 @@ final class ChatRoomViewController: UIViewController {
         
         bindViewModel()
         setNavigationUI()
-        comfigureCollectionView()
         setUI()
-        configureDataSource()
         generateData()
+        setUpNotification()
         view.backgroundColor = .systemBackground
     }
     
@@ -119,13 +128,6 @@ final class ChatRoomViewController: UIViewController {
 
 private extension ChatRoomViewController {
     
-    func comfigureCollectionView() {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-//        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(collectionView)
-    }
-    
     func bindViewModel() {
         let output = viewModel.transform(input: ViewModel.Input(roomID: roomID.eraseToAnyPublisher()))
         
@@ -136,16 +138,17 @@ private extension ChatRoomViewController {
         if let room = viewModel.getTest() {
             self.setRoomContent(room: room)
         }
-//        output.chatRoom
-//            .receive(on: DispatchQueue.main)
-//            .sink(receiveValue: { room in
-//                self.setRoomContent(room: room)
-//            })
-//            .store(in: &cancellableBag)
+        //        output.chatRoom
+        //            .receive(on: DispatchQueue.main)
+        //            .sink(receiveValue: { room in
+        //                self.setRoomContent(room: room)
+        //            })
+        //            .store(in: &cancellableBag)
     }
     
     func setUI() {
         view.addSubview(postView)
+        view.addSubview(chatTableView)
         
         keyboardTextField.delegate = self
         
@@ -162,7 +165,7 @@ private extension ChatRoomViewController {
         NSLayoutConstraint.activate([
             keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            keyboardStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            keyBoardStackViewBottomConstraint
         ])
         
         keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
@@ -179,10 +182,10 @@ private extension ChatRoomViewController {
         ])
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: postView.bottomAnchor, constant: 0),
-            collectionView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor, constant: 0),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0)
+            chatTableView.topAnchor.constraint(equalTo: postView.bottomAnchor),
+            chatTableView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor),
+            chatTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            chatTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     
@@ -203,25 +206,58 @@ private extension ChatRoomViewController {
         postView.setContent(url: room.postImage, title: room.postName, price: room.postPrice)
     }
     
-    func configureDataSource() {
-        collectionView.register(ChatRoomCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        dataSource = ChatRoomDataSource(collectionView: collectionView) { (collectionView, indexPath, message) -> UICollectionViewCell? in
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: self.reuseIdentifier,
-                for: indexPath
-            ) as? ChatRoomCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            cell.configureData(message: message.body, profileImageURL: self.imageURL!, isMine: message.sender == "me")
-            return cell
-        }
-    }
-    
     func generateData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Message>()
         snapshot.appendSections([.room])
         snapshot.appendItems(viewModel.getTest()!.chatLog)
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func setUpNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as NSDictionary?,
+              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        keyboardFrame = view.convert(keyboardFrame, from: nil)
+        keyBoardStackViewBottomConstraint.isActive = false
+        keyBoardStackViewBottomConstraint = keyboardStackView
+            .bottomAnchor
+            .constraint(
+                equalTo: view.bottomAnchor,
+                constant: -keyboardFrame.height
+            )
+        keyBoardStackViewBottomConstraint.isActive = true
+    }
+    
+    @objc func keyboardWillHide(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as NSDictionary?,
+              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        keyboardFrame = view.convert(keyboardFrame, from: nil)
+        keyBoardStackViewBottomConstraint.isActive = false
+        keyBoardStackViewBottomConstraint = keyboardStackView
+            .bottomAnchor
+            .constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                constant: -20
+            )
+        keyBoardStackViewBottomConstraint.isActive = true
     }
     
 }

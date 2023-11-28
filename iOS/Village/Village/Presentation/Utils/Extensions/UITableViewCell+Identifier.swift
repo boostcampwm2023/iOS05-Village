@@ -1,13 +1,13 @@
 //
-//  UIView+Identifier.swift
+//  UITableViewCell+Identifier.swift
 //  Village
 //
-//  Created by 박동재 on 2023/11/27.
+//  Created by 조성민 on 11/28/23.
 //
 
 import UIKit
 
-extension UICollectionViewCell {
+extension UITableViewCell {
 
     static var identifier: String {
         return String(describing: self)

@@ -1,13 +1,13 @@
 //
-//  ChatRoomCollectionViewCell.swift
+//  ChatRoomTableViewCell.swift
 //  Village
 //
-//  Created by 박동재 on 2023/11/27.
+//  Created by 조성민 on 11/28/23.
 //
 
 import UIKit
 
-final class ChatRoomCollectionViewCell: UICollectionViewCell {
+final class ChatRoomTableViewCell: UITableViewCell {
     
     private let messageView: UITextView = {
         let textView = UITextView()
@@ -29,8 +29,8 @@ final class ChatRoomCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
     }
     
@@ -60,7 +60,7 @@ final class ChatRoomCollectionViewCell: UICollectionViewCell {
 
 }
 
-private extension ChatRoomCollectionViewCell {
+private extension ChatRoomTableViewCell {
     
     func setUI() {
         contentView.addSubview(messageView)
@@ -68,8 +68,8 @@ private extension ChatRoomCollectionViewCell {
     }
     
     func setConstraints(isMine: Bool) {
-        if messageView.frame.width > frame.width - 78 {
-            let newSize = messageView.sizeThatFits(CGSize(width: Int(frame.width) - 78, height: Int.max))
+        if messageView.frame.width > frame.width {
+            let newSize = messageView.sizeThatFits(CGSize(width: Int(bounds.width), height: Int.max))
             messageView.frame.size = CGSize(width: newSize.width, height: newSize.height)
         }
         
@@ -78,8 +78,8 @@ private extension ChatRoomCollectionViewCell {
             profileImageView.widthAnchor.constraint(equalToConstant: 24),
             profileImageView.heightAnchor.constraint(equalToConstant: 24),
             messageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            messageView.widthAnchor.constraint(equalToConstant: messageView.frame.width),
-            messageView.heightAnchor.constraint(equalToConstant: messageView.frame.height)
+            messageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            messageView.widthAnchor.constraint(equalToConstant: messageView.frame.width)
         ])
         
         if isMine {
