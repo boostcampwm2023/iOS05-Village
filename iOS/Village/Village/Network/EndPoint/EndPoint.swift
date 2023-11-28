@@ -7,9 +7,7 @@
 
 import Foundation
 
-protocol RequestResponsable: Requestable, Responsable { }
-
-final class EndPoint<R>: RequestResponsable {
+final class EndPoint<R>: Requestable, Responsable {
     
     typealias Response = R
     
@@ -17,14 +15,14 @@ final class EndPoint<R>: RequestResponsable {
     var path: String
     var method: HTTPMethod
     var queryParameters: Encodable?
-    var bodyParameters: PostCreateInfo?
+    var bodyParameters: Encodable?
     var headers: [String: String]?
 
     init(baseURL: String,
          path: String = "",
          method: HTTPMethod = .GET,
          queryParameters: Encodable? = nil,
-         bodyParameters: PostCreateInfo? = nil,
+         bodyParameters: Encodable? = nil,
          headers: [String: String]? = [:]) {
         self.baseURL = baseURL
         self.path = path
