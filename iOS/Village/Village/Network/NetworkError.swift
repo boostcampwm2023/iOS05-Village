@@ -10,6 +10,7 @@ import Foundation
 enum NetworkError: Error {
     
     case unknownError
+    case queryParameterError
     case componentsError
     case urlRequestError
     case serverError(ServerError)
@@ -21,6 +22,8 @@ enum NetworkError: Error {
         switch self {
         case .unknownError:
             return "Unknown Error."
+        case .queryParameterError:
+            return "Query Parameter toDictionary Failed"
         case .componentsError:
             return "URL Components Error."
         case .urlRequestError:
