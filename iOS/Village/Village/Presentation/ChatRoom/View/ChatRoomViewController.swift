@@ -164,9 +164,9 @@ private extension ChatRoomViewController {
         
         NSLayoutConstraint.activate([
             keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            keyBoardStackViewBottomConstraint
         ])
-        keyBoardStackViewBottomConstraint.isActive = true
         
         keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
@@ -182,10 +182,10 @@ private extension ChatRoomViewController {
         ])
         
         NSLayoutConstraint.activate([
-            chatTableView.topAnchor.constraint(equalTo: postView.bottomAnchor, constant: 0),
-            chatTableView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor, constant: 0),
-            chatTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            chatTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0)
+            chatTableView.topAnchor.constraint(equalTo: postView.bottomAnchor),
+            chatTableView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor),
+            chatTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            chatTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     

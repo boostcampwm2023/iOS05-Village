@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ChatRoomTableViewCell: UITableViewCell {
+final class ChatRoomTableViewCell: UITableViewCell {
     
     private let messageView: UITextView = {
         let textView = UITextView()
