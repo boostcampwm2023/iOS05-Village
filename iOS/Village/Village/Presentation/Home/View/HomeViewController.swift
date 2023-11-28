@@ -184,10 +184,9 @@ private extension HomeViewController {
             cell.configureData(post: post)
             
             if let imageURL = post.imageURL {
-                let endpoint = APIEndPoints.getData(with: imageURL)
                 Task {
                     do {
-                        let data = try await Provider.shared.request(from: endpoint.baseURL)
+                        let data = try await APIProvider.shared.request(from: imageURL)
                         cell.configureImage(image: UIImage(data: data))
                     } catch {
                         dump(error)

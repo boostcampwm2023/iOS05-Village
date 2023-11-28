@@ -40,7 +40,7 @@ final class UserInfoView: UIView {
     func setContent(imageURL: String, nickname: String) {
         Task {
             do {
-                let data = try await NetworkService.loadData(from: imageURL)
+                let data = try await APIProvider.shared.request(from: imageURL)
                 profileImageView.image = UIImage(data: data)
             } catch let error {
                 dump(error)

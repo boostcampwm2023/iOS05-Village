@@ -7,12 +7,8 @@
 
 import Foundation
 
-struct PostListRequestDTO: Codable {
+struct PostListRequestDTO: Encodable {
     
     let page: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case page
-    }
     
 }

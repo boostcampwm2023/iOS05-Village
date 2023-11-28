@@ -156,9 +156,8 @@ class ChatListCollectionViewCell: UICollectionViewCell {
     
     func configureUserProfile(_ url: String?) async {
         if let url = url {
-            let endpoint = APIEndPoints.getData(with: url)
             do {
-                let data = try await Provider.shared.request(from: endpoint.baseURL)
+                let data = try await APIProvider.shared.request(from: url)
                 profileImageView.image = UIImage(data: data)
             } catch {
                 dump(error)
@@ -171,9 +170,8 @@ class ChatListCollectionViewCell: UICollectionViewCell {
     
     func configurePostImage(_ url: String?) async {
         if let url = url {
-            let endpoint = APIEndPoints.getData(with: url)
             do {
-                let data = try await Provider.shared.request(from: endpoint.baseURL)
+                let data = try await APIProvider.shared.request(from: url)
                 postImageView.image = UIImage(data: data)
             } catch {
                 dump(error)
