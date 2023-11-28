@@ -1,13 +1,13 @@
 //
-//  ChatRoomCollectionViewCell.swift
+//  ChatRoomTableViewCell.swift
 //  Village
 //
-//  Created by 박동재 on 2023/11/27.
+//  Created by 조성민 on 11/28/23.
 //
 
 import UIKit
 
-final class ChatRoomCollectionViewCell: UICollectionViewCell {
+class ChatRoomTableViewCell: UITableViewCell {
     
     private let messageView: UITextView = {
         let textView = UITextView()
@@ -29,8 +29,8 @@ final class ChatRoomCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
     }
     
@@ -60,7 +60,7 @@ final class ChatRoomCollectionViewCell: UICollectionViewCell {
 
 }
 
-private extension ChatRoomCollectionViewCell {
+private extension ChatRoomTableViewCell {
     
     func setUI() {
         contentView.addSubview(messageView)
