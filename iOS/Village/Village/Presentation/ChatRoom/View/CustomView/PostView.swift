@@ -1,13 +1,13 @@
 //
-//  PostSummaryView.swift
+//  PostView.swift
 //  Village
 //
-//  Created by 박동재 on 2023/11/20.
+//  Created by 박동재 on 2023/11/27.
 //
 
 import UIKit
 
-final class PostSummaryView: UIView {
+final class PostView: UIView {
     
     let postView: UIView = {
         let view = UIView()
@@ -69,24 +69,41 @@ final class PostSummaryView: UIView {
         configureConstraints()
     }
     
+    func setContent(url: String, title: String, price: String) {
+        setImageView(url: url)
+        postTitleLabel.text = title
+        postPriceLabel.text = price
+    }
+    
+    private func setImageView(url: String) {
+        Task {
+            do {
+                let data = try await NetworkService.loadData(from: url)
+                postImageView.image = UIImage(data: data)
+            } catch let error {
+                dump(error)
+            }
+        }
+    }
+    
     private func configureConstraints() {
         
         NSLayoutConstraint.activate([
             postView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
             postView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             postView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            postView.heightAnchor.constraint(equalToConstant: 100)
+            postView.heightAnchor.constraint(equalToConstant: 80)
         ])
         
         NSLayoutConstraint.activate([
             postImageView.topAnchor.constraint(equalTo: postView.topAnchor, constant: 10),
-            postImageView.leadingAnchor.constraint(equalTo: postView.leadingAnchor, constant: 10),
-            postImageView.widthAnchor.constraint(equalToConstant: 80),
-            postImageView.heightAnchor.constraint(equalToConstant: 80)
+            postImageView.leadingAnchor.constraint(equalTo: postView.leadingAnchor, constant: 20),
+            postImageView.widthAnchor.constraint(equalToConstant: 60),
+            postImageView.heightAnchor.constraint(equalToConstant: 60)
         ])
         
         NSLayoutConstraint.activate([
-            postTitleLabel.topAnchor.constraint(equalTo: postView.topAnchor, constant: 25),
+            postTitleLabel.topAnchor.constraint(equalTo: postView.topAnchor, constant: 15),
             postTitleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20),
             postTitleLabel.widthAnchor.constraint(equalToConstant: 200)
         ])
@@ -97,7 +114,7 @@ final class PostSummaryView: UIView {
         ])
         
         NSLayoutConstraint.activate([
-            postAccessoryView.topAnchor.constraint(equalTo: postView.topAnchor, constant: 39),
+            postAccessoryView.topAnchor.constraint(equalTo: postView.topAnchor, constant: 29),
             postAccessoryView.leadingAnchor.constraint(equalTo: postTitleLabel.trailingAnchor, constant: 50)
         ])
     }
