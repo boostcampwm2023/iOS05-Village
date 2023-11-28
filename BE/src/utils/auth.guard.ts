@@ -3,14 +3,16 @@ import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(context: ExecutionContext) {
+  canActivate(context: ExecutionContext): boolean {
     const requestHeader = context.switchToHttp().getRequest().headers;
 
-    if (
-      requestHeader.authorization &&
-      jwt.verify(requestHeader.authorization, process.env.JWT_SECRET)
-    ) {
-      return true;
+    if (requestHeader) {
+      try {
+        jwt.verify(requestHeader.authorization, process.env.JWT_SECRET);
+        return true;
+      } catch (err) {
+        return false;
+      }
     } else {
       return false;
     }
