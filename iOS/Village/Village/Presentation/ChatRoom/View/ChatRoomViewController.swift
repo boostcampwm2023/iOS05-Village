@@ -10,12 +10,12 @@ import Combine
 
 final class ChatRoomViewController: UIViewController {
     
-    typealias ChatRoomDataSource = UICollectionViewDiffableDataSource<Section, ChatRoomResponseDTO>
+    typealias ChatRoomDataSource = UICollectionViewDiffableDataSource<Section, Message>
     typealias ViewModel = ChatRoomViewModel
     typealias Input = ViewModel.Input
     
     private var dataSource: ChatRoomDataSource!
-    private let reuseIdentifier = ChatListCollectionViewCell.identifier
+    private let reuseIdentifier = ChatRoomCollectionViewCell.identifier
     private var collectionView: UICollectionView!
     
     private var viewModel = ViewModel()
@@ -27,15 +27,7 @@ final class ChatRoomViewController: UIViewController {
     
     private let roomID: Just<Int>
     
-    init(roomID: Int) {
-        self.roomID = Just(roomID)
-        
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("Should not be called")
-    }
+    private var imageURL: String?
     
     private let keyboardStackView: UIStackView = {
         let stackView = UIStackView()
@@ -71,25 +63,76 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    private let postView = PostView()
+    private let postView: PostView = {
+        let postView = PostView()
+        postView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return postView
+    }()
 
+    init(roomID: Int) {
+        self.roomID = Just(roomID)
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("Should not be called")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setNavigationUI()
-        setUI()
         bindViewModel()
-        
+        setNavigationUI()
+        comfigureCollectionView()
+        setUI()
+        configureDataSource()
+        generateData()
         view.backgroundColor = .systemBackground
     }
     
-    private func bindViewModel() {
+    @objc private func ellipsisTapped() {
+        // TODO: 더보기 버튼 클릭 액션
+    }
+    
+}
+
+private extension ChatRoomViewController {
+    
+    func comfigureCollectionView() {
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionView)
+    }
+    
+    func createLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(60)
+        )
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 4.0, trailing: 0.0)
+        section.interGroupSpacing = 8.0
+        
+        return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    func bindViewModel() {
         let output = viewModel.transform(input: ViewModel.Input(roomID: roomID.eraseToAnyPublisher()))
         
         bindRoomOutput(output)
     }
     
-    private func bindRoomOutput(_ output: ViewModel.Output) {
+    func bindRoomOutput(_ output: ViewModel.Output) {
         if let room = viewModel.getTest() {
             self.setRoomContent(room: room)
         }
@@ -101,7 +144,7 @@ final class ChatRoomViewController: UIViewController {
 //            .store(in: &cancellableBag)
     }
     
-    private func setUI() {
+    func setUI() {
         view.addSubview(postView)
         
         keyboardTextField.delegate = self
@@ -114,7 +157,7 @@ final class ChatRoomViewController: UIViewController {
         configureConstraints()
     }
     
-    private func configureConstraints() {
+    func configureConstraints() {
         
         NSLayoutConstraint.activate([
             keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -134,30 +177,61 @@ final class ChatRoomViewController: UIViewController {
             keyboardSendButton.widthAnchor.constraint(equalToConstant: 40)
         ])
         
+        NSLayoutConstraint.activate([
+            postView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            postView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            postView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            postView.heightAnchor.constraint(equalToConstant: 80)
+        ])
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: postView.bottomAnchor, constant: 0),
+            collectionView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor, constant: 0),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0)
+        ])
     }
     
-    private func setNavigationUI() {
+    func setNavigationUI() {
         let ellipsis = self.navigationItem.makeSFSymbolButton(
             self, action: #selector(ellipsisTapped), symbolName: .ellipsis
         )
-        
-        navigationItem.title = "다른 사용자"
         navigationItem.rightBarButtonItem = ellipsis
     }
     
-    @objc private func ellipsisTapped() {
-        // TODO: 더보기 버튼 클릭 액션
+    func setNavigationTitle(title: String) {
+        navigationItem.title = title
     }
     
-    private func setRoomContent(room: ChatRoomResponseDTO) {
-//        if room.postImage.isEmpty {
-//            postSummaryView.postImageView.isHidden = true
-//        }
-//        if room.postPrice.isEmpty {
-//            postSummaryView.postPriceLabel.isHidden = true
-//        }
+    func setRoomContent(room: ChatRoomResponseDTO) {
+        imageURL = room.postImage
+        setNavigationTitle(title: room.user)
         postView.setContent(url: room.postImage, title: room.postName, price: room.postPrice)
     }
+    
+    func configureDataSource() {
+        collectionView.register(ChatRoomCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        dataSource = ChatRoomDataSource(collectionView: collectionView) { (collectionView, indexPath, message) -> UICollectionViewCell? in
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: self.reuseIdentifier,
+                for: indexPath
+            ) as? ChatRoomCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            
+            cell.configureData(message: message.body, profileImageURL: self.imageURL!)
+            print(message)
+            return cell
+        }
+    }
+    
+    func generateData() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Message>()
+        snapshot.appendSections([.room])
+        snapshot.appendItems(viewModel.getTest()!.chatLog)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
 }
 
 extension ChatRoomViewController: UITextFieldDelegate {
