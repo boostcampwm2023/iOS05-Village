@@ -68,8 +68,8 @@ private extension ChatRoomTableViewCell {
     }
     
     func setConstraints(isMine: Bool) {
-        if messageView.frame.width > frame.width - 78 {
-            let newSize = messageView.sizeThatFits(CGSize(width: Int(frame.width) - 78, height: Int.max))
+        if messageView.frame.width > frame.width {
+            let newSize = messageView.sizeThatFits(CGSize(width: Int(bounds.width), height: Int.max))
             messageView.frame.size = CGSize(width: newSize.width, height: newSize.height)
         }
         
@@ -78,8 +78,8 @@ private extension ChatRoomTableViewCell {
             profileImageView.widthAnchor.constraint(equalToConstant: 24),
             profileImageView.heightAnchor.constraint(equalToConstant: 24),
             messageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            messageView.widthAnchor.constraint(equalToConstant: messageView.frame.width),
-            messageView.heightAnchor.constraint(equalToConstant: messageView.frame.height)
+            messageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            messageView.widthAnchor.constraint(equalToConstant: messageView.frame.width)
         ])
         
         if isMine {
