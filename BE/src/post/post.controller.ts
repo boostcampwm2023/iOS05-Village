@@ -21,6 +21,7 @@ import { PostCreateDto } from './dto/postCreate.dto';
 import { MultiPartBody } from '../utils/multiPartBody.decorator';
 import { PostListDto } from './dto/postList.dto';
 import { AuthGuard } from 'src/utils/auth.guard';
+import { UserHash } from 'src/utils/auth.decorator';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -29,8 +30,7 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  async postsList(@Query() query: PostListDto) {
-    const userId = 'qwe';
+  async postsList(@Query() query: PostListDto, @UserHash() userId: string) {
     const posts = await this.postService.findPosts(query, userId);
     return posts;
   }
@@ -44,8 +44,8 @@ export class PostController {
       new ValidationPipe({ validateCustomDecorators: true }),
     )
     body: PostCreateDto,
+    @UserHash() userId: string,
   ) {
-    const userId: string = 'qwe';
     let imageLocation: Array<string> = [];
     if (body.is_request === false && files !== undefined) {
       imageLocation = await this.postService.uploadImages(files);
@@ -55,8 +55,7 @@ export class PostController {
 
   @Get('/:id')
   @ApiOperation({ summary: 'search for post', description: '게시글 상세 조회' })
-  async postDetails(@Param('id') id: number) {
-    const userId = 'qwe';
+  async postDetails(@Param('id') id: number, @UserHash() userId: string) {
     return await this.postService.findPostById(id, userId);
   }
 

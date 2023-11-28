@@ -8,7 +8,10 @@ export class AuthGuard implements CanActivate {
 
     if (requestHeader) {
       try {
-        jwt.verify(requestHeader.authorization, process.env.JWT_SECRET);
+        jwt.verify(
+          requestHeader.authorization.split(' ')[1],
+          process.env.JWT_SECRET,
+        );
         return true;
       } catch (err) {
         return false;
