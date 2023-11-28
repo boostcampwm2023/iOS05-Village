@@ -12,6 +12,9 @@ class ChatRoomCollectionViewCell: UICollectionViewCell {
     private let messageView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isEditable = false
+        textView.isScrollEnabled = false
+        textView.setLayer()
         
         return textView
     }()
@@ -26,7 +29,6 @@ class ChatRoomCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
-        setConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -50,6 +52,7 @@ class ChatRoomCollectionViewCell: UICollectionViewCell {
                 dump(error)
             }
         }
+        setConstraints()
     }
 
 }
@@ -62,17 +65,23 @@ private extension ChatRoomCollectionViewCell {
     }
     
     func setConstraints() {
+        if messageView.frame.width > frame.width - 54 {
+            let newSize = messageView.sizeThatFits(CGSize(width: Int(frame.width) - 54, height: Int.max))
+            messageView.frame.size = CGSize(width: newSize.width, height: newSize.height)
+        }
+        
         NSLayoutConstraint.activate([
-            profileImageView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
+            profileImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
             profileImageView.widthAnchor.constraint(equalToConstant: 24),
             profileImageView.heightAnchor.constraint(equalToConstant: 24),
-            messageView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0)
+            messageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            messageView.widthAnchor.constraint(equalToConstant: messageView.frame.width),
+            messageView.heightAnchor.constraint(equalToConstant: messageView.frame.height)
         ])
+        
         NSLayoutConstraint.activate([
             profileImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            messageView.trailingAnchor.constraint(equalTo: profileImageView.leadingAnchor, constant: -10),
-            messageView.widthAnchor.constraint(equalToConstant: 100),
-            messageView.heightAnchor.constraint(equalToConstant: 100)
+            messageView.trailingAnchor.constraint(equalTo: profileImageView.leadingAnchor, constant: -10)
         ])
     }
     
