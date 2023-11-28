@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PostListResponseDTO: Codable {
+struct PostListResponseDTO: Decodable {
     
     let title: String
     let price: Int?
@@ -30,4 +30,5 @@ struct PostListResponseDTO: Codable {
         case startDate = "start_date"
         case endDate = "end_date"
     }
+    
 }
