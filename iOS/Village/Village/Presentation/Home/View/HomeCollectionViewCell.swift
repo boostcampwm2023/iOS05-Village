@@ -9,8 +9,6 @@ import UIKit
 
 final class HomeCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "HomeCollectionViewCell"
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()

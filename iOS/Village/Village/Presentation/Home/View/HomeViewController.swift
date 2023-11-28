@@ -173,12 +173,12 @@ private extension HomeViewController {
     func configureDataSource() {
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
-            UICollectionViewCell? in
+            HomeCollectionViewCell? in
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: self.reuseIdentifier,
                 for: indexPath
             ) as? HomeCollectionViewCell else {
-                return UICollectionViewCell()
+                return HomeCollectionViewCell()
             }
             
             cell.configureData(post: post)
