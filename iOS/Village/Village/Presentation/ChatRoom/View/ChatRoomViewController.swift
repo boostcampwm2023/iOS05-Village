@@ -61,6 +61,10 @@ final class ChatRoomViewController: UIViewController {
         
         return stackView
     }()
+    private lazy var keyBoardStackViewBottomConstraint = keyboardStackView.bottomAnchor.constraint(
+        equalTo: view.safeAreaLayoutGuide.bottomAnchor, 
+        constant: -20
+    )
     
     private let keyboardMoreButton: UIButton = {
         let button = UIButton()
@@ -112,6 +116,7 @@ final class ChatRoomViewController: UIViewController {
         setNavigationUI()
         setUI()
         generateData()
+        setUpNotification()
         view.backgroundColor = .systemBackground
     }
     
@@ -159,9 +164,9 @@ private extension ChatRoomViewController {
         
         NSLayoutConstraint.activate([
             keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            keyboardStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+        keyBoardStackViewBottomConstraint.isActive = true
         
         keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
@@ -206,6 +211,53 @@ private extension ChatRoomViewController {
         snapshot.appendSections([.room])
         snapshot.appendItems(viewModel.getTest()!.chatLog)
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func setUpNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as NSDictionary?,
+              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        keyboardFrame = view.convert(keyboardFrame, from: nil)
+        keyBoardStackViewBottomConstraint.isActive = false
+        keyBoardStackViewBottomConstraint = keyboardStackView
+            .bottomAnchor
+            .constraint(
+                equalTo: view.bottomAnchor,
+                constant: -keyboardFrame.height
+            )
+        keyBoardStackViewBottomConstraint.isActive = true
+    }
+    
+    @objc func keyboardWillHide(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as NSDictionary?,
+              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        keyboardFrame = view.convert(keyboardFrame, from: nil)
+        keyBoardStackViewBottomConstraint.isActive = false
+        keyBoardStackViewBottomConstraint = keyboardStackView
+            .bottomAnchor
+            .constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                constant: -20
+            )
+        keyBoardStackViewBottomConstraint.isActive = true
     }
     
 }
