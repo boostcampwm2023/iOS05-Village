@@ -165,17 +165,11 @@ private extension ChatRoomViewController {
             keyboardStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
         
-        NSLayoutConstraint.activate([
-            keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40)
-        ])
+        keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
-        NSLayoutConstraint.activate([
-            keyboardTextField.heightAnchor.constraint(equalToConstant: 40)
-        ])
+        keyboardTextField.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
-        NSLayoutConstraint.activate([
-            keyboardSendButton.widthAnchor.constraint(equalToConstant: 40)
-        ])
+        keyboardSendButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
         NSLayoutConstraint.activate([
             postView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

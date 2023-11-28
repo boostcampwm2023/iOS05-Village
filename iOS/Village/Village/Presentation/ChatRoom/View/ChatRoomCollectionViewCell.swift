@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ChatRoomCollectionViewCell: UICollectionViewCell {
+final class ChatRoomCollectionViewCell: UICollectionViewCell {
     
     private let messageView: UITextView = {
         let textView = UITextView()
