@@ -145,4 +145,29 @@ export class LoginService {
 
     return headerClaimsJson.kid;
   }
+
+  validateToken(token: string, kind: 'access' | 'refresh') {
+    const secret = kind === 'access' ? 'JWT_SECRET' : 'JWT_REFRESH_SECRET';
+    return this.jwtService.verify(token, {
+      secret: this.configService.get(secret),
+    });
+  }
+
+  async refreshToken(payload): Promise<JwtTokens> {
+    const user = await this.userRepository.findOne({
+      where: { user_hash: payload.userId },
+    });
+    const accessToken = this.generateAccessToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+    return { access_token: accessToken, refresh_token: refreshToken };
+  }
+
+  async loginAdmin(id) {
+    const user = await this.userRepository.findOne({
+      where: { user_hash: id },
+    });
+    const accessToken = this.generateAccessToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+    return { access_token: accessToken, refresh_token: refreshToken };
+  }
 }
