@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
@@ -19,9 +20,11 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { PostCreateDto } from './dto/postCreate.dto';
 import { MultiPartBody } from '../utils/multiPartBody.decorator';
 import { PostListDto } from './dto/postList.dto';
+import { AuthGuard } from 'src/utils/auth.guard';
 
 @Controller('posts')
 @ApiTags('posts')
+@UseGuards(AuthGuard)
 export class PostController {
   constructor(private readonly postService: PostService) {}
 

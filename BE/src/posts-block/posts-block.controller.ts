@@ -1,7 +1,16 @@
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { PostsBlockService } from './posts-block.service';
+import { AuthGuard } from 'src/utils/auth.guard';
 
 @Controller('posts/block')
+@UseGuards(AuthGuard)
 export class PostsBlockController {
   constructor(private readonly postsBlockService: PostsBlockService) {}
   @Post(':id')
