@@ -9,18 +9,20 @@ import Foundation
 
 struct APIEndPoints {
     
-    static func getPosts(with postResponse: PostListRequestDTO) -> EndPoint<[PostListResponseDTO]> {
+    static let baseURL = "https://www.village-api.shop/"
+    
+    static func getPosts(with requestDTO: PostListRequestDTO) -> EndPoint<[PostListResponseDTO]> {
         return EndPoint(
-            baseURL: "http://118.67.130.107:3000/",
+            baseURL: baseURL,
             path: "posts",
             method: .GET,
-            queryParameters: postResponse
+            queryParameters: requestDTO
         )
     }
     
     static func getPost(id: Int) -> EndPoint<PostResponseDTO> {
         return EndPoint(
-            baseURL: "http://118.67.130.107:3000/",
+            baseURL: baseURL,
             path: "posts/\(id)",
             method: .GET
         )
@@ -28,28 +30,25 @@ struct APIEndPoints {
     
     static func getUser(id: String) -> EndPoint<UserResponseDTO> {
         return EndPoint(
-            baseURL: "http://118.67.130.107:3000/",
+            baseURL: baseURL,
             path: "users/\(id)",
             method: .GET
         )
     }
     
-    static func getData(with url: String) -> EndPoint<Data> {
-        return EndPoint(baseURL: url)
-    }
-    
-    static func createPosts(with post: PostCreateInfo) -> EndPoint<PostCreateInfo> {
+    static func createPost(with requestDTO: PostCreateRequestDTO) -> EndPoint<Void> {
         return EndPoint(
-            baseURL: "http://118.67.130.107:3000/",
+            baseURL: baseURL,
             path: "posts",
             method: .POST,
-            bodyParameters: post
+            bodyParameters: requestDTO.httpBody,
+            headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
         )
     }
     
     static func getChatList(with chatListResponse: ChatListRequestDTO) -> EndPoint<[ChatListResponseDTO]> {
         return EndPoint(
-            baseURL: "http://118.67.130.107:3000/",
+            baseURL: baseURL,
             path: "chat",
             method: .GET,
             queryParameters: chatListResponse

@@ -66,7 +66,7 @@ final class ImagePageView: UIView {
         for (index, url) in self.imageURL.enumerated() {
             Task {
                 do {
-                    let data = try await NetworkService.loadData(from: url)
+                    let data = try await APIProvider.shared.request(from: url)
                     let imageView = generateImageView(data: data, index: index)
                     imageStackView.addArrangedSubview(imageView)
                     imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
