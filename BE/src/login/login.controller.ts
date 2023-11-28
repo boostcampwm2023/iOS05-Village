@@ -1,8 +1,16 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { LoginService, SocialProperties } from './login.service';
 import { AppleLoginDto } from './appleLoginDto';
+import { AuthGuard } from 'src/utils/auth.guard';
 
 @Controller('login')
+@UseGuards(AuthGuard)
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
