@@ -17,7 +17,26 @@ final class ChatRoomViewController: UIViewController {
     private var dataSource: ChatRoomDataSource!
     private let reuseIdentifier = ChatRoomCollectionViewCell.identifier
     private var collectionView: UICollectionView!
-    
+    private let collectionViewLayout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+
+      let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                            heightDimension: .estimated(30))
+      let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+      let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                             heightDimension: .estimated(30))
+
+      let group = NSCollectionLayoutGroup.horizontal(
+        layoutSize: groupSize,
+        subitem: item,
+        count: 1
+      )
+      
+      let section = NSCollectionLayoutSection(group: group)
+      section.interGroupSpacing = 8
+
+      return section
+    })
     private var viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -101,29 +120,10 @@ final class ChatRoomViewController: UIViewController {
 private extension ChatRoomViewController {
     
     func comfigureCollectionView() {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+//        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
-    }
-    
-    func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(60)
-        )
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 4.0, trailing: 0.0)
-        section.interGroupSpacing = 8.0
-        
-        return UICollectionViewCompositionalLayout(section: section)
     }
     
     func bindViewModel() {
@@ -218,9 +218,7 @@ private extension ChatRoomViewController {
             ) as? ChatRoomCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            
-            cell.configureData(message: message.body, profileImageURL: self.imageURL!)
-            print(message)
+            cell.configureData(message: message.body, profileImageURL: self.imageURL!, isMine: message.sender == "me")
             return cell
         }
     }

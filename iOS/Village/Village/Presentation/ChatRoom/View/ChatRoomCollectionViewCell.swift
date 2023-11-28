@@ -14,7 +14,10 @@ class ChatRoomCollectionViewCell: UICollectionViewCell {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.isEditable = false
         textView.isScrollEnabled = false
-        textView.setLayer()
+        textView.setLayer(borderWidth: 0)
+        textView.font = UIFont.systemFont(ofSize: 16)
+        textView.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        textView.textColor = .white
         
         return textView
     }()
@@ -39,7 +42,7 @@ class ChatRoomCollectionViewCell: UICollectionViewCell {
         profileImageView.isHidden = true
     }
     
-    func configureData(message: String, profileImageURL: String) {
+    func configureData(message: String, profileImageURL: String, isMine: Bool) {
         messageView.text = message
         messageView.sizeToFit()
         Task {
@@ -52,7 +55,7 @@ class ChatRoomCollectionViewCell: UICollectionViewCell {
                 dump(error)
             }
         }
-        setConstraints()
+        setConstraints(isMine: isMine)
     }
 
 }
@@ -60,29 +63,38 @@ class ChatRoomCollectionViewCell: UICollectionViewCell {
 private extension ChatRoomCollectionViewCell {
     
     func setUI() {
-        addSubview(messageView)
-        addSubview(profileImageView)
+        contentView.addSubview(messageView)
+        contentView.addSubview(profileImageView)
     }
     
-    func setConstraints() {
-        if messageView.frame.width > frame.width - 54 {
-            let newSize = messageView.sizeThatFits(CGSize(width: Int(frame.width) - 54, height: Int.max))
+    func setConstraints(isMine: Bool) {
+        if messageView.frame.width > frame.width - 78 {
+            let newSize = messageView.sizeThatFits(CGSize(width: Int(frame.width) - 78, height: Int.max))
             messageView.frame.size = CGSize(width: newSize.width, height: newSize.height)
         }
         
         NSLayoutConstraint.activate([
-            profileImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            profileImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             profileImageView.widthAnchor.constraint(equalToConstant: 24),
             profileImageView.heightAnchor.constraint(equalToConstant: 24),
-            messageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            messageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             messageView.widthAnchor.constraint(equalToConstant: messageView.frame.width),
             messageView.heightAnchor.constraint(equalToConstant: messageView.frame.height)
         ])
         
-        NSLayoutConstraint.activate([
-            profileImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            messageView.trailingAnchor.constraint(equalTo: profileImageView.leadingAnchor, constant: -10)
-        ])
+        if isMine {
+            messageView.backgroundColor = .myChatMessage
+            NSLayoutConstraint.activate([
+                profileImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+                messageView.trailingAnchor.constraint(equalTo: profileImageView.leadingAnchor, constant: -10)
+            ])
+        } else {
+            messageView.backgroundColor = .userChatMessage
+            NSLayoutConstraint.activate([
+                profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+                messageView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 10)
+            ])
+        }
     }
     
 }
