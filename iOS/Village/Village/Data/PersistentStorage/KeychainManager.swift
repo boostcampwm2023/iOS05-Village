@@ -12,14 +12,12 @@ final class KeychainManager {
     
     static let shared = KeychainManager()
     
-    private let server = "https://www.village-api.shop"
-    
-    func write(token: AuthenticationToken) throws {
+    func write(email: String, token: AuthenticationToken) throws {
         do {
             let data = try JSONEncoder().encode(token)
             let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: server,
+                kSecAttrAccount: email,
                 kSecValueData: data
             ]
             
@@ -36,11 +34,12 @@ final class KeychainManager {
         }
     }
     
-    func read() -> AuthenticationToken? {
-        let query: [CFString: AnyObject] = [
+    func read(email: String) -> AuthenticationToken? {
+        let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecReturnAttributes: kCFBooleanTrue,
-            kSecReturnData: kCFBooleanTrue,
+            kSecAttrAccount: email,
+            kSecReturnAttributes: true,
+            kSecReturnData: true,
             kSecMatchLimit: kSecMatchLimitOne
         ]
         
@@ -53,9 +52,10 @@ final class KeychainManager {
         return token
     }
     
-    func delete() throws {
-        let query: [CFString: AnyObject] = [
-            kSecClass: kSecClassGenericPassword
+    func delete(email: String) throws {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: email
         ]
         
         let status = SecItemDelete(query as CFDictionary)
@@ -64,14 +64,14 @@ final class KeychainManager {
         guard status == errSecSuccess else { throw KeychainError.unknown(status) }
     }
     
-    func update(token: AuthenticationToken) throws {
+    func update(email: String, token: AuthenticationToken) throws {
         do {
             let data = try JSONEncoder().encode(token)
             let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
             ]
             let attribute: [CFString: Any] = [
-                kSecAttrAccount: server,
+                kSecAttrAccount: email,
                 kSecValueData: data
             ]
             let status = SecItemUpdate(query as CFDictionary, attribute as CFDictionary)
