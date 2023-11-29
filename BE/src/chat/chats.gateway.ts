@@ -15,6 +15,7 @@ export class ChatsGateway implements OnGatewayConnection {
   @WebSocketServer() server: Server;
   private rooms = new Map<string, Set<Websocket>>();
   handleConnection(client: Websocket) {
+    // 인증 로직
     console.log(`on connnect : ${client}`);
   }
 
@@ -29,8 +30,10 @@ export class ChatsGateway implements OnGatewayConnection {
   ) {
     console.log(message);
     const room = this.rooms.get(message['room']);
+    const sender = message['sender'];
     room.forEach((people) => {
-      if (people !== client) people.send(JSON.stringify(message['message']));
+      if (people !== client)
+        people.send(JSON.stringify({ sender, message: message['message'] }));
     });
   }
 
