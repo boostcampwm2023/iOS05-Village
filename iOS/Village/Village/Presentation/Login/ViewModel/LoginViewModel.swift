@@ -53,19 +53,3 @@ extension LoginViewModel {
     }
     
 }
-
-enum AuthenticationError: LocalizedError {
-    
-    case invalidToken
-    case serverError
-    
-    var errorDescription: String {
-        switch self {
-        case .invalidToken:
-            "토큰이 유효하지 않습니다."
-        case .serverError:
-            "서버 에러가 발생했습니다."
-        }
-    }
-    
-}
