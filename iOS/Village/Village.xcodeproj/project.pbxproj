@@ -58,6 +58,9 @@
 		8F3D79E02B136C6800370536 /* ChatRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */; };
 		8F3D79E22B14438A00370536 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79E12B14438A00370536 /* PostView.swift */; };
 		8F3D79E62B1469DF00370536 /* UICollectionViewCell+Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */; };
+		8F3D7A382B171B8400370536 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D7A372B171B8400370536 /* WebSocket.swift */; };
+		8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D7A392B173B7C00370536 /* WebSocketError.swift */; };
+		8F3D7A3C2B175D5000370536 /* chat-server.js in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D7A3B2B175D5000370536 /* chat-server.js */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
@@ -144,6 +147,9 @@
 		8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewModel.swift; sourceTree = "<group>"; };
 		8F3D79E12B14438A00370536 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Identifier.swift"; sourceTree = "<group>"; };
+		8F3D7A372B171B8400370536 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		8F3D7A392B173B7C00370536 /* WebSocketError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketError.swift; sourceTree = "<group>"; };
+		8F3D7A3B2B175D5000370536 /* chat-server.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "chat-server.js"; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
@@ -364,6 +370,7 @@
 		59E0C5FA2AFBA3FC0073D494 /* Village */ = {
 			isa = PBXGroup;
 			children = (
+				8F3D7A362B171B7500370536 /* Socket */,
 				8F1B53332B0E037C006D8982 /* Domain */,
 				5975E98D2B03591E007CEF13 /* Data */,
 				8FC7FE762B06767600B91D3B /* Network */,
@@ -437,6 +444,16 @@
 				8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		8F3D7A362B171B7500370536 /* Socket */ = {
+			isa = PBXGroup;
+			children = (
+				8F3D7A3B2B175D5000370536 /* chat-server.js */,
+				8F3D7A372B171B8400370536 /* WebSocket.swift */,
+				8F3D7A392B173B7C00370536 /* WebSocketError.swift */,
+			);
+			path = Socket;
 			sourceTree = "<group>";
 		};
 		8F95CF8E2B0B97BA0024631F /* Commons */ = {
@@ -719,6 +736,7 @@
 				8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */,
 				8F3D79DD2B135D1500370536 /* ChatRoom.json in Resources */,
 				5975E98B2B035919007CEF13 /* Posts.json in Resources */,
+				8F3D7A3C2B175D5000370536 /* chat-server.js in Resources */,
 				59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */,
 				5975E98C2B035919007CEF13 /* Users.json in Resources */,
 			);
@@ -780,9 +798,9 @@
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
 				44C1F5F32B0FF63C0047A436 /* PostResponseDTO.swift in Sources */,
 				8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */,
+				8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				4416D4762B15E25A0052BF33 /* MultipartFormData.swift in Sources */,
-				8F3D79E42B14698500370536 /* ChatRoomCollectionViewCell.swift in Sources */,
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
 				44C1F5E32B0FB6460047A436 /* PostListItem.swift in Sources */,
 				4416D47B2B15EBCC0052BF33 /* Encodable+.swift in Sources */,
@@ -810,6 +828,7 @@
 				8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				59D8F1032B0FC4F700A08E02 /* PostCreateViewModel.swift in Sources */,
+				8F3D7A382B171B8400370536 /* WebSocket.swift in Sources */,
 				59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */,
 				446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
