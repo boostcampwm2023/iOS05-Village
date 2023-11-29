@@ -59,18 +59,26 @@ extension AppDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     
-    // 앱이 foreground상태 일 때, 알림이 온 경우 어떻게 표현할 것인지 처리
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .sound])
     }
 
-    // push를 탭한 경우 처리
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
 
         let content = response.notification.request.content.userInfo
-        print("contents = \(content)")
+        
+        guard let windowSceneDelegate = response.targetScene?.delegate as? UIWindowSceneDelegate,
+              let windowScene = windowSceneDelegate.window,
+              let rootViewController = windowScene?.rootViewController as? AppTabBarController,
+              let navigationController = rootViewController.selectedViewController as? UINavigationController,
+              let roomID = content["room_id"] as? Int else {
+            completionHandler()
+            return
+        }
+        
+        navigationController.pushViewController(ChatRoomViewController(roomID: roomID),animated: true)
     }
 
     
