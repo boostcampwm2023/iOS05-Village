@@ -6,6 +6,7 @@ import { PostEntity } from '../entities/post.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
+import { ChatRoomEntity } from 'src/entities/chatRoom.entity';
 
 @Injectable()
 export class MysqlConfigProvider implements TypeOrmOptionsFactory {
@@ -25,6 +26,7 @@ export class MysqlConfigProvider implements TypeOrmOptionsFactory {
         PostImageEntity,
         BlockUserEntity,
         BlockPostEntity,
+        ChatRoomEntity,
       ],
       synchronize: false,
     };
