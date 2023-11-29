@@ -1,6 +1,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/xcode,swiftpackagemanager,swift,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=xcode,swiftpackagemanager,swift,macos
 
+# compiled output
+/dist
+/node_modules
+
 ### macOS ###
 # General
 .DS_Store
