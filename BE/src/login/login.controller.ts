@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { LoginService, SocialProperties } from './login.service';
 import { AppleLoginDto } from './dto/appleLogin.dto';
+import { AuthGuard } from '../utils/auth.guard';
 
 @Controller('login')
 export class LoginController {
@@ -39,5 +40,6 @@ export class LoginController {
   }
 
   @Get('expire')
+  @UseGuards(AuthGuard)
   checkAccessToken() {}
 }
