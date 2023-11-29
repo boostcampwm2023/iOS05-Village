@@ -22,7 +22,6 @@ async function bootstrap() {
   // app.useGlobalInterceptors(new HttpLoggerInterceptor());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useWebSocketAdapter(new WsAdapter(app));
-  app.useGlobalGuards(new AuthGuard());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

@@ -1,13 +1,14 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { LoginService, SocialProperties } from './login.service';
 import { AppleLoginDto } from './dto/appleLogin.dto';
-
+import { AuthGuard } from '../utils/auth.guard';
 
 @Controller('login')
 export class LoginController {
@@ -37,4 +38,8 @@ export class LoginController {
   loginAdmin(@Body('user') user) {
     return this.loginService.loginAdmin(user);
   }
+
+  @Get('expire')
+  @UseGuards(AuthGuard)
+  checkAccessToken() {}
 }
