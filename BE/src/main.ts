@@ -7,6 +7,7 @@ import * as winstonDaily from 'winston-daily-rotate-file';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpLoggerInterceptor } from './utils/httpLogger.interceptor';
 import { AuthGuard } from './utils/auth.guard';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,6 +21,7 @@ async function bootstrap() {
   });
   // app.useGlobalInterceptors(new HttpLoggerInterceptor());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  app.useWebSocketAdapter(new WsAdapter(app));
   app.useGlobalGuards(new AuthGuard());
   app.useGlobalPipes(
     new ValidationPipe({
