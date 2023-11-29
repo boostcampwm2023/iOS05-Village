@@ -84,7 +84,7 @@ final class LoginViewController: UIViewController {
     }
     
     private func notifyLoginSucceed() {
-        NotificationCenter.default.post(Notification(name: Notification.Name("LoginSucceed")))
+        NotificationCenter.default.post(Notification(name: .loginSucceed))
     }
 
 }

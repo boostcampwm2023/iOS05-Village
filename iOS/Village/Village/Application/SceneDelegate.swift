@@ -14,17 +14,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        observeLoginSucceedEvent()
+        
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = LoginViewController()
         window?.makeKeyAndVisible()
-        
-        observeLoginSucceedEvent()
     }
     
     private func observeLoginSucceedEvent() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(rootViewControllerToTabBarController),
-                                               name: Notification.Name("LoginSucceed"),
+                                               name: .loginSucceed,
                                                object: nil
         )
     }
