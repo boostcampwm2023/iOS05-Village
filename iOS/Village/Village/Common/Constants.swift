@@ -24,5 +24,6 @@ enum ImageSystemName: String {
     case ellipsis
     case paperplane
     case checkmark
+    case cameraCircleFill = "camera.circle.fill"
     
 }

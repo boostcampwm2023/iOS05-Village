@@ -54,7 +54,6 @@ final class PostCreateViewModel {
 //    }
     
     func postCreate() {
-        
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         guard let startTime = startTimeInput,
@@ -62,8 +61,8 @@ final class PostCreateViewModel {
         let startTimeString = formatter.string(from: startTime)
         let endTimeString = formatter.string(from: endTime)
         
-        let endPoint = APIEndPoints.createPosts(
-            with: PostCreateInfo(
+        let endPoint = APIEndPoints.createPost(
+            with: PostCreateRequestDTO(
                 postInfo: PostInfoDTO(
                     title: titleInput,
                     description: detailInput,
@@ -72,12 +71,12 @@ final class PostCreateViewModel {
                     startDate: startTimeString,
                     endDate: endTimeString
                 ),
-                images: []
+                image: []
             )
         )
         Task {
             do {
-                let _ = try await Provider.shared.request(with: endPoint)
+                let _ = try await APIProvider.shared.multipartRequest(with: endPoint)
             } catch {
                 dump(error)
             }

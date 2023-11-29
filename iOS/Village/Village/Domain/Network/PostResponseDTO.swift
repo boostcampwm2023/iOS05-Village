@@ -19,7 +19,9 @@ struct PostResponseDTO: Decodable {
     let endDate: String
     
     enum CodingKeys: String, CodingKey {
-        case title, description, price
+        case title
+        case description
+        case price
         case userID = "user_id"
         case imageURL = "images"
         case isRequest = "is_request"

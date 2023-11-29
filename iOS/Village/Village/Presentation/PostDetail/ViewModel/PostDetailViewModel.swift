@@ -35,7 +35,7 @@ final class PostDetailViewModel {
         
         Task {
             do {
-                guard let data = try await Provider.shared.request(with: endpoint) else { return }
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
                 post.send(data)
             } catch let error as NetworkError {
                 post.send(completion: .failure(error))
@@ -48,7 +48,7 @@ final class PostDetailViewModel {
         
         Task {
             do {
-                guard let data = try await Provider.shared.request(with: endpoint) else { return }
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
                 user.send(data)
             } catch let error as NetworkError {
                 user.send(completion: .failure(error))

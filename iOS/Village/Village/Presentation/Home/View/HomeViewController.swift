@@ -173,21 +173,20 @@ private extension HomeViewController {
     func configureDataSource() {
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
-            UICollectionViewCell? in
+            HomeCollectionViewCell? in
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: self.reuseIdentifier,
                 for: indexPath
             ) as? HomeCollectionViewCell else {
-                return UICollectionViewCell()
+                return HomeCollectionViewCell()
             }
             
             cell.configureData(post: post)
             
             if let imageURL = post.imageURL {
-                let endpoint = APIEndPoints.getData(with: imageURL)
                 Task {
                     do {
-                        let data = try await Provider.shared.request(from: endpoint.baseURL)
+                        let data = try await APIProvider.shared.request(from: imageURL)
                         cell.configureImage(image: UIImage(data: data))
                     } catch {
                         dump(error)

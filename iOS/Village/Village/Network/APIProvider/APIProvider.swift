@@ -7,16 +7,16 @@
 
 import Foundation
 
-protocol ProviderProtocol {
+protocol Provider {
     
-    func request<R: Decodable, E: RequestResponsable>(with endpoint: E) async throws -> R? where E.Response == R
+    func request<R: Decodable, E: Requestable&Responsable>(with endpoint: E) async throws -> R? where E.Response == R
     func request(from url: String) async throws -> Data
     
 }
 
-final class Provider: ProviderProtocol {
+final class APIProvider: Provider {
     
-    static let shared = Provider()
+    static let shared = APIProvider()
     
     let session: URLSession
     
@@ -24,15 +24,12 @@ final class Provider: ProviderProtocol {
         self.session = session
     }
     
-    func request<R: Decodable, E: RequestResponsable>(with endpoint: E) async throws -> R? where E.Response == R {
-        var urlRequest = try endpoint.makeURLRequest()
-        
+    func request<R: Decodable, E: Requestable&Responsable>(with endpoint: E) async throws -> R? where E.Response == R {
+        let urlRequest = try endpoint.makeURLRequest()
         let (data, response) = try await session.data(for: urlRequest)
         
         try self.checkStatusCode(response)
-        if data.isEmpty {
-            return nil
-        }
+        
         return try self.decode(data)
     }
     
@@ -41,6 +38,12 @@ final class Provider: ProviderProtocol {
         let (data, response) = try await session.data(from: url)
         try self.checkStatusCode(response)
         return data
+    }
+    
+    func multipartRequest<E: Requestable&Responsable>(with endpoint: E) async throws {
+        let urlRequest = try endpoint.makeMultipartURLRequest()
+        let (_, response) = try await session.data(for: urlRequest)
+        try self.checkStatusCode(response)
     }
     
     private func checkStatusCode(_ response: URLResponse) throws {
