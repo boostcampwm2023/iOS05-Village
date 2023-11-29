@@ -44,7 +44,7 @@ final class KeychainManager {
         ]
         
         var result: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        SecItemCopyMatching(query as CFDictionary, &result)
         guard let result = result as? [String: AnyObject],
               let data = result[kSecValueData as String] as? Data,
               let token = try? JSONDecoder().decode(AuthenticationToken.self, from: data) else { return nil }
@@ -68,7 +68,7 @@ final class KeychainManager {
         do {
             let data = try JSONEncoder().encode(token)
             let query: [CFString: Any] = [
-                kSecClass: kSecClassGenericPassword,
+                kSecClass: kSecClassGenericPassword
             ]
             let attribute: [CFString: Any] = [
                 kSecAttrAccount: email,
