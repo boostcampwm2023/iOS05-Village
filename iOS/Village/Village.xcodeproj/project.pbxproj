@@ -17,6 +17,8 @@
 		4416D47E2B171BF30052BF33 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D47D2B171BF30052BF33 /* LoginViewModel.swift */; };
 		4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D4822B171C730052BF33 /* AuthenticationToken.swift */; };
 		4416D4862B171CE50052BF33 /* AppleOAuthDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */; };
+		4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D48B2B174C7A0052BF33 /* KeychainManager.swift */; };
+		4416D48E2B174CBA0052BF33 /* KeychainError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D48D2B174CBA0052BF33 /* KeychainError.swift */; };
 		442442172B14427F009D39A8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442442162B14427F009D39A8 /* LoginViewController.swift */; };
 		44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44425A632B038AEA00AAD64A /* FloatingButton.swift */; };
 		444A50902B0C60F900454397 /* ImagePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A508F2B0C60F900454397 /* ImagePageView.swift */; };
@@ -105,6 +107,8 @@
 		4416D47D2B171BF30052BF33 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		4416D4822B171C730052BF33 /* AuthenticationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationToken.swift; sourceTree = "<group>"; };
 		4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOAuthDTO.swift; sourceTree = "<group>"; };
+		4416D48B2B174C7A0052BF33 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		4416D48D2B174CBA0052BF33 /* KeychainError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainError.swift; sourceTree = "<group>"; };
 		442442162B14427F009D39A8 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		44425A632B038AEA00AAD64A /* FloatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButton.swift; sourceTree = "<group>"; };
 		444A508F2B0C60F900454397 /* ImagePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePageView.swift; sourceTree = "<group>"; };
@@ -262,6 +266,15 @@
 			path = Entity;
 			sourceTree = "<group>";
 		};
+		4416D48A2B174C1C0052BF33 /* PersistentStorage */ = {
+			isa = PBXGroup;
+			children = (
+				4416D48D2B174CBA0052BF33 /* KeychainError.swift */,
+				4416D48B2B174C7A0052BF33 /* KeychainManager.swift */,
+			);
+			path = PersistentStorage;
+			sourceTree = "<group>";
+		};
 		442442152B144268009D39A8 /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -312,6 +325,7 @@
 		5975E98D2B03591E007CEF13 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				4416D48A2B174C1C0052BF33 /* PersistentStorage */,
 				8F1B53302B0DE0B3006D8982 /* Network */,
 				59AA12952B036BFC00AFC766 /* Dummy */,
 			);
@@ -803,7 +817,9 @@
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */,
+				4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */,
 				5980D75F2B0FB6DB00A6B370 /* PostCreateRepository.swift in Sources */,
+				4416D48E2B174CBA0052BF33 /* KeychainError.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
 				8F95CF982B0C7B270024631F /* Responsable.swift in Sources */,
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
