@@ -11,7 +11,7 @@ final class WebSocket: NSObject {
     static let shared = WebSocket()
     
     var url: URL?
-    var onReceiveClosure: ((String?, Data?) -> ())?
+    var onReceiveClosure: ((String?, Data?) -> Void)?
     weak var delegate: URLSessionWebSocketDelegate?
     
     private var webSocketTask: URLSessionWebSocketTask? {
@@ -23,6 +23,7 @@ final class WebSocket: NSObject {
     
     func openWebSocket() throws {
         guard let url = url else { throw WebSocketError.invalidURL }
+        print("openWebSocket")
         
         let urlSession = URLSession(
             configuration: .default,
@@ -62,13 +63,14 @@ final class WebSocket: NSObject {
     }
     
     func closeWebSocket() {
-        self.webSocketTask = nil
+        print("closeWebSocket")
+        self.webSocketTask?.cancel(with: .normalClosure, reason: nil)
         self.timer?.invalidate()
         self.onReceiveClosure = nil
         self.delegate = nil
     }
     
-    func receive(onReceive: @escaping (String?, Data?) -> ()) {
+    func receive(onReceive: @escaping (String?, Data?) -> Void) {
         self.onReceiveClosure = onReceive
         self.webSocketTask?.receive(completionHandler: { result in
             switch result {
@@ -104,11 +106,29 @@ final class WebSocket: NSObject {
 }
 
 extension WebSocket: URLSessionWebSocketDelegate {
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        self.delegate?.urlSession?(session, webSocketTask: webSocketTask, didOpenWithProtocol: `protocol`)
+    func urlSession(
+        _ session: URLSession,
+        webSocketTask: URLSessionWebSocketTask,
+        didOpenWithProtocol protocol: String?
+    ) {
+        self.delegate?.urlSession?(
+            session,
+            webSocketTask: webSocketTask,
+            didOpenWithProtocol: `protocol`
+        )
     }
     
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        self.delegate?.urlSession?(session, webSocketTask: webSocketTask, didCloseWith: closeCode, reason: reason)
+    func urlSession(
+        _ session: URLSession,
+        webSocketTask: URLSessionWebSocketTask,
+        didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
+        reason: Data?
+    ) {
+        self.delegate?.urlSession?(
+            session,
+            webSocketTask: webSocketTask,
+            didCloseWith: closeCode,
+            reason: reason
+        )
     }
 }

@@ -112,6 +112,7 @@ final class ChatRoomViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setSocket()
         bindViewModel()
         setNavigationUI()
         setUI()
@@ -120,11 +121,46 @@ final class ChatRoomViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        WebSocket.shared.closeWebSocket()
+    }
+    
     @objc private func ellipsisTapped() {
         // TODO: 더보기 버튼 클릭 액션
     }
     
+    func setSocket() {
+        WebSocket.shared.url = URL(string: "ws://localhost:1337/")
+        try? WebSocket.shared.openWebSocket()
+        WebSocket.shared.delegate = self
+        WebSocket.shared.onReceiveClosure = { (string, data) in
+            print(string, data)
+        }
+    }
+    
 }
+
+extension ChatRoomViewController: URLSessionWebSocketDelegate {
+    func urlSession(
+        _ session: URLSession,
+        webSocketTask: URLSessionWebSocketTask,
+        didOpenWithProtocol protocol: String?
+    ) {
+        print("open")
+    }
+    
+    func urlSession(
+        _ session: URLSession,
+        webSocketTask: URLSessionWebSocketTask,
+        didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
+        reason: Data?
+    ) {
+        print("close")
+    }
+}
+
 
 private extension ChatRoomViewController {
     
