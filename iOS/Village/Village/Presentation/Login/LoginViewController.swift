@@ -6,9 +6,19 @@
 //
 
 import UIKit
+import Combine
 import AuthenticationServices
 
 final class LoginViewController: UIViewController {
+    
+    typealias ViewModel = LoginViewModel
+    typealias Input = ViewModel.Input
+    
+    private let viewModel = ViewModel()
+    private var cancellableBag = Set<AnyCancellable>()
+    
+    private var identityToken = PassthroughSubject<Data, Never>()
+    private var authorizationCode = PassthroughSubject<Data, Never>()
     
     private lazy var appLogoImageView: UIImageView = {
         let image = UIImageView(image: .loginLogo)
@@ -26,6 +36,7 @@ final class LoginViewController: UIViewController {
             button = ASAuthorizationAppleIDButton(authorizationButtonType: .signIn,
                                                   authorizationButtonStyle: .black)
         }
+        button.addTarget(self, action: #selector(appleAuthorizationButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
@@ -36,8 +47,72 @@ final class LoginViewController: UIViewController {
 
         configureUI()
         setLayoutConstraints()
+        bindViewModel()
+    }
+    
+    private func bindViewModel() {
+        viewModel.transform(input: Input(identityToken: identityToken.eraseToAnyPublisher(),
+                                         authorizationCode: authorizationCode.eraseToAnyPublisher()))
+        .authenticationToken
+        .receive(on: DispatchQueue.main)
+        .sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure(let error):
+                dump(error)
+            default:
+                break
+            }
+        }, receiveValue: { [weak self] _ in
+            self?.notifyLoginSucceed()
+        })
+        .store(in: &cancellableBag)
+    }
+    
+    @objc
+    private func appleAuthorizationButtonTapped() {
+        let request = createRequest()
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+    
+    private func createRequest() -> ASAuthorizationRequest {
+        let request = ASAuthorizationAppleIDProvider().createRequest()
+        request.requestedScopes = [.email]
+        return request
+    }
+    
+    private func notifyLoginSucceed() {
+        NotificationCenter.default.post(Notification(name: Notification.Name("LoginSucceed")))
     }
 
+}
+
+extension LoginViewController: ASAuthorizationControllerDelegate {
+    
+    func authorizationController(controller: ASAuthorizationController,
+                                 didCompleteWithAuthorization authorization: ASAuthorization) {
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let token = credential.identityToken,
+              let code = credential.authorizationCode else { return }
+        
+        identityToken.send(token)
+        authorizationCode.send(code)
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        dump("Apple Login Failed: \(error)")
+    }
+    
+}
+
+extension LoginViewController: ASAuthorizationControllerPresentationContextProviding {
+    
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+    
 }
 
 private extension LoginViewController {
