@@ -22,19 +22,13 @@ export class ChatRoomEntity {
   writer: string;
 
   @Column({ length: 45, nullable: false, charset: 'utf8', unique: true })
-  sender: string;
+  user: string;
 
   @CreateDateColumn({
     type: 'timestamp',
     nullable: false,
   })
   create_date: Date;
-
-  @UpdateDateColumn({
-    type: 'timestamp',
-    nullable: true,
-  })
-  update_date: Date;
 
   @DeleteDateColumn()
   delete_date: Date;

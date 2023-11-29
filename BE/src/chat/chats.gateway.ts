@@ -7,6 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Websocket } from 'ws';
+import { ChatService } from './chat.service';
 
 @WebSocketGateway({
   path: 'chats',
@@ -14,6 +15,8 @@ import { Server, Websocket } from 'ws';
 export class ChatsGateway implements OnGatewayConnection {
   @WebSocketServer() server: Server;
   private rooms = new Map<string, Set<Websocket>>();
+
+  constructor(private readonly chatService: ChatService) {}
   handleConnection(client: Websocket) {
     // 인증 로직
     console.log(`on connnect : ${client}`);
@@ -42,7 +45,6 @@ export class ChatsGateway implements OnGatewayConnection {
     @MessageBody() message: object,
     @ConnectedSocket() client: Websocket,
   ) {
-    // MessageBody 에 있는 (a , b) 쌍을 통해 DB 에서 해당 방을 찾아서 roomName 을 설정해야함
     const roomName = message['room'];
     if (this.rooms.has(roomName)) this.rooms.get(roomName).add(client);
     else this.rooms.set(roomName, new Set([client]));

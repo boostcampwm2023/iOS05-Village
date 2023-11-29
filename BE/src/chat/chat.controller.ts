@@ -21,6 +21,7 @@ export class ChatController {
   @Post('room')
   @UseGuards(AuthGuard)
   async roomCreate(@Body() body: CreateRoomDto, @UserHash() userId: string) {
-    await this.chatService.createRoom(body.post_id, userId, body.writer);
+    console.log(userId);
+    await this.chatService.createOrFindRoom(body.post_id, userId, body.writer);
   }
 }
