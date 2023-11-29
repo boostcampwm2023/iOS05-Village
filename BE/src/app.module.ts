@@ -14,6 +14,7 @@ import { UsersModule } from './users/users.module';
 import { PostsBlockModule } from './posts-block/posts-block.module';
 import { UsersBlockModule } from './users-block/users-block.module';
 import { LoginModule } from './login/login.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { LoginModule } from './login/login.module';
     PostModule,
     UsersModule,
     LoginModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [
