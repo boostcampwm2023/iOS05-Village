@@ -15,11 +15,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        
-        let tabBarController = AppTabBarController()
-        
-        window?.rootViewController = tabBarController
+        window?.rootViewController = LoginViewController()
         window?.makeKeyAndVisible()
+        
+        addObserver()
+    }
+    
+    private func addObserver() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(rootViewControllerToTabBarController),
+                                               name: Notification.Name("LoginSucceed"),
+                                               object: nil
+        )
+    }
+    
+    @objc
+    private func rootViewControllerToTabBarController() {
+        window?.rootViewController = AppTabBarController()
     }
 
 }
