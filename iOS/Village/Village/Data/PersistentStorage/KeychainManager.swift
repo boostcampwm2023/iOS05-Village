@@ -53,4 +53,15 @@ final class KeychainManager {
         return token
     }
     
+    func delete() throws {
+        let query: [CFString: AnyObject] = [
+            kSecClass: kSecClassGenericPassword
+        ]
+        
+        let status = SecItemDelete(query as CFDictionary)
+        
+        guard status != errSecItemNotFound else { throw KeychainError.notFound }
+        guard status == errSecSuccess else { throw KeychainError.unknown(status) }
+    }
+    
 }
