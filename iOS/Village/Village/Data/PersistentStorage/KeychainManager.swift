@@ -64,4 +64,23 @@ final class KeychainManager {
         guard status == errSecSuccess else { throw KeychainError.unknown(status) }
     }
     
+    func update(token: AuthenticationToken) throws {
+        do {
+            let data = try JSONEncoder().encode(token)
+            let query: [CFString: Any] = [
+                kSecClass: kSecClassGenericPassword,
+            ]
+            let attribute: [CFString: Any] = [
+                kSecAttrAccount: server,
+                kSecValueData: data
+            ]
+            let status = SecItemUpdate(query as CFDictionary, attribute as CFDictionary)
+            
+            guard status != errSecItemNotFound else { throw KeychainError.notFound }
+            guard status == errSecSuccess else { throw KeychainError.unknown(status) }
+        } catch let error {
+            dump(error)
+        }
+    }
+    
 }
