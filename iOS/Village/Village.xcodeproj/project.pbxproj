@@ -15,7 +15,6 @@
 		4416D4762B15E25A0052BF33 /* MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D4752B15E25A0052BF33 /* MultipartFormData.swift */; };
 		4416D47B2B15EBCC0052BF33 /* Encodable+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D47A2B15EBCC0052BF33 /* Encodable+.swift */; };
 		4416D47E2B171BF30052BF33 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D47D2B171BF30052BF33 /* LoginViewModel.swift */; };
-		4416D4812B171C570052BF33 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D4802B171C570052BF33 /* KeychainManager.swift */; };
 		4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D4822B171C730052BF33 /* AuthenticationToken.swift */; };
 		4416D4862B171CE50052BF33 /* AppleOAuthDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */; };
 		442442172B14427F009D39A8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442442162B14427F009D39A8 /* LoginViewController.swift */; };
@@ -106,7 +105,6 @@
 		4416D4752B15E25A0052BF33 /* MultipartFormData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipartFormData.swift; sourceTree = "<group>"; };
 		4416D47A2B15EBCC0052BF33 /* Encodable+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+.swift"; sourceTree = "<group>"; };
 		4416D47D2B171BF30052BF33 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
-		4416D4802B171C570052BF33 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		4416D4822B171C730052BF33 /* AuthenticationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationToken.swift; sourceTree = "<group>"; };
 		4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOAuthDTO.swift; sourceTree = "<group>"; };
 		442442162B14427F009D39A8 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -256,14 +254,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		4416D47F2B171C260052BF33 /* PersistentStorage */ = {
-			isa = PBXGroup;
-			children = (
-				4416D4802B171C570052BF33 /* KeychainManager.swift */,
-			);
-			path = PersistentStorage;
-			sourceTree = "<group>";
-		};
 		4416D4842B171C800052BF33 /* Entity */ = {
 			isa = PBXGroup;
 			children = (
@@ -322,7 +312,6 @@
 		5975E98D2B03591E007CEF13 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				4416D47F2B171C260052BF33 /* PersistentStorage */,
 				8F1B53302B0DE0B3006D8982 /* Network */,
 				59AA12952B036BFC00AFC766 /* Dummy */,
 			);
@@ -826,7 +815,6 @@
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				4416D4762B15E25A0052BF33 /* MultipartFormData.swift in Sources */,
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
-				4416D4812B171C570052BF33 /* KeychainManager.swift in Sources */,
 				44C1F5E32B0FB6460047A436 /* PostListItem.swift in Sources */,
 				4416D47B2B15EBCC0052BF33 /* Encodable+.swift in Sources */,
 				446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */,
