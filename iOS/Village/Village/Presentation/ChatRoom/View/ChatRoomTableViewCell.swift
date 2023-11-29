@@ -47,7 +47,7 @@ final class ChatRoomTableViewCell: UITableViewCell {
         messageView.sizeToFit()
         Task {
             do {
-                let data = try await NetworkService.loadData(from: profileImageURL)
+                let data = try await APIProvider.shared.request(from: profileImageURL)
                 
                 profileImageView.image = UIImage(data: data)
                 

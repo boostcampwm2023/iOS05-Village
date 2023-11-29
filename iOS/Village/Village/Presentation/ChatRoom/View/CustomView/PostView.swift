@@ -78,7 +78,7 @@ final class PostView: UIView {
     private func setImageView(url: String) {
         Task {
             do {
-                let data = try await NetworkService.loadData(from: url)
+                let data = try await APIProvider.shared.request(from: url)
                 postImageView.image = UIImage(data: data)
             } catch let error {
                 dump(error)
