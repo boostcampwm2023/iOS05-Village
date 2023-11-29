@@ -18,10 +18,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = LoginViewController()
         window?.makeKeyAndVisible()
         
-        addObserver()
+        observeLoginSucceedEvent()
     }
     
-    private func addObserver() {
+    private func observeLoginSucceedEvent() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(rootViewControllerToTabBarController),
                                                name: Notification.Name("LoginSucceed"),
