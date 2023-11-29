@@ -45,6 +45,14 @@ final class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        if viewModel.autoLogin() {
+            notifyLoginSucceed()
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         configureUI()
         setLayoutConstraints()
         bindViewModel()
