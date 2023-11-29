@@ -194,6 +194,7 @@ private extension ChatRoomViewController {
             self, action: #selector(ellipsisTapped), symbolName: .ellipsis
         )
         navigationItem.rightBarButtonItem = ellipsis
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     func setNavigationTitle(title: String) {

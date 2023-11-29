@@ -26,6 +26,7 @@ class SearchViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = arrowLeft
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchBar)
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     @objc private func backButtonTapped() {
