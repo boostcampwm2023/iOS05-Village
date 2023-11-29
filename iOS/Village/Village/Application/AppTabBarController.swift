@@ -9,9 +9,15 @@ import UIKit
 
 final class AppTabBarController: UITabBarController {
     
-    private let homeViewController = UINavigationController(rootViewController: HomeViewController())
-    private let chatListViewController = UINavigationController(rootViewController: ChatListViewController())
-    private let myPageViewController = UINavigationController(rootViewController: MyPageViewController())
+    private let homeViewController = UINavigationController(
+        rootViewController: HomeViewController()
+    )
+    private let chatListViewController = UINavigationController(
+        rootViewController: ChatListViewController()
+    )
+    private let myPageViewController = UINavigationController(
+        rootViewController: MyPageViewController(viewModel: MyPageViewModel())
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
