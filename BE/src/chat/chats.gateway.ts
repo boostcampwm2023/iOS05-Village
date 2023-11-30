@@ -8,13 +8,14 @@ import {
 } from '@nestjs/websockets';
 import { Server, Websocket } from 'ws';
 import { ChatService } from './chat.service';
+import { ChatDto } from './dto/chat.dto';
 
 @WebSocketGateway({
   path: 'chats',
 })
 export class ChatsGateway implements OnGatewayConnection {
   @WebSocketServer() server: Server;
-  private rooms = new Map<string, Set<Websocket>>();
+  private rooms = new Map<number, Set<Websocket>>();
 
   constructor(private readonly chatService: ChatService) {}
   handleConnection(client: Websocket) {
@@ -27,17 +28,19 @@ export class ChatsGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('send-message')
-  sendMessage(
-    @MessageBody() message: object,
+  async sendMessage(
+    @MessageBody() message: ChatDto,
     @ConnectedSocket() client: Websocket,
   ) {
     console.log(message);
-    const room = this.rooms.get(message['room']);
+    const room = this.rooms.get(message['room_id']);
     const sender = message['sender'];
+    console.log(room);
     room.forEach((people) => {
       if (people !== client)
         people.send(JSON.stringify({ sender, message: message['message'] }));
     });
+    await this.chatService.saveMessage(message);
   }
 
   @SubscribeMessage('join-room')
@@ -45,7 +48,7 @@ export class ChatsGateway implements OnGatewayConnection {
     @MessageBody() message: object,
     @ConnectedSocket() client: Websocket,
   ) {
-    const roomName = message['room'];
+    const roomName = message['room_id'];
     if (this.rooms.has(roomName)) this.rooms.get(roomName).add(client);
     else this.rooms.set(roomName, new Set([client]));
   }
