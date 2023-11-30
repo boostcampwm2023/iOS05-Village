@@ -45,6 +45,7 @@ final class PostSummaryView: UIView {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: ImageSystemName.chevronRight.rawValue)
+        imageView.tintColor = .primary500
         
         return imageView
     }()

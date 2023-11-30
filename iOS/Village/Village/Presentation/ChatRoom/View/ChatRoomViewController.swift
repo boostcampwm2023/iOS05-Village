@@ -39,6 +39,7 @@ final class ChatRoomViewController: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
         tableView.register(ChatRoomTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.separatorStyle = .none
         
         return tableView
     }()
@@ -84,10 +85,17 @@ final class ChatRoomViewController: UIViewController {
         return textField
     }()
     
+    @objc func sendbuttonTapped() {
+        if let text = self.keyboardTextField.text {
+            WebSocket.shared.sendMessage(roomID: "6", sender: "a123bc", message: text)
+        }
+    }
+    
     private let keyboardSendButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.paperplane.rawValue), for: .normal)
+        button.addTarget(target, action: #selector(sendbuttonTapped), for: .touchUpInside)
         
         return button
     }()
@@ -112,6 +120,7 @@ final class ChatRoomViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setSocket()
         bindViewModel()
         setNavigationUI()
         setUI()
@@ -120,8 +129,20 @@ final class ChatRoomViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        WebSocket.shared.sendDisconnectRoom(roomID: "6")
+    }
+    
     @objc private func ellipsisTapped() {
         // TODO: 더보기 버튼 클릭 액션
+    }
+    
+    func setSocket() {
+        WebSocket.shared.url = URL(string: "ws://localhost:3000/chats")
+        try? WebSocket.shared.openWebSocket()
+        WebSocket.shared.sendJoinRoom(roomID: "6")
     }
     
 }
