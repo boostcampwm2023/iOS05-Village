@@ -27,6 +27,10 @@ final class JWTManager {
         
         do {
             try KeychainManager.shared.write(email: email, token: token)
+        } catch let error as KeychainError {
+            if case .duplicate = error {
+                try? KeychainManager.shared.update(email: email, token: token)
+            }
         } catch let error {
             dump(error)
         }
