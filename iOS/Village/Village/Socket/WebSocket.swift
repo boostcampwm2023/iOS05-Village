@@ -6,7 +6,26 @@
 //
 
 import Foundation
+import Combine
 
+class MessageManager {
+    static let shared = MessageManager()
+    let messageSubject = PassthroughSubject<ReceiveMessage, Never>()
+    
+    private init() {}
+}
+
+struct ReceiveMessage: Hashable, Codable {
+    
+    let sender: String
+    let message: String
+    
+    enum CodingKeys: String, CodingKey {
+        case sender
+        case message
+    }
+    
+}
 final class WebSocket: NSObject {
     static let shared = WebSocket()
     
@@ -27,6 +46,8 @@ final class WebSocket: NSObject {
         self.webSocketTask = webSocketTask
         
         self.startPing()
+        
+        self.receiveEvent()
     }
     
     func sendJoinRoom(roomID: String) {
@@ -82,18 +103,25 @@ final class WebSocket: NSObject {
     }
     
     func receiveEvent() {
-        webSocketTask?.receive { result in
+        guard let webSocketTask = self.webSocketTask else {
+            return
+        }
+        
+        webSocketTask.receive { result in
             switch result {
             case .success(let message):
                 if case .string(let text) = message {
-                    print("Received message: \(text)")
-                    
-                    // TODO: 수신한 메시지 파싱 및 처리 로직 추가
+                    if let jsonData = text.data(using: .utf8) {
+                        do {
+                            let decoder = JSONDecoder()
+                            let message = try decoder.decode(ReceiveMessage.self, from: jsonData)
+                            MessageManager.shared.messageSubject.send(message)
+                        } catch {
+                            dump(error)
+                        }
+                    }
                 }
-                
-                // TODO: 다음 이벤트 수신을 위해 재귀 호출
                 self.receiveEvent()
-                
             case .failure(let error):
                 print("Error receiving message: \(error)")
             }

@@ -12,10 +12,12 @@ struct Message: Hashable, Codable {
     
     let sender: String
     let body: String
+    let count: Int
     
     enum CodingKeys: String, CodingKey {
         case sender
         case body
+        case count
     }
     
 }
@@ -56,6 +58,7 @@ final class ChatRoomViewModel {
     
     private var chatRoom = PassthroughSubject<ChatRoomResponseDTO, Never>()
     private var cancellableBag = Set<AnyCancellable>()
+    private var chatLog: [Message] = []
     
     private var test: ChatRoomResponseDTO?
     
@@ -90,10 +93,19 @@ final class ChatRoomViewModel {
             guard let data = data else { return }
             let room = try decoder.decode(ChatRoomResponseDTO.self, from: data)
             test = room
+            chatLog = room.chatLog
             chatRoom.send(room)
         } catch {
             dump(error)
         }
+    }
+    
+    func getLog() -> [Message]? {
+        return chatLog
+    }
+    
+    func appendLog(sender: String, message: String) {
+        chatLog.append(Message(sender: sender, body: message, count: chatLog.count))
     }
     
     func getTest() -> ChatRoomResponseDTO? {
