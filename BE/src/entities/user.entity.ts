@@ -4,12 +4,14 @@ import {
   DeleteDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PostEntity } from './post.entity';
 import { BlockUserEntity } from './blockUser.entity';
 import { BlockPostEntity } from './blockPost.entity';
+import { RegistrationTokenEntity } from './registrationToken.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -24,6 +26,12 @@ export class UserEntity {
 
   @OneToMany(() => BlockPostEntity, (blockUser) => blockUser.blocker)
   blocker_post: BlockPostEntity[];
+
+  @OneToOne(
+    () => RegistrationTokenEntity,
+    (registrationToken) => registrationToken.user_hash,
+  )
+  registration_token: RegistrationTokenEntity;
 
   @PrimaryGeneratedColumn()
   id: number;
