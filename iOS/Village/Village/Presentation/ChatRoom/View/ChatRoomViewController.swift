@@ -72,6 +72,7 @@ final class ChatRoomViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.plus.rawValue), for: .normal)
+        button.tintColor = .primary500
         
         return button
     }()
@@ -100,6 +101,7 @@ final class ChatRoomViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.paperplane.rawValue), for: .normal)
         button.addTarget(target, action: #selector(sendbuttonTapped), for: .touchUpInside)
+        button.tintColor = .primary500
         
         return button
     }()

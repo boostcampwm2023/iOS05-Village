@@ -956,15 +956,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		4461F39B2B177B8000723C55 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				PRODUCT_NAME = Village;
-			};
-			name = Release;
-		};
 		59AA12A02B03726C00AFC766 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
