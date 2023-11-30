@@ -6,7 +6,6 @@ import { dailyOption, winstonOptions } from './config/winston.config';
 import * as winstonDaily from 'winston-daily-rotate-file';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpLoggerInterceptor } from './utils/httpLogger.interceptor';
-import { AuthGuard } from './utils/auth.guard';
 import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {

@@ -10,6 +10,6 @@ export const UserHash = createParamDecorator(
       Buffer.from(jwtPayload, 'base64').toString(),
     );
 
-    return jwtPayloadJson.user_hash;
+    return jwtPayloadJson.userId;
   },
 );
