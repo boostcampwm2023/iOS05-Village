@@ -11,7 +11,7 @@ import Combine
 final class LoginViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var authenticationToken = PassthroughSubject<AuthenticationToken, Error>()
+    private var loginSucceed = PassthroughSubject<Void, Error>()
     
     func transform(input: Input) -> Output {
         Publishers.Zip(input.identityToken, input.authorizationCode)
@@ -21,29 +21,23 @@ final class LoginViewModel {
                       let email = tokenString.decode()["email"] as? String else { return }
                 
                 let dto = AppleOAuthDTO(identityToken: tokenString, authorizationCode: codeString)
-                self?.handleLoginRequest(email: email, dto: dto)
+                self?.login(email: email, dto: dto)
             })
             .store(in: &cancellableBag)
         
-        return Output(authenticationToken: authenticationToken.eraseToAnyPublisher())
+        return Output(loginSucceed: loginSucceed.eraseToAnyPublisher())
     }
     
-    func autoLogin() -> Bool {
-        guard let token = JWTManager.shared.get() else { return false }
-        
-        return true
-    }
-    
-    private func handleLoginRequest(email: String, dto: AppleOAuthDTO) {
+    private func login(email: String, dto: AppleOAuthDTO) {
         let endpoint = APIEndPoints.loginAppleOAuth(with: dto)
         Task {
             do {
                 guard let token = try await APIProvider.shared.request(with: endpoint) else { return }
                 
                 JWTManager.shared.save(email: email, token: token)
-                authenticationToken.send(token)
+                loginSucceed.send()
             } catch let error {
-                authenticationToken.send(completion: .failure(error))
+                loginSucceed.send(completion: .failure(error))
             }
         }
     }
@@ -58,7 +52,7 @@ extension LoginViewModel {
     }
     
     struct Output {
-        var authenticationToken: AnyPublisher<AuthenticationToken, Error>
+        var loginSucceed: AnyPublisher<Void, Error>
     }
     
 }
