@@ -15,9 +15,14 @@ import { PostsBlockModule } from './posts-block/posts-block.module';
 import { UsersBlockModule } from './users-block/users-block.module';
 import { LoginModule } from './login/login.module';
 import { ChatModule } from './chat/chat.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '../static'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${process.cwd()}/envs/${process.env.NODE_ENV}.env`,
