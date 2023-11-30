@@ -42,33 +42,6 @@ export class LoginService {
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
-  // async registerRegistrationToken(userId, registrationToken) {
-  //   const registrationTokenEntity =
-  //     await this.registrationTokenRepository.findOne({
-  //       where: { user_hash: userId },
-  //     });
-  //   if (registrationTokenEntity !== null) {
-  //     await this.registrationTokenRepository.save({
-  //       user_hash: userId,
-  //       registration_token: registrationToken,
-  //     });
-  //   } else {
-  //     await this.updateRegistrationToken(userId, registrationToken);
-  //   }
-  // }
-
-  // async updateRegistrationToken(userId, registrationToken) {
-  //   const registrationTokenEntity = new RegistrationTokenEntity();
-  //   registrationTokenEntity.user_hash = userId;
-  //   registrationTokenEntity.registration_token = registrationToken;
-  //   await this.registrationTokenRepository.update(
-  //     {
-  //       user_hash: userId,
-  //     },
-  //     { registration_token: registrationToken },
-  //   );
-  // }
-
   async registerUser(socialProperties: SocialProperties) {
     const userEntity = new UserEntity();
     userEntity.nickname = this.generateRandomString(8);
