@@ -5,11 +5,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
-import { PostEntity } from './post.entity';
-import { BlockUserEntity } from './blockUser.entity';
-import { BlockPostEntity } from './blockPost.entity';
 import { ChatEntity } from './chat.entity';
 
 @Entity('chat_room')
