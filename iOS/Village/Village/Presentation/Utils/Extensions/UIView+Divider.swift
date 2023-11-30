@@ -14,7 +14,7 @@ extension UIView {
         case vertical
     }
     
-    static func divider(_ direction: DividerDirection, width: CGFloat = 1.0, color: UIColor = .grey100) -> UIView {
+    static func divider(_ direction: DividerDirection, width: CGFloat = 1.0, color: UIColor = .systemGray4) -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = color
