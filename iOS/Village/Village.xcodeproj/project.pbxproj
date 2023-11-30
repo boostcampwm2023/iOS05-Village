@@ -25,6 +25,7 @@
 		444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50932B0C8D1900454397 /* UIView+Divider.swift */; };
 		444A50982B0CE25200454397 /* DurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50972B0CE25200454397 /* DurationView.swift */; };
 		444A509A2B0CE94E00454397 /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50992B0CE94E00454397 /* DateView.swift */; };
+		4461F39D2B1786DA00723C55 /* JWTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461F39C2B1786DA00723C55 /* JWTManager.swift */; };
 		446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362C82B0DF9E800B74DA7 /* PriceLabel.swift */; };
 		446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CA2B0DFD4F00B74DA7 /* Int+.swift */; };
 		446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CE2B0F042500B74DA7 /* PostInfoView.swift */; };
@@ -119,6 +120,7 @@
 		444A50932B0C8D1900454397 /* UIView+Divider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Divider.swift"; sourceTree = "<group>"; };
 		444A50972B0CE25200454397 /* DurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationView.swift; sourceTree = "<group>"; };
 		444A50992B0CE94E00454397 /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
+		4461F39C2B1786DA00723C55 /* JWTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTManager.swift; sourceTree = "<group>"; };
 		446362C82B0DF9E800B74DA7 /* PriceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceLabel.swift; sourceTree = "<group>"; };
 		446362CA2B0DFD4F00B74DA7 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		446362CE2B0F042500B74DA7 /* PostInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoView.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 			children = (
 				4416D48D2B174CBA0052BF33 /* KeychainError.swift */,
 				4416D48B2B174C7A0052BF33 /* KeychainManager.swift */,
+				4461F39C2B1786DA00723C55 /* JWTManager.swift */,
 			);
 			path = PersistentStorage;
 			sourceTree = "<group>";
@@ -871,6 +874,7 @@
 				446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				59AABDE52B0E2D47002F6D0E /* PostCreateDetailView.swift in Sources */,
+				4461F39D2B1786DA00723C55 /* JWTManager.swift in Sources */,
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				8F3D79E62B1469DF00370536 /* UICollectionViewCell+Identifier.swift in Sources */,
 				444A50982B0CE25200454397 /* DurationView.swift in Sources */,
@@ -929,6 +933,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4461F39B2B177B8000723C55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = Village;
+			};
+			name = Release;
+		};
 		59AA12A02B03726C00AFC766 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {

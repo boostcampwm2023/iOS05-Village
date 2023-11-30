@@ -29,8 +29,6 @@ final class KeychainManager {
             guard status == errSecSuccess else {
                 throw KeychainError.unknown(status)
             }
-        } catch let error {
-            dump(error)
         }
     }
     
@@ -44,7 +42,7 @@ final class KeychainManager {
         ]
         
         var result: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        SecItemCopyMatching(query as CFDictionary, &result)
         guard let result = result as? [String: AnyObject],
               let data = result[kSecValueData as String] as? Data,
               let token = try? JSONDecoder().decode(AuthenticationToken.self, from: data) else { return nil }
@@ -69,17 +67,15 @@ final class KeychainManager {
             let data = try JSONEncoder().encode(token)
             let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
+                kSecAttrAccount: email
             ]
             let attribute: [CFString: Any] = [
-                kSecAttrAccount: email,
                 kSecValueData: data
             ]
             let status = SecItemUpdate(query as CFDictionary, attribute as CFDictionary)
             
             guard status != errSecItemNotFound else { throw KeychainError.notFound }
             guard status == errSecSuccess else { throw KeychainError.unknown(status) }
-        } catch let error {
-            dump(error)
         }
     }
     

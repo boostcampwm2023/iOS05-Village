@@ -44,7 +44,7 @@ final class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         configureUI()
         setLayoutConstraints()
         bindViewModel()
@@ -53,19 +53,17 @@ final class LoginViewController: UIViewController {
     private func bindViewModel() {
         viewModel.transform(input: Input(identityToken: identityToken.eraseToAnyPublisher(),
                                          authorizationCode: authorizationCode.eraseToAnyPublisher()))
-        .authenticationToken
-        .receive(on: DispatchQueue.main)
-        .sink(receiveCompletion: { completion in
-            switch completion {
-            case .failure(let error):
-                dump(error)
-            default:
-                break
-            }
-        }, receiveValue: { [weak self] _ in
-            self?.notifyLoginSucceed()
-        })
-        .store(in: &cancellableBag)
+            .loginSucceed
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    dump(error)
+                default:
+                    break
+                }
+            }, receiveValue: { self.notifyLoginSucceed() })
+            .store(in: &cancellableBag)
     }
     
     @objc
@@ -84,7 +82,7 @@ final class LoginViewController: UIViewController {
     }
     
     private func notifyLoginSucceed() {
-        NotificationCenter.default.post(Notification(name: Notification.Name("LoginSucceed")))
+        NotificationCenter.default.post(Notification(name: .loginSucceed))
     }
 
 }
