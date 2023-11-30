@@ -810,7 +810,6 @@
 			files = (
 				4416D4502B14A4420052BF33 /* SignUpViewController.swift in Sources */,
 				59110EFD2B15F5340009E9AC /* UITableViewCell+Identifier.swift in Sources */,
-				44C1F5DF2B0FA8400047A436 /* Assets.xcassets in Sources */,
 				59BD5DCE2B0C775D00FEB80F /* SceneDelegate.swift in Sources */,
 				4416D4862B171CE50052BF33 /* AppleOAuthDTO.swift in Sources */,
 				59BD5DCC2B0C772200FEB80F /* PostCreateViewController.swift in Sources */,
@@ -894,6 +893,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4461F39B2B177B8000723C55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = Village;
+			};
+			name = Release;
+		};
 		59AA12A02B03726C00AFC766 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1110,7 +1118,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				59E0C60D2AFBA3FE0073D494 /* Debug */,
-				59E0C60E2AFBA3FE0073D494 /* Release */,
+				4461F39B2B177B8000723C55 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
