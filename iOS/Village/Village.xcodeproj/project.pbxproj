@@ -150,6 +150,7 @@
 		8F3D7A372B171B8400370536 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		8F3D7A392B173B7C00370536 /* WebSocketError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketError.swift; sourceTree = "<group>"; };
 		8F3D7A3B2B175D5000370536 /* chat-server.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "chat-server.js"; sourceTree = "<group>"; };
+		8F3D7A3D2B18537600370536 /* chats.gateway.ts */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.typescript; name = chats.gateway.ts; path = Village/villageChat/BE/src/chat/chats.gateway.ts; sourceTree = SOURCE_ROOT; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
@@ -449,6 +450,7 @@
 		8F3D7A362B171B7500370536 /* Socket */ = {
 			isa = PBXGroup;
 			children = (
+				8F3D7A3D2B18537600370536 /* chats.gateway.ts */,
 				8F3D7A3B2B175D5000370536 /* chat-server.js */,
 				8F3D7A372B171B8400370536 /* WebSocket.swift */,
 				8F3D7A392B173B7C00370536 /* WebSocketError.swift */,

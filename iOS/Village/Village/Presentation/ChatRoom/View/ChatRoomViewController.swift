@@ -84,10 +84,17 @@ final class ChatRoomViewController: UIViewController {
         return textField
     }()
     
+    @objc func sendbuttonTapped() {
+        if let text = self.keyboardTextField.text {
+            WebSocket.shared.sendMessage(roomID: "6", sender: "a123bc", message: text)
+        }
+    }
+    
     private let keyboardSendButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.paperplane.rawValue), for: .normal)
+        button.addTarget(target, action: #selector(sendbuttonTapped), for: .touchUpInside)
         
         return button
     }()
@@ -124,7 +131,7 @@ final class ChatRoomViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        WebSocket.shared.closeWebSocket()
+        WebSocket.shared.sendDisconnectRoom(roomID: "6")
     }
     
     @objc private func ellipsisTapped() {
@@ -132,35 +139,12 @@ final class ChatRoomViewController: UIViewController {
     }
     
     func setSocket() {
-        WebSocket.shared.url = URL(string: "ws://localhost:1337/")
+        WebSocket.shared.url = URL(string: "ws://localhost:3000/chats")
         try? WebSocket.shared.openWebSocket()
-        WebSocket.shared.delegate = self
-        WebSocket.shared.onReceiveClosure = { (string, data) in
-            print(string, data)
-        }
+        WebSocket.shared.sendJoinRoom(roomID: "6")
     }
     
 }
-
-extension ChatRoomViewController: URLSessionWebSocketDelegate {
-    func urlSession(
-        _ session: URLSession,
-        webSocketTask: URLSessionWebSocketTask,
-        didOpenWithProtocol protocol: String?
-    ) {
-        print("open")
-    }
-    
-    func urlSession(
-        _ session: URLSession,
-        webSocketTask: URLSessionWebSocketTask,
-        didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
-        reason: Data?
-    ) {
-        print("close")
-    }
-}
-
 
 private extension ChatRoomViewController {
     
