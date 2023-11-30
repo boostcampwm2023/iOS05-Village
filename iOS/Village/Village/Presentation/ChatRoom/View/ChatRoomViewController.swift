@@ -26,6 +26,7 @@ final class ChatRoomViewController: UIViewController {
             cell.configureData(
                 message: message.body,
                 profileImageURL: self.imageURL!,
+                // TODO: 나중에 해시값으로 바꾸기
                 isMine: message.sender == "me"
             )
             cell.selectionStyle = .none
@@ -87,7 +88,9 @@ final class ChatRoomViewController: UIViewController {
     
     @objc func sendbuttonTapped() {
         if let text = self.keyboardTextField.text {
-            WebSocket.shared.sendMessage(roomID: "6", sender: "a123bc", message: text)
+            WebSocket.shared.sendMessage(roomID: "6", sender: "me", message: text)
+            viewModel.appendLog(sender: "me", message: text)
+            generateData()
         }
     }
     
@@ -143,6 +146,17 @@ final class ChatRoomViewController: UIViewController {
         WebSocket.shared.url = URL(string: "ws://localhost:3000/chats")
         try? WebSocket.shared.openWebSocket()
         WebSocket.shared.sendJoinRoom(roomID: "6")
+        
+        MessageManager.shared.messageSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] message in
+                let sender = message.sender
+                let message = message.message
+                self?.viewModel.appendLog(sender: sender, message: message)
+                self?.generateData()
+//                self?.viewModel.appendLog(newLog: message)
+            }
+            .store(in: &cancellableBag)
     }
     
 }
@@ -231,7 +245,9 @@ private extension ChatRoomViewController {
     func generateData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Message>()
         snapshot.appendSections([.room])
-        snapshot.appendItems(viewModel.getTest()!.chatLog)
+        if let log = viewModel.getLog() {
+            snapshot.appendItems(log)
+        }
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     

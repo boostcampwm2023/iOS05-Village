@@ -6,7 +6,26 @@
 //
 
 import Foundation
+import Combine
 
+class MessageManager {
+    static let shared = MessageManager()
+    let messageSubject = PassthroughSubject<ReceiveMessage, Never>()
+    
+    private init() {}
+}
+
+struct ReceiveMessage: Hashable, Codable {
+    
+    let sender: String
+    let message: String
+    
+    enum CodingKeys: String, CodingKey {
+        case sender
+        case message
+    }
+    
+}
 final class WebSocket: NSObject {
     static let shared = WebSocket()
     
@@ -84,10 +103,7 @@ final class WebSocket: NSObject {
     }
     
     func receiveEvent() {
-        print("receiveEvent")
-        
         guard let webSocketTask = self.webSocketTask else {
-            print("WebSocketTask is nil")
             return
         }
         
@@ -95,7 +111,15 @@ final class WebSocket: NSObject {
             switch result {
             case .success(let message):
                 if case .string(let text) = message {
-                    print("Received message: \(text)")
+                    if let jsonData = text.data(using: .utf8) {
+                        do {
+                            let decoder = JSONDecoder()
+                            let message = try decoder.decode(ReceiveMessage.self, from: jsonData)
+                            MessageManager.shared.messageSubject.send(message)
+                        } catch {
+                            dump(error)
+                        }
+                    }
                 }
                 self.receiveEvent()
             case .failure(let error):
