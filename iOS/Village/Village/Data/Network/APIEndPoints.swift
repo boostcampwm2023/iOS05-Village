@@ -11,12 +11,19 @@ struct APIEndPoints {
     
     static let baseURL = "https://www.village-api.shop/"
     
+    static var header: [String: String]? {
+        guard let accessToken = JWTManager.shared.get()?.accessToken else { return nil }
+        
+        return ["Authorization": "Bearer \(accessToken)"]
+    }
+    
     static func getPosts(with requestDTO: PostListRequestDTO) -> EndPoint<[PostListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
             method: .GET,
-            queryParameters: requestDTO
+            queryParameters: requestDTO,
+            headers: header
         )
     }
     
@@ -24,7 +31,8 @@ struct APIEndPoints {
         return EndPoint(
             baseURL: baseURL,
             path: "posts/\(id)",
-            method: .GET
+            method: .GET,
+            headers: header
         )
     }
     
@@ -32,7 +40,8 @@ struct APIEndPoints {
         return EndPoint(
             baseURL: baseURL,
             path: "users/\(id)",
-            method: .GET
+            method: .GET,
+            headers: header
         )
     }
     
@@ -42,7 +51,7 @@ struct APIEndPoints {
             path: "posts",
             method: .POST,
             bodyParameters: requestDTO.httpBody,
-            headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
+            headers: header?.mergeWith(["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"])
         )
     }
     
@@ -51,7 +60,8 @@ struct APIEndPoints {
             baseURL: baseURL,
             path: "chat",
             method: .GET,
-            queryParameters: chatListResponse
+            queryParameters: chatListResponse,
+            headers: header
         )
     }
     
@@ -64,5 +74,32 @@ struct APIEndPoints {
             headers: ["Content-Type": "application/json"]
         )
     }
+    
+    static func tokenExpire(accessToken: String) -> EndPoint<Void> {
+        EndPoint(
+            baseURL: baseURL,
+            path: "login/expire",
+            method: .GET,
+            headers: header
+        )
+    }
+    
+    static func tokenRefresh(refreshToken: String) -> EndPoint<AuthenticationToken> {
+        let body = ["refresh_token": refreshToken]
+        
+        return EndPoint(
+            baseURL: baseURL,
+            path: "login/refresh",
+            method: .POST,
+            bodyParameters: body,
+            headers: header?.mergeWith(["Content-Type": "application/json"])
+        )
+    }
   
+}
+
+fileprivate extension Dictionary<String, String> {
+    func mergeWith(_ dict: [String: String]) -> [String: String]? {
+        return self.merging(dict) { (current, _) in current }
+    }
 }
