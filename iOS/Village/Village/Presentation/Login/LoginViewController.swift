@@ -44,14 +44,6 @@ final class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if viewModel.autoLogin() {
-            notifyLoginSucceed()
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
         configureUI()
         setLayoutConstraints()
@@ -61,19 +53,17 @@ final class LoginViewController: UIViewController {
     private func bindViewModel() {
         viewModel.transform(input: Input(identityToken: identityToken.eraseToAnyPublisher(),
                                          authorizationCode: authorizationCode.eraseToAnyPublisher()))
-        .authenticationToken
-        .receive(on: DispatchQueue.main)
-        .sink(receiveCompletion: { completion in
-            switch completion {
-            case .failure(let error):
-                dump(error)
-            default:
-                break
-            }
-        }, receiveValue: { [weak self] _ in
-            self?.notifyLoginSucceed()
-        })
-        .store(in: &cancellableBag)
+            .loginSucceed
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    dump(error)
+                default:
+                    break
+                }
+            }, receiveValue: { self.notifyLoginSucceed() })
+            .store(in: &cancellableBag)
     }
     
     @objc
