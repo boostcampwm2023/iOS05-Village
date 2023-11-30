@@ -29,8 +29,6 @@ final class KeychainManager {
             guard status == errSecSuccess else {
                 throw KeychainError.unknown(status)
             }
-        } catch let error {
-            dump(error)
         }
     }
     
@@ -68,18 +66,16 @@ final class KeychainManager {
         do {
             let data = try JSONEncoder().encode(token)
             let query: [CFString: Any] = [
-                kSecClass: kSecClassGenericPassword
+                kSecClass: kSecClassGenericPassword,
+                kSecAttrAccount: email
             ]
             let attribute: [CFString: Any] = [
-                kSecAttrAccount: email,
                 kSecValueData: data
             ]
             let status = SecItemUpdate(query as CFDictionary, attribute as CFDictionary)
             
             guard status != errSecItemNotFound else { throw KeychainError.notFound }
             guard status == errSecSuccess else { throw KeychainError.unknown(status) }
-        } catch let error {
-            dump(error)
         }
     }
     
