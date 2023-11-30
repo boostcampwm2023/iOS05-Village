@@ -21,10 +21,7 @@ export class LoginController {
     if (!socialProperties) {
       throw new HttpException('토큰이 유효하지 않음', 401);
     }
-    return await this.loginService.login(
-      socialProperties,
-      body.registration_token,
-    );
+    return await this.loginService.login(socialProperties);
   }
 
   @Post('refresh')
