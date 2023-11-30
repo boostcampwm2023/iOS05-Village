@@ -27,6 +27,8 @@ final class WebSocket: NSObject {
         self.webSocketTask = webSocketTask
         
         self.startPing()
+        
+        self.receiveEvent()
     }
     
     func sendJoinRoom(roomID: String) {
@@ -82,18 +84,20 @@ final class WebSocket: NSObject {
     }
     
     func receiveEvent() {
-        webSocketTask?.receive { result in
+        print("receiveEvent")
+        
+        guard let webSocketTask = self.webSocketTask else {
+            print("WebSocketTask is nil")
+            return
+        }
+        
+        webSocketTask.receive { result in
             switch result {
             case .success(let message):
                 if case .string(let text) = message {
                     print("Received message: \(text)")
-                    
-                    // TODO: 수신한 메시지 파싱 및 처리 로직 추가
                 }
-                
-                // TODO: 다음 이벤트 수신을 위해 재귀 호출
                 self.receiveEvent()
-                
             case .failure(let error):
                 print("Error receiving message: \(error)")
             }
