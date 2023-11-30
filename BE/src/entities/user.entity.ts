@@ -12,6 +12,7 @@ import { PostEntity } from './post.entity';
 import { BlockUserEntity } from './blockUser.entity';
 import { BlockPostEntity } from './blockPost.entity';
 import { RegistrationTokenEntity } from './registrationToken.entity';
+import { ChatEntity } from './chat.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -32,6 +33,8 @@ export class UserEntity {
     (registrationToken) => registrationToken.user_hash,
   )
   registration_token: RegistrationTokenEntity;
+  @OneToMany(() => ChatEntity, (chat) => chat.senderUser)
+  chats: ChatEntity[];
 
   @PrimaryGeneratedColumn()
   id: number;

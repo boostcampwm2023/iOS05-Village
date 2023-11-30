@@ -7,6 +7,7 @@ import { ChatRoomEntity } from '../entities/chatRoom.entity';
 import { PostEntity } from '../entities/post.entity';
 import { FcmHandler } from '../utils/fcmHandler';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
+import { ChatEntity } from 'src/entities/chat.entity';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
       ChatRoomEntity,
       PostEntity,
       RegistrationTokenEntity,
+      ChatEntity,
     ]),
   ],
   controllers: [ChatController],
