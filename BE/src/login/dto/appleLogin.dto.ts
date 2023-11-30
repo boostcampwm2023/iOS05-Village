@@ -6,4 +6,7 @@ export class AppleLoginDto {
 
   @IsString()
   identity_token: string;
+
+  @IsString()
+  registration_token: string;
 }
