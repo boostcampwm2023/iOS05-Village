@@ -91,6 +91,7 @@ final class ChatRoomViewController: UIViewController {
             WebSocket.shared.sendMessage(roomID: "6", sender: "me", message: text)
             viewModel.appendLog(sender: "me", message: text)
             generateData()
+            self.keyboardTextField.text = nil
         }
     }
     
