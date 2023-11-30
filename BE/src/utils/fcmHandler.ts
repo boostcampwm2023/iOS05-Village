@@ -32,6 +32,13 @@ export class FcmHandler {
         title: pushMessage.title,
         body: pushMessage.body,
       },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'default',
+          },
+        },
+      },
       data: {
         room_id: pushMessage.data.room_id.toString(),
       },
