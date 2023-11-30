@@ -7,6 +7,7 @@
 
 import UIKit
 import UserNotifications
+import FirebaseCore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sleep(2)
         UINavigationBar.appearance().tintColor = .primary500
         registerForPushNotifications()
+        FirebaseApp.configure()
         return true
     }
 
