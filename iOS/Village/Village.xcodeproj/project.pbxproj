@@ -25,6 +25,7 @@
 		444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50932B0C8D1900454397 /* UIView+Divider.swift */; };
 		444A50982B0CE25200454397 /* DurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50972B0CE25200454397 /* DurationView.swift */; };
 		444A509A2B0CE94E00454397 /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444A50992B0CE94E00454397 /* DateView.swift */; };
+		4461F39D2B1786DA00723C55 /* JWTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461F39C2B1786DA00723C55 /* JWTManager.swift */; };
 		446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362C82B0DF9E800B74DA7 /* PriceLabel.swift */; };
 		446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CA2B0DFD4F00B74DA7 /* Int+.swift */; };
 		446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CE2B0F042500B74DA7 /* PostInfoView.swift */; };
@@ -67,6 +68,9 @@
 		8F3D79E02B136C6800370536 /* ChatRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */; };
 		8F3D79E22B14438A00370536 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79E12B14438A00370536 /* PostView.swift */; };
 		8F3D79E62B1469DF00370536 /* UICollectionViewCell+Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */; };
+		8F3D7A382B171B8400370536 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D7A372B171B8400370536 /* WebSocket.swift */; };
+		8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D7A392B173B7C00370536 /* WebSocketError.swift */; };
+		8F3D7A3C2B175D5000370536 /* chat-server.ts in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D7A3B2B175D5000370536 /* chat-server.ts */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
@@ -119,6 +123,7 @@
 		444A50932B0C8D1900454397 /* UIView+Divider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Divider.swift"; sourceTree = "<group>"; };
 		444A50972B0CE25200454397 /* DurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationView.swift; sourceTree = "<group>"; };
 		444A50992B0CE94E00454397 /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
+		4461F39C2B1786DA00723C55 /* JWTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTManager.swift; sourceTree = "<group>"; };
 		446362C82B0DF9E800B74DA7 /* PriceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceLabel.swift; sourceTree = "<group>"; };
 		446362CA2B0DFD4F00B74DA7 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		446362CE2B0F042500B74DA7 /* PostInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoView.swift; sourceTree = "<group>"; };
@@ -163,6 +168,9 @@
 		8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewModel.swift; sourceTree = "<group>"; };
 		8F3D79E12B14438A00370536 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Identifier.swift"; sourceTree = "<group>"; };
+		8F3D7A372B171B8400370536 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		8F3D7A392B173B7C00370536 /* WebSocketError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketError.swift; sourceTree = "<group>"; };
+		8F3D7A3B2B175D5000370536 /* chat-server.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.typescript; path = "chat-server.ts"; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
@@ -279,6 +287,7 @@
 			children = (
 				4416D48D2B174CBA0052BF33 /* KeychainError.swift */,
 				4416D48B2B174C7A0052BF33 /* KeychainManager.swift */,
+				4461F39C2B1786DA00723C55 /* JWTManager.swift */,
 			);
 			path = PersistentStorage;
 			sourceTree = "<group>";
@@ -436,6 +445,7 @@
 		59E0C5FA2AFBA3FC0073D494 /* Village */ = {
 			isa = PBXGroup;
 			children = (
+				8F3D7A362B171B7500370536 /* Socket */,
 				59110F022B1714BE0009E9AC /* Village.entitlements */,
 				8F1B53332B0E037C006D8982 /* Domain */,
 				5975E98D2B03591E007CEF13 /* Data */,
@@ -512,6 +522,16 @@
 				8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		8F3D7A362B171B7500370536 /* Socket */ = {
+			isa = PBXGroup;
+			children = (
+				8F3D7A3B2B175D5000370536 /* chat-server.ts */,
+				8F3D7A372B171B8400370536 /* WebSocket.swift */,
+				8F3D7A392B173B7C00370536 /* WebSocketError.swift */,
+			);
+			path = Socket;
 			sourceTree = "<group>";
 		};
 		8F95CF8E2B0B97BA0024631F /* Commons */ = {
@@ -806,6 +826,7 @@
 				8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */,
 				8F3D79DD2B135D1500370536 /* ChatRoom.json in Resources */,
 				5975E98B2B035919007CEF13 /* Posts.json in Resources */,
+				8F3D7A3C2B175D5000370536 /* chat-server.ts in Resources */,
 				59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */,
 				5975E98C2B035919007CEF13 /* Users.json in Resources */,
 			);
@@ -867,6 +888,7 @@
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
 				44C1F5F32B0FF63C0047A436 /* PostResponseDTO.swift in Sources */,
 				8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */,
+				8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				4416D4762B15E25A0052BF33 /* MultipartFormData.swift in Sources */,
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
@@ -875,6 +897,7 @@
 				446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */,
 				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				59AABDE52B0E2D47002F6D0E /* PostCreateDetailView.swift in Sources */,
+				4461F39D2B1786DA00723C55 /* JWTManager.swift in Sources */,
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				8F3D79E62B1469DF00370536 /* UICollectionViewCell+Identifier.swift in Sources */,
 				444A50982B0CE25200454397 /* DurationView.swift in Sources */,
@@ -896,6 +919,7 @@
 				8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				59D8F1032B0FC4F700A08E02 /* PostCreateViewModel.swift in Sources */,
+				8F3D7A382B171B8400370536 /* WebSocket.swift in Sources */,
 				59110F042B1725C20009E9AC /* NotificationName+.swift in Sources */,
 				59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */,
 				446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */,
@@ -932,6 +956,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4461F39B2B177B8000723C55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = Village;
+			};
+			name = Release;
+		};
 		59AA12A02B03726C00AFC766 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
