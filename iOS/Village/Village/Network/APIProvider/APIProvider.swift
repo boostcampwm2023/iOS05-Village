@@ -33,6 +33,13 @@ final class APIProvider: Provider {
         return try self.decode(data)
     }
     
+    func request<E: Requestable&Responsable>(with endpoint: E) async throws {
+        let urlRequest = try endpoint.makeURLRequest()
+        let (_, response) = try await session.data(for: urlRequest)
+        
+        try self.checkStatusCode(response)
+    }
+    
     func request(from url: String) async throws -> Data {
         guard let url = URL(string: url) else { throw NetworkError.urlRequestError }
         let (data, response) = try await session.data(from: url)
