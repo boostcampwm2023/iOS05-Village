@@ -60,7 +60,7 @@
 		8F3D79E62B1469DF00370536 /* UICollectionViewCell+Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */; };
 		8F3D7A382B171B8400370536 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D7A372B171B8400370536 /* WebSocket.swift */; };
 		8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D7A392B173B7C00370536 /* WebSocketError.swift */; };
-		8F3D7A3C2B175D5000370536 /* chat-server.js in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D7A3B2B175D5000370536 /* chat-server.js */; };
+		8F3D7A3C2B175D5000370536 /* chat-server.ts in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D7A3B2B175D5000370536 /* chat-server.ts */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
@@ -149,7 +149,7 @@
 		8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Identifier.swift"; sourceTree = "<group>"; };
 		8F3D7A372B171B8400370536 /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		8F3D7A392B173B7C00370536 /* WebSocketError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketError.swift; sourceTree = "<group>"; };
-		8F3D7A3B2B175D5000370536 /* chat-server.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "chat-server.js"; sourceTree = "<group>"; };
+		8F3D7A3B2B175D5000370536 /* chat-server.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.typescript; path = "chat-server.ts"; sourceTree = "<group>"; };
 		8F3D7A3D2B18537600370536 /* chats.gateway.ts */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.typescript; name = chats.gateway.ts; path = Village/villageChat/BE/src/chat/chats.gateway.ts; sourceTree = SOURCE_ROOT; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
@@ -451,7 +451,7 @@
 			isa = PBXGroup;
 			children = (
 				8F3D7A3D2B18537600370536 /* chats.gateway.ts */,
-				8F3D7A3B2B175D5000370536 /* chat-server.js */,
+				8F3D7A3B2B175D5000370536 /* chat-server.ts */,
 				8F3D7A372B171B8400370536 /* WebSocket.swift */,
 				8F3D7A392B173B7C00370536 /* WebSocketError.swift */,
 			);
@@ -738,7 +738,7 @@
 				8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */,
 				8F3D79DD2B135D1500370536 /* ChatRoom.json in Resources */,
 				5975E98B2B035919007CEF13 /* Posts.json in Resources */,
-				8F3D7A3C2B175D5000370536 /* chat-server.js in Resources */,
+				8F3D7A3C2B175D5000370536 /* chat-server.ts in Resources */,
 				59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */,
 				5975E98C2B035919007CEF13 /* Users.json in Resources */,
 			);
