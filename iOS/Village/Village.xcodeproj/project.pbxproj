@@ -46,6 +46,7 @@
 		59AABDE12B0E1BB8002F6D0E /* PostCreatePriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE02B0E1BB8002F6D0E /* PostCreatePriceView.swift */; };
 		59AABDE32B0E272C002F6D0E /* PostCreateTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE22B0E272C002F6D0E /* PostCreateTimeView.swift */; };
 		59AABDE52B0E2D47002F6D0E /* PostCreateDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE42B0E2D47002F6D0E /* PostCreateDetailView.swift */; };
+		59B6E2732B17938C000864F9 /* MyPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B6E2722B17938C000864F9 /* MyPageViewModel.swift */; };
 		59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DC82B0C760500FEB80F /* UIStackView+.swift */; };
 		59BD5DCC2B0C772200FEB80F /* PostCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostCreateViewController.swift */; };
 		59BD5DCE2B0C775D00FEB80F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */; };
@@ -138,6 +139,7 @@
 		59AABDE02B0E1BB8002F6D0E /* PostCreatePriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreatePriceView.swift; sourceTree = "<group>"; };
 		59AABDE22B0E272C002F6D0E /* PostCreateTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateTimeView.swift; sourceTree = "<group>"; };
 		59AABDE42B0E2D47002F6D0E /* PostCreateDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateDetailView.swift; sourceTree = "<group>"; };
+		59B6E2722B17938C000864F9 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
 		59BD5DC82B0C760500FEB80F /* UIStackView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+.swift"; sourceTree = "<group>"; };
 		59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
 		59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layer.swift"; sourceTree = "<group>"; };
@@ -349,6 +351,22 @@
 			children = (
 			);
 			path = VillageTests;
+			sourceTree = "<group>";
+		};
+		59B6E26F2B17931F000864F9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		59B6E2712B179384000864F9 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				59B6E2722B17938C000864F9 /* MyPageViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		59BD5DD02B0C785900FEB80F /* View */ = {
@@ -621,7 +639,8 @@
 		8FD52A462B09D1AD005EE367 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
-				8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */,
+				59B6E2712B179384000864F9 /* ViewModel */,
+				59B6E26F2B17931F000864F9 /* View */,
 			);
 			name = MyPage;
 			path = Village/Presentation/MyPage;
@@ -807,11 +826,11 @@
 			files = (
 				4416D4502B14A4420052BF33 /* SignUpViewController.swift in Sources */,
 				59110EFD2B15F5340009E9AC /* UITableViewCell+Identifier.swift in Sources */,
-				44C1F5DF2B0FA8400047A436 /* Assets.xcassets in Sources */,
 				59BD5DCE2B0C775D00FEB80F /* SceneDelegate.swift in Sources */,
 				4416D4862B171CE50052BF33 /* AppleOAuthDTO.swift in Sources */,
 				59BD5DCC2B0C772200FEB80F /* PostCreateViewController.swift in Sources */,
 				4416D4532B14AB300052BF33 /* ProfileImageView.swift in Sources */,
+				59B6E2732B17938C000864F9 /* MyPageViewModel.swift in Sources */,
 				8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */,
 				4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */,
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
@@ -931,6 +950,15 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Village.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Village";
+			};
+			name = Release;
+		};
+		59B6E2702B17931F000864F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = Village;
 			};
 			name = Release;
 		};
@@ -1106,7 +1134,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				59E0C60D2AFBA3FE0073D494 /* Debug */,
-				59E0C60E2AFBA3FE0073D494 /* Release */,
+				59B6E2702B17931F000864F9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

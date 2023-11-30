@@ -9,20 +9,39 @@ import UIKit
 
 final class AppTabBarController: UITabBarController {
     
-    private let homeViewController = UINavigationController(rootViewController: HomeViewController())
-    private let chatListViewController = UINavigationController(rootViewController: ChatListViewController())
-    private let myPageViewController = UINavigationController(rootViewController: MyPageViewController())
+    private let homeViewController = UINavigationController(
+        rootViewController: HomeViewController()
+    )
+    private let chatListViewController = UINavigationController(
+        rootViewController: ChatListViewController()
+    )
+    private let myPageViewController = UINavigationController(
+        rootViewController: MyPageViewController(viewModel: MyPageViewModel())
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        tabBar.tintColor = .primary500
-        tabBar.unselectedItemTintColor = .primary500
+        setup()
         setViewControllers()
         configureTabBarItems()
     }
     
+    // TODO: shadow 
+    private func setup() {
+        view.backgroundColor = .systemBackground
+        tabBar.isTranslucent = false
+        tabBar.backgroundColor = .systemBackground
+        tabBar.tintColor = .primary500
+        tabBar.unselectedItemTintColor = .primary500
+    }
+    
     private func setViewControllers() {
+        homeViewController.navigationBar.isTranslucent = false
+        homeViewController.navigationBar.backgroundColor = .systemBackground
+        chatListViewController.navigationBar.isTranslucent = false
+        chatListViewController.navigationBar.backgroundColor = .systemBackground
+        myPageViewController.navigationBar.isTranslucent = false
+        myPageViewController.navigationBar.backgroundColor = .systemBackground
         setViewControllers(
             [homeViewController, chatListViewController, myPageViewController],
             animated: true

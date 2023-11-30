@@ -39,6 +39,7 @@ final class ChatRoomViewController: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
         tableView.register(ChatRoomTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.separatorStyle = .none
         
         return tableView
     }()
