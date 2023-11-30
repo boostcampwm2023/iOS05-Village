@@ -88,10 +88,10 @@ final class WebSocket: NSObject {
                 if case .string(let text) = message {
                     print("Received message: \(text)")
                     
-                    // 수신한 메시지 파싱 및 처리 로직 추가
+                    // TODO: 수신한 메시지 파싱 및 처리 로직 추가
                 }
                 
-                // 다음 이벤트 수신을 위해 재귀 호출
+                // TODO: 다음 이벤트 수신을 위해 재귀 호출
                 self.receiveEvent()
                 
             case .failure(let error):
@@ -108,6 +108,7 @@ final class WebSocket: NSObject {
             block: { [weak self] _ in self?.ping() }
         )
     }
+    
     private func ping() {
         self.webSocketTask?.sendPing(pongReceiveHandler: { [weak self] error in
             guard error != nil else { return }
