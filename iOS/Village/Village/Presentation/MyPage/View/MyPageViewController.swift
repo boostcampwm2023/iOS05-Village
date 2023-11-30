@@ -16,7 +16,10 @@ final class MyPageViewController: UIViewController {
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: ImageSystemName.person.rawValue)
+        imageView.image = UIImage(systemName: ImageSystemName.personFill.rawValue)
+        imageView.tintColor = .primary500
+        imageView.setLayer(borderWidth: 0, cornerRadius: 16)
+        imageView.backgroundColor = .primary100
         
         return imageView
     }()
@@ -51,7 +54,8 @@ final class MyPageViewController: UIViewController {
         button.addTarget(self, action: #selector(profileEditButtonTapped), for: .touchUpInside)
         button.configuration = configuration
         button.contentHorizontalAlignment = .leading
-        button.setLayer()
+        button.setLayer(borderWidth: 0)
+        button.backgroundColor = .systemGray5
         
         return button
     }()
@@ -70,18 +74,19 @@ final class MyPageViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 15
+        stackView.spacing = 10
         
         return stackView
     }()
     
     private lazy var myPostButton: UIButton = {
         var titleAttr = AttributedString.init("내 게시글")
-        titleAttr.font = .systemFont(ofSize: 18, weight: .bold)
+        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
         
         var configuration = UIButton.Configuration.plain()
         configuration.baseForegroundColor = .label
         configuration.attributedTitle = titleAttr
+        configuration.buttonSize = .medium
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -94,11 +99,12 @@ final class MyPageViewController: UIViewController {
     
     private lazy var hiddenPostButton: UIButton = {
         var titleAttr = AttributedString.init("숨긴 게시글")
-        titleAttr.font = .systemFont(ofSize: 18, weight: .bold)
+        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
         
         var configuration = UIButton.Configuration.plain()
         configuration.baseForegroundColor = .label
         configuration.attributedTitle = titleAttr
+        configuration.buttonSize = .medium
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -111,11 +117,12 @@ final class MyPageViewController: UIViewController {
     
     private lazy var hiddenUserButton: UIButton = {
         var titleAttr = AttributedString.init("차단 관리")
-        titleAttr.font = .systemFont(ofSize: 18, weight: .bold)
+        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
         
         var configuration = UIButton.Configuration.plain()
         configuration.baseForegroundColor = .label
         configuration.attributedTitle = titleAttr
+        configuration.buttonSize = .medium
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -138,11 +145,12 @@ final class MyPageViewController: UIViewController {
     
     private lazy var logoutButton: UIButton = {
         var titleAttr = AttributedString.init("로그아웃")
-        titleAttr.font = .systemFont(ofSize: 18, weight: .bold)
+        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
         
         var configuration = UIButton.Configuration.plain()
         configuration.baseForegroundColor = .label
         configuration.attributedTitle = titleAttr
+        configuration.buttonSize = .medium
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -155,11 +163,12 @@ final class MyPageViewController: UIViewController {
     
     private lazy var deleteAccountButton: UIButton = {
         var titleAttr = AttributedString.init("회원탈퇴")
-        titleAttr.font = .systemFont(ofSize: 18, weight: .bold)
+        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
         
         var configuration = UIButton.Configuration.plain()
         configuration.baseForegroundColor = .label
         configuration.attributedTitle = titleAttr
+        configuration.buttonSize = .medium
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -174,7 +183,7 @@ final class MyPageViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 15
+        stackView.spacing = 10
         
         return stackView
     }()
@@ -219,14 +228,11 @@ private extension MyPageViewController {
         
         activityStackView.addArrangedSubview(activityLabel)
         activityStackView.addArrangedSubview(myPostButton)
-        activityStackView.addArrangedSubview(UIView.divider(.horizontal))
         activityStackView.addArrangedSubview(hiddenPostButton)
-        activityStackView.addArrangedSubview(UIView.divider(.horizontal))
         activityStackView.addArrangedSubview(hiddenUserButton)
         
         accountStackView.addArrangedSubview(accountLabel)
         accountStackView.addArrangedSubview(logoutButton)
-        accountStackView.addArrangedSubview(UIView.divider(.horizontal))
         accountStackView.addArrangedSubview(deleteAccountButton)
         
     }
@@ -257,13 +263,13 @@ private extension MyPageViewController {
         
         NSLayoutConstraint.activate([
             activityStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            activityStackView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 16),
+            activityStackView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 35),
             activityStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
         
         NSLayoutConstraint.activate([
             accountStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            accountStackView.topAnchor.constraint(equalTo: activityStackView.bottomAnchor, constant: 25),
+            accountStackView.topAnchor.constraint(equalTo: activityStackView.bottomAnchor, constant: 40),
             accountStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
 
