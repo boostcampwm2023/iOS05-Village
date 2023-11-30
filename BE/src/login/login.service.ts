@@ -8,6 +8,7 @@ import { hashMaker } from '../utils/hashMaker';
 import { AppleLoginDto } from './dto/appleLogin.dto';
 import * as jwt from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
+import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 
 export interface SocialProperties {
   OAuthDomain: string;
@@ -26,20 +27,53 @@ export class LoginService {
     private jwtService: JwtService,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(RegistrationTokenEntity)
+    private registrationTokenRepository: Repository<RegistrationTokenEntity>,
     private configService: ConfigService,
   ) {
     this.jwksClient = jwksClient({
       jwksUri: 'https://appleid.apple.com/auth/keys',
     });
   }
-  async login(socialProperties: SocialProperties): Promise<JwtTokens> {
+  async login(
+    socialProperties: SocialProperties,
+    registrationToken: string,
+  ): Promise<JwtTokens> {
     let user: UserEntity = await this.VerifyUserRegistration(socialProperties);
     if (!user) {
       user = await this.registerUser(socialProperties);
     }
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
+    await this.registerRegistrationToken(user.user_hash, registrationToken);
     return { access_token: accessToken, refresh_token: refreshToken };
+  }
+
+  async registerRegistrationToken(userId, registrationToken) {
+    const registrationTokenEntity =
+      await this.registrationTokenRepository.findOne({
+        where: { user_hash: userId },
+      });
+    if (registrationTokenEntity !== null) {
+      await this.registrationTokenRepository.save({
+        user_hash: userId,
+        registration_token: registrationToken,
+      });
+    } else {
+      await this.updateRegistrationToken(userId, registrationToken);
+    }
+  }
+
+  async updateRegistrationToken(userId, registrationToken) {
+    const registrationTokenEntity = new RegistrationTokenEntity();
+    registrationTokenEntity.user_hash = userId;
+    registrationTokenEntity.registration_token = registrationToken;
+    await this.registrationTokenRepository.update(
+      {
+        user_hash: userId,
+      },
+      { registration_token: registrationToken },
+    );
   }
 
   async registerUser(socialProperties: SocialProperties) {
