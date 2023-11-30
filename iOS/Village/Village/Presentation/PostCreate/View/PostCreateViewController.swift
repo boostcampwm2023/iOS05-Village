@@ -335,6 +335,7 @@ private extension PostCreateViewController {
             self, action: #selector(close), symbolName: .xmark
         )
         self.navigationItem.rightBarButtonItems = [close]
+        self.navigationItem.backButtonDisplayMode = .minimal
     }
     
 }

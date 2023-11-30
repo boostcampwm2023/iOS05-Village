@@ -54,5 +54,15 @@ struct APIEndPoints {
             queryParameters: chatListResponse
         )
     }
+    
+    static func loginAppleOAuth(with appleOAuthDTO: AppleOAuthDTO) -> EndPoint<AuthenticationToken> {
+        EndPoint(
+            baseURL: baseURL,
+            path: "login/appleOAuth",
+            method: .POST,
+            bodyParameters: appleOAuthDTO,
+            headers: ["Content-Type": "application/json"]
+        )
+    }
   
 }

@@ -174,6 +174,7 @@ private extension PostDetailViewController {
             self, action: #selector(moreBarButtonTapped), symbolName: .ellipsis
         )
         self.navigationItem.rightBarButtonItem = rightBarButton
+        self.navigationItem.backButtonDisplayMode = .minimal
     }
     
     private func bindViewModel() {

@@ -39,6 +39,7 @@ final class ChatRoomViewController: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
         tableView.register(ChatRoomTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.separatorStyle = .none
         
         return tableView
     }()
@@ -214,6 +215,7 @@ private extension ChatRoomViewController {
             self, action: #selector(ellipsisTapped), symbolName: .ellipsis
         )
         navigationItem.rightBarButtonItem = ellipsis
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     func setNavigationTitle(title: String) {
