@@ -10,6 +10,7 @@ import {
 import { PostEntity } from './post.entity';
 import { BlockUserEntity } from './blockUser.entity';
 import { BlockPostEntity } from './blockPost.entity';
+import { ChatEntity } from './chat.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -24,6 +25,9 @@ export class UserEntity {
 
   @OneToMany(() => BlockPostEntity, (blockUser) => blockUser.blocker)
   blocker_post: BlockPostEntity[];
+
+  @OneToMany(() => ChatEntity, (chat) => chat.senderUser)
+  chats: ChatEntity[];
 
   @PrimaryGeneratedColumn()
   id: number;
