@@ -10,6 +10,7 @@ import {
   UploadedFile,
   HttpException,
   UseGuards,
+  Body,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './createUser.dto';
@@ -17,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MultiPartBody } from 'src/utils/multiPartBody.decorator';
 import { UpdateUsersDto } from './usersUpdate.dto';
 import { AuthGuard } from 'src/utils/auth.guard';
+import { UserHash } from '../utils/auth.decorator';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -64,5 +66,13 @@ export class UsersController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     await this.usersService.updateUserById(userId, body, file);
+  }
+
+  @Post('registration-token')
+  async registrationTokenSave(
+    @Body('registration_token') registrationToken: string,
+    @UserHash() userId: string,
+  ) {
+    await this.usersService.registerToken(userId, registrationToken);
   }
 }

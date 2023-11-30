@@ -10,6 +10,7 @@ import { PostEntity } from '../entities/post.entity';
 import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
+import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +25,8 @@ export class UsersService {
     private blockUserRepository: Repository<BlockUserEntity>,
     @InjectRepository(BlockPostEntity)
     private blockPostRepository: Repository<BlockPostEntity>,
+    @InjectRepository(RegistrationTokenEntity)
+    private registrationTokenRepository: Repository<RegistrationTokenEntity>,
     private s3Handler: S3Handler,
   ) {}
 
@@ -137,5 +140,31 @@ export class UsersService {
   async uploadImages(file: Express.Multer.File) {
     const fileLocation = await this.s3Handler.uploadFile(file);
     return fileLocation;
+  }
+
+  async registerToken(userId, registrationToken) {
+    const registrationTokenEntity =
+      await this.registrationTokenRepository.findOne({
+        where: { user_hash: userId },
+      });
+    if (registrationTokenEntity === null) {
+      await this.registrationTokenRepository.save({
+        user_hash: userId,
+        registration_token: registrationToken,
+      });
+    } else {
+      await this.updateRegistrationToken(userId, registrationToken);
+    }
+  }
+
+  async updateRegistrationToken(userId, registrationToken) {
+    const registrationTokenEntity = new RegistrationTokenEntity();
+    registrationTokenEntity.registration_token = registrationToken;
+    await this.registrationTokenRepository.update(
+      {
+        user_hash: userId,
+      },
+      registrationTokenEntity,
+    );
   }
 }
