@@ -42,7 +42,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func autoLogin() {
-        guard let token = JWTManager.shared.get() else { return }
+        guard let token = JWTManager.shared.get() else {
+            window?.rootViewController = LoginViewController()
+            return
+        }
         let endpoint = APIEndPoints.tokenExpire(accessToken: token.refreshToken)
         Task {
             do {
@@ -52,7 +55,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if let err = error as? NetworkError {
                     switch err {
                     case .serverError(.forbidden):
-                        dump("forbidden came!")
                         refreshToken()
                     case .serverError(.serverError):
                         dump("서버 에러가 발생했습니다! 다시 로그인해주세요.")
