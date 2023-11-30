@@ -82,6 +82,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
         
         navigationController.pushViewController(ChatRoomViewController(roomID: roomID), animated: true)
+        completionHandler()
     }
     
 }
