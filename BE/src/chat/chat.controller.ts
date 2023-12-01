@@ -19,8 +19,14 @@ export class ChatController {
 
   @Get('room')
   @UseGuards(AuthGuard)
-  async roomDetail(@Param('id') id: string, @UserHash() userId: string) {
+  async roomList(@UserHash() userId: string) {
     return await this.chatService.findRoomList(userId);
+  }
+
+  @Get('room/:id')
+  @UseGuards(AuthGuard)
+  async roomDetail(@Param('id') id: number, @UserHash() userId: string) {
+    return await this.chatService.findRoomById(id, userId);
   }
 
   // 게시글에서 채팅하기 버튼 누르면 채팅방 만드는 API (테스트는 안해봄, 좀더 수정 필요)

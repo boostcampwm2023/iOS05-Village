@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { In, Repository } from 'typeorm';
@@ -55,5 +55,29 @@ export class ChatService {
       });
       return acc;
     }, []);
+  }
+
+  async findRoomById(roomId: number, userId: string) {
+    const room = await this.chatRoomRepository.findOne({
+      where: {
+        id: roomId,
+      },
+      relations: ['chats'],
+    });
+
+    if (!room) {
+      throw new HttpException('존재하지 않는 채팅방입니다.', 404);
+    } else if (room.writer !== userId && room.user !== userId) {
+      throw new HttpException('권한이 없습니다.', 403);
+    }
+
+    return {
+      room_id: room.id,
+      post_id: room.post_id,
+      writer: room.writer,
+      user: room.user,
+      update_date: room.update_date,
+      chats: room.chats,
+    };
   }
 }
