@@ -1,0 +1,20 @@
+name: Backend CD
+
+on:
+  push:
+    branches:
+      - BE
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      # 해당 레포의 소스코드가 작업 환경에 복제된다 , checkout 의 2번째 버젼 사용
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      # node.js 를 설치한다.
+      - name: run npm
+        run: |
+          cd BE
+          npm install
+          pm2 start npm -- run start:prod

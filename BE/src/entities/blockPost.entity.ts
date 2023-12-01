@@ -1,23 +1,29 @@
-import { Entity, Column, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  ManyToOne,
+  JoinColumn,
+  PrimaryColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { UserEntity } from './user.entity';
 import { PostEntity } from './post.entity';
 
 @Entity('block_post')
 export class BlockPostEntity {
   @PrimaryColumn()
-  blocker: number;
+  blocker: string;
 
   @PrimaryColumn()
   blocked_post: number;
 
-  @Column({ nullable: false, default: 1 })
-  status: number;
+  @DeleteDateColumn()
+  delete_date: Date;
 
-  @ManyToOne(() => UserEntity, (blocker) => blocker.id)
-  @JoinColumn({ name: 'blocker' })
+  @ManyToOne(() => UserEntity, (blocker) => blocker.user_hash)
+  @JoinColumn({ name: 'blocker', referencedColumnName: 'user_hash' })
   blockerUser: UserEntity;
 
-  @ManyToOne(() => UserEntity, (blocked_post) => blocked_post.id)
+  @ManyToOne(() => PostEntity, (blocked_post) => blocked_post.id)
   @JoinColumn({ name: 'blocked_post' })
   blockedPost: PostEntity;
 }

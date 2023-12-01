@@ -7,6 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  DeleteDateColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { PostImageEntity } from './postImage.entity';
@@ -33,17 +34,14 @@ export class PostEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @Column({ type: 'tinyint', nullable: false })
-  status: number;
-
   @Column({ type: 'datetime', nullable: false })
   start_date: Date;
 
   @Column({ type: 'datetime', nullable: false })
   end_date: Date;
 
-  @Column({ type: 'tinyint', nullable: false })
-  is_request: number;
+  @Column({ type: 'boolean', nullable: false })
+  is_request: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -57,6 +55,9 @@ export class PostEntity {
   })
   update_date: Date;
 
+  @DeleteDateColumn()
+  delete_date: Date;
+
   @Column({ length: 2048, nullable: true, charset: 'utf8' })
   thumbnail: string;
 
@@ -64,5 +65,5 @@ export class PostEntity {
   post_images: PostImageEntity[];
 
   @OneToMany(() => BlockPostEntity, (post_image) => post_image.blocked_post)
-  blocked_posts: PostImageEntity[];
+  blocked_posts: BlockPostEntity[];
 }

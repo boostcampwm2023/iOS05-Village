@@ -4,6 +4,9 @@ import { setupSwagger } from './config/swagger.config';
 import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
 import { dailyOption, winstonOptions } from './config/winston.config';
 import * as winstonDaily from 'winston-daily-rotate-file';
+import { ValidationPipe } from '@nestjs/common';
+import { HttpLoggerInterceptor } from './utils/httpLogger.interceptor';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -15,8 +18,16 @@ async function bootstrap() {
       ],
     }),
   });
+  // app.useGlobalInterceptors(new HttpLoggerInterceptor());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  app.useWebSocketAdapter(new WsAdapter(app));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
   setupSwagger(app);
+
   await app.listen(3000);
 }
 bootstrap();

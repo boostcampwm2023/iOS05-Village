@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>We-Tri Triathlon App Download</title>
+  <style>
+      body, html {
+          height: 100%;
+          margin: 0;
+      }
+      body {
+          display: flex;
+          flex-direction: column;
+          font-family: 'Arial', sans-serif;
+          background-color: White;
+          color: #555;
+      }
+
+      header {
+          background-color: rgb(0,184,224); /* Main-03 color */
+          color: white;
+          padding: 20px 0;
+          text-align: center;
+      }
+
+      main {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+      }
+
+      .image {
+          width: 30%;
+          border-radius: 30px;
+      }
+
+      .app-info {
+          margin-bottom: 30px;
+      }
+
+      .downloads .download-button {
+          background-color: white; /* Main-02 color */
+          color: #333;
+          padding: 10px 15px;
+          margin: 10px;
+          text-decoration: none;
+          display: inline-block;
+          border-radius: 5px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      }
+
+      .download-button:hover {
+          background-color: #99DDF1; /* Main-01 color */
+          color: white;
+      }
+  </style>
+</head>
+<body>
+<main>
+  <section class="app-info">
+    <img src='/1024.png' class='image'>
+  </section>
+  <section class="downloads">
+    <a
+      href="itms-services://?action=download-manifest&amp;url=https://www.village-api.shop/manifest.plist"
+      class="download-button week-2"
+    >Download</a>
+  </section>
+</main>
+</body>
+</html>

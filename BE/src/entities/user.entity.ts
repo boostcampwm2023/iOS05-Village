@@ -1,14 +1,18 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PostEntity } from './post.entity';
 import { BlockUserEntity } from './blockUser.entity';
 import { BlockPostEntity } from './blockPost.entity';
+import { RegistrationTokenEntity } from './registrationToken.entity';
+import { ChatEntity } from './chat.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -18,11 +22,19 @@ export class UserEntity {
   @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blocker)
   blocker: BlockUserEntity[];
 
-  @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blocked)
+  @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blocked_user)
   blocked: BlockUserEntity[];
 
   @OneToMany(() => BlockPostEntity, (blockUser) => blockUser.blocker)
   blocker_post: BlockPostEntity[];
+
+  @OneToOne(
+    () => RegistrationTokenEntity,
+    (registrationToken) => registrationToken.user_hash,
+  )
+  registration_token: RegistrationTokenEntity;
+  @OneToMany(() => ChatEntity, (chat) => chat.senderUser)
+  chats: ChatEntity[];
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -31,7 +43,7 @@ export class UserEntity {
   nickname: string;
 
   @Column({ length: 320, nullable: false, charset: 'utf8' })
-  social_email: string;
+  social_id: string;
 
   @Column({ length: 15, nullable: false, charset: 'utf8' })
   OAuth_domain: string;
@@ -48,12 +60,12 @@ export class UserEntity {
   })
   update_date: Date;
 
-  @Column({ type: 'tinyint', nullable: false })
-  status: boolean;
-
   @Column({ length: 2048, nullable: true, charset: 'utf8' })
   profile_img: string;
 
-  @Column({ length: 45, nullable: false, charset: 'utf8' })
+  @Column({ length: 45, nullable: false, charset: 'utf8', unique: true })
   user_hash: string;
+
+  @DeleteDateColumn()
+  delete_date: Date;
 }
