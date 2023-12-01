@@ -33,4 +33,27 @@ export class ChatService {
     const newChatRoom = await this.chatRoomRepository.save(chatRoom); // 없으면 새로 만들어서 저장후 리턴
     return newChatRoom;
   }
+
+  async findRoomList(userId: string) {
+    const rooms = await this.chatRoomRepository
+      .createQueryBuilder('chat_room')
+      .where('chat_room.writer = :writer', { writer: userId })
+      .orWhere('chat_room.user = :user', { user: userId })
+      .leftJoinAndSelect('chat_room.chats', 'chat')
+      .orderBy('chat.id', 'DESC')
+      .limit(1)
+      .getMany();
+
+    return rooms.reduce((acc, cur) => {
+      acc.push({
+        room_id: cur.id,
+        post_id: cur.post_id,
+        writer: cur.writer,
+        user: cur.user,
+        update_date: cur.update_date,
+        last_chat: cur.chats[0].message,
+      });
+      return acc;
+    }, []);
+  }
 }

@@ -3,6 +3,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -32,9 +34,19 @@ export class ChatRoomEntity {
   })
   create_date: Date;
 
+  @UpdateDateColumn({
+    type: 'timestamp',
+    nullable: true,
+  })
+  update_date: Date;
+
   @DeleteDateColumn()
   delete_date: Date;
 
   @OneToMany(() => ChatEntity, (chat) => chat.chatRoom)
   chats: ChatEntity[];
+
+  @ManyToOne(() => PostEntity, (post) => post.id)
+  @JoinColumn({ name: 'post_id' })
+  post: PostEntity;
 }
