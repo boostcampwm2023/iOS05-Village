@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyD75ap_x5PKr4Q0elhwo3ZkP10VVLOeZoY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>667924926012</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>kr.codesquad.boostcamp8.Village</string>
+	<key>PROJECT_ID</key>
+	<string>village-2ed97</string>
+	<key>STORAGE_BUCKET</key>
+	<string>village-2ed97.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:667924926012:ios:450e9e2456b3a7f78a7d39</string>
+</dict>
+</plist>

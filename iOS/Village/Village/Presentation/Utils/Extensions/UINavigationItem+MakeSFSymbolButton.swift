@@ -13,7 +13,7 @@ extension UINavigationItem {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: symbolName.rawValue), for: .normal)
         button.addTarget(target, action: action, for: .touchUpInside)
-        button.tintColor = .black
+//        button.tintColor = .primary500
         
         let barButtonItem = UIBarButtonItem(customView: button)
         barButtonItem.customView?.translatesAutoresizingMaskIntoConstraints = false

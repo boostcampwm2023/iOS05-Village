@@ -10,7 +10,6 @@ import UIKit
 extension UILabel {
     
     func setTitle(_ title: String) {
-        self.textColor = UIColor.black
         self.text = title
         self.font = UIFont.systemFont(ofSize: 24, weight: .bold)
     }
