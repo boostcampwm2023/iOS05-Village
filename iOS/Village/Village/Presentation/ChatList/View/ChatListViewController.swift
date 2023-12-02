@@ -122,4 +122,13 @@ extension ChatListViewController: UITableViewDelegate {
         self.navigationController?.pushViewController(chatRoomVC, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
+            completion(true)
+        }
+        let configuration = UISwipeActionsConfiguration(actions: [delete])
+        
+        return configuration
+    }
+    
 }
