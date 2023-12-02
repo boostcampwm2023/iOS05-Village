@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { AuthGuard } from '../utils/auth.guard';
 import { UserHash } from '../utils/auth.decorator';
@@ -25,7 +16,7 @@ export class ChatController {
 
   @Get('room/:id')
   @UseGuards(AuthGuard)
-  async roomDetail(@Param('id') id: number, @UserHash() userId: string) {
+  async roomDetail(@Param() id: number, @UserHash() userId: string) {
     return await this.chatService.findRoomById(id, userId);
   }
 
