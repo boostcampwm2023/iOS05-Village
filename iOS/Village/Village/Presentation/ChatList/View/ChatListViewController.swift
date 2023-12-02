@@ -122,13 +122,50 @@ extension ChatListViewController: UITableViewDelegate {
         self.navigationController?.pushViewController(chatRoomVC, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) 
+    -> UISwipeActionsConfiguration? {
         let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
+            self.handleDeleteAction(forRowAt: indexPath)
             completion(true)
         }
         let configuration = UISwipeActionsConfiguration(actions: [delete])
         
         return configuration
+    }
+    
+    func handleDeleteAction(forRowAt indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "", message: "", preferredStyle: .alert)
+        alertController.view.subviews.first?.subviews.first?.subviews.first?.backgroundColor = .myChatMessage
+        
+        let attributedTitle = NSAttributedString(
+            string: "",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
+        )
+        alertController.setValue(attributedTitle, forKey: "attributedTitle")
+        
+        let attributedMessage = NSAttributedString(
+            string: "채팅방을 나가면 채팅 목록 및 대화 내용이 삭제되고 복구할 수 없어요. \n채팅방에서 나가시겠어요?",
+            attributes: [
+                NSAttributedString.Key.foregroundColor: UIColor.white,
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16.0)]
+        )
+        alertController.setValue(attributedMessage, forKey: "attributedMessage")
+        
+        let okAction = UIAlertAction(title: "삭제", style: .default) { (_) in
+            self.handleAlertOKAction()
+        }
+        okAction.setValue(UIColor.white, forKey: "titleTextColor")
+        alertController.addAction(okAction)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        cancelAction.setValue(UIColor.systemRed, forKey: "titleTextColor")
+        alertController.addAction(cancelAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func handleAlertOKAction() {
+        print("ok.")
     }
     
 }
