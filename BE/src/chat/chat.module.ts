@@ -6,9 +6,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatRoomEntity } from '../entities/chatRoom.entity';
 import { PostEntity } from '../entities/post.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
+import { UserEntity } from 'src/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ChatRoomEntity, PostEntity, ChatEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      ChatRoomEntity,
+      PostEntity,
+      ChatEntity,
+      UserEntity,
+    ]),
+  ],
   controllers: [ChatController],
   providers: [ChatService, ChatsGateway],
 })

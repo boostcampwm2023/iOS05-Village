@@ -5,6 +5,7 @@ import { In, Repository } from 'typeorm';
 import { ChatRoomEntity } from '../entities/chatRoom.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
 import { ChatDto } from './dto/chat.dto';
+import { UserEntity } from 'src/entities/user.entity';
 
 @Injectable()
 export class ChatService {
@@ -15,6 +16,8 @@ export class ChatService {
     private postRepository: Repository<PostEntity>,
     @InjectRepository(ChatEntity)
     private chatRepository: Repository<ChatEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async saveMessage(message: ChatDto) {
@@ -37,21 +40,44 @@ export class ChatService {
   async findRoomList(userId: string) {
     const rooms = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
-      .where('chat_room.writer = :writer', { writer: userId })
-      .orWhere('chat_room.user = :user', { user: userId })
-      .leftJoinAndSelect('chat_room.chats', 'chat')
+      .select([
+        'chat_room.user',
+        'chat_room.writer',
+        'chat_room.id',
+        'chat_room.post_id',
+        'chat.message',
+      ])
+      .where('chat_room.user = :userId', {
+        userId: userId,
+      })
+      .orWhere('chat_room.writer = :userId', {
+        userId: userId,
+      })
+      .select([
+        'chat_room.user',
+        'chat_room.writer',
+        'chat_room.id',
+        'chat_room.post_id',
+        'chat.message',
+      ])
+      .innerJoin('chat', 'chat', 'chat_room.id = chat.chat_room')
       .orderBy('chat.id', 'DESC')
       .limit(1)
-      .getMany();
+      .addSelect(['user.w.user_hash', 'user.w.profile_img'])
+      .leftJoin('user', 'user.w', 'user.w.user_hash = chat_room.writer')
+      .addSelect(['user.u.user_hash', 'user.u.profile_img'])
+      .leftJoin('user', 'user.u', 'user.u.user_hash = chat_room.user')
+      .getRawMany();
 
     return rooms.reduce((acc, cur) => {
       acc.push({
-        room_id: cur.id,
-        post_id: cur.post_id,
-        writer: cur.writer,
-        user: cur.user,
-        update_date: cur.update_date,
-        last_chat: cur.chats[0].message,
+        room_id: cur.chat_room_id,
+        post_id: cur.chat_room_post_id,
+        user: cur['user.w_user_hash'],
+        user_profile_img: cur['user.w_profile_img'],
+        writer: cur['user.u_user_hash'],
+        writer_profile_img: cur['user.u_profile_img'],
+        last_chat: cur.chat_message,
       });
       return acc;
     }, []);
@@ -77,7 +103,7 @@ export class ChatService {
       writer: room.writer,
       user: room.user,
       update_date: room.update_date,
-      chats: room.chats,
+      chatLog: room.chats,
     };
   }
 }
