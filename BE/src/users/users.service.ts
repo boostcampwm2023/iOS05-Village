@@ -52,28 +52,22 @@ export class UsersService {
     }
   }
 
-  async removeUser(id: string) {
-    const isDataExists = await this.userRepository.findOne({
-      where: { user_hash: id },
-    });
-    if (!isDataExists) {
-      return false;
-    } else {
-      await this.deleteCascadingUser(isDataExists);
-      return true;
-    }
+  async removeUser(id: string, userId) {
+    const userPk = await this.checkAuth(id, userId);
+    await this.deleteCascadingUser(userPk, userId);
+    return true;
   }
 
-  async deleteCascadingUser(user: UserEntity) {
+  async deleteCascadingUser(userId, userHash) {
     const postsByUser = await this.postRepository.find({
-      where: { user_id: user.id },
+      where: { user_id: userId },
     });
     for (const postByUser of postsByUser) {
       await this.deleteCascadingPost(postByUser.id);
     }
-    await this.blockPostRepository.softDelete({ blocker: user.user_hash });
-    await this.blockUserRepository.softDelete({ blocker: user.user_hash });
-    await this.userRepository.softDelete({ id: user.id });
+    await this.blockPostRepository.softDelete({ blocker: userHash });
+    await this.blockUserRepository.softDelete({ blocker: userHash });
+    await this.userRepository.softDelete({ id: userId });
   }
 
   async deleteCascadingPost(postId: number) {
@@ -82,28 +76,37 @@ export class UsersService {
     await this.postRepository.softDelete({ id: postId });
   }
 
-  async updateUserById(
-    userId: string,
-    body: UpdateUsersDto,
-    file: Express.Multer.File,
-  ) {
+  async checkAuth(id, userId) {
     const isDataExists = await this.userRepository.findOne({
-      where: { user_hash: userId },
+      where: { user_hash: id },
     });
     if (!isDataExists) {
       throw new HttpException('유저가 존재하지 않습니다.', 404);
     }
+    if (id !== userId) {
+      throw new HttpException('수정 권한이 없습니다.', 403);
+    }
+    return isDataExists.id;
+  }
+
+  async updateUserById(
+    id: string,
+    body: UpdateUsersDto,
+    file: Express.Multer.File,
+    userId: string,
+  ) {
     if (body === undefined) {
       throw new HttpException('수정 할 것이 없는데 요청을 보냈습니다.', 400);
     }
+    await this.checkAuth(id, userId);
 
     const nickname = body.nickname;
     const isImageChanged = body.is_image_changed;
     if (nickname) {
-      await this.changeNickname(userId, nickname);
+      await this.changeNickname(id, nickname);
     }
     if (isImageChanged !== undefined) {
-      await this.changeImages(userId, file);
+      await this.changeImages(id, file);
     }
   }
 
