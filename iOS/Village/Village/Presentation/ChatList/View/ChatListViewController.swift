@@ -10,13 +10,30 @@ import Combine
 
 class ChatListViewController: UIViewController {
     
-    typealias ChatListDataSource = UICollectionViewDiffableDataSource<Section, ChatListResponseDTO>
+    typealias ChatListDataSource = UITableViewDiffableDataSource<Section, ChatListResponseDTO>
     typealias ViewModel = ChatListViewModel
     typealias Input = ViewModel.Input
     
-    private var dataSource: ChatListDataSource!
-    private let reuseIdentifier = ChatListCollectionViewCell.identifier
-    private var collectionView: UICollectionView!
+    private let reuseIdentifier = ChatListTableViewCell.identifier
+    private lazy var dataSource: ChatListDataSource = ChatListDataSource(
+        tableView: chatListTableView,
+        cellProvider: { [weak self] (tableView, indexPath, chatList) in
+            guard let self = self else { return ChatListTableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: self.reuseIdentifier,
+                for: indexPath) as? ChatListTableViewCell else {
+                return ChatListTableViewCell()
+            }
+            Task {
+                do {
+                    await cell.configureData(data: chatList)
+                }
+            }
+            cell.selectionStyle = .none
+            
+            return cell
+        }
+    )
     
     private var currentPage = CurrentValueSubject<Int, Never>(1)
     private var viewModel = ViewModel()
@@ -36,9 +53,9 @@ class ChatListViewController: UIViewController {
     private func setUI() {
         view.backgroundColor = .systemBackground
         
+        view.addSubview(chatListTableView)
         setNavigationUI()
-        configureCollectionView()
-        configureDataSource()
+        configureConstraints()
     }
     
     private func setViewModel() {
@@ -65,65 +82,24 @@ class ChatListViewController: UIViewController {
         self.navigationItem.backButtonDisplayMode = .minimal
     }
     
-    private func configureCollectionView() {
-        var listConfiguration = UICollectionLayoutListConfiguration(appearance: .plain)
-        listConfiguration.showsSeparators = true
-        listConfiguration.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
-            let delete = UIContextualAction(style: .normal, title: nil) { action, view, actionPerformed in
-                print(indexPath.row)
-                actionPerformed(true)
-            }
-            delete.image = UIImage(systemName: "trash.fill")
-            return .init(actions: [delete])
-        }
+    private lazy var chatListTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 80
+        tableView.register(ChatListTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.separatorStyle = .none
+        tableView.delegate = self
         
-        let layout = UICollectionViewCompositionalLayout.list(using: listConfiguration)
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        collectionView.setCollectionViewLayout(layout, animated: true)
-//        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.delegate = self
-        view.addSubview(collectionView)
-    }
+        return tableView
+    }()
     
-    private func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(80.0)
-        )
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 0.0, trailing: 0.0)
-        section.interGroupSpacing = 0.0
-        
-        return UICollectionViewCompositionalLayout(section: section)
-    }
-    
-    private func configureDataSource() {
-        collectionView.register(ChatListCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        dataSource = ChatListDataSource(collectionView: collectionView) { (collectionView, indexPath, chatList) ->
-            UICollectionViewCell? in
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: self.reuseIdentifier,
-                for: indexPath
-            ) as? ChatListCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            
-            Task {
-                do {
-                    await cell.configureData(data: chatList)
-                }
-            }
-            
-            return cell
-        }
+    private func configureConstraints() {
+        NSLayoutConstraint.activate([
+            chatListTableView.topAnchor.constraint(equalTo: view.topAnchor),
+            chatListTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            chatListTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            chatListTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
     
     private func generateData() {
@@ -135,9 +111,10 @@ class ChatListViewController: UIViewController {
     }
 }
 
-extension ChatListViewController: UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+extension ChatListViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("!@#")
         guard let chat = dataSource.itemIdentifier(for: indexPath) else { return }
         
         let chatRoomVC = ChatRoomViewController(roomID: 1)
