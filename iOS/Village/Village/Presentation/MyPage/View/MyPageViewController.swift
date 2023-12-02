@@ -234,7 +234,6 @@ private extension MyPageViewController {
         accountStackView.addArrangedSubview(accountLabel)
         accountStackView.addArrangedSubview(logoutButton)
         accountStackView.addArrangedSubview(deleteAccountButton)
-        
     }
     
     func setConstraints() {
@@ -285,8 +284,7 @@ private extension MyPageViewController {
 private extension MyPageViewController {
     
     func profileEditButtonTapped() {
-        let sheet = UIAlertController(title: "카메라", message: String(describing: JWTManager.shared.tempToken), preferredStyle: .actionSheet)
-        present(sheet, animated: true)
+        
     }
     
     func myPostButtonTapped() {
