@@ -7,7 +7,6 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { PostEntity } from './post.entity';
 import { ChatEntity } from './chat.entity';

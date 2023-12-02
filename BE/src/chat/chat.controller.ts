@@ -1,12 +1,17 @@
+
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { AuthGuard } from '../utils/auth.guard';
 import { UserHash } from '../utils/auth.decorator';
 import { CreateRoomDto } from './createRoom.dto';
+import { FcmHandler } from '../utils/fcmHandler';
 
 @Controller('chat')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly fcmHandler: FcmHandler,
+  ) {}
 
   @Get('room')
   @UseGuards(AuthGuard)
@@ -25,5 +30,14 @@ export class ChatController {
   @UseGuards(AuthGuard)
   async roomCreate(@Body() body: CreateRoomDto, @UserHash() userId: string) {
     await this.chatService.createRoom(body.post_id, userId, body.writer);
+  }
+
+  @Get()
+  async testPush(@Body() body) {
+    await this.fcmHandler.sendPush(body.user, {
+      title: 'test',
+      body: 'hello!',
+      data: { room_id: body.room },
+    });
   }
 }

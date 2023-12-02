@@ -5,6 +5,8 @@ import { ChatsGateway } from './chats.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatRoomEntity } from '../entities/chatRoom.entity';
 import { PostEntity } from '../entities/post.entity';
+import { FcmHandler } from '../utils/fcmHandler';
+import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
 import { UserEntity } from 'src/entities/user.entity';
 
@@ -15,9 +17,11 @@ import { UserEntity } from 'src/entities/user.entity';
       PostEntity,
       ChatEntity,
       UserEntity,
+      RegistrationTokenEntity,
+    
     ]),
   ],
   controllers: [ChatController],
-  providers: [ChatService, ChatsGateway],
+  providers: [ChatService, ChatsGateway, FcmHandler],
 })
 export class ChatModule {}
