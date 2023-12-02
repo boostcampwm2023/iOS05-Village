@@ -225,17 +225,10 @@ export class PostService {
     }
   }
 
-  async removePost(postId: number) {
-    const isDataExists = await this.postRepository.findOne({
-      where: { id: postId },
-    });
-
-    if (!isDataExists) {
-      return false;
-    } else {
-      await this.deleteCascadingPost(postId);
-      return true;
-    }
+  async removePost(postId: number, userId: string) {
+    await this.checkAuth(postId, userId);
+    await this.deleteCascadingPost(postId);
+    return true;
   }
   async deleteCascadingPost(postId: number) {
     await this.postImageRepository.softDelete({ post_id: postId });
