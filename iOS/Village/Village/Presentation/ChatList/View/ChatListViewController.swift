@@ -66,7 +66,21 @@ class ChatListViewController: UIViewController {
     }
     
     private func configureCollectionView() {
+        var listConfiguration = UICollectionLayoutListConfiguration(appearance: .plain)
+        listConfiguration.showsSeparators = true
+        listConfiguration.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+            let delete = UIContextualAction(style: .normal, title: nil) { action, view, actionPerformed in
+                print(indexPath.row)
+                actionPerformed(true)
+            }
+            delete.image = UIImage(systemName: "trash.fill")
+            return .init(actions: [delete])
+        }
+        
+        let layout = UICollectionViewCompositionalLayout.list(using: listConfiguration)
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+        collectionView.setCollectionViewLayout(layout, animated: true)
+//        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.delegate = self
         view.addSubview(collectionView)
