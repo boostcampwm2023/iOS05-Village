@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -13,6 +14,7 @@ import { BlockUserEntity } from './blockUser.entity';
 import { BlockPostEntity } from './blockPost.entity';
 import { RegistrationTokenEntity } from './registrationToken.entity';
 import { ChatEntity } from './chat.entity';
+import { ChatRoomEntity } from './chatRoom.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -35,6 +37,12 @@ export class UserEntity {
   registration_token: RegistrationTokenEntity;
   @OneToMany(() => ChatEntity, (chat) => chat.senderUser)
   chats: ChatEntity[];
+
+  @OneToMany(() => ChatRoomEntity, (chatRoom) => chatRoom.writerUser)
+  chatRooms: ChatRoomEntity[];
+
+  @OneToMany(() => ChatRoomEntity, (chatRoom) => chatRoom.userUser)
+  chatRooms2: ChatRoomEntity[];
 
   @PrimaryGeneratedColumn()
   id: number;
