@@ -9,8 +9,6 @@ import Foundation
 
 final class JWTManager {
     
-    var tempToken: String?
-    
     static let shared = JWTManager()
     
     private let lastLoggedEmailKey = "lastLoggedEmail"
