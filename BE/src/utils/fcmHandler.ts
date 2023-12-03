@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 
-interface PushMessage {
+export interface PushMessage {
   title: string;
   body: string;
   data: any;
@@ -40,14 +40,13 @@ export class FcmHandler {
         },
       },
       data: {
-        room_id: pushMessage.data.room_id.toString(),
+        ...pushMessage.data,
       },
     };
     admin
       .messaging()
       .send(message)
       .then((response) => {
-        // Response is a message ID string.
         console.log('Successfully sent message:', response);
       })
       .catch((error) => {
@@ -63,5 +62,19 @@ export class FcmHandler {
       throw new Error('no registration token');
     }
     return registrationToken.registration_token;
+  }
+
+  makeChatPushMessage(
+    nickname: string,
+    message: string,
+    roomId: number,
+  ): PushMessage {
+    return {
+      title: nickname,
+      body: message,
+      data: {
+        room_id: roomId.toString(),
+      },
+    };
   }
 }

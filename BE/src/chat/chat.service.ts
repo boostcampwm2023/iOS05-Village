@@ -6,6 +6,7 @@ import { ChatRoomEntity } from '../entities/chatRoom.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
 import { ChatDto } from './dto/chat.dto';
 import { UserEntity } from 'src/entities/user.entity';
+import { FcmHandler, PushMessage } from '../utils/fcmHandler';
 
 @Injectable()
 export class ChatService {
@@ -18,6 +19,7 @@ export class ChatService {
     private chatRepository: Repository<ChatEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private fcmHandler: FcmHandler,
   ) {}
 
   async saveMessage(message: ChatDto) {
@@ -105,5 +107,22 @@ export class ChatService {
     } else if (room.writer !== userId && room.user !== userId) {
       throw new HttpException('권한이 없습니다.', 403);
     }
+  }
+
+  async sendPush(message: ChatDto) {
+    const chatRoom = await this.chatRoomRepository.findOne({
+      where: { id: message.room_id },
+      relations: ['writerUser', 'userUser'],
+    });
+    const receiver: UserEntity =
+      chatRoom.writerUser.user_hash === message.sender
+        ? chatRoom.userUser
+        : chatRoom.writerUser;
+    const pushMessage: PushMessage = this.fcmHandler.makeChatPushMessage(
+      receiver.nickname,
+      message.message,
+      message.room_id,
+    );
+    await this.fcmHandler.sendPush(receiver.user_hash, pushMessage);
   }
 }

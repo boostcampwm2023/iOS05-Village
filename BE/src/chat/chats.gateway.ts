@@ -2,6 +2,7 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -13,7 +14,7 @@ import { ChatDto } from './dto/chat.dto';
 @WebSocketGateway({
   path: 'chats',
 })
-export class ChatsGateway implements OnGatewayConnection {
+export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private rooms = new Map<number, Set<Websocket>>();
 
@@ -25,6 +26,14 @@ export class ChatsGateway implements OnGatewayConnection {
 
   handleDisconnect(client: Websocket) {
     console.log(`on disconnect : ${client}`);
+    if (client.roomId) {
+      const roomId = client.roomId;
+      const room = this.rooms.get(roomId);
+      room.delete(client);
+      if (room.size === 0) {
+        this.rooms.delete(roomId);
+      }
+    }
   }
 
   @SubscribeMessage('send-message')
@@ -35,12 +44,15 @@ export class ChatsGateway implements OnGatewayConnection {
     console.log(message);
     const room = this.rooms.get(message['room_id']);
     const sender = message['sender'];
-    console.log(room);
-    room.forEach((people) => {
-      if (people !== client)
-        people.send(JSON.stringify({ sender, message: message['message'] }));
-    });
     await this.chatService.saveMessage(message);
+    if (room.size === 1) {
+      await this.chatService.sendPush(message);
+    } else {
+      room.forEach((people) => {
+        if (people !== client)
+          people.send(JSON.stringify({ sender, message: message['message'] }));
+      });
+    }
   }
 
   @SubscribeMessage('join-room')
@@ -48,9 +60,10 @@ export class ChatsGateway implements OnGatewayConnection {
     @MessageBody() message: object,
     @ConnectedSocket() client: Websocket,
   ) {
-    const roomName = message['room_id'];
-    if (this.rooms.has(roomName)) this.rooms.get(roomName).add(client);
-    else this.rooms.set(roomName, new Set([client]));
+    const roomId = message['room_id'];
+    client.roomId = roomId;
+    if (this.rooms.has(roomId)) this.rooms.get(roomId).add(client);
+    else this.rooms.set(roomId, new Set([client]));
   }
 
   @SubscribeMessage('leave-room')
@@ -58,11 +71,11 @@ export class ChatsGateway implements OnGatewayConnection {
     @MessageBody() message: object,
     @ConnectedSocket() client: Websocket,
   ) {
-    const roomName = message['room'];
-    const room = this.rooms.get(roomName);
+    const roomId = message['room'];
+    const room = this.rooms.get(roomId);
     room.delete(client);
     if (room.size === 0) {
-      this.rooms.delete(roomName);
+      this.rooms.delete(roomId);
     }
     console.log(this.rooms);
   }
