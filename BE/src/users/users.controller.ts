@@ -54,18 +54,19 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async usersRemove(@Param('id') id: string) {
-    await this.usersService.removeUser(id);
+  async usersRemove(@Param('id') id: string, @UserHash() userId) {
+    await this.usersService.removeUser(id, userId);
   }
 
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image'))
   async usersModify(
-    @Param('id') userId: string,
+    @Param('id') id: string,
     @MultiPartBody('profile') body: UpdateUsersDto,
     @UploadedFile() file: Express.Multer.File,
+    @UserHash() userId,
   ) {
-    await this.usersService.updateUserById(userId, body, file);
+    await this.usersService.updateUserById(id, body, file, userId);
   }
 
   @Post('registration-token')

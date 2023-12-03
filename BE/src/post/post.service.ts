@@ -147,17 +147,26 @@ export class PostService {
     }
   }
 
+  async checkAuth(postId, userId) {
+    const isDataExists = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: ['user'],
+    });
+    if (!isDataExists) {
+      throw new HttpException('게시글이 없습니다.', 404);
+    }
+    if (isDataExists.user.user_hash !== userId) {
+      throw new HttpException('수정 권한이 없습니다.', 403);
+    }
+  }
+
   async updatePostById(
     postId: number,
     updatePostDto: UpdatePostDto,
     files: Express.Multer.File[],
+    userId: string,
   ) {
-    const isDataExists = await this.postRepository.findOne({
-      where: { id: postId },
-    });
-    if (!isDataExists) {
-      return false;
-    }
+    await this.checkAuth(postId, userId);
     if (files) {
       const fileLocation = await this.uploadImages(files);
       await this.createImages(fileLocation, postId);
@@ -216,17 +225,10 @@ export class PostService {
     }
   }
 
-  async removePost(postId: number) {
-    const isDataExists = await this.postRepository.findOne({
-      where: { id: postId },
-    });
-
-    if (!isDataExists) {
-      return false;
-    } else {
-      await this.deleteCascadingPost(postId);
-      return true;
-    }
+  async removePost(postId: number, userId: string) {
+    await this.checkAuth(postId, userId);
+    await this.deleteCascadingPost(postId);
+    return true;
   }
   async deleteCascadingPost(postId: number) {
     await this.postImageRepository.softDelete({ post_id: postId });

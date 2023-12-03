@@ -71,26 +71,24 @@ export class PostController {
       new ValidationPipe({ validateCustomDecorators: true }),
     )
     body: UpdatePostDto,
+    @UserHash() userId,
   ) {
-    const isFixed = await this.postService.updatePostById(id, body, files);
+    const isFixed = await this.postService.updatePostById(
+      id,
+      body,
+      files,
+      userId,
+    );
 
     if (isFixed) {
       return HttpCode(200);
-    } else if (isFixed === false) {
-      throw new HttpException('게시글이 존재하지 않습니다.', 404);
     } else {
       throw new HttpException('서버 오류입니다.', 500);
     }
   }
 
   @Delete('/:id')
-  async postRemove(@Param('id') id: number) {
-    const isRemoved = await this.postService.removePost(id);
-
-    if (isRemoved) {
-      return HttpCode(200);
-    } else {
-      throw new HttpException('게시글이 존재하지 않습니다.', 404);
-    }
+  async postRemove(@Param('id') id: number, @UserHash() userId) {
+    await this.postService.removePost(id, userId);
   }
 }
