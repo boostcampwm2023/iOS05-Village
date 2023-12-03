@@ -12,12 +12,8 @@ export class ChatService {
   constructor(
     @InjectRepository(ChatRoomEntity)
     private chatRoomRepository: Repository<ChatRoomEntity>,
-    @InjectRepository(PostEntity)
-    private postRepository: Repository<PostEntity>,
     @InjectRepository(ChatEntity)
     private chatRepository: Repository<ChatEntity>,
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
   ) {}
 
   async saveMessage(message: ChatDto) {
@@ -46,6 +42,7 @@ export class ChatService {
         'chat_room.id',
         'chat_room.post_id',
         'chat.message',
+        'chat.create_date',
       ])
       .where('chat_room.user = :userId', {
         userId: userId,
@@ -53,31 +50,31 @@ export class ChatService {
       .orWhere('chat_room.writer = :userId', {
         userId: userId,
       })
-      .select([
-        'chat_room.user',
-        'chat_room.writer',
-        'chat_room.id',
-        'chat_room.post_id',
-        'chat.message',
-      ])
       .innerJoin('chat', 'chat', 'chat_room.id = chat.chat_room')
       .orderBy('chat.id', 'DESC')
       .limit(1)
-      .addSelect(['user.w.user_hash', 'user.w.profile_img'])
+      .addSelect(['user.w.user_hash', 'user.w.profile_img', 'user.w.nickname'])
       .leftJoin('user', 'user.w', 'user.w.user_hash = chat_room.writer')
-      .addSelect(['user.u.user_hash', 'user.u.profile_img'])
+      .addSelect(['user.u.user_hash', 'user.u.profile_img', 'user.u.nickname'])
       .leftJoin('user', 'user.u', 'user.u.user_hash = chat_room.user')
+      .addSelect(['post.thumbnail', 'post.title'])
+      .leftJoin('post', 'post', 'post.id = chat_room.post_id')
       .getRawMany();
 
     return rooms.reduce((acc, cur) => {
       acc.push({
         room_id: cur.chat_room_id,
         post_id: cur.chat_room_post_id,
+        post_title: cur.post_title,
+        post_thumbnail: cur.post_thumbnail,
         user: cur['user.w_user_hash'],
         user_profile_img: cur['user.w_profile_img'],
+        user_nickname: cur['user.w_nickname'],
         writer: cur['user.u_user_hash'],
         writer_profile_img: cur['user.u_profile_img'],
+        writer_nickname: cur['user.u_nickname'],
         last_chat: cur.chat_message,
+        last_chat_date: cur.chat_create_date,
       });
       return acc;
     }, []);
