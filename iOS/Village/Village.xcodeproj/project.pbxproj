@@ -51,6 +51,7 @@
 		59B6E27C2B185FD2000864F9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 59B6E27B2B185FD2000864F9 /* GoogleService-Info.plist */; };
 		59B6E27F2B18604D000864F9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 59B6E27E2B18604D000864F9 /* FirebaseAnalytics */; };
 		59B6E2822B186A83000864F9 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 59B6E2812B186A83000864F9 /* FirebaseMessaging */; };
+		59BA10FA2B1CC3F700F30DB8 /* FCMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA10F92B1CC3F700F30DB8 /* FCMManager.swift */; };
 		59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BD5DC82B0C760500FEB80F /* UIStackView+.swift */; };
 		59BD5DCC2B0C772200FEB80F /* PostCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E196C82B045F4900BF7C5A /* PostCreateViewController.swift */; };
 		59BD5DCE2B0C775D00FEB80F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FD2AFBA3FC0073D494 /* SceneDelegate.swift */; };
@@ -149,6 +150,7 @@
 		59AABDE42B0E2D47002F6D0E /* PostCreateDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateDetailView.swift; sourceTree = "<group>"; };
 		59B6E2722B17938C000864F9 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
 		59B6E27B2B185FD2000864F9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		59BA10F92B1CC3F700F30DB8 /* FCMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMManager.swift; sourceTree = "<group>"; };
 		59BD5DC82B0C760500FEB80F /* UIStackView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+.swift"; sourceTree = "<group>"; };
 		59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
 		59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layer.swift"; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				4416D48D2B174CBA0052BF33 /* KeychainError.swift */,
 				4416D48B2B174C7A0052BF33 /* KeychainManager.swift */,
 				4461F39C2B1786DA00723C55 /* JWTManager.swift */,
+				59BA10F92B1CC3F700F30DB8 /* FCMManager.swift */,
 			);
 			path = PersistentStorage;
 			sourceTree = "<group>";
@@ -880,6 +883,7 @@
 				8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */,
 				4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */,
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
+				59BA10FA2B1CC3F700F30DB8 /* FCMManager.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */,
 				4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */,
