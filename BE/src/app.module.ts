@@ -20,9 +20,9 @@ import * as path from 'path';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
+    /*ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, '../static'),
-    }),
+    }),*/
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${process.cwd()}/envs/${process.env.NODE_ENV}.env`,
