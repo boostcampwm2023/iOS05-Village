@@ -65,6 +65,16 @@ struct APIEndPoints {
         )
     }
     
+    static func deleteChatRoom(with chatRoomRequest: ChatRoomRequestDTO) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat",
+            method: .DELETE,
+            queryParameters: chatRoomRequest,
+            headers: header
+        )
+    }
+    
     static func loginAppleOAuth(with appleOAuthDTO: AppleOAuthDTO) -> EndPoint<AuthenticationToken> {
         EndPoint(
             baseURL: baseURL,
