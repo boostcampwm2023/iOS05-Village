@@ -25,6 +25,12 @@ export class ChatsGateway implements OnGatewayConnection {
 
   handleDisconnect(client: Websocket) {
     console.log(`on disconnect : ${client}`);
+    const roomId = client.roomId;
+    const room = this.rooms.get(roomId);
+    room.delete(client);
+    if (room.size === 0) {
+      this.rooms.delete(roomId);
+    }
   }
 
   @SubscribeMessage('send-message')
@@ -48,9 +54,10 @@ export class ChatsGateway implements OnGatewayConnection {
     @MessageBody() message: object,
     @ConnectedSocket() client: Websocket,
   ) {
-    const roomName = message['room_id'];
-    if (this.rooms.has(roomName)) this.rooms.get(roomName).add(client);
-    else this.rooms.set(roomName, new Set([client]));
+    const roomId = message['room_id'];
+    client.roomId = roomId;
+    if (this.rooms.has(roomId)) this.rooms.get(roomId).add(client);
+    else this.rooms.set(roomId, new Set([client]));
   }
 
   @SubscribeMessage('leave-room')
@@ -58,11 +65,11 @@ export class ChatsGateway implements OnGatewayConnection {
     @MessageBody() message: object,
     @ConnectedSocket() client: Websocket,
   ) {
-    const roomName = message['room'];
-    const room = this.rooms.get(roomName);
+    const roomId = message['room'];
+    const room = this.rooms.get(roomId);
     room.delete(client);
     if (room.size === 0) {
-      this.rooms.delete(roomName);
+      this.rooms.delete(roomId);
     }
     console.log(this.rooms);
   }

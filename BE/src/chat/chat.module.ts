@@ -18,7 +18,6 @@ import { UserEntity } from 'src/entities/user.entity';
       ChatEntity,
       UserEntity,
       RegistrationTokenEntity,
-    
     ]),
   ],
   controllers: [ChatController],
