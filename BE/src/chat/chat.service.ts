@@ -91,19 +91,19 @@ export class ChatService {
       relations: ['chats'],
     });
 
+    this.checkAuth(room, userId);
+
+    return {
+      post_id: room.post_id,
+      chat_log: room.chats,
+    };
+  }
+
+  checkAuth(room: ChatRoomEntity, userId: string) {
     if (!room) {
       throw new HttpException('존재하지 않는 채팅방입니다.', 404);
     } else if (room.writer !== userId && room.user !== userId) {
       throw new HttpException('권한이 없습니다.', 403);
     }
-
-    return {
-      room_id: room.id,
-      post_id: room.post_id,
-      writer: room.writer,
-      user: room.user,
-      update_date: room.update_date,
-      chatLog: room.chats,
-    };
   }
 }
