@@ -42,7 +42,6 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() message: ChatDto,
     @ConnectedSocket() client: Websocket,
   ) {
-    client.send(JSON.stringify({ sent: true }));
     const room = this.rooms.get(message['room_id']);
     const sender = message['sender'];
     await this.chatService.saveMessage(message);
@@ -54,6 +53,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
           people.send(JSON.stringify({ sender, message: message['message'] }));
       });
     }
+    client.send(JSON.stringify({ sent: true }));
   }
 
   @SubscribeMessage('join-room')
