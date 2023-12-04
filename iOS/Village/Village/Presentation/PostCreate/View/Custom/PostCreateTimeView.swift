@@ -183,22 +183,22 @@ final class PostCreateTimeView: UIStackView {
     
     func setEdit(time: String) {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy.MM.dd"
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "HH:mm"
-        let fullTimeString = time.components(separatedBy: "T")
-        guard let dateString = fullTimeString.first,
-              let timeString = fullTimeString.last else {
-            return
-        }
-        guard let date = dateFormatter.date(from: dateString),
-              let hourIndex = hours.firstIndex(of: String(timeString.prefix(5))) else {
-            return
-        }
-        datePicker.date = date
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        guard let timeDate = dateFormatter.date(from: time) else { return }
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: timeDate)
+        dateFormatter.dateFormat = "HH:mm"
+        let hourString = dateFormatter.string(from: timeDate)
+        
+        selectedDate = dateString
+        selectedHour = hourString
+        datePicker.date = timeDate
+        
+        guard let hourIndex = hours.firstIndex(of: hourString) else { return }
         hourPicker.selectRow(hourIndex, inComponent: 0, animated: false)
         dateTextField.text = dateString
-        hourTextField.text = String(timeString.prefix(5))
+        hourTextField.text = hourString
+        setTime()
     }
     
 }
