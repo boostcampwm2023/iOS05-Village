@@ -10,7 +10,8 @@ import Combine
 
 final class PostCreateViewModel {
     
-    private var postType: PostType
+    let postType: PostType
+    let isEdit: Bool
     
     private var titleInput: String = ""
     private var startTimeInput: Date?
@@ -76,16 +77,23 @@ final class PostCreateViewModel {
         )
         Task {
             do {
-                let _ = try await APIProvider.shared.multipartRequest(with: endPoint)
+                try await APIProvider.shared.multipartRequest(with: endPoint)
             } catch {
                 dump(error)
             }
         }
     }
     
-    init(useCase: PostCreateUseCase, postType: PostType) {
+    func postEdit() {
+        
+    }
+
+    
+    
+    init(useCase: PostCreateUseCase, postType: PostType, isEdit: Bool) {
         self.useCase = useCase
         self.postType = postType
+        self.isEdit = isEdit
     }
     
     func transform(input: Input) -> Output {
@@ -140,7 +148,11 @@ final class PostCreateViewModel {
                 guard let self = self else { return }
                 validate()
                 if isValidPostCreate {
-                    postCreate()
+                    if isEdit {
+                        postEdit()
+                    } else {
+                        postCreate()
+                    }
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
                     postButtonTappedStartTimeWarningOutput.send(isValidStartTime)

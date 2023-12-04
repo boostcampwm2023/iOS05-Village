@@ -19,7 +19,6 @@ final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
     private var postButtonTappedSubject = PassthroughSubject<Void, Never>()
-    private let type: PostType
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -68,14 +67,14 @@ final class PostCreateViewController: UIViewController {
     }()
     
     private lazy var postCreateStartTimeView: PostCreateTimeView = {
-        let view = PostCreateTimeView(postType: type, timeType: .start)
+        let view = PostCreateTimeView(postType: viewModel.postType, timeType: .start)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
     private lazy var postCreateEndTimeView: PostCreateTimeView = {
-        let view = PostCreateTimeView(postType: type, timeType: .end)
+        let view = PostCreateTimeView(postType: viewModel.postType, timeType: .end)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -104,7 +103,11 @@ final class PostCreateViewController: UIViewController {
     
     private lazy var postButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
-        configuration.title = "작성하기"
+        if viewModel.isEdit {
+            configuration.title = "편집완료"
+        } else {
+            configuration.title = "작성하기"
+        }
         configuration.titleAlignment = .center
         configuration.baseBackgroundColor = .primary500
         configuration.cornerStyle = .medium
@@ -128,9 +131,8 @@ final class PostCreateViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    init(viewModel: PostCreateViewModel, type: PostType) {
+    init(viewModel: PostCreateViewModel) {
         self.viewModel = viewModel
-        self.type = type
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -202,7 +204,6 @@ private extension PostCreateViewController {
         dismiss(animated: true)
     }
     
-    // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
         postButtonTappedSubject.send()
     }
@@ -272,7 +273,7 @@ private extension PostCreateViewController {
         stackView.addArrangedSubview(postCreateStartTimeView)
         stackView.addArrangedSubview(postCreateEndTimeView)
         
-        if type == .rent {
+        if viewModel.postType == .rent {
             stackView.addArrangedSubview(postCreatePriceView)
         }
         
@@ -315,7 +316,7 @@ private extension PostCreateViewController {
             postCreateDetailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         
-        if type == .rent {
+        if viewModel.postType == .rent {
             NSLayoutConstraint.activate([
                 postCreatePriceView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
             ])
@@ -324,7 +325,7 @@ private extension PostCreateViewController {
     
     func configureNavigation() {
         let titleLabel = UILabel()
-        switch type {
+        switch viewModel.postType {
         case .rent:
             titleLabel.setTitle("대여 등록")
         case .request:
