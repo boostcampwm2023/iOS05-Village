@@ -36,6 +36,7 @@ final class LoginViewModel {
                 
                 JWTManager.shared.save(email: email, token: token)
                 loginSucceed.send()
+                FCMManager.shared.sendFCMToken()
             } catch let error {
                 loginSucceed.send(completion: .failure(error))
             }

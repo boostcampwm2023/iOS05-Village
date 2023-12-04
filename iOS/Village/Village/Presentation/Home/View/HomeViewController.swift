@@ -17,6 +17,7 @@ final class HomeViewController: UIViewController {
     private var dataSource: HomeDataSource!
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     private var collectionView: UICollectionView!
+    private let refreshControl = UIRefreshControl()
     
     private var currentPage = CurrentValueSubject<Int, Never>(1)
     private var viewModel = ViewModel()
@@ -102,15 +103,15 @@ final class HomeViewController: UIViewController {
     private func setMenuUI() {
         let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
         let presentPostRequestNC = UIAction(title: "대여 요청하기") { [weak self] _ in
-            let requestViewModel = PostCreateViewModel(useCase: useCase, postType: .request)
-            let postRequestVC = PostCreateViewController(viewModel: requestViewModel, type: .request)
+            let requestViewModel = PostCreateViewModel(useCase: useCase, isRequest: true, isEdit: false, postID: nil)
+            let postRequestVC = PostCreateViewController(viewModel: requestViewModel)
             let postRequestNC = UINavigationController(rootViewController: postRequestVC)
             postRequestNC.modalPresentationStyle = .fullScreen
             self?.present(postRequestNC, animated: true)
         }
         let presentPostRentNC = UIAction(title: "대여 등록하기") { [weak self] _ in
-            let rentViewModel = PostCreateViewModel(useCase: useCase, postType: .rent)
-            let postRentVC = PostCreateViewController(viewModel: rentViewModel, type: .rent)
+            let rentViewModel = PostCreateViewModel(useCase: useCase, isRequest: false, isEdit: false, postID: nil)
+            let postRentVC = PostCreateViewController(viewModel: rentViewModel)
             let postRentNC = UINavigationController(rootViewController: postRentVC)
             postRentNC.modalPresentationStyle = .fullScreen
             self?.present(postRentNC, animated: true)
@@ -148,7 +149,23 @@ private extension HomeViewController {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.delegate = self
+        configureRefreshControl()
         view.addSubview(collectionView)
+    }
+    
+    private func configureRefreshControl() {
+        collectionView.refreshControl = refreshControl
+        collectionView.refreshControl?.tintColor = .primary500
+        refreshControl.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
+    }
+    
+    @objc
+    private func refreshPost() {
+        bindViewModel()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            self.collectionView.refreshControl?.endRefreshing()
+        }
     }
     
     func createLayout() -> UICollectionViewLayout {
