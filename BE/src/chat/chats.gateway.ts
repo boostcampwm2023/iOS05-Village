@@ -10,6 +10,7 @@ import {
 import { Server, Websocket } from 'ws';
 import { ChatService } from './chat.service';
 import { ChatDto } from './dto/chat.dto';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
   path: 'chats',
@@ -17,15 +18,13 @@ import { ChatDto } from './dto/chat.dto';
 export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private rooms = new Map<number, Set<Websocket>>();
-
+  private readonly logger = new Logger('ChatsGateway');
   constructor(private readonly chatService: ChatService) {}
   handleConnection(client: Websocket) {
-    // 인증 로직
-    console.log(`on connnect : ${client}`);
+    this.logger.debug(`on connnect : ${client}`, 'ChatsGateway');
   }
 
   handleDisconnect(client: Websocket) {
-    console.log(`on disconnect : ${client}`);
     if (client.roomId) {
       const roomId = client.roomId;
       const room = this.rooms.get(roomId);
@@ -34,7 +33,12 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.rooms.delete(roomId);
       }
     }
-    console.log(this.rooms);
+    this.logger.debug(
+      `on disconnect : ${client}, left rooms : ${Array.from(
+        this.rooms.keys(),
+      )}`,
+      'ChatsGateway',
+    );
   }
 
   @SubscribeMessage('send-message')
@@ -42,6 +46,9 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() message: ChatDto,
     @ConnectedSocket() client: Websocket,
   ) {
+    this.logger.debug(
+      `[send message] room ID: ${message['room_id']} , sender: ${message['sender']}, message: ${message['message']}`,
+    );
     const room = this.rooms.get(message['room_id']);
     const sender = message['sender'];
     await this.chatService.saveMessage(message);
@@ -65,6 +72,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.roomId = roomId;
     if (this.rooms.has(roomId)) this.rooms.get(roomId).add(client);
     else this.rooms.set(roomId, new Set([client]));
+    this.logger.debug(`join room : ${roomId}`, 'ChatsGateway');
   }
 
   @SubscribeMessage('leave-room')
