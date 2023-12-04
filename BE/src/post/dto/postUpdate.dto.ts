@@ -14,6 +14,14 @@ export class UpdatePostDto {
   price?: number;
 
   @IsOptional()
+  @IsString()
+  start_date?: string;
+
+  @IsOptional()
+  @IsString()
+  end_date?: string;
+
+  @IsOptional()
   @IsString({ each: true })
   deleted_images: string[];
 
