@@ -124,6 +124,12 @@ final class PostDetailViewController: UIViewController {
         bindViewModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let postDTO = viewModel.postDTO else { return }
+        setPostContent(post: postDTO)
+    }
+    
     @objc
     private func moreBarButtonTapped() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -138,6 +144,14 @@ final class PostDetailViewController: UIViewController {
                 postID: self?.postID.output
             )
             let editVC = PostCreateViewController(viewModel: postCreateViewModel)
+            editVC.modalPresentationStyle = .fullScreen
+            editVC.editButtonTappedSubject
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] post in
+                    self?.viewModel.postDTO = post
+                    self?.setPostContent(post: post)
+                }
+                .store(in: &editVC.cancellableBag)
             guard let post = self?.viewModel.postDTO else { return }
             self?.present(editVC, animated: true)
             editVC.setEdit(post: post)

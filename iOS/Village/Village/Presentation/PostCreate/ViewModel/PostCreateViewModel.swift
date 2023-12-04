@@ -45,7 +45,7 @@ final class PostCreateViewModel {
     private let postButtonTappedStartTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedEndTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedPriceWarningOutput = PassthroughSubject<Bool, Never>()
-    private let endOutput = PassthroughSubject<Void, Never>()
+    private let endOutput = PassthroughSubject<PostResponseDTO, Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -57,14 +57,14 @@ final class PostCreateViewModel {
         return formatter
     }()
     
-    func postCreate() {
+    func modifyPost() {
         guard let startTime = startTimeInput,
               let endTime = endTimeInput else { return }
         let startTimeString = formatter.string(from: startTime)
         let endTimeString = formatter.string(from: endTime)
         
-        let endPoint = APIEndPoints.createPost(
-            with: PostCreateRequestDTO(
+        let endPoint = APIEndPoints.modifyPost(
+            with: PostModifyRequestDTO(
                 postInfo: PostInfoDTO(
                     title: titleInput,
                     description: detailInput,
@@ -73,7 +73,8 @@ final class PostCreateViewModel {
                     startDate: startTimeString,
                     endDate: endTimeString
                 ),
-                image: []
+                image: [],
+                postID: postID
             )
         )
         Task {
@@ -85,37 +86,7 @@ final class PostCreateViewModel {
         }
     }
     
-    func postEdit() {
-        guard let startTime = startTimeInput,
-              let endTime = endTimeInput else { return }
-        let startTimeString = formatter.string(from: startTime)
-        let endTimeString = formatter.string(from: endTime)
-        guard let id = postID else { return }
-        
-        let endPoint = APIEndPoints.editPost(
-            with: PostCreateRequestDTO(
-                postInfo: PostInfoDTO(
-                    title: titleInput,
-                    description: detailInput,
-                    price: priceInput,
-                    isRequest: isRequest,
-                    startDate: startTimeString,
-                    endDate: endTimeString
-                ),
-                image: []
-            ),
-            postID: id
-        )
-        Task {
-            do {
-                try await APIProvider.shared.multipartRequest(with: endPoint)
-            } catch {
-                dump(error)
-            }
-        }
-    }
-    
-    init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int?) {
+    init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int? = nil) {
         self.useCase = useCase
         self.isRequest = isRequest
         self.isEdit = isEdit
@@ -174,12 +145,23 @@ final class PostCreateViewModel {
                 guard let self = self else { return }
                 validate()
                 if isValidPostCreate {
-                    if isEdit {
-                        postEdit()
-                    } else {
-                        postCreate()
-                    }
-                    endOutput.send()
+                    modifyPost()
+                    guard let startTime = startTimeInput,
+                          let endTime = endTimeInput else { return }
+                    let startTimeString = formatter.string(from: startTime)
+                    let endTimeString = formatter.string(from: endTime)
+                    endOutput.send(
+                        PostResponseDTO(
+                            title: titleInput,
+                            description: detailInput,
+                            price: priceInput,
+                            userID: "",// TODO: userID 넣어줘야 함.
+                            imageURL: [],
+                            isRequest: isRequest,
+                            startDate: startTimeString,
+                            endDate: endTimeString
+                        )
+                    )
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
                     postButtonTappedStartTimeWarningOutput.send(isValidStartTime)
@@ -266,7 +248,7 @@ extension PostCreateViewModel {
         var postButtonTappedStartTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedEndTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedPriceWarningResult: AnyPublisher<Bool, Never>
-        var endResult: AnyPublisher<Void, Never>
+        var endResult: AnyPublisher<PostResponseDTO, Never>
         
     }
     

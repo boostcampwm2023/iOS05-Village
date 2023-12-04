@@ -12,6 +12,7 @@ final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
     private var postButtonTappedSubject = PassthroughSubject<Void, Never>()
+    var editButtonTappedSubject = PassthroughSubject<PostResponseDTO, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -133,7 +134,7 @@ final class PostCreateViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var cancellableBag: Set<AnyCancellable> = []
+    var cancellableBag: Set<AnyCancellable> = []
     
     func bind() {
         let input = PostCreateViewModel.Input(
@@ -189,8 +190,12 @@ final class PostCreateViewController: UIViewController {
         
         output.endResult
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] post in
                 self?.dismiss(animated: true)
+                guard let isEdit = self?.viewModel.isEdit else { return }
+                if isEdit {
+                    self?.editButtonTappedSubject.send(post)
+                }
             }
             .store(in: &cancellableBag)
         

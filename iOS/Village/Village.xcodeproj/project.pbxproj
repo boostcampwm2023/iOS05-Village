@@ -58,7 +58,7 @@
 		59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */; };
 		59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */; };
 		59D8F1032B0FC4F700A08E02 /* PostCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1022B0FC4F700A08E02 /* PostCreateViewModel.swift */; };
-		59D8F1052B103A7200A08E02 /* PostCreateRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1042B103A7200A08E02 /* PostCreateRequestDTO.swift */; };
+		59D8F1052B103A7200A08E02 /* PostModifyRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1042B103A7200A08E02 /* PostModifyRequestDTO.swift */; };
 		59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */; };
 		59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */; };
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
@@ -155,7 +155,7 @@
 		59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
 		59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layer.swift"; sourceTree = "<group>"; };
 		59D8F1022B0FC4F700A08E02 /* PostCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateViewModel.swift; sourceTree = "<group>"; };
-		59D8F1042B103A7200A08E02 /* PostCreateRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateRequestDTO.swift; sourceTree = "<group>"; };
+		59D8F1042B103A7200A08E02 /* PostModifyRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModifyRequestDTO.swift; sourceTree = "<group>"; };
 		59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateUseCase.swift; sourceTree = "<group>"; };
 		59E0C5F82AFBA3FC0073D494 /* Village.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Village.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -494,7 +494,7 @@
 			children = (
 				4416D4792B15E7E70052BF33 /* Protocol */,
 				4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */,
-				59D8F1042B103A7200A08E02 /* PostCreateRequestDTO.swift */,
+				59D8F1042B103A7200A08E02 /* PostModifyRequestDTO.swift */,
 				8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */,
 				8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */,
 				44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */,
@@ -937,7 +937,7 @@
 				44C1F5ED2B0FE44A0047A436 /* UserResponseDTO.swift in Sources */,
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
 				8F95CF962B0C66910024631F /* Requestable.swift in Sources */,
-				59D8F1052B103A7200A08E02 /* PostCreateRequestDTO.swift in Sources */,
+				59D8F1052B103A7200A08E02 /* PostModifyRequestDTO.swift in Sources */,
 				8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */,
 				59AABDE12B0E1BB8002F6D0E /* PostCreatePriceView.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */,
