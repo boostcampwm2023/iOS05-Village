@@ -34,6 +34,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.rooms.delete(roomId);
       }
     }
+    console.log(this.rooms);
   }
 
   @SubscribeMessage('send-message')
@@ -41,7 +42,6 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() message: ChatDto,
     @ConnectedSocket() client: Websocket,
   ) {
-    console.log(message);
     const room = this.rooms.get(message['room_id']);
     const sender = message['sender'];
     await this.chatService.saveMessage(message);
@@ -53,6 +53,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
           people.send(JSON.stringify({ sender, message: message['message'] }));
       });
     }
+    client.send(JSON.stringify({ sent: true }));
   }
 
   @SubscribeMessage('join-room')
@@ -71,7 +72,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() message: object,
     @ConnectedSocket() client: Websocket,
   ) {
-    const roomId = message['room'];
+    const roomId = message['room_id'];
     const room = this.rooms.get(roomId);
     room.delete(client);
     if (room.size === 0) {

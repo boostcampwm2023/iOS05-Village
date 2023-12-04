@@ -18,7 +18,6 @@ export class ChatService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private fcmHandler: FcmHandler,
-
   ) {}
 
   async saveMessage(message: ChatDto) {
@@ -66,23 +65,27 @@ export class ChatService {
       .leftJoin('post', 'post', 'post.id = chat_room.post_id')
       .getRawMany();
 
-    return rooms.reduce((acc, cur) => {
-      acc.push({
-        room_id: cur.chat_room_id,
-        post_id: cur.chat_room_post_id,
-        post_title: cur.post_title,
-        post_thumbnail: cur.post_thumbnail,
-        user: cur['user.w_user_hash'],
-        user_profile_img: cur['user.w_profile_img'],
-        user_nickname: cur['user.w_nickname'],
-        writer: cur['user.u_user_hash'],
-        writer_profile_img: cur['user.u_profile_img'],
-        writer_nickname: cur['user.u_nickname'],
-        last_chat: cur.chat_message,
-        last_chat_date: cur.chat_create_date,
+    return rooms
+      .reduce((acc, cur) => {
+        acc.push({
+          room_id: cur.chat_room_id,
+          post_id: cur.chat_room_post_id,
+          post_title: cur.post_title,
+          post_thumbnail: cur.post_thumbnail,
+          user: cur['user.w_user_hash'],
+          user_profile_img: cur['user.w_profile_img'],
+          user_nickname: cur['user.w_nickname'],
+          writer: cur['user.u_user_hash'],
+          writer_profile_img: cur['user.u_profile_img'],
+          writer_nickname: cur['user.u_nickname'],
+          last_chat: cur.chat_message,
+          last_chat_date: cur.chat_create_date,
+        });
+        return acc;
+      }, [])
+      .sort((a, b) => {
+        return b.last_chat_date - a.last_chat_date;
       });
-      return acc;
-    }, []);
   }
 
   async findRoomById(roomId: number, userId: string) {
