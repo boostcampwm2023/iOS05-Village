@@ -17,6 +17,7 @@ final class HomeViewController: UIViewController {
     private var dataSource: HomeDataSource!
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     private var collectionView: UICollectionView!
+    private let refreshControl = UIRefreshControl()
     
     private var currentPage = CurrentValueSubject<Int, Never>(1)
     private var viewModel = ViewModel()
@@ -148,7 +149,23 @@ private extension HomeViewController {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.delegate = self
+        configureRefreshControl()
         view.addSubview(collectionView)
+    }
+    
+    private func configureRefreshControl() {
+        collectionView.refreshControl = refreshControl
+        collectionView.refreshControl?.tintColor = .primary500
+        refreshControl.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
+    }
+    
+    @objc
+    private func refreshPost() {
+        bindViewModel()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            self.collectionView.refreshControl?.endRefreshing()
+        }
     }
     
     func createLayout() -> UICollectionViewLayout {
