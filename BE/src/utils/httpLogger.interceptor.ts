@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+import { Request } from 'express';
 
 @Injectable()
 export class HttpLoggerInterceptor implements NestInterceptor {
@@ -16,22 +17,22 @@ export class HttpLoggerInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
-    const request = context.switchToHttp().getRequest();
+    const request: Request = context.switchToHttp().getRequest();
+    this.logger.debug(request.headers, 'request header');
+    this.logger.debug(request.body, 'request body');
 
     return next.handle().pipe(
       tap((data) => {
         const request = context.switchToHttp().getRequest();
         const response = context.switchToHttp().getResponse();
-        this.logger.log(
-          `${request.url} ${request.method} ${request.ip}/${response.statusCode} ${response.statusMessage}`,
+        this.logger.debug(
+          `${request.url} ${request.method} /${response.statusCode} ${response.statusMessage}`,
           'HTTP',
         );
       }),
-      catchError((err: HttpException) => {
-        this.logger.log(
-          `${request.url} ${request.method} ${
-            request.ip
-          }/${err.getStatus()} ${err.getResponse()}`,
+      catchError((err) => {
+        this.logger.error(
+          `${request.url} ${request.method} /${err}`,
           'HTTP ERROR',
         );
         return throwError(err);
