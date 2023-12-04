@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import admin from 'firebase-admin';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +12,7 @@ export interface PushMessage {
 }
 @Injectable()
 export class FcmHandler {
+  private readonly logger = new Logger('ChatsGateway');
   constructor(
     private configService: ConfigService,
     @InjectRepository(RegistrationTokenEntity)
@@ -47,10 +48,13 @@ export class FcmHandler {
       .messaging()
       .send(message)
       .then((response) => {
-        console.log('Successfully sent message:', response);
+        this.logger.debug(
+          `Push Notification Success : ${response} `,
+          'FcmHandler',
+        );
       })
       .catch((error) => {
-        console.log('Error sending message:', error);
+        this.logger.error(error, 'FcmHandler');
       });
   }
 
