@@ -7,6 +7,10 @@ import { ChatDto } from './dto/chat.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import { FcmHandler, PushMessage } from '../utils/fcmHandler';
 
+export interface ChatRoom {
+  room_id: number;
+}
+
 @Injectable()
 export class ChatService {
   constructor(
@@ -31,18 +35,19 @@ export class ChatService {
     postId: number,
     userId: string,
     writerId: string,
-  ): Promise<ChatRoomEntity> {
-    const isExist = this.chatRoomRepository.findOne({
+  ): Promise<ChatRoom> {
+    const isExist = await this.chatRoomRepository.findOne({
       where: { post_id: postId, user: userId, writer: writerId },
     });
     if (isExist) {
-      return isExist;
+      return { room_id: isExist.id };
     }
     const chatRoom = new ChatRoomEntity();
     chatRoom.post_id = postId;
     chatRoom.writer = writerId;
     chatRoom.user = userId;
-    return await this.chatRoomRepository.save(chatRoom);
+    const roomId = (await this.chatRoomRepository.save(chatRoom)).id;
+    return { room_id: roomId };
   }
 
   async findRoomList(userId: string) {
