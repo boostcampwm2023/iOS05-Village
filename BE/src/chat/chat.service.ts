@@ -1,6 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PostEntity } from '../entities/post.entity';
 import { Repository } from 'typeorm';
 import { ChatRoomEntity } from '../entities/chatRoom.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
@@ -28,13 +27,22 @@ export class ChatService {
     await this.chatRepository.save(chat);
   }
 
-  async createRoom(postId: number, userId: string, writerId: string) {
+  async createRoom(
+    postId: number,
+    userId: string,
+    writerId: string,
+  ): Promise<ChatRoomEntity> {
+    const isExist = this.chatRoomRepository.findOne({
+      where: { post_id: postId, user: userId, writer: writerId },
+    });
+    if (isExist) {
+      return isExist;
+    }
     const chatRoom = new ChatRoomEntity();
     chatRoom.post_id = postId;
     chatRoom.writer = writerId;
     chatRoom.user = userId;
-    const newChatRoom = await this.chatRoomRepository.save(chatRoom); // 없으면 새로 만들어서 저장후 리턴
-    return newChatRoom;
+    return await this.chatRoomRepository.save(chatRoom);
   }
 
   async findRoomList(userId: string) {
