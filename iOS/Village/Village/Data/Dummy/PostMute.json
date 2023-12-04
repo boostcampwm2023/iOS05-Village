@@ -1,0 +1,35 @@
+
+{
+    [
+      {
+        "title": "닌텐도 스위치",
+        "post_id": 1,
+        "user_id": "undefined",
+        "is_request": false,
+        "images": [
+            "https://cdn-icons-png.flaticon.com/512/12719/12719172.png",
+            "https://cdn-icons-png.flaticon.com/512/12719/12719172.png",
+            "https://cdn-icons-png.flaticon.com/512/12719/12719172.png"
+        ]
+      },
+      {
+        "title": "플레이스테이션 5",
+        "price": null,
+        "post_id": 2,
+        "user_id": "undefined",
+        "is_request": true,
+        "images": [],
+      },
+      {
+        "title": "에어팟 맥스",
+        "post_id": 3,
+        "user_id": "undefined",
+        "is_request": false,
+        "images": [
+            "https://cdn-icons-png.flaticon.com/512/12719/12719172.png",
+            "https://cdn-icons-png.flaticon.com/512/12719/12719172.png",
+            "https://cdn-icons-png.flaticon.com/512/12719/12719172.png"
+        ]
+      }
+    ]
+}
