@@ -181,6 +181,26 @@ final class PostCreateTimeView: UIStackView {
         timeWarningLabel.alpha = alpha
     }
     
+    func setEdit(time: String) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm"
+        let fullTimeString = time.components(separatedBy: "T")
+        guard let dateString = fullTimeString.first,
+              let timeString = fullTimeString.last else {
+            return
+        }
+        guard let date = dateFormatter.date(from: dateString),
+              let hourIndex = hours.firstIndex(of: String(timeString.prefix(5))) else {
+            return
+        }
+        datePicker.date = date
+        hourPicker.selectRow(hourIndex, inComponent: 0, animated: false)
+        dateTextField.text = dateString
+        hourTextField.text = String(timeString.prefix(5))
+    }
+    
 }
 
 private extension PostCreateTimeView {

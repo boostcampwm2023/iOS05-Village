@@ -68,6 +68,9 @@ final class PostCreateDetailView: UIStackView {
         endEditing(true)
     }
     
+    func setEdit(detail: String) {
+        detailTextView.text = detail
+    }
 }
 
 private extension PostCreateDetailView {

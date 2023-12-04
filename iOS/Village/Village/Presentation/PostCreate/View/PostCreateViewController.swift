@@ -186,6 +186,25 @@ final class PostCreateViewController: UIViewController {
                 self?.postCreatePriceView.warn(!bool)
             }
             .store(in: &cancellableBag)
+        
+        output.endResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.dismiss(animated: true)
+            }
+            .store(in: &cancellableBag)
+        
+    }
+    
+    func setEdit(post: PostResponseDTO) {
+        postCreateTitleView.setEdit(title: post.title)
+        postCreateDetailView.setEdit(detail: post.description)
+        postCreateStartTimeView.setEdit(time: post.startDate)
+        postCreateEndTimeView.setEdit(time: post.endDate)
+        if !post.isRequest {
+            postCreatePriceView.setEdit(price: post.price)
+        }
+        viewModel.setEdit(post: post)
     }
     
 }

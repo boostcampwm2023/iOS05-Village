@@ -13,6 +13,7 @@ final class PostDetailViewModel {
     private var post = PassthroughSubject<PostResponseDTO, NetworkError>()
     private var user = PassthroughSubject<UserResponseDTO, NetworkError>()
     private var cancellableBag = Set<AnyCancellable>()
+    var postDTO: PostResponseDTO?
     
     func transform(input: Input) -> Output {
         input.postID
@@ -37,6 +38,16 @@ final class PostDetailViewModel {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
                 post.send(data)
+                postDTO = PostResponseDTO(
+                    title: data.title,
+                    description: data.description,
+                    price: data.price,
+                    userID: data.userID,
+                    imageURL: data.imageURL,
+                    isRequest: data.isRequest,
+                    startDate: data.startDate,
+                    endDate: data.endDate
+                )
             } catch let error as NetworkError {
                 post.send(completion: .failure(error))
             }

@@ -25,13 +25,13 @@ final class PostCreateViewModel {
     private var isValidEndTime: Bool = false
     private var isValidPrice: Bool = false
     private var isValidPostCreate: Bool {
-        let rentBool = 
+        let rentBool =
         !isRequest &&
         isValidTitle &&
         isValidStartTime &&
         isValidEndTime &&
         isValidPrice
-        let requestBool = 
+        let requestBool =
         isRequest &&
         isValidTitle &&
         isValidStartTime &&
@@ -45,6 +45,7 @@ final class PostCreateViewModel {
     private let postButtonTappedStartTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedEndTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedPriceWarningOutput = PassthroughSubject<Bool, Never>()
+    private let endOutput = PassthroughSubject<Void, Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -178,6 +179,7 @@ final class PostCreateViewModel {
                     } else {
                         postCreate()
                     }
+                    endOutput.send()
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
                     postButtonTappedStartTimeWarningOutput.send(isValidStartTime)
@@ -193,8 +195,22 @@ final class PostCreateViewModel {
             postButtonTappedTitleWarningResult: postButtonTappedTitleWarningOutput.eraseToAnyPublisher(),
             postButtonTappedStartTimeWarningResult: postButtonTappedStartTimeWarningOutput.eraseToAnyPublisher(),
             postButtonTappedEndTimeWarningResult: postButtonTappedEndTimeWarningOutput.eraseToAnyPublisher(),
-            postButtonTappedPriceWarningResult: postButtonTappedPriceWarningOutput.eraseToAnyPublisher()
+            postButtonTappedPriceWarningResult: postButtonTappedPriceWarningOutput.eraseToAnyPublisher(),
+            endResult: endOutput.eraseToAnyPublisher()
         )
+    }
+    
+    func setEdit(post: PostResponseDTO) {
+        titleInput = post.title
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.000Z"
+        startTimeInput = formatter.date(from: post.startDate)
+        endTimeInput = formatter.date(from: post.endDate)
+        if !isRequest {
+            priceInput = post.price
+        }
+        detailInput = post.description
+        validate()
     }
     
 }
@@ -250,6 +266,7 @@ extension PostCreateViewModel {
         var postButtonTappedStartTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedEndTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedPriceWarningResult: AnyPublisher<Bool, Never>
+        var endResult: AnyPublisher<Void, Never>
         
     }
     
