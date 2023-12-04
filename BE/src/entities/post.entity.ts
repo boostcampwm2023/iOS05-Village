@@ -26,7 +26,7 @@ export class PostEntity {
   price: number;
 
   @Column({ type: 'text', nullable: false, charset: 'utf8' })
-  contents: string;
+  description: string;
 
   @Column({ nullable: false })
   user_id: number;

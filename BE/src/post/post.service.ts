@@ -90,7 +90,7 @@ export class PostService {
       return {
         title: filteredPost.title,
         price: filteredPost.price,
-        description: filteredPost.contents,
+        description: filteredPost.description,
         post_id: filteredPost.id,
         user_id: filteredPost.user.user_hash,
         is_request: filteredPost.is_request,
@@ -117,7 +117,7 @@ export class PostService {
     }
     return {
       title: post.title,
-      description: post.contents,
+      description: post.description,
       price: post.price,
       user_id: post.user.user_hash,
       images: post.post_images.map((post_image) => post_image.image_url),
@@ -205,7 +205,7 @@ export class PostService {
       where: { user_hash: userHash },
     });
     post.title = createPostDto.title;
-    post.contents = createPostDto.description;
+    post.description = createPostDto.description;
     post.price = createPostDto.price;
     post.is_request = createPostDto.is_request;
     post.start_date = createPostDto.start_date;
