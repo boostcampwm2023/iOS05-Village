@@ -166,6 +166,7 @@ extension ChatListViewController: UITableViewDelegate {
     
     func handleAlertOKAction() {
         print("ok.")
+        viewModel.deleteChatRoom(roomID: 1)
     }
     
 }
