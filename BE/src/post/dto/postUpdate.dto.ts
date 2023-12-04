@@ -7,7 +7,7 @@ export class UpdatePostDto {
 
   @IsOptional()
   @IsString()
-  contents?: string;
+  description?: string;
 
   @IsOptional()
   @IsNumber() // 전화번호 형식 검증
