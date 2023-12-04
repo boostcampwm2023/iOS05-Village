@@ -132,6 +132,10 @@ final class PostDetailViewController: UIViewController {
             // TODO: modify post
         }
         
+        let deleteAction = UIAlertAction(title: "게시글 삭제하기", style: .destructive) { _ in
+            // TODO: delete post
+        }
+        
         let hideAction = UIAlertAction(title: "이 글 숨기기", style: .default) { _ in
             // TODO: hide post
         }
@@ -148,6 +152,7 @@ final class PostDetailViewController: UIViewController {
             alert.addAction(cancelAction)
         } else {
             alert.addAction(modifyAction)
+            alert.addAction(deleteAction)
             alert.addAction(cancelAction)
         }
         
