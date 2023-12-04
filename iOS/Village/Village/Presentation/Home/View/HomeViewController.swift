@@ -103,14 +103,14 @@ final class HomeViewController: UIViewController {
     private func setMenuUI() {
         let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
         let presentPostRequestNC = UIAction(title: "대여 요청하기") { [weak self] _ in
-            let requestViewModel = PostCreateViewModel(useCase: useCase, postType: .request, isEdit: false)
+            let requestViewModel = PostCreateViewModel(useCase: useCase, postType: .request, isEdit: false, postID: nil)
             let postRequestVC = PostCreateViewController(viewModel: requestViewModel)
             let postRequestNC = UINavigationController(rootViewController: postRequestVC)
             postRequestNC.modalPresentationStyle = .fullScreen
             self?.present(postRequestNC, animated: true)
         }
         let presentPostRentNC = UIAction(title: "대여 등록하기") { [weak self] _ in
-            let rentViewModel = PostCreateViewModel(useCase: useCase, postType: .rent, isEdit: false)
+            let rentViewModel = PostCreateViewModel(useCase: useCase, postType: .rent, isEdit: false, postID: nil)
             let postRentVC = PostCreateViewController(viewModel: rentViewModel)
             let postRentNC = UINavigationController(rootViewController: postRentVC)
             postRentNC.modalPresentationStyle = .fullScreen

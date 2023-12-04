@@ -55,6 +55,16 @@ struct APIEndPoints {
         )
     }
     
+    static func editPost(with requestDTO: PostCreateRequestDTO, postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/\(postID)",
+            method: .PATCH,
+            bodyParameters: requestDTO.httpBody,
+            headers: header?.mergeWith(["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"])
+        )
+    }
+    
     static func getChatList(with chatListResponse: ChatListRequestDTO) -> EndPoint<[ChatListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,

@@ -12,6 +12,7 @@ final class PostCreateViewModel {
     
     let postType: PostType
     let isEdit: Bool
+    let postID: Int?
     
     private var titleInput: String = ""
     private var startTimeInput: Date?
@@ -53,10 +54,14 @@ final class PostCreateViewModel {
 //            postCreateTask?.cancel()
 //        }
 //    }
-    
-    func postCreate() {
+    private let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        
+        return formatter
+    }()
+    
+    func postCreate() {
         guard let startTime = startTimeInput,
               let endTime = endTimeInput else { return }
         let startTimeString = formatter.string(from: startTime)
@@ -85,15 +90,40 @@ final class PostCreateViewModel {
     }
     
     func postEdit() {
+        guard let startTime = startTimeInput,
+              let endTime = endTimeInput else { return }
+        let startTimeString = formatter.string(from: startTime)
+        let endTimeString = formatter.string(from: endTime)
+        guard let id = postID else { return }
         
+        let endPoint = APIEndPoints.editPost(
+            with: PostCreateRequestDTO(
+                postInfo: PostInfoDTO(
+                    title: titleInput,
+                    description: detailInput,
+                    price: priceInput,
+                    isRequest: postType == .request,
+                    startDate: startTimeString,
+                    endDate: endTimeString
+                ),
+                image: []
+            ),
+            postID: id
+        )
+        Task {
+            do {
+                try await APIProvider.shared.multipartRequest(with: endPoint)
+            } catch {
+                dump(error)
+            }
+        }
     }
-
     
-    
-    init(useCase: PostCreateUseCase, postType: PostType, isEdit: Bool) {
+    init(useCase: PostCreateUseCase, postType: PostType, isEdit: Bool, postID: Int?) {
         self.useCase = useCase
         self.postType = postType
         self.isEdit = isEdit
+        self.postID = postID
     }
     
     func transform(input: Input) -> Output {
