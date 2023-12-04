@@ -10,7 +10,7 @@ import Combine
 
 final class PostCreateViewModel {
     
-    let postType: PostType
+    let isRequest: Bool
     let isEdit: Bool
     let postID: Int?
     
@@ -26,13 +26,13 @@ final class PostCreateViewModel {
     private var isValidPrice: Bool = false
     private var isValidPostCreate: Bool {
         let rentBool = 
-        postType == .rent &&
+        !isRequest &&
         isValidTitle &&
         isValidStartTime &&
         isValidEndTime &&
         isValidPrice
         let requestBool = 
-        postType == .request &&
+        isRequest &&
         isValidTitle &&
         isValidStartTime &&
         isValidEndTime
@@ -49,11 +49,6 @@ final class PostCreateViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     
     private let useCase: PostCreateUseCase
-//    private var postCreateTask: Cancellable? {
-//        willSet {
-//            postCreateTask?.cancel()
-//        }
-//    }
     private let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
@@ -73,7 +68,7 @@ final class PostCreateViewModel {
                     title: titleInput,
                     description: detailInput,
                     price: priceInput,
-                    isRequest: postType == .request,
+                    isRequest: isRequest,
                     startDate: startTimeString,
                     endDate: endTimeString
                 ),
@@ -102,7 +97,7 @@ final class PostCreateViewModel {
                     title: titleInput,
                     description: detailInput,
                     price: priceInput,
-                    isRequest: postType == .request,
+                    isRequest: isRequest,
                     startDate: startTimeString,
                     endDate: endTimeString
                 ),
@@ -119,9 +114,9 @@ final class PostCreateViewModel {
         }
     }
     
-    init(useCase: PostCreateUseCase, postType: PostType, isEdit: Bool, postID: Int?) {
+    init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int?) {
         self.useCase = useCase
-        self.postType = postType
+        self.isRequest = isRequest
         self.isEdit = isEdit
         self.postID = postID
     }
@@ -145,7 +140,7 @@ final class PostCreateViewModel {
             }
             .store(in: &cancellableBag)
         
-        if postType == .rent {
+        if !isRequest {
             input.priceSubject
                 .sink(receiveValue: { [weak self] priceString in
                     let price = priceString.replacingOccurrences(of: ",", with: "")
@@ -187,7 +182,7 @@ final class PostCreateViewModel {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
                     postButtonTappedStartTimeWarningOutput.send(isValidStartTime)
                     postButtonTappedEndTimeWarningOutput.send(isValidEndTime)
-                    if postType == .rent {
+                    if !isRequest {
                         postButtonTappedPriceWarningOutput.send(isValidPrice)
                     }
                 }

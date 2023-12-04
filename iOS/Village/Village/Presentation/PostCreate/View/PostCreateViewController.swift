@@ -8,13 +8,6 @@
 import UIKit
 import Combine
 
-enum PostType {
-    
-    case rent
-    case request
-    
-}
-
 final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
@@ -67,14 +60,14 @@ final class PostCreateViewController: UIViewController {
     }()
     
     private lazy var postCreateStartTimeView: PostCreateTimeView = {
-        let view = PostCreateTimeView(postType: viewModel.postType, timeType: .start)
+        let view = PostCreateTimeView(isRequest: viewModel.isRequest, timeType: .start)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
     private lazy var postCreateEndTimeView: PostCreateTimeView = {
-        let view = PostCreateTimeView(postType: viewModel.postType, timeType: .end)
+        let view = PostCreateTimeView(isRequest: viewModel.isRequest, timeType: .end)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -273,7 +266,7 @@ private extension PostCreateViewController {
         stackView.addArrangedSubview(postCreateStartTimeView)
         stackView.addArrangedSubview(postCreateEndTimeView)
         
-        if viewModel.postType == .rent {
+        if !viewModel.isRequest {
             stackView.addArrangedSubview(postCreatePriceView)
         }
         
@@ -316,7 +309,7 @@ private extension PostCreateViewController {
             postCreateDetailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         
-        if viewModel.postType == .rent {
+        if !viewModel.isRequest {
             NSLayoutConstraint.activate([
                 postCreatePriceView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
             ])
@@ -325,11 +318,10 @@ private extension PostCreateViewController {
     
     func configureNavigation() {
         let titleLabel = UILabel()
-        switch viewModel.postType {
-        case .rent:
-            titleLabel.setTitle("대여 등록")
-        case .request:
+        if viewModel.isRequest {
             titleLabel.setTitle("대여 요청 등록")
+        } else {
+            titleLabel.setTitle("대여 등록")
         }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let close = self.navigationItem.makeSFSymbolButton(
