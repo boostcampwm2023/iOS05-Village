@@ -81,6 +81,9 @@ export class PostService {
       skip: offset,
       where: this.makeWhereOption(query),
       relations: ['post_images', 'user'],
+      order: {
+        create_date: 'desc',
+      },
     });
     const filteredPosts = await this.filterBlockedPosts(userId, posts);
     return filteredPosts.map((filteredPost) => {
