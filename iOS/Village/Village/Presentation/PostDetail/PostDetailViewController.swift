@@ -126,7 +126,21 @@ final class PostDetailViewController: UIViewController {
     
     @objc
     private func moreBarButtonTapped() {
-        // TODO: 더보기 버튼 기능 구현
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let hideAction = UIAlertAction(title: "이 글 숨기기", style: .default) { _ in
+            // TODO: hide post
+        }
+        let banAction = UIAlertAction(title: "사용자 차단하기", style: .default) { _ in
+            // TODO: ban user
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        alert.addAction(hideAction)
+        alert.addAction(banAction)
+        alert.addAction(cancelAction)
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     @objc
