@@ -17,24 +17,23 @@ final class LoginViewModel {
         Publishers.Zip(input.identityToken, input.authorizationCode)
             .sink(receiveValue: { [weak self] (token, code) in
                 guard let tokenString = String(data: token, encoding: .utf8),
-                      let codeString = String(data: code, encoding: .utf8),
-                      let email = tokenString.decode()["email"] as? String else { return }
+                      let codeString = String(data: code, encoding: .utf8) else { return }
                 
                 let dto = AppleOAuthDTO(identityToken: tokenString, authorizationCode: codeString)
-                self?.login(email: email, dto: dto)
+                self?.login(dto: dto)
             })
             .store(in: &cancellableBag)
         
         return Output(loginSucceed: loginSucceed.eraseToAnyPublisher())
     }
     
-    private func login(email: String, dto: AppleOAuthDTO) {
+    private func login(dto: AppleOAuthDTO) {
         let endpoint = APIEndPoints.loginAppleOAuth(with: dto)
         Task {
             do {
                 guard let token = try await APIProvider.shared.request(with: endpoint) else { return }
                 
-                JWTManager.shared.save(email: email, token: token)
+                try JWTManager.shared.save(token: token)
                 loginSucceed.send()
             } catch let error {
                 loginSucceed.send(completion: .failure(error))
