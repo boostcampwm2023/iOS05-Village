@@ -38,6 +38,11 @@
 		59110EFB2B15F3D60009E9AC /* ChatRoomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110EFA2B15F3D60009E9AC /* ChatRoomTableViewCell.swift */; };
 		59110EFD2B15F5340009E9AC /* UITableViewCell+Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */; };
 		59110F042B1725C20009E9AC /* NotificationName+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110F032B1725C20009E9AC /* NotificationName+.swift */; };
+		595C29B52B1E0BEE00C41FAC /* PostUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595C29B42B1E0BEE00C41FAC /* PostUseCase.swift */; };
+		595C29B72B1E0C0100C41FAC /* PostEditUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595C29B62B1E0C0100C41FAC /* PostEditUseCase.swift */; };
+		595C29B92B1E0E8A00C41FAC /* PostEditRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595C29B82B1E0E8A00C41FAC /* PostEditRequestDTO.swift */; };
+		595C29BB2B1E0F6F00C41FAC /* NSMutableData+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595C29BA2B1E0F6F00C41FAC /* NSMutableData+.swift */; };
+		595C29BD2B1E0F9B00C41FAC /* PostInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595C29BC2B1E0F9B00C41FAC /* PostInfoDTO.swift */; };
 		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
 		5975E98C2B035919007CEF13 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* Users.json */; };
@@ -58,7 +63,7 @@
 		59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */; };
 		59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */; };
 		59D8F1032B0FC4F700A08E02 /* PostCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1022B0FC4F700A08E02 /* PostCreateViewModel.swift */; };
-		59D8F1052B103A7200A08E02 /* PostCreateRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1042B103A7200A08E02 /* PostCreateRequestDTO.swift */; };
+		59D8F1052B103A7200A08E02 /* PostModifyDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1042B103A7200A08E02 /* PostModifyDTO.swift */; };
 		59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */; };
 		59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */; };
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
@@ -138,6 +143,11 @@
 		59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Identifier.swift"; sourceTree = "<group>"; };
 		59110F022B1714BE0009E9AC /* Village.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Village.entitlements; sourceTree = "<group>"; };
 		59110F032B1725C20009E9AC /* NotificationName+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationName+.swift"; sourceTree = "<group>"; };
+		595C29B42B1E0BEE00C41FAC /* PostUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostUseCase.swift; sourceTree = "<group>"; };
+		595C29B62B1E0C0100C41FAC /* PostEditUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostEditUseCase.swift; sourceTree = "<group>"; };
+		595C29B82B1E0E8A00C41FAC /* PostEditRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostEditRequestDTO.swift; sourceTree = "<group>"; };
+		595C29BA2B1E0F6F00C41FAC /* NSMutableData+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableData+.swift"; sourceTree = "<group>"; };
+		595C29BC2B1E0F9B00C41FAC /* PostInfoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoDTO.swift; sourceTree = "<group>"; };
 		5975E9872B035919007CEF13 /* Post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Post.json; sourceTree = "<group>"; };
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
 		5975E9892B035919007CEF13 /* Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Users.json; sourceTree = "<group>"; };
@@ -155,7 +165,7 @@
 		59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
 		59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layer.swift"; sourceTree = "<group>"; };
 		59D8F1022B0FC4F700A08E02 /* PostCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateViewModel.swift; sourceTree = "<group>"; };
-		59D8F1042B103A7200A08E02 /* PostCreateRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateRequestDTO.swift; sourceTree = "<group>"; };
+		59D8F1042B103A7200A08E02 /* PostModifyDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModifyDTO.swift; sourceTree = "<group>"; };
 		59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateUseCase.swift; sourceTree = "<group>"; };
 		59E0C5F82AFBA3FC0073D494 /* Village.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Village.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -343,6 +353,16 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		595C29B32B1E0BD900C41FAC /* UseCase */ = {
+			isa = PBXGroup;
+			children = (
+				595C29B42B1E0BEE00C41FAC /* PostUseCase.swift */,
+				59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */,
+				595C29B62B1E0C0100C41FAC /* PostEditUseCase.swift */,
+			);
+			path = UseCase;
+			sourceTree = "<group>";
+		};
 		5975E98D2B03591E007CEF13 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -408,7 +428,6 @@
 			isa = PBXGroup;
 			children = (
 				5980D75E2B0FB6DB00A6B370 /* PostCreateRepository.swift */,
-				59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */,
 				59D8F1022B0FC4F700A08E02 /* PostCreateViewModel.swift */,
 			);
 			path = ViewModel;
@@ -466,6 +485,7 @@
 		59E196C72B045EFA00BF7C5A /* PostCreate */ = {
 			isa = PBXGroup;
 			children = (
+				595C29B32B1E0BD900C41FAC /* UseCase */,
 				59BD5DD12B0C786600FEB80F /* ViewModel */,
 				59BD5DD02B0C785900FEB80F /* View */,
 			);
@@ -494,7 +514,9 @@
 			children = (
 				4416D4792B15E7E70052BF33 /* Protocol */,
 				4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */,
-				59D8F1042B103A7200A08E02 /* PostCreateRequestDTO.swift */,
+				59D8F1042B103A7200A08E02 /* PostModifyDTO.swift */,
+				595C29BC2B1E0F9B00C41FAC /* PostInfoDTO.swift */,
+				595C29B82B1E0E8A00C41FAC /* PostEditRequestDTO.swift */,
 				8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */,
 				8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */,
 				44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */,
@@ -635,6 +657,7 @@
 				8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */,
 				59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */,
 				59110F032B1725C20009E9AC /* NotificationName+.swift */,
+				595C29BA2B1E0F6F00C41FAC /* NSMutableData+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -883,8 +906,11 @@
 				8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */,
 				4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */,
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
+				595C29B72B1E0C0100C41FAC /* PostEditUseCase.swift in Sources */,
 				59BA10FA2B1CC3F700F30DB8 /* FCMManager.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
+				595C29B92B1E0E8A00C41FAC /* PostEditRequestDTO.swift in Sources */,
+				595C29BB2B1E0F6F00C41FAC /* NSMutableData+.swift in Sources */,
 				8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */,
 				4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */,
 				5980D75F2B0FB6DB00A6B370 /* PostCreateRepository.swift in Sources */,
@@ -912,6 +938,7 @@
 				444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
 				446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */,
+				595C29B52B1E0BEE00C41FAC /* PostUseCase.swift in Sources */,
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
 				8F95CF9A2B0C7C440024631F /* EndPoint.swift in Sources */,
 				4416D47E2B171BF30052BF33 /* LoginViewModel.swift in Sources */,
@@ -937,7 +964,8 @@
 				44C1F5ED2B0FE44A0047A436 /* UserResponseDTO.swift in Sources */,
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
 				8F95CF962B0C66910024631F /* Requestable.swift in Sources */,
-				59D8F1052B103A7200A08E02 /* PostCreateRequestDTO.swift in Sources */,
+				59D8F1052B103A7200A08E02 /* PostModifyDTO.swift in Sources */,
+				595C29BD2B1E0F9B00C41FAC /* PostInfoDTO.swift in Sources */,
 				8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */,
 				59AABDE12B0E1BB8002F6D0E /* PostCreatePriceView.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */,

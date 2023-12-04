@@ -45,23 +45,19 @@ struct APIEndPoints {
         )
     }
     
-    static func createPost(with requestDTO: PostCreateRequestDTO) -> EndPoint<Void> {
+    static func modifyPost(with modifyDTO: PostModifyDTO) -> EndPoint<Void> {
+        var path = "posts"
+        var method = HTTPMethod.POST
+        if let id = modifyDTO.postID {
+            path += "\(id)"
+            method = .PATCH
+        }
         return EndPoint(
             baseURL: baseURL,
-            path: "posts",
-            method: .POST,
-            bodyParameters: requestDTO.httpBody,
-            headers: header?.mergeWith(["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"])
-        )
-    }
-    
-    static func editPost(with requestDTO: PostCreateRequestDTO, postID: Int) -> EndPoint<Void> {
-        return EndPoint(
-            baseURL: baseURL,
-            path: "posts/\(postID)",
-            method: .PATCH,
-            bodyParameters: requestDTO.httpBody,
-            headers: header?.mergeWith(["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"])
+            path: path,
+            method: method,
+            bodyParameters: modifyDTO.httpBody,
+            headers: header?.mergeWith(["Content-Type": "multipart/form-data; boundary=\(modifyDTO.boundary)"])
         )
     }
     

@@ -49,7 +49,7 @@ final class PostCreateViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     
-    private let useCase: PostCreateUseCase
+    private let useCase: PostUseCase
     private let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
@@ -57,62 +57,26 @@ final class PostCreateViewModel {
         return formatter
     }()
     
-    func postCreate() {
-        guard let startTime = startTimeInput,
-              let endTime = endTimeInput else { return }
-        let startTimeString = formatter.string(from: startTime)
-        let endTimeString = formatter.string(from: endTime)
-        
-        let endPoint = APIEndPoints.createPost(
-            with: PostCreateRequestDTO(
-                postInfo: PostInfoDTO(
-                    title: titleInput,
-                    description: detailInput,
-                    price: priceInput,
-                    isRequest: isRequest,
-                    startDate: startTimeString,
-                    endDate: endTimeString
-                ),
-                image: []
-            )
-        )
-        Task {
-            do {
-                try await APIProvider.shared.multipartRequest(with: endPoint)
-            } catch {
-                dump(error)
-            }
-        }
-    }
-    
-    func postEdit() {
+    func execute() {
         guard let startTime = startTimeInput,
               let endTime = endTimeInput else { return }
         let startTimeString = formatter.string(from: startTime)
         let endTimeString = formatter.string(from: endTime)
         guard let id = postID else { return }
         
-        let endPoint = APIEndPoints.editPost(
-            with: PostCreateRequestDTO(
-                postInfo: PostInfoDTO(
-                    title: titleInput,
-                    description: detailInput,
-                    price: priceInput,
-                    isRequest: isRequest,
-                    startDate: startTimeString,
-                    endDate: endTimeString
-                ),
-                image: []
+        let postModifyDTO = PostModifyDTO(
+            postInfo: PostInfoDTO(
+                title: titleInput,
+                description: detailInput,
+                price: priceInput,
+                isRequest: isRequest,
+                startDate: startTimeString,
+                endDate: endTimeString
             ),
+            image: [],
             postID: id
         )
-        Task {
-            do {
-                try await APIProvider.shared.multipartRequest(with: endPoint)
-            } catch {
-                dump(error)
-            }
-        }
+        useCase.execute(with: postModifyDTO)
     }
     
     init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int?) {
@@ -174,11 +138,7 @@ final class PostCreateViewModel {
                 guard let self = self else { return }
                 validate()
                 if isValidPostCreate {
-                    if isEdit {
-                        postEdit()
-                    } else {
-                        postCreate()
-                    }
+                    execute()
                     endOutput.send()
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)

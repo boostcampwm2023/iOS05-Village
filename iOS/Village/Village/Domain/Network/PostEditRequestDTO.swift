@@ -1,17 +1,17 @@
 //
-//  PostCreateRequestDTO.swift
+//  PostEditRequestDTO.swift
 //  Village
 //
-//  Created by 조성민 on 11/24/23.
+//  Created by 조성민 on 12/4/23.
 //
 
 import Foundation
 
-struct PostCreateRequestDTO: Encodable, MultipartFormData {
+struct PostEditRequestDTO: Encodable, MultipartFormData {
     
     let postInfo: PostInfoDTO
     let image: [Data]
-    
+    let postID: Int
     let boundary = UUID().uuidString
     
     var httpBody: Data {
@@ -42,39 +42,5 @@ struct PostCreateRequestDTO: Encodable, MultipartFormData {
         return body as Data
     }
     
-    enum CodingKeys: String, CodingKey {
-        case postInfo = "post_info"
-        case image
-    }
-    
-}
-
-struct PostInfoDTO: Encodable {
-    
-    let title: String
-    let description: String
-    let price: Int?
-    let isRequest: Bool
-    let startDate: String
-    let endDate: String
-    
-    enum CodingKeys: String, CodingKey {
-        case title
-        case price
-        case description
-        case isRequest = "is_request"
-        case startDate = "start_date"
-        case endDate = "end_date"
-    }
-    
-}
-
-private extension NSMutableData {
-    
-    func appendString(_ string: String) {
-        if let data = string.data(using: .utf8) {
-            self.append(data)
-        }
-    }
     
 }
