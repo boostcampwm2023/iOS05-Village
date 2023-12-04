@@ -11,49 +11,45 @@ final class JWTManager {
     
     static let shared = JWTManager()
     
-    private let lastLoggedEmailKey = "lastLoggedEmail"
-    private var userEmail: String? {
-        UserDefaults.standard.string(forKey: lastLoggedEmailKey)
+    private let keychainManager = KeychainManager<AuthenticationToken>()
+    
+    private let currentUserIDKey = "currentUserID"
+    private var currentUserID: String? {
+        UserDefaults.standard.string(forKey: currentUserIDKey)
     }
     
     func get() -> AuthenticationToken? {
-        guard let email = userEmail else { return nil }
+        guard let userID = currentUserID else { return nil }
         
-        return KeychainManager.shared.read(email: email)
+        return keychainManager.read(key: userID)
     }
     
-    func save(email: String, token: AuthenticationToken) {
-        UserDefaults.standard.setValue(email, forKey: lastLoggedEmailKey)
+    func save(token: AuthenticationToken) throws {
+        guard let userID = token.accessToken.decode()["userId"] as? String else { return }
+        
+        UserDefaults.standard.setValue(userID, forKey: currentUserIDKey)
         
         do {
-            try KeychainManager.shared.write(email: email, token: token)
+            try keychainManager.write(key: userID, value: token)
         } catch let error as KeychainError {
             if case .duplicate = error {
-                try? KeychainManager.shared.update(email: email, token: token)
+                try? keychainManager.update(key: userID, newValue: token)
             }
         } catch let error {
-            dump(error)
+            throw error
         }
     }
     
     func delete() throws {
-        guard let email = userEmail else { return }
+        guard let userID = currentUserID else { return }
         
-        do {
-            try KeychainManager.shared.delete(email: email)
-        } catch let error {
-            dump(error)
-        }
+        try keychainManager.delete(key: userID)
     }
     
     func update(token: AuthenticationToken) throws {
-        guard let email = userEmail else { return }
+        guard let userID = currentUserID else { return }
         
-        do {
-            try KeychainManager.shared.update(email: email, token: token)
-        } catch let error {
-            dump(error)
-        }
+        try keychainManager.update(key: userID, newValue: token)
     }
     
 }
