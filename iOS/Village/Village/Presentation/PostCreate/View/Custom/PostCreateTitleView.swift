@@ -91,6 +91,10 @@ final class PostCreateTitleView: UIStackView {
         titleWarningLabel.alpha = alpha
     }
     
+    func setEdit(title: String) {
+        titleTextField.text = title
+    }
+    
 }
 
 private extension PostCreateTitleView {

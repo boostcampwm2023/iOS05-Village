@@ -128,15 +128,26 @@ final class PostDetailViewController: UIViewController {
     private func moreBarButtonTapped() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let modifyAction = UIAlertAction(title: "게시글 편집하기", style: .default) { _ in
-            // TODO: modify post
+        let modifyAction = UIAlertAction(title: "편집하기", style: .default) { [weak self] _ in
+            guard let isRequest = self?.isRequest  else { return }
+            let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
+            let postCreateViewModel = PostCreateViewModel(
+                useCase: useCase,
+                isRequest: isRequest,
+                isEdit: true,
+                postID: self?.postID.output
+            )
+            let editVC = PostCreateViewController(viewModel: postCreateViewModel)
+            guard let post = self?.viewModel.postDTO else { return }
+            self?.present(editVC, animated: true)
+            editVC.setEdit(post: post)
         }
         
-        let deleteAction = UIAlertAction(title: "게시글 삭제하기", style: .destructive) { _ in
+        let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { _ in
             // TODO: delete post
         }
         
-        let hideAction = UIAlertAction(title: "이 글 숨기기", style: .default) { _ in
+        let hideAction = UIAlertAction(title: "숨기기", style: .default) { _ in
             // TODO: hide post
         }
         
