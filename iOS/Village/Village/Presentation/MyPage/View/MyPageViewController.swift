@@ -234,7 +234,6 @@ private extension MyPageViewController {
         accountStackView.addArrangedSubview(accountLabel)
         accountStackView.addArrangedSubview(logoutButton)
         accountStackView.addArrangedSubview(deleteAccountButton)
-        
     }
     
     func setConstraints() {

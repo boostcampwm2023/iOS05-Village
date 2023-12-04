@@ -95,6 +95,16 @@ struct APIEndPoints {
             headers: header?.mergeWith(["Content-Type": "application/json"])
         )
     }
+    
+    static func fcmTokenSend(fcmToken: String) -> EndPoint<String> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/registration-token",
+            method: .POST,
+            bodyParameters: ["registration_token": fcmToken],
+            headers: header?.mergeWith(["Content-Type": "application/json"])
+        )
+    }
   
 }
 
