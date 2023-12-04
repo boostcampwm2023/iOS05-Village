@@ -8,36 +8,32 @@
 import Foundation
 
 protocol Provider {
-    
     func request<R: Decodable, E: Requestable&Responsable>(with endpoint: E) async throws -> R? where E.Response == R
+    func request<E: Requestable>(with endpoint: E) async throws -> Data?
     func request(from url: String) async throws -> Data
-    
 }
 
 final class APIProvider: Provider {
     
-    static let shared = APIProvider()
+    static let shared = APIProvider(interceptor: AuthInterceptor())
     
     let session: URLSession
+    private let interceptor: Interceptor?
     
-    init(session: URLSession = URLSession.shared) {
+    init(session: URLSession = URLSession.shared, interceptor: Interceptor? = nil) {
         self.session = session
+        self.interceptor = interceptor
     }
     
     func request<R: Decodable, E: Requestable&Responsable>(with endpoint: E) async throws -> R? where E.Response == R {
-        let urlRequest = try endpoint.makeURLRequest()
-        let (data, response) = try await session.data(for: urlRequest)
+        guard let data = try await sendRequest(with: endpoint) else { return nil }
         
-        try self.checkStatusCode(response)
-        
-        return try self.decode(data)
+        return try decode(data)
     }
     
-    func request<E: Requestable&Responsable>(with endpoint: E) async throws {
-        let urlRequest = try endpoint.makeURLRequest()
-        let (_, response) = try await session.data(for: urlRequest)
-        
-        try self.checkStatusCode(response)
+    @discardableResult
+    func request<E: Requestable>(with endpoint: E) async throws -> Data? {
+        return try await sendRequest(with: endpoint)
     }
     
     func request(from url: String) async throws -> Data {
@@ -47,10 +43,28 @@ final class APIProvider: Provider {
         return data
     }
     
-    func multipartRequest<E: Requestable&Responsable>(with endpoint: E) async throws {
-        let urlRequest = try endpoint.makeMultipartURLRequest()
-        let (_, response) = try await session.data(for: urlRequest)
-        try self.checkStatusCode(response)
+    private func sendRequest<E: Requestable>(with endpoint: E) async throws -> Data? {
+        guard let request = try? endpoint.makeURLRequest() else { return nil }
+        
+        var attempt = 1
+        while true {
+            guard let urlRequest = interceptor?.adapt(request: request) else { return nil }
+            let (data, response) = try await session.data(for: urlRequest)
+            do {
+                try self.checkStatusCode(response)
+                return data
+            } catch let error {
+                switch await interceptor?.retry(request: request, error: error, attempt: attempt) {
+                case .doNotRetry:
+                    throw error
+                case .doNotRetryWithError(let err):
+                    throw err
+                default:
+                    break
+                }
+            }
+            attempt += 1
+        }
     }
     
     private func checkStatusCode(_ response: URLResponse) throws {
