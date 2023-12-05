@@ -11,6 +11,7 @@ import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +29,7 @@ export class UsersService {
     @InjectRepository(RegistrationTokenEntity)
     private registrationTokenRepository: Repository<RegistrationTokenEntity>,
     private s3Handler: S3Handler,
+    private configService: ConfigService,
   ) {}
 
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
@@ -46,6 +48,9 @@ export class UsersService {
       where: { user_hash: userId },
     });
     if (user) {
+      if (user.profile_img === null) {
+        user.profile_img = this.configService.get('DEFAULT_PROFILE_IMAGE');
+      }
       return { nickname: user.nickname, profile_img: user.profile_img };
     } else {
       return null;
