@@ -63,7 +63,7 @@ final class PostCreateViewModel {
         let startTimeString = formatter.string(from: startTime)
         let endTimeString = formatter.string(from: endTime)
         
-        let endPoint = APIEndPoints.modifyPost(
+        let modifyEndPoint = APIEndPoints.modifyPost(
             with: PostModifyRequestDTO(
                 postInfo: PostInfoDTO(
                     title: titleInput,
@@ -77,13 +77,24 @@ final class PostCreateViewModel {
                 postID: postID
             )
         )
+        guard let id = postID else {
+            endOutput.send(nil)
+            return
+        }
+        let getPostEndpoint = APIEndPoints.getPost(id: id)
         Task {
             do {
-                try await APIProvider.shared.multipartRequest(with: endPoint)
-            } catch {
-                dump(error)
+                try await APIProvider.shared.multipartRequest(with: modifyEndPoint)
+                guard let data = try await APIProvider.shared.request(with: getPostEndpoint) else {
+                    self.endOutput.send(nil)
+                    return
+                }
+                self.endOutput.send(data)
+            } catch let error as NetworkError {
+                self.endOutput.send(completion: .failure(error))
             }
         }
+        
     }
     
     init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int? = nil) {
@@ -148,22 +159,6 @@ final class PostCreateViewModel {
                 if isValidPostCreate {
                     // TODO: doeifhwoighoiawerhgoiqnrgpiqrengpr
                     modifyPost()
-                    guard let id = postID else {
-                        endOutput.send(nil)
-                        return
-                    }
-                    let endpoint = APIEndPoints.getPost(id: id)
-                    Task {
-                        do {
-                            guard let data = try await APIProvider.shared.request(with: endpoint) else {
-                                self.endOutput.send(nil)
-                                return
-                            }
-                            self.endOutput.send(data)
-                        } catch let error as NetworkError {
-                            self.endOutput.send(completion: .failure(error))
-                        }
-                    }
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
                     postButtonTappedStartTimeWarningOutput.send(isValidStartTime)

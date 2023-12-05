@@ -153,7 +153,6 @@ final class PostDetailViewController: UIViewController {
                     guard let fixedPost = post else { return }
                     self?.viewModel.postDTO = fixedPost
                     self?.setPostContent(post: fixedPost)
-                    editVC.setEdit(post: fixedPost)
                 }
                 .store(in: &editVC.cancellableBag)
             guard let post = self?.viewModel.postDTO else { return }
