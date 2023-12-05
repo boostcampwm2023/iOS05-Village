@@ -6,6 +6,8 @@ import { ChatEntity } from 'src/entities/chat.entity';
 import { ChatDto } from './dto/chat.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import { FcmHandler, PushMessage } from '../utils/fcmHandler';
+import { UsersBlockController } from 'src/users-block/users-block.controller';
+import { UsersBlockService } from 'src/users-block/users-block.service';
 
 export interface ChatRoom {
   room_id: number;
@@ -21,6 +23,7 @@ export class ChatService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private fcmHandler: FcmHandler,
+    private readonly userBlockService: UsersBlockService,
   ) {}
 
   async saveMessage(message: ChatDto) {
@@ -51,6 +54,13 @@ export class ChatService {
   }
 
   async findRoomList(userId: string) {
+    const blockedUsers = (
+      await this.userBlockService.getBlockUser(userId)
+    ).reduce((acc, cur) => {
+      acc.push(cur.user_id);
+      return acc;
+    }, []);
+
     const rooms = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
       .select([
@@ -80,21 +90,28 @@ export class ChatService {
 
     return rooms
       .reduce((acc, cur) => {
-        acc.push({
-          room_id: cur.chat_room_id,
-          post_id: cur.chat_room_post_id,
-          post_title: cur.post_title,
-          post_thumbnail: cur.post_thumbnail,
-          user: cur['user.w_user_hash'],
-          user_profile_img: cur['user.w_profile_img'],
-          user_nickname: cur['user.w_nickname'],
-          writer: cur['user.u_user_hash'],
-          writer_profile_img: cur['user.u_profile_img'],
-          writer_nickname: cur['user.u_nickname'],
-          last_chat: cur.chat_message,
-          last_chat_date: cur.chat_create_date,
-        });
-        return acc;
+        if (
+          blockedUsers.includes(cur['user.w_user_hash']) ||
+          blockedUsers.includes(cur['user.u_user_hash'])
+        ) {
+          return acc;
+        } else {
+          acc.push({
+            room_id: cur.chat_room_id,
+            post_id: cur.chat_room_post_id,
+            post_title: cur.post_title,
+            post_thumbnail: cur.post_thumbnail,
+            user: cur['user.w_user_hash'],
+            user_profile_img: cur['user.w_profile_img'],
+            user_nickname: cur['user.w_nickname'],
+            writer: cur['user.u_user_hash'],
+            writer_profile_img: cur['user.u_profile_img'],
+            writer_nickname: cur['user.u_nickname'],
+            last_chat: cur.chat_message,
+            last_chat_date: cur.chat_create_date,
+          });
+          return acc;
+        }
       }, [])
       .sort((a, b) => {
         return b.last_chat_date - a.last_chat_date;

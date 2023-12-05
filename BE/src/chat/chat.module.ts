@@ -9,6 +9,8 @@ import { FcmHandler } from '../utils/fcmHandler';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
 import { UserEntity } from 'src/entities/user.entity';
+import { UsersBlockService } from 'src/users-block/users-block.service';
+import { BlockUserEntity } from 'src/entities/blockUser.entity';
 
 @Module({
   imports: [
@@ -18,9 +20,10 @@ import { UserEntity } from 'src/entities/user.entity';
       ChatEntity,
       UserEntity,
       RegistrationTokenEntity,
+      BlockUserEntity,
     ]),
   ],
   controllers: [ChatController],
-  providers: [ChatService, ChatsGateway, FcmHandler],
+  providers: [ChatService, ChatsGateway, FcmHandler, UsersBlockService],
 })
 export class ChatModule {}
