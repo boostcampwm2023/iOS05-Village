@@ -62,6 +62,8 @@ export class ChatService {
     } catch (e) {
       if (e.errno === 1452) {
         return null;
+      } else {
+        throw new HttpException('서버 오류', 500);
       }
     }
   }
