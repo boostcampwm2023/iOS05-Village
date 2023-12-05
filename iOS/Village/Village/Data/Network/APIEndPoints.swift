@@ -95,7 +95,6 @@ struct APIEndPoints {
         )
     }
     
-    
     static func loginAppleOAuth(with appleOAuthDTO: AppleOAuthDTO) -> EndPoint<AuthenticationToken> {
         EndPoint(
             baseURL: baseURL,

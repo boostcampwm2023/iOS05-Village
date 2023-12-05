@@ -71,12 +71,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
               let rootViewController = windowScene?.rootViewController as? AppTabBarController,
               let navigationController = rootViewController.selectedViewController as? UINavigationController,
               let roomIDString = content["room_id"] as? String,
+              let opponent = content["title"] as? String,
               let roomID = Int(roomIDString) else {
             completionHandler()
             return
         }
         
-        navigationController.pushViewController(ChatRoomViewController(roomID: roomID), animated: true)
+        navigationController.pushViewController(ChatRoomViewController(roomID: roomID, opponent: opponent), animated: true)
         completionHandler()
     }
     

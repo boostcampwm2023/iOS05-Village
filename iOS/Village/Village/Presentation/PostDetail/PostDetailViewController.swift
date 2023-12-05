@@ -173,10 +173,18 @@ final class PostDetailViewController: UIViewController {
     
     @objc
     private func chatButtonTapped() {
-        guard let roomID = viewModel.createChatRoom(writer: "qwe", postID: 47) else { return }
-        let nextVC = ChatRoomViewController(roomID: roomID.roomID)
-        nextVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(nextVC, animated: true)
+        guard let roomID = viewModel.createChatRoom(writer: "qwe", postID: 50149) else { return }
+        pushChatRoomViewController(roomID: roomID.roomID)
+    }
+            
+    private func pushChatRoomViewController(roomID: Int) {
+        userID.receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] userID in
+                let nextVC = ChatRoomViewController(roomID: roomID, opponent: userID)
+                nextVC.hidesBottomBarWhenPushed = true
+                self?.navigationController?.pushViewController(nextVC, animated: true)
+            })
+            .store(in: &cancellableBag)
     }
     
     private func setPostContent(post: PostResponseDTO) {
