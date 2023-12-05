@@ -45,7 +45,7 @@ final class PostCreateViewModel {
     private let postButtonTappedStartTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedEndTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedPriceWarningOutput = PassthroughSubject<Bool, Never>()
-    private let endOutput = PassthroughSubject<PostResponseDTO, Never>()
+    private let endOutput = PassthroughSubject<PostResponseDTO?, NetworkError>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -146,7 +146,24 @@ final class PostCreateViewModel {
                 validate()
                 
                 if isValidPostCreate {
+                    // TODO: doeifhwoighoiawerhgoiqnrgpiqrengpr
                     modifyPost()
+                    guard let id = postID else {
+                        endOutput.send(nil)
+                        return
+                    }
+                    let endpoint = APIEndPoints.getPost(id: id)
+                    Task {
+                        do {
+                            guard let data = try await APIProvider.shared.request(with: endpoint) else {
+                                self.endOutput.send(nil)
+                                return
+                            }
+                            self.endOutput.send(data)
+                        } catch let error as NetworkError{
+                            self.endOutput.send(completion: .failure(error))
+                        }
+                    }
                     guard let startTime = startTimeInput,
                           let endTime = endTimeInput else { return }
                     let startTimeString = formatter.string(from: startTime)
@@ -249,7 +266,7 @@ extension PostCreateViewModel {
         var postButtonTappedStartTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedEndTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedPriceWarningResult: AnyPublisher<Bool, Never>
-        var endResult: AnyPublisher<PostResponseDTO, Never>
+        var endResult: AnyPublisher<PostResponseDTO?, NetworkError>
         
     }
     

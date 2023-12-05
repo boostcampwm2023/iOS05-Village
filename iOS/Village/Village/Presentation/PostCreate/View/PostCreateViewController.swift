@@ -12,7 +12,7 @@ final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
     private var postButtonTappedSubject = PassthroughSubject<Void, Never>()
-    var editButtonTappedSubject = PassthroughSubject<PostResponseDTO, Never>()
+    var editButtonTappedSubject = PassthroughSubject<PostResponseDTO?, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -190,14 +190,21 @@ final class PostCreateViewController: UIViewController {
         
         output.endResult
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] post in
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] post in
                 self?.dismiss(animated: true)
                 self?.navigationController?.popViewController(animated: true)
                 guard let isEdit = self?.viewModel.isEdit else { return }
                 if isEdit {
                     self?.editButtonTappedSubject.send(post)
                 }
-            }
+            })
             .store(in: &cancellableBag)
         
     }

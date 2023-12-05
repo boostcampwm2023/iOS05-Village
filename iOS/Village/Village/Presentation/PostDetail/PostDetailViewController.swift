@@ -150,8 +150,10 @@ final class PostDetailViewController: UIViewController {
             editVC.editButtonTappedSubject
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] post in
-                    self?.viewModel.postDTO = post
-                    self?.setPostContent(post: post)
+                    guard let fixedPost = post else { return }
+                    self?.viewModel.postDTO = fixedPost
+                    self?.setPostContent(post: fixedPost)
+                    editVC.setEdit(post: fixedPost)
                 }
                 .store(in: &editVC.cancellableBag)
             guard let post = self?.viewModel.postDTO else { return }
