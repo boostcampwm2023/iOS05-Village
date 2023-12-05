@@ -125,6 +125,14 @@ final class PostDetailViewController: UIViewController {
         bindViewModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let postDTO = viewModel.postDTO else { return }
+        setPostContent(post: postDTO)
+        viewModel.postDTO = postDTO
+
+    }
+    
     @objc
     private func moreBarButtonTapped() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -139,9 +147,27 @@ final class PostDetailViewController: UIViewController {
                 postID: self?.postID.output
             )
             let editVC = PostCreateViewController(viewModel: postCreateViewModel)
+            editVC.modalPresentationStyle = .fullScreen
+            editVC.editButtonTappedSubject
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] post in
+                    guard let fixedPost = post else { return }
+                    self?.viewModel.postDTO = fixedPost
+                    self?.setPostContent(post: fixedPost)
+                }
+                .store(in: &editVC.cancellableBag)
             guard let post = self?.viewModel.postDTO else { return }
-            self?.present(editVC, animated: true)
-            editVC.setEdit(post: post)
+            guard let id = self?.postID.output else { return }
+            let endpoint = APIEndPoints.getPost(id: id)
+            Task {
+                do {
+                    guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                    editVC.setEdit(post: data)
+                    self?.navigationController?.pushViewController(editVC, animated: true)
+                } catch let error {
+                    dump(error)
+                }
+            }
         }
         
         let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { _ in

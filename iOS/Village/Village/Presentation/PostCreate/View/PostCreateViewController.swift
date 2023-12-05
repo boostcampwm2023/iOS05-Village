@@ -12,6 +12,7 @@ final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
     private var postButtonTappedSubject = PassthroughSubject<Void, Never>()
+    var editButtonTappedSubject = PassthroughSubject<PostResponseDTO?, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -133,7 +134,7 @@ final class PostCreateViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var cancellableBag: Set<AnyCancellable> = []
+    var cancellableBag: Set<AnyCancellable> = []
     
     func bind() {
         let input = PostCreateViewModel.Input(
@@ -189,9 +190,21 @@ final class PostCreateViewController: UIViewController {
         
         output.endResult
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] post in
                 self?.dismiss(animated: true)
-            }
+                self?.navigationController?.popViewController(animated: true)
+                guard let isEdit = self?.viewModel.isEdit else { return }
+                if isEdit {
+                    self?.editButtonTappedSubject.send(post)
+                }
+            })
             .store(in: &cancellableBag)
         
     }
@@ -213,6 +226,8 @@ final class PostCreateViewController: UIViewController {
 private extension PostCreateViewController {
     
     func close(_ sender: UIBarButtonItem) {
+        
+        navigationController?.popViewController(animated: true)
         dismiss(animated: true)
     }
     
@@ -338,9 +353,17 @@ private extension PostCreateViewController {
     func configureNavigation() {
         let titleLabel = UILabel()
         if viewModel.isRequest {
-            titleLabel.setTitle("대여 요청 등록")
+            if viewModel.isEdit {
+                titleLabel.setTitle("대여 요청 등록 편집")
+            } else {
+                titleLabel.setTitle("대여 요청 등록")
+            }
         } else {
-            titleLabel.setTitle("대여 등록")
+            if viewModel.isEdit {
+                titleLabel.setTitle("대여 등록 편집")
+            } else {
+                titleLabel.setTitle("대여 등록")
+            }
         }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let close = self.navigationItem.makeSFSymbolButton(

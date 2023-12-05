@@ -36,17 +36,25 @@ struct APIEndPoints {
         )
     }
     
-    static func createPost(with requestDTO: PostCreateRequestDTO) -> EndPoint<Void> {
+    static func modifyPost(with requestDTO: PostModifyRequestDTO) -> EndPoint<Void> {
+        
+        var path = "posts"
+        var method = HTTPMethod.POST
+        if let id = requestDTO.postID {
+            path += "/\(id)"
+            method = .PATCH
+        }
+        
         return EndPoint(
             baseURL: baseURL,
-            path: "posts",
-            method: .POST,
+            path: path,
+            method: method,
             bodyParameters: requestDTO.httpBody,
             headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
         )
     }
     
-    static func editPost(with requestDTO: PostCreateRequestDTO, postID: Int) -> EndPoint<Void> {
+    static func editPost(with requestDTO: PostModifyRequestDTO, postID: Int) -> EndPoint<Void> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts/\(postID)",

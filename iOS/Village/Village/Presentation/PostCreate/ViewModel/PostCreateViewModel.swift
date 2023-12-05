@@ -45,7 +45,7 @@ final class PostCreateViewModel {
     private let postButtonTappedStartTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedEndTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedPriceWarningOutput = PassthroughSubject<Bool, Never>()
-    private let endOutput = PassthroughSubject<Void, Never>()
+    private let endOutput = PassthroughSubject<PostResponseDTO?, NetworkError>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -57,14 +57,14 @@ final class PostCreateViewModel {
         return formatter
     }()
     
-    func postCreate() {
+    func modifyPost() {
         guard let startTime = startTimeInput,
               let endTime = endTimeInput else { return }
         let startTimeString = formatter.string(from: startTime)
         let endTimeString = formatter.string(from: endTime)
         
-        let endPoint = APIEndPoints.createPost(
-            with: PostCreateRequestDTO(
+        let modifyEndPoint = APIEndPoints.modifyPost(
+            with: PostModifyRequestDTO(
                 postInfo: PostInfoDTO(
                     title: titleInput,
                     description: detailInput,
@@ -73,50 +73,40 @@ final class PostCreateViewModel {
                     startDate: startTimeString,
                     endDate: endTimeString
                 ),
-                image: []
+                image: [],
+                postID: postID
             )
         )
         Task {
             do {
-                try await APIProvider.shared.request(with: endPoint)
-            } catch {
-                dump(error)
+                try await APIProvider.shared.multipartRequest(with: modifyEndPoint)
+                updatePost()
+            } catch let error as NetworkError {
+                self.endOutput.send(completion: .failure(error))
             }
         }
     }
     
-    func postEdit() {
-        guard let startTime = startTimeInput,
-              let endTime = endTimeInput else { return }
-        let startTimeString = formatter.string(from: startTime)
-        let endTimeString = formatter.string(from: endTime)
-        guard let id = postID else { return }
-        
-        let endPoint = APIEndPoints.editPost(
-            with: PostCreateRequestDTO(
-                postInfo: PostInfoDTO(
-                    title: titleInput,
-                    description: detailInput,
-                    price: priceInput,
-                    isRequest: isRequest,
-                    startDate: startTimeString,
-                    endDate: endTimeString
-                ),
-                image: []
-            ),
-            postID: id
-        )
+    func updatePost() {
+        guard let id = postID else {
+            endOutput.send(nil)
+            return
+        }
+        let getPostEndpoint = APIEndPoints.getPost(id: id)
         Task {
             do {
-                try await APIProvider.shared.request(with: endPoint)
-//                try await APIProvider.shared.multipartRequest(with: endPoint)
-            } catch {
-                dump(error)
+                guard let data = try await APIProvider.shared.request(with: getPostEndpoint) else {
+                    self.endOutput.send(nil)
+                    return
+                }
+                self.endOutput.send(data)
+            } catch let error as NetworkError {
+                self.endOutput.send(completion: .failure(error))
             }
         }
     }
     
-    init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int?) {
+    init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int? = nil) {
         self.useCase = useCase
         self.isRequest = isRequest
         self.isEdit = isEdit
@@ -174,13 +164,9 @@ final class PostCreateViewModel {
             .sink { [weak self] () in
                 guard let self = self else { return }
                 validate()
+                
                 if isValidPostCreate {
-                    if isEdit {
-                        postEdit()
-                    } else {
-                        postCreate()
-                    }
-                    endOutput.send()
+                    modifyPost()
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
                     postButtonTappedStartTimeWarningOutput.send(isValidStartTime)
@@ -267,7 +253,7 @@ extension PostCreateViewModel {
         var postButtonTappedStartTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedEndTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedPriceWarningResult: AnyPublisher<Bool, Never>
-        var endResult: AnyPublisher<Void, Never>
+        var endResult: AnyPublisher<PostResponseDTO?, NetworkError>
         
     }
     
