@@ -43,9 +43,24 @@ final class PostMuteTableViewCell: UITableViewCell {
         
         let button = UIButton(configuration: configuration)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(target, action: #selector(muteButtonTapped), for: .touchUpInside)
         
         return button
     }()
+    
+    @objc private func muteButtonTapped() {
+        if postMuteButton.titleLabel?.text == "숨김 해제" {
+            postMuteButton.configuration?.baseBackgroundColor = .black
+            var titleAttribute = AttributedString.init("숨기기")
+            titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
+            postMuteButton.configuration?.attributedTitle = titleAttribute
+        } else {
+            postMuteButton.configuration?.baseBackgroundColor = .primary500
+            var titleAttribute = AttributedString.init("숨김 해제")
+            titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
+            postMuteButton.configuration?.attributedTitle = titleAttribute
+        }
+    }
     
     func configureData(post: PostMuteResponseDTO) {
         postTitleLabel.text = post.title
