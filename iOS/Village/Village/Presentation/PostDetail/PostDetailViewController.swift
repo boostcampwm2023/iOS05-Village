@@ -180,7 +180,7 @@ final class PostDetailViewController: UIViewController {
     private func pushChatRoomViewController(roomID: Int) {
         userID.receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] userID in
-                let nextVC = ChatRoomViewController(roomID: roomID, opponent: userID)
+                let nextVC = ChatRoomViewController(roomID: roomID, opponentNickname: userID)
                 nextVC.hidesBottomBarWhenPushed = true
                 self?.navigationController?.pushViewController(nextVC, animated: true)
             })

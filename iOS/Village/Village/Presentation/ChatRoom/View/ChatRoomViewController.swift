@@ -53,7 +53,7 @@ final class ChatRoomViewController: UIViewController {
     }
     
     private let roomID: Just<Int>
-    private let opponent: Just<String>
+    private let opponentNickname: Just<String>
     
     private var imageURL: String?
     
@@ -115,9 +115,9 @@ final class ChatRoomViewController: UIViewController {
         return postView
     }()
     
-    init(roomID: Int, opponent: String) {
+    init(roomID: Int, opponentNickname: String) {
         self.roomID = Just(roomID)
-        self.opponent = Just(opponent)
+        self.opponentNickname = Just(opponentNickname)
         
         super.init(nibName: nil, bundle: nil)
     }
