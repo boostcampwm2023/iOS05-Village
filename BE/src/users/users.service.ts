@@ -60,7 +60,7 @@ export class UsersService {
 
   async deleteCascadingUser(userId, userHash) {
     const postsByUser = await this.postRepository.find({
-      where: { user_id: userId },
+      where: { user_hash: userHash },
     });
     for (const postByUser of postsByUser) {
       await this.deleteCascadingPost(postByUser.id);
