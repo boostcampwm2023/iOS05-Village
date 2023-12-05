@@ -8,16 +8,14 @@
 import Foundation
 import Security
 
-final class KeychainManager {
+struct KeychainManager<T: Codable> {
     
-    static let shared = KeychainManager()
-    
-    func write(email: String, token: AuthenticationToken) throws {
+    func write(key: String, value: T) throws {
         do {
-            let data = try JSONEncoder().encode(token)
+            let data = try JSONEncoder().encode(value)
             let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: email,
+                kSecAttrAccount: key,
                 kSecValueData: data
             ]
             
@@ -32,10 +30,10 @@ final class KeychainManager {
         }
     }
     
-    func read(email: String) -> AuthenticationToken? {
+    func read(key: String) -> T? {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: email,
+            kSecAttrAccount: key,
             kSecReturnAttributes: true,
             kSecReturnData: true,
             kSecMatchLimit: kSecMatchLimitOne
@@ -45,15 +43,15 @@ final class KeychainManager {
         SecItemCopyMatching(query as CFDictionary, &result)
         guard let result = result as? [String: AnyObject],
               let data = result[kSecValueData as String] as? Data,
-              let token = try? JSONDecoder().decode(AuthenticationToken.self, from: data) else { return nil }
+              let token = try? JSONDecoder().decode(T.self, from: data) else { return nil }
         
         return token
     }
     
-    func delete(email: String) throws {
+    func delete(key: String) throws {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: email
+            kSecAttrAccount: key
         ]
         
         let status = SecItemDelete(query as CFDictionary)
@@ -62,12 +60,12 @@ final class KeychainManager {
         guard status == errSecSuccess else { throw KeychainError.unknown(status) }
     }
     
-    func update(email: String, token: AuthenticationToken) throws {
+    func update(key: String, newValue: T) throws {
         do {
-            let data = try JSONEncoder().encode(token)
+            let data = try JSONEncoder().encode(newValue)
             let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: email
+                kSecAttrAccount: key
             ]
             let attribute: [CFString: Any] = [
                 kSecValueData: data
