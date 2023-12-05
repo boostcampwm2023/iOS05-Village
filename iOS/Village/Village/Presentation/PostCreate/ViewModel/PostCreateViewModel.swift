@@ -160,26 +160,10 @@ final class PostCreateViewModel {
                                 return
                             }
                             self.endOutput.send(data)
-                        } catch let error as NetworkError{
+                        } catch let error as NetworkError {
                             self.endOutput.send(completion: .failure(error))
                         }
                     }
-                    guard let startTime = startTimeInput,
-                          let endTime = endTimeInput else { return }
-                    let startTimeString = formatter.string(from: startTime)
-                    let endTimeString = formatter.string(from: endTime)
-                    endOutput.send(
-                        PostResponseDTO(
-                            title: titleInput,
-                            description: detailInput,
-                            price: priceInput,
-                            userID: "",// TODO: userID 넣어줘야 함.
-                            imageURL: [],
-                            isRequest: isRequest,
-                            startDate: startTimeString,
-                            endDate: endTimeString
-                        )
-                    )
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
                     postButtonTappedStartTimeWarningOutput.send(isValidStartTime)

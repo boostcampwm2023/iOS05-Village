@@ -157,8 +157,17 @@ final class PostDetailViewController: UIViewController {
                 }
                 .store(in: &editVC.cancellableBag)
             guard let post = self?.viewModel.postDTO else { return }
-            editVC.setEdit(post: post)
-            self?.navigationController?.pushViewController(editVC, animated: true)
+            guard let id = self?.postID.output else { return }
+            let endpoint = APIEndPoints.getPost(id: id)
+            Task {
+                do {
+                    guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                    editVC.setEdit(post: data)
+                    self?.navigationController?.pushViewController(editVC, animated: true)
+                } catch let error {
+                    dump(error)
+                }
+            }
         }
         
         let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { _ in
