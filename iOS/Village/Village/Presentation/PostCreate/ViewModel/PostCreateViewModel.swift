@@ -78,7 +78,7 @@ final class PostCreateViewModel {
         )
         Task {
             do {
-                try await APIProvider.shared.multipartRequest(with: endPoint)
+                try await APIProvider.shared.request(with: endPoint)
             } catch {
                 dump(error)
             }
@@ -108,7 +108,8 @@ final class PostCreateViewModel {
         )
         Task {
             do {
-                try await APIProvider.shared.multipartRequest(with: endPoint)
+                try await APIProvider.shared.request(with: endPoint)
+//                try await APIProvider.shared.multipartRequest(with: endPoint)
             } catch {
                 dump(error)
             }

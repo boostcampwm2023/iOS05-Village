@@ -52,7 +52,7 @@ struct APIEndPoints {
             path: "posts/\(postID)",
             method: .PATCH,
             bodyParameters: requestDTO.httpBody,
-            headers: header?.mergeWith(["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"])
+            headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
         )
     }
     
@@ -101,7 +101,7 @@ struct APIEndPoints {
             path: "users/registration-token",
             method: .POST,
             bodyParameters: ["registration_token": fcmToken],
-            headers: header?.mergeWith(["Content-Type": "application/json"])
+            headers: ["Content-Type": "application/json"]
         )
     }
   
