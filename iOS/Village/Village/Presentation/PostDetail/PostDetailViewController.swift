@@ -98,6 +98,7 @@ final class PostDetailViewController: UIViewController {
                                                     .foregroundColor: UIColor.white])
         button.setAttributedTitle(title, for: .normal)
         button.layer.cornerRadius = 6
+        button.addTarget(target, action: #selector(chatButtonTapped), for: .touchUpInside)
         
         return button
     }()
@@ -161,7 +162,10 @@ final class PostDetailViewController: UIViewController {
     
     @objc
     private func chatButtonTapped() {
-        // TODO: 채팅하기 버튼 기능 구현
+        guard let roomID = viewModel.createChatRoom(writer: "qwe", postID: 47) else { return }
+        let nextVC = ChatRoomViewController(roomID: roomID.roomID)
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     private func setPostContent(post: PostResponseDTO) {
