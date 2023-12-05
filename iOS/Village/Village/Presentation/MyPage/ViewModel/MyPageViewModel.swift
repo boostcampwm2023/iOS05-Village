@@ -38,7 +38,18 @@ final class MyPageViewModel {
     }
     
     private func deleteAccount() {
-        // TODO: 회원탈퇴 로직 구현
+        guard let userID = JWTManager.shared.currentUserID else { return }
+        
+        let endpoint = APIEndPoints.userDelete(userID: userID)
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+                try JWTManager.shared.delete()
+                deleteAccountSucceed.send()
+            } catch let error {
+                deleteAccountSucceed.send(completion: .failure(error))
+            }
+        }
     }
     
 }
