@@ -42,51 +42,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func autoLogin() {
-        guard let token = JWTManager.shared.get() else {
+        guard let accessToken = JWTManager.shared.get()?.accessToken else {
             window?.rootViewController = LoginViewController()
             return
         }
-        let endpoint = APIEndPoints.tokenExpire(accessToken: token.refreshToken)
+        let endpoint = APIEndPoints.tokenExpire(accessToken: accessToken)
         Task {
             do {
                 try await APIProvider.shared.request(with: endpoint)
+                
                 window?.rootViewController = AppTabBarController()
-            } catch let error {
-                if let err = error as? NetworkError {
-                    switch err {
-                    case .serverError(.forbidden):
-                        refreshToken()
-                    case .serverError(.serverError):
-                        dump("서버 에러가 발생했습니다! 다시 로그인해주세요.")
-                    default:
-                        dump(error)
-                    }
-                }
+            } catch {
                 window?.rootViewController = LoginViewController()
-                return
-            }
-        }
-    }
-    
-    private func refreshToken() {
-        guard let refreshToken = JWTManager.shared.get()?.refreshToken else { return }
-        
-        let endpoint = APIEndPoints.tokenRefresh(refreshToken: refreshToken)
-        Task {
-            do {
-                guard let token = try await APIProvider.shared.request(with: endpoint) else { return }
-                try JWTManager.shared.update(token: token)
-                window?.rootViewController = AppTabBarController()
-            } catch let error {
-                if let err = error as? NetworkError {
-                    switch err {
-                    case .serverError(.forbidden):
-                        dump("토큰이 만료됐습니다! 다시 로그인해주세요.")
-                        NotificationCenter.default.post(Notification(name: .shouldLogin))
-                    default:
-                        dump(error)
-                    }
-                }
             }
         }
     }
