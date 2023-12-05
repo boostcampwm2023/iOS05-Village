@@ -11,19 +11,12 @@ struct APIEndPoints {
     
     static let baseURL = "https://www.village-api.shop/"
     
-    static var header: [String: String]? {
-        guard let accessToken = JWTManager.shared.get()?.accessToken else { return nil }
-        
-        return ["Authorization": "Bearer \(accessToken)"]
-    }
-    
     static func getPosts(with requestDTO: PostListRequestDTO) -> EndPoint<[PostListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
             method: .GET,
-            queryParameters: requestDTO,
-            headers: header
+            queryParameters: requestDTO
         )
     }
     
@@ -31,8 +24,7 @@ struct APIEndPoints {
         return EndPoint(
             baseURL: baseURL,
             path: "posts/\(id)",
-            method: .GET,
-            headers: header
+            method: .GET
         )
     }
     
@@ -40,8 +32,7 @@ struct APIEndPoints {
         return EndPoint(
             baseURL: baseURL,
             path: "users/\(id)",
-            method: .GET,
-            headers: header
+            method: .GET
         )
     }
     
@@ -51,7 +42,17 @@ struct APIEndPoints {
             path: "posts",
             method: .POST,
             bodyParameters: requestDTO.httpBody,
-            headers: header?.mergeWith(["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"])
+            headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
+        )
+    }
+    
+    static func editPost(with requestDTO: PostCreateRequestDTO, postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/\(postID)",
+            method: .PATCH,
+            bodyParameters: requestDTO.httpBody,
+            headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
         )
     }
     
@@ -60,8 +61,7 @@ struct APIEndPoints {
             baseURL: baseURL,
             path: "chat",
             method: .GET,
-            queryParameters: chatListResponse,
-            headers: header
+            queryParameters: chatListResponse
         )
     }
     
@@ -79,8 +79,7 @@ struct APIEndPoints {
         EndPoint(
             baseURL: baseURL,
             path: "login/expire",
-            method: .GET,
-            headers: header
+            method: .GET
         )
     }
     
@@ -92,7 +91,7 @@ struct APIEndPoints {
             path: "login/refresh",
             method: .POST,
             bodyParameters: body,
-            headers: header?.mergeWith(["Content-Type": "application/json"])
+            headers: ["Content-Type": "application/json"]
         )
     }
     
@@ -102,14 +101,8 @@ struct APIEndPoints {
             path: "users/registration-token",
             method: .POST,
             bodyParameters: ["registration_token": fcmToken],
-            headers: header?.mergeWith(["Content-Type": "application/json"])
+            headers: ["Content-Type": "application/json"]
         )
     }
   
-}
-
-fileprivate extension Dictionary<String, String> {
-    func mergeWith(_ dict: [String: String]) -> [String: String]? {
-        return self.merging(dict) { (current, _) in current }
-    }
 }

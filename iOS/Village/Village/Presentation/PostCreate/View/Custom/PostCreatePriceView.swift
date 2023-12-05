@@ -101,6 +101,10 @@ final class PostCreatePriceView: UIStackView {
         priceTextField.text = text
     }
     
+    func setEdit(price: Int?) {
+        priceTextField.text = price?.priceText()
+    }
+    
 }
 
 private extension PostCreatePriceView {
