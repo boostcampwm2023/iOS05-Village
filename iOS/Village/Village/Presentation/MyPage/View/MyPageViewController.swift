@@ -234,7 +234,6 @@ private extension MyPageViewController {
         accountStackView.addArrangedSubview(accountLabel)
         accountStackView.addArrangedSubview(logoutButton)
         accountStackView.addArrangedSubview(deleteAccountButton)
-        
     }
     
     func setConstraints() {
@@ -293,11 +292,15 @@ private extension MyPageViewController {
     }
     
     func hiddenPostButtonTapped() {
-        
+        let nextVC = PostMuteViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: false)
     }
     
     func hiddenUserButtonTapped() {
-        
+        let nextVC = BannedUserViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: false)
     }
     
     func logoutButtonTapped() {

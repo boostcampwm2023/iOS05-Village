@@ -10,7 +10,9 @@ import Combine
 
 final class PostCreateViewModel {
     
-    private var postType: PostType
+    let isRequest: Bool
+    let isEdit: Bool
+    let postID: Int?
     
     private var titleInput: String = ""
     private var startTimeInput: Date?
@@ -23,14 +25,14 @@ final class PostCreateViewModel {
     private var isValidEndTime: Bool = false
     private var isValidPrice: Bool = false
     private var isValidPostCreate: Bool {
-        let rentBool = 
-        postType == .rent &&
+        let rentBool =
+        !isRequest &&
         isValidTitle &&
         isValidStartTime &&
         isValidEndTime &&
         isValidPrice
-        let requestBool = 
-        postType == .request &&
+        let requestBool =
+        isRequest &&
         isValidTitle &&
         isValidStartTime &&
         isValidEndTime
@@ -43,19 +45,19 @@ final class PostCreateViewModel {
     private let postButtonTappedStartTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedEndTimeWarningOutput = PassthroughSubject<Bool, Never>()
     private let postButtonTappedPriceWarningOutput = PassthroughSubject<Bool, Never>()
+    private let endOutput = PassthroughSubject<Void, Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
     private let useCase: PostCreateUseCase
-//    private var postCreateTask: Cancellable? {
-//        willSet {
-//            postCreateTask?.cancel()
-//        }
-//    }
-    
-    func postCreate() {
+    private let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        
+        return formatter
+    }()
+    
+    func postCreate() {
         guard let startTime = startTimeInput,
               let endTime = endTimeInput else { return }
         let startTimeString = formatter.string(from: startTime)
@@ -67,7 +69,7 @@ final class PostCreateViewModel {
                     title: titleInput,
                     description: detailInput,
                     price: priceInput,
-                    isRequest: postType == .request,
+                    isRequest: isRequest,
                     startDate: startTimeString,
                     endDate: endTimeString
                 ),
@@ -76,16 +78,49 @@ final class PostCreateViewModel {
         )
         Task {
             do {
-                let _ = try await APIProvider.shared.multipartRequest(with: endPoint)
+                try await APIProvider.shared.request(with: endPoint)
             } catch {
                 dump(error)
             }
         }
     }
     
-    init(useCase: PostCreateUseCase, postType: PostType) {
+    func postEdit() {
+        guard let startTime = startTimeInput,
+              let endTime = endTimeInput else { return }
+        let startTimeString = formatter.string(from: startTime)
+        let endTimeString = formatter.string(from: endTime)
+        guard let id = postID else { return }
+        
+        let endPoint = APIEndPoints.editPost(
+            with: PostCreateRequestDTO(
+                postInfo: PostInfoDTO(
+                    title: titleInput,
+                    description: detailInput,
+                    price: priceInput,
+                    isRequest: isRequest,
+                    startDate: startTimeString,
+                    endDate: endTimeString
+                ),
+                image: []
+            ),
+            postID: id
+        )
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endPoint)
+//                try await APIProvider.shared.multipartRequest(with: endPoint)
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
+    init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int?) {
         self.useCase = useCase
-        self.postType = postType
+        self.isRequest = isRequest
+        self.isEdit = isEdit
+        self.postID = postID
     }
     
     func transform(input: Input) -> Output {
@@ -107,7 +142,7 @@ final class PostCreateViewModel {
             }
             .store(in: &cancellableBag)
         
-        if postType == .rent {
+        if !isRequest {
             input.priceSubject
                 .sink(receiveValue: { [weak self] priceString in
                     let price = priceString.replacingOccurrences(of: ",", with: "")
@@ -140,12 +175,17 @@ final class PostCreateViewModel {
                 guard let self = self else { return }
                 validate()
                 if isValidPostCreate {
-                    postCreate()
+                    if isEdit {
+                        postEdit()
+                    } else {
+                        postCreate()
+                    }
+                    endOutput.send()
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
                     postButtonTappedStartTimeWarningOutput.send(isValidStartTime)
                     postButtonTappedEndTimeWarningOutput.send(isValidEndTime)
-                    if postType == .rent {
+                    if !isRequest {
                         postButtonTappedPriceWarningOutput.send(isValidPrice)
                     }
                 }
@@ -156,8 +196,22 @@ final class PostCreateViewModel {
             postButtonTappedTitleWarningResult: postButtonTappedTitleWarningOutput.eraseToAnyPublisher(),
             postButtonTappedStartTimeWarningResult: postButtonTappedStartTimeWarningOutput.eraseToAnyPublisher(),
             postButtonTappedEndTimeWarningResult: postButtonTappedEndTimeWarningOutput.eraseToAnyPublisher(),
-            postButtonTappedPriceWarningResult: postButtonTappedPriceWarningOutput.eraseToAnyPublisher()
+            postButtonTappedPriceWarningResult: postButtonTappedPriceWarningOutput.eraseToAnyPublisher(),
+            endResult: endOutput.eraseToAnyPublisher()
         )
+    }
+    
+    func setEdit(post: PostResponseDTO) {
+        titleInput = post.title
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.000Z"
+        startTimeInput = formatter.date(from: post.startDate)
+        endTimeInput = formatter.date(from: post.endDate)
+        if !isRequest {
+            priceInput = post.price
+        }
+        detailInput = post.description
+        validate()
     }
     
 }
@@ -213,6 +267,7 @@ extension PostCreateViewModel {
         var postButtonTappedStartTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedEndTimeWarningResult: AnyPublisher<Bool, Never>
         var postButtonTappedPriceWarningResult: AnyPublisher<Bool, Never>
+        var endResult: AnyPublisher<Void, Never>
         
     }
     
