@@ -36,6 +36,7 @@ export class ChatService {
     chat.message = message.message;
     chat.chat_room = message.room_id;
     chat.is_read = is_read;
+    chat.count = message.count;
     await this.chatRepository.save(chat);
   }
 
@@ -54,8 +55,17 @@ export class ChatService {
     chatRoom.post_id = postId;
     chatRoom.writer = writerId;
     chatRoom.user = userId;
-    const roomId = (await this.chatRoomRepository.save(chatRoom)).id;
-    return { room_id: roomId };
+
+    try {
+      const roomId = (await this.chatRoomRepository.save(chatRoom)).id;
+      return { room_id: roomId };
+    } catch (e) {
+      if (e.errno === 1452) {
+        return null;
+      } else {
+        throw new HttpException('서버 오류', 500);
+      }
+    }
   }
 
   async findRoomList(userId: string) {

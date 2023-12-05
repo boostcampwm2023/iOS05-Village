@@ -27,6 +27,9 @@ export class ChatEntity {
   @Column({ type: 'boolean', default: false })
   is_read: boolean;
 
+  @Column({ type: 'int' })
+  count: number;
+
   @CreateDateColumn({ type: 'timestamp', nullable: false })
   create_date: Date;
 

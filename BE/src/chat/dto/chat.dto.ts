@@ -1,4 +1,4 @@
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class ChatDto {
   @IsString()
@@ -9,4 +9,7 @@ export class ChatDto {
 
   @IsString()
   room_id: number;
+
+  @IsNumber()
+  count: number;
 }
