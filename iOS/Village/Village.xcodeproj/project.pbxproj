@@ -78,6 +78,9 @@
 		8F8F0B852B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */; };
 		8F8F0B882B1D980900BE97D2 /* PostMuteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */; };
 		8F8F0B8B2B1D985A00BE97D2 /* BannedUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8A2B1D985A00BE97D2 /* BannedUserViewController.swift */; };
+		8F8F0B8D2B1DA91500BE97D2 /* PostMuteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8C2B1DA91500BE97D2 /* PostMuteTableViewCell.swift */; };
+		8F8F0B8F2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */; };
+		8F8F0B912B1DB6C100BE97D2 /* PostMute.json in Resources */ = {isa = PBXBuildFile; fileRef = 8F8F0B902B1DB6C100BE97D2 /* PostMute.json */; };
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
 		8F95CF942B0C60E00024631F /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF932B0C60E00024631F /* HTTPMethod.swift */; };
@@ -184,6 +187,9 @@
 		8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomRequestDTO.swift; sourceTree = "<group>"; };
 		8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteViewController.swift; sourceTree = "<group>"; };
 		8F8F0B8A2B1D985A00BE97D2 /* BannedUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannedUserViewController.swift; sourceTree = "<group>"; };
+		8F8F0B8C2B1DA91500BE97D2 /* PostMuteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteTableViewCell.swift; sourceTree = "<group>"; };
+		8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteResponseDTO.swift; sourceTree = "<group>"; };
+		8F8F0B902B1DB6C100BE97D2 /* PostMute.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostMute.json; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		8F95CF932B0C60E00024631F /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
@@ -369,6 +375,7 @@
 				5975E9892B035919007CEF13 /* Users.json */,
 				8FF7E6192B106FBB00B6D678 /* ChatList.json */,
 				8F3D79DC2B135D1500370536 /* ChatRoom.json */,
+				8F8F0B902B1DB6C100BE97D2 /* PostMute.json */,
 			);
 			path = Dummy;
 			sourceTree = "<group>";
@@ -508,6 +515,7 @@
 				44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */,
 				44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */,
 				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
+				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -552,6 +560,7 @@
 			isa = PBXGroup;
 			children = (
 				8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */,
+				8F8F0B8C2B1DA91500BE97D2 /* PostMuteTableViewCell.swift */,
 			);
 			path = PostMute;
 			sourceTree = "<group>";
@@ -853,6 +862,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F8F0B912B1DB6C100BE97D2 /* PostMute.json in Resources */,
 				5975E98A2B035919007CEF13 /* Post.json in Resources */,
 				59B6E27C2B185FD2000864F9 /* GoogleService-Info.plist in Resources */,
 				8FF7E61A2B106FBB00B6D678 /* ChatList.json in Resources */,
@@ -919,6 +929,7 @@
 				4416D48E2B174CBA0052BF33 /* KeychainError.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
 				8F95CF982B0C7B270024631F /* Responsable.swift in Sources */,
+				8F8F0B8F2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift in Sources */,
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
 				44C1F5F32B0FF63C0047A436 /* PostResponseDTO.swift in Sources */,
 				8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */,
@@ -959,6 +970,7 @@
 				59110F042B1725C20009E9AC /* NotificationName+.swift in Sources */,
 				59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */,
 				8F8F0B8B2B1D985A00BE97D2 /* BannedUserViewController.swift in Sources */,
+				8F8F0B8D2B1DA91500BE97D2 /* PostMuteTableViewCell.swift in Sources */,
 				446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
 				4416D44A2B148A7A0052BF33 /* AppTabBarController.swift in Sources */,
