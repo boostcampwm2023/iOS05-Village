@@ -29,10 +29,10 @@ export class PostEntity {
   description: string;
 
   @Column({ nullable: false })
-  user_id: number;
+  user_hash: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => UserEntity, (user) => user.user_hash)
+  @JoinColumn({ name: 'user_hash', referencedColumnName: 'user_hash' })
   user: UserEntity;
 
   @Column({ type: 'datetime', nullable: false })

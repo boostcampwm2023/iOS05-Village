@@ -34,12 +34,12 @@ export class PostService {
   }
 
   async getFilteredList(userId: string) {
-    const blockedUsersId: number[] = (
+    const blockedUsersId: string[] = (
       await this.blockUserRepository.find({
         where: { blocker: userId },
         relations: ['blockedUser'],
       })
-    ).map((blockedUser) => blockedUser.blockedUser.id);
+    ).map((blockedUser) => blockedUser.blockedUser.user_hash);
 
     const blockedPostsId: number[] = (
       await this.blockPostRepository.find({
@@ -58,7 +58,7 @@ export class PostService {
     return posts.filter((post) => {
       return !(
         blockedPostsId.includes(post.id) ||
-        blockedUsersId.includes(post.user_id)
+        blockedUsersId.includes(post.user_hash)
       );
     });
   }
@@ -67,7 +67,8 @@ export class PostService {
     const { blockedUsersId, blockedPostsId } =
       await this.getFilteredList(userId);
     return (
-      blockedPostsId.includes(post.id) || blockedUsersId.includes(post.user_id)
+      blockedPostsId.includes(post.id) ||
+      blockedUsersId.includes(post.user_hash)
     );
   }
 
@@ -119,7 +120,7 @@ export class PostService {
       title: post.title,
       description: post.description,
       price: post.price,
-      user_id: post.user.user_hash,
+      user_id: post.user_hash,
       images: post.post_images.map((post_image) => post_image.image_url),
       is_request: post.is_request,
       start_date: post.start_date,
@@ -201,16 +202,14 @@ export class PostService {
 
   async createPost(imageLocations, createPostDto, userHash) {
     const post = new PostEntity();
-    const user = await this.userRepository.findOne({
-      where: { user_hash: userHash },
-    });
+
     post.title = createPostDto.title;
     post.description = createPostDto.description;
     post.price = createPostDto.price;
     post.is_request = createPostDto.is_request;
     post.start_date = createPostDto.start_date;
     post.end_date = createPostDto.end_date;
-    post.user_id = user.id;
+    post.user_hash = userHash;
     post.thumbnail = imageLocations.length > 0 ? imageLocations[0] : null;
     // 이미지 추가
     const res = await this.postRepository.save(post);
