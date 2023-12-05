@@ -157,7 +157,6 @@ final class PostCreateViewModel {
                 validate()
                 
                 if isValidPostCreate {
-                    // TODO: doeifhwoighoiawerhgoiqnrgpiqrengpr
                     modifyPost()
                 } else {
                     postButtonTappedTitleWarningOutput.send(isValidTitle)
