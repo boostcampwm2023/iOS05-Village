@@ -13,6 +13,8 @@ final class MyPageViewController: UIViewController {
     private let viewModel: MyPageViewModel
     private var cancellableBag: Set<AnyCancellable> = []
     
+    private var logoutSubject = PassthroughSubject<Void, Never>()
+    
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -304,7 +306,12 @@ private extension MyPageViewController {
     }
     
     func logoutButtonTapped() {
-        
+        let alert = UIAlertController(title: "로그아웃", message: "정말 로그아웃하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        alert.addAction(UIAlertAction(title: "로그아웃", style: .default, handler: { [weak self] _ in
+            self?.logoutSubject.send()
+        }))
+        self.present(alert, animated: true)
     }
     
     func deleteAccountButtonTapped() {
