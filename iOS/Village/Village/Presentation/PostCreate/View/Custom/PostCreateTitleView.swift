@@ -93,6 +93,7 @@ final class PostCreateTitleView: UIStackView {
     
     func setEdit(title: String) {
         titleTextField.text = title
+        textFieldDidChanged()
     }
     
 }

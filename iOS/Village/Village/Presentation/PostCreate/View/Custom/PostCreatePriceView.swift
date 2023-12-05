@@ -88,7 +88,7 @@ final class PostCreatePriceView: UIStackView {
         endEditing(true)
     }
     
-    @objc private func textFieldDidChanged(_ sender: UITextField) {
+    @objc private func textFieldDidChanged() {
         currentPriceSubject.send(priceTextField.text ?? "")
     }
     
@@ -103,6 +103,7 @@ final class PostCreatePriceView: UIStackView {
     
     func setEdit(price: Int?) {
         priceTextField.text = price?.priceText()
+        textFieldDidChanged()
     }
     
 }

@@ -418,9 +418,9 @@
 			isa = PBXGroup;
 			children = (
 				59AABDDE2B0E1AE1002F6D0E /* PostCreateTitleView.swift */,
-				59AABDE22B0E272C002F6D0E /* PostCreateTimeView.swift */,
 				59AABDE02B0E1BB8002F6D0E /* PostCreatePriceView.swift */,
 				59AABDE42B0E2D47002F6D0E /* PostCreateDetailView.swift */,
+				59AABDE22B0E272C002F6D0E /* PostCreateTimeView.swift */,
 				59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */,
 			);
 			path = Custom;

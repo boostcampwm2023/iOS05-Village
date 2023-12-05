@@ -144,6 +144,7 @@ final class PostCreateViewModel {
             .sink { [weak self] () in
                 guard let self = self else { return }
                 validate()
+                
                 if isValidPostCreate {
                     modifyPost()
                     guard let startTime = startTimeInput,

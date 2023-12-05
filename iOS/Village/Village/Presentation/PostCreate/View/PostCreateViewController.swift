@@ -192,6 +192,7 @@ final class PostCreateViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] post in
                 self?.dismiss(animated: true)
+                self?.navigationController?.popViewController(animated: true)
                 guard let isEdit = self?.viewModel.isEdit else { return }
                 if isEdit {
                     self?.editButtonTappedSubject.send(post)
@@ -218,6 +219,8 @@ final class PostCreateViewController: UIViewController {
 private extension PostCreateViewController {
     
     func close(_ sender: UIBarButtonItem) {
+        
+        navigationController?.popViewController(animated: true)
         dismiss(animated: true)
     }
     

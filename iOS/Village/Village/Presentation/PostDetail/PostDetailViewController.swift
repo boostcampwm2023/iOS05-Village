@@ -128,6 +128,8 @@ final class PostDetailViewController: UIViewController {
         super.viewWillAppear(animated)
         guard let postDTO = viewModel.postDTO else { return }
         setPostContent(post: postDTO)
+        viewModel.postDTO = postDTO
+
     }
     
     @objc
@@ -153,8 +155,9 @@ final class PostDetailViewController: UIViewController {
                 }
                 .store(in: &editVC.cancellableBag)
             guard let post = self?.viewModel.postDTO else { return }
-            self?.present(editVC, animated: true)
             editVC.setEdit(post: post)
+            self?.navigationController?.pushViewController(editVC, animated: true)
+//            self?.present(editNC, animated: true)
         }
         
         let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { _ in
