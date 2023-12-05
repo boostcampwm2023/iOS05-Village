@@ -79,7 +79,7 @@ final class PostCreateViewModel {
         )
         Task {
             do {
-                try await APIProvider.shared.multipartRequest(with: modifyEndPoint)
+                try await APIProvider.shared.request(with: modifyEndPoint)
                 updatePost()
             } catch let error as NetworkError {
                 self.endOutput.send(completion: .failure(error))
