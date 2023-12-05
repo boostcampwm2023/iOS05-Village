@@ -6,11 +6,17 @@ import { ChatEntity } from 'src/entities/chat.entity';
 import { ChatDto } from './dto/chat.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import { FcmHandler, PushMessage } from '../utils/fcmHandler';
+import * as jwt from 'jsonwebtoken';
+import { ConfigService } from '@nestjs/config';
+import { JwtPayload } from 'jsonwebtoken';
 
 export interface ChatRoom {
   room_id: number;
 }
-
+interface Payload extends JwtPayload {
+  userId: string;
+  nickname: string;
+}
 @Injectable()
 export class ChatService {
   constructor(
@@ -21,6 +27,7 @@ export class ChatService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private fcmHandler: FcmHandler,
+    private configService: ConfigService,
   ) {}
 
   async saveMessage(message: ChatDto) {
@@ -140,5 +147,18 @@ export class ChatService {
       message.room_id,
     );
     await this.fcmHandler.sendPush(receiver.user_hash, pushMessage);
+  }
+
+  validateUser(authorization) {
+    try {
+      const payload: Payload = jwt.verify(
+        authorization.split(' ')[1],
+        this.configService.get('JWT_SECRET'),
+      ) as Payload;
+      console.log(payload.userId);
+      return payload.userId;
+    } catch {
+      return null;
+    }
   }
 }
