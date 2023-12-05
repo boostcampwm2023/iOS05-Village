@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+final class MyPostsViewModel {
+    
+    struct Input {
+        
+    }
+    
+    struct Output {
+        
+    }
+    
+}

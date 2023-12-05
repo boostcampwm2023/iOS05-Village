@@ -6,24 +6,140 @@
 //
 
 import UIKit
+import Combine
 
-class MyPostsViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+final class MyPostsViewController: UIViewController {
+    
+    typealias RequestPostsDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias RentPostsDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    
+    typealias ViewModel = MyPostsViewModel
+    typealias Input = ViewModel.Input
+    
+    enum Section {
+        case myPost
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private lazy var requestPostsDataSource: RequestPostsDataSource = RequestPostsDataSource(
+        tableView: tableView) { [weak self] (tableView, indexPath, post) in
+            guard let self = self else {
+                return RequestPostTableViewCell()
+            }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: RequestPostTableViewCell.identifier,
+                for: indexPath) as? RequestPostTableViewCell else {
+                return RequestPostTableViewCell()
+            }
+            cell.configureData(post: post)
+            cell.selectionStyle = .none
+            return cell
+        }
+    
+    private lazy var rentPostsDataSource: RentPostsDataSource = RentPostsDataSource(
+        tableView: tableView) { [weak self] (tableView, indexPath, post) in
+            guard let self = self else {
+                return RentPostTableViewCell()
+            }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: RentPostTableViewCell.identifier,
+                for: indexPath) as? RentPostTableViewCell else {
+                return RentPostTableViewCell()
+            }
+            cell.configureData(post: post)
+            cell.selectionStyle = .none
+            return cell
+        }
+    
+    private let requestSegmentedControl: UISegmentedControl = {
+        let control = UISegmentedControl()
+        control.translatesAutoresizingMaskIntoConstraints = false
+        
+        return control
+    }()
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 80
+        tableView.register(RequestPostTableViewCell.self, forCellReuseIdentifier: RequestPostTableViewCell.identifier)
+        tableView.register(RentPostTableViewCell.self, forCellReuseIdentifier: RentPostTableViewCell.identifier)
+        tableView.separatorStyle = .none
+        
+        return tableView
+    }()
+    
+    private var cancellableBag = Set<AnyCancellable>()
+    
+    init(viewModel: ViewModel) {
+        super.init(nibName: nil, bundle: nil)
+        
     }
-    */
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setViewModel()
+        setUI()
+        generateRequestData()
+        generateRentData()
+    }
+    
+}
 
+private extension MyPostsViewController {
+    
+    func setViewModel() {
+        
+    }
+    
+    func setUI() {
+        setNavigationUI()
+        
+        view.addSubview(requestSegmentedControl)
+        view.addSubview(tableView)
+        
+        view.backgroundColor = .systemBackground
+        configureConstraints()
+    }
+    
+    func generateRequestData() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
+        snapshot.appendSections([.myPost])
+//        snapshot.appendItems()
+        rentPostsDataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func generateRentData() {        
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
+        snapshot.appendSections([.myPost])
+//        snapshot.appendItems()
+        requestPostsDataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func setNavigationUI() {
+        navigationItem.title = "내 게시글"
+    }
+    
+    func configureConstraints() {
+        
+        NSLayoutConstraint.activate([
+            requestSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            requestSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            requestSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            requestSegmentedControl.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            tableView.topAnchor.constraint(equalTo: requestSegmentedControl.bottomAnchor, constant: 5),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5)
+        ])
+        
+    }
+    
 }
