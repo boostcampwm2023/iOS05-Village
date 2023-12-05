@@ -10,6 +10,10 @@ import { PostListDto } from './dto/postList.dto';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 
+interface WhereOption {
+  is_request?: boolean;
+  user_hash?: string;
+}
 @Injectable()
 export class PostService {
   constructor(
@@ -25,10 +29,13 @@ export class PostService {
     private blockPostRepository: Repository<BlockPostEntity>,
     private s3Handler: S3Handler,
   ) {}
-  makeWhereOption(query: PostListDto) {
-    const where = { is_request: undefined };
+  makeWhereOption(query: PostListDto): WhereOption {
+    const where: WhereOption = {};
     if (query.requestFilter !== undefined) {
       where.is_request = query.requestFilter !== 0;
+    }
+    if (query.writer !== undefined) {
+      where.user_hash = query.writer;
     }
     return where;
   }
