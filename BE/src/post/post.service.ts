@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
-import { Like, Repository } from 'typeorm';
+import { LessThan, Like, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../utils/S3Handler';
@@ -12,6 +12,7 @@ import { BlockPostEntity } from '../entities/blockPost.entity';
 import { FindOperator } from 'typeorm/find-options/FindOperator';
 
 interface WhereOption {
+  id: FindOperator<number>;
   is_request?: boolean;
   user_hash?: string;
   title?: FindOperator<string>;
@@ -32,7 +33,9 @@ export class PostService {
     private s3Handler: S3Handler,
   ) {}
   makeWhereOption(query: PostListDto): WhereOption {
-    const where: WhereOption = {};
+    const cursor: FindOperator<number> =
+      query.page === undefined ? undefined : LessThan(query.page);
+    const where: WhereOption = { id: cursor };
     if (query.requestFilter !== undefined) {
       where.is_request = query.requestFilter !== 0;
     }
@@ -85,13 +88,11 @@ export class PostService {
   }
 
   async findPosts(query: PostListDto, userId: string) {
-    const page: number = query.page === undefined ? 1 : query.page;
     const limit: number = 20;
-    const offset: number = limit * (page - 1);
 
     const posts = await this.postRepository.find({
       take: limit,
-      skip: offset,
+      // skip: offset,
       where: this.makeWhereOption(query),
       relations: ['post_images', 'user'],
       order: {
