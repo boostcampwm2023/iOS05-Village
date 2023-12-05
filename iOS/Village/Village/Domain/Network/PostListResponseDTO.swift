@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PostListResponseDTO: Decodable {
+struct PostListResponseDTO: Decodable, Hashable {
     
     let title: String
     let price: Int?
