@@ -75,6 +75,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 sender: sender,
                 message: message['message'],
                 is_read: true,
+                count: message['count'],
               },
             }),
           );
