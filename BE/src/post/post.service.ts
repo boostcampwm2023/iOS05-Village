@@ -92,7 +92,6 @@ export class PostService {
 
     const posts = await this.postRepository.find({
       take: limit,
-      // skip: offset,
       where: this.makeWhereOption(query),
       relations: ['post_images', 'user'],
       order: {
