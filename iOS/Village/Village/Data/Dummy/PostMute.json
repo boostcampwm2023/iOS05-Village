@@ -1,7 +1,6 @@
 
-{
-    [
-      {
+[
+    {
         "title": "닌텐도 스위치",
         "post_id": 1,
         "user_id": "undefined",
@@ -31,5 +30,4 @@
             "https://cdn-icons-png.flaticon.com/512/12719/12719172.png"
         ]
       }
-    ]
-}
+]
