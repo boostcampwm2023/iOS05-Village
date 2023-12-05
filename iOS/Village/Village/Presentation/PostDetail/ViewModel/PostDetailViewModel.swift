@@ -21,7 +21,6 @@ final class PostDetailViewModel {
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                print(data)
                 responseData = data
             } catch let error as NetworkError {
                 dump(error)
