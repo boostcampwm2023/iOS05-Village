@@ -70,8 +70,7 @@ struct APIEndPoints {
             baseURL: baseURL,
             path: "chat",
             method: .DELETE,
-            queryParameters: chatRoomRequest,
-            headers: header
+            queryParameters: chatRoomRequest
         )
     }
     
@@ -81,10 +80,10 @@ struct APIEndPoints {
             path: "chat/room",
             method: .POST,
             bodyParameters: postRoomRequest,
-            headers: header?.mergeWith([
+            headers: [
                 "Content-Type": "application/json",
                 "accept": "application/json"
-            ])
+            ]
         )
     }
     
