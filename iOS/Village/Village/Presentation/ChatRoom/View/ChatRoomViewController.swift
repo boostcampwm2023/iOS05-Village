@@ -89,8 +89,9 @@ final class ChatRoomViewController: UIViewController {
     }()
     
     @objc func sendbuttonTapped() {
-        if let text = self.keyboardTextField.text {
-            WebSocket.shared.sendMessage(roomID: "6", sender: "me", message: text)
+        if let text = self.keyboardTextField.text,
+           !text.isEmpty {
+            WebSocket.shared.sendMessage(roomID: "164", sender: "me", message: text)
             viewModel.appendLog(sender: "me", message: text)
             generateData()
             self.keyboardTextField.text = nil

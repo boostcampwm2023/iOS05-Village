@@ -80,12 +80,13 @@ final class ChatRoomViewModel {
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                chatRoom.send(data)
                 data.chatLog.forEach { chat in
-                    self.chatLog.append(Message(roomID: 164, sender: chat.sender, message: chat.message, count: chat.id))
+                    self.chatLog.append(
+                        Message(roomID: 164, sender: chat.sender, message: chat.message, count: chat.id)
+                    )
                     // roomID 추가예정, id -> count로 변경예정
                 }
-                print(self.chatLog)
+                chatRoom.send(data)
             } catch let error as NetworkError {
                 chatRoom.send(completion: .failure(error))
             }
