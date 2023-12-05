@@ -66,6 +66,7 @@
 		8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */; };
 		8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */; };
 		8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */; };
+		8F1E2CEE2B1F163D00179E34 /* GetRoomResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */; };
 		8F3D79DD2B135D1500370536 /* ChatRoom.json in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D79DC2B135D1500370536 /* ChatRoom.json */; };
 		8F3D79E02B136C6800370536 /* ChatRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */; };
 		8F3D79E22B14438A00370536 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79E12B14438A00370536 /* PostView.swift */; };
@@ -74,8 +75,6 @@
 		8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D7A392B173B7C00370536 /* WebSocketError.swift */; };
 		8F3D7A3C2B175D5000370536 /* chat-server.ts in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D7A3B2B175D5000370536 /* chat-server.ts */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
-		8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */; };
-		8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */; };
 		8F8F0B832B1B36DD00BE97D2 /* ChatListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B822B1B36DD00BE97D2 /* ChatListTableViewCell.swift */; };
 		8F8F0B852B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */; };
 		8F8F0B882B1D980900BE97D2 /* PostMuteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */; };
@@ -83,6 +82,8 @@
 		8F8F0B8D2B1DA91500BE97D2 /* PostMuteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8C2B1DA91500BE97D2 /* PostMuteTableViewCell.swift */; };
 		8F8F0B8F2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */; };
 		8F8F0B912B1DB6C100BE97D2 /* PostMute.json in Resources */ = {isa = PBXBuildFile; fileRef = 8F8F0B902B1DB6C100BE97D2 /* PostMute.json */; };
+		8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */; };
+		8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */; };
 		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
 		8F95CF942B0C60E00024631F /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF932B0C60E00024631F /* HTTPMethod.swift */; };
@@ -176,6 +177,7 @@
 		8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndPoints.swift; sourceTree = "<group>"; };
 		8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListRequestDTO.swift; sourceTree = "<group>"; };
 		8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListResponseDTO.swift; sourceTree = "<group>"; };
+		8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRoomResponseDTO.swift; sourceTree = "<group>"; };
 		8F3D79DC2B135D1500370536 /* ChatRoom.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatRoom.json; sourceTree = "<group>"; };
 		8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewModel.swift; sourceTree = "<group>"; };
 		8F3D79E12B14438A00370536 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
@@ -185,8 +187,6 @@
 		8F3D7A3B2B175D5000370536 /* chat-server.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.typescript; path = "chat-server.ts"; sourceTree = "<group>"; };
 		8F3D7A3E2B18ED2300370536 /* VillageRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VillageRelease.entitlements; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
-		8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRoomRequestDTO.swift; sourceTree = "<group>"; };
-		8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRoomResponseDTO.swift; sourceTree = "<group>"; };
 		8F8F0B822B1B36DD00BE97D2 /* ChatListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListTableViewCell.swift; sourceTree = "<group>"; };
 		8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomRequestDTO.swift; sourceTree = "<group>"; };
 		8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteViewController.swift; sourceTree = "<group>"; };
@@ -194,6 +194,8 @@
 		8F8F0B8C2B1DA91500BE97D2 /* PostMuteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteTableViewCell.swift; sourceTree = "<group>"; };
 		8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteResponseDTO.swift; sourceTree = "<group>"; };
 		8F8F0B902B1DB6C100BE97D2 /* PostMute.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostMute.json; sourceTree = "<group>"; };
+		8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRoomRequestDTO.swift; sourceTree = "<group>"; };
+		8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRoomResponseDTO.swift; sourceTree = "<group>"; };
 		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		8F95CF932B0C60E00024631F /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
@@ -520,6 +522,7 @@
 				44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */,
 				8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */,
 				8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */,
+				8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */,
 				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
 			);
@@ -927,6 +930,7 @@
 				8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */,
 				4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */,
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
+				8F1E2CEE2B1F163D00179E34 /* GetRoomResponseDTO.swift in Sources */,
 				8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */,
 				59BA10FA2B1CC3F700F30DB8 /* FCMManager.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,

@@ -24,8 +24,8 @@ final class ChatRoomViewController: UIViewController {
                 return ChatRoomTableViewCell()
             }
             cell.configureData(
-                message: message.body,
-                profileImageURL: self.imageURL!,
+                message: message.message,
+                profileImageURL: "",
                 // TODO: 나중에 해시값으로 바꾸기
                 isMine: message.sender == "me"
             )
@@ -53,6 +53,7 @@ final class ChatRoomViewController: UIViewController {
     }
     
     private let roomID: Just<Int>
+    private let opponentNickname: Just<String>
     
     private var imageURL: String?
     
@@ -88,8 +89,9 @@ final class ChatRoomViewController: UIViewController {
     }()
     
     @objc func sendbuttonTapped() {
-        if let text = self.keyboardTextField.text {
-            WebSocket.shared.sendMessage(roomID: "6", sender: "me", message: text)
+        if let text = self.keyboardTextField.text,
+           !text.isEmpty {
+            WebSocket.shared.sendMessage(roomID: "164", sender: "me", message: text)
             viewModel.appendLog(sender: "me", message: text)
             generateData()
             self.keyboardTextField.text = nil
@@ -113,8 +115,9 @@ final class ChatRoomViewController: UIViewController {
         return postView
     }()
     
-    init(roomID: Int) {
+    init(roomID: Int, opponentNickname: String) {
         self.roomID = Just(roomID)
+        self.opponentNickname = Just(opponentNickname)
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -138,7 +141,7 @@ final class ChatRoomViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        WebSocket.shared.sendDisconnectRoom(roomID: "6")
+        WebSocket.shared.sendDisconnectRoom(roomID: "164")
     }
     
     @objc private func ellipsisTapped() {
@@ -146,9 +149,9 @@ final class ChatRoomViewController: UIViewController {
     }
     
     func setSocket() {
-        WebSocket.shared.url = URL(string: "ws://localhost:3000/chats")
+        WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
         try? WebSocket.shared.openWebSocket()
-        WebSocket.shared.sendJoinRoom(roomID: "6")
+        WebSocket.shared.sendJoinRoom(roomID: "164")
         
         MessageManager.shared.messageSubject
             .receive(on: DispatchQueue.main)
@@ -173,15 +176,20 @@ private extension ChatRoomViewController {
     }
     
     func bindRoomOutput(_ output: ViewModel.Output) {
-        if let room = viewModel.getTest() {
-            self.setRoomContent(room: room)
-        }
-        //        output.chatRoom
-        //            .receive(on: DispatchQueue.main)
-        //            .sink(receiveValue: { room in
-        //                self.setRoomContent(room: room)
-        //            })
-        //            .store(in: &cancellableBag)
+        output.chatRoom
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            dump(error)
+                        }
+                    } receiveValue: { [weak self] room in
+                        self?.setRoomContent(room: room)
+                        self?.generateData()
+                    }
+                    .store(in: &cancellableBag)
     }
     
     func setUI() {
@@ -239,10 +247,11 @@ private extension ChatRoomViewController {
         navigationItem.title = title
     }
     
-    func setRoomContent(room: ChatRoomResponseDTO) {
-        imageURL = room.postImage
-        setNavigationTitle(title: room.user)
-        postView.setContent(url: room.postImage, title: room.postName, price: room.postPrice)
+    func setRoomContent(room: GetRoomResponseDTO) {
+        
+//        imageURL = room.postImage
+//        setNavigationTitle(title: room.user)
+//        postView.setContent(url: room.postImage, title: room.postName, price: room.postPrice)
     }
     
     func generateData() {

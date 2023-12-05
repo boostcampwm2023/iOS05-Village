@@ -10,13 +10,15 @@ import Combine
 
 struct Message: Hashable, Codable {
     
+    let roomID: Int
     let sender: String
-    let body: String
+    let message: String
     let count: Int
     
     enum CodingKeys: String, CodingKey {
+        case roomID = "room_id"
         case sender
-        case body
+        case message
         case count
     }
     
@@ -56,7 +58,8 @@ struct ChatRoomResponseDTO: Hashable, Codable {
 
 final class ChatRoomViewModel {
     
-    private var chatRoom = PassthroughSubject<ChatRoomResponseDTO, Never>()
+    private var chatRoom = PassthroughSubject<GetRoomResponseDTO, NetworkError>()
+    private var post = PassthroughSubject<PostResponseDTO, NetworkError>()
     private var cancellableBag = Set<AnyCancellable>()
     private var chatLog: [Message] = []
     
@@ -65,38 +68,28 @@ final class ChatRoomViewModel {
     func transform(input: Input) -> Output {
         input.roomID
             .sink(receiveValue: { [weak self] id in
-                self?.getRoom(id: id)
+                self?.getChatRoomData(id: id)
             })
             .store(in: &cancellableBag)
         
         return Output(chatRoom: chatRoom.eraseToAnyPublisher())
     }
     
-    func getRoom(id: Int) {
-//        let endpoint = APIEndPoints.getRoom(id: id)
-//        
-//        Task {
-//            do {
-//                let data = try await Provider.shared.request(with: endpoint)
-//                chatRoom.send(data)
-//            } catch let error as NetworkError {
-//                chatRoom.send(completion: .failure(error))
-//            }
-//        }
-        guard let path = Bundle.main.path(forResource: "ChatRoom", ofType: "json") else { return }
-        
-        guard let jsonString = try? String(contentsOfFile: path) else { return }
-        do {
-            let decoder = JSONDecoder()
-            let data = jsonString.data(using: .utf8)
-            
-            guard let data = data else { return }
-            let room = try decoder.decode(ChatRoomResponseDTO.self, from: data)
-            test = room
-            chatLog = room.chatLog
-            chatRoom.send(room)
-        } catch {
-            dump(error)
+    func getChatRoomData(id: Int) {
+        let endpoint = APIEndPoints.getChatRoom(with: id)
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                data.chatLog.forEach { chat in
+                    self.chatLog.append(
+                        Message(roomID: 164, sender: chat.sender, message: chat.message, count: chat.id)
+                    )
+                    // roomID 추가예정, id -> count로 변경예정
+                }
+                chatRoom.send(data)
+            } catch let error as NetworkError {
+                chatRoom.send(completion: .failure(error))
+            }
         }
     }
     
@@ -105,7 +98,7 @@ final class ChatRoomViewModel {
     }
     
     func appendLog(sender: String, message: String) {
-        chatLog.append(Message(sender: sender, body: message, count: chatLog.count))
+        chatLog.append(Message(roomID: 164, sender: sender, message: message, count: chatLog.count))
     }
     
     func getTest() -> ChatRoomResponseDTO? {
@@ -121,7 +114,7 @@ extension ChatRoomViewModel {
     }
     
     struct Output {
-        var chatRoom: AnyPublisher<ChatRoomResponseDTO, Never>
+        var chatRoom: AnyPublisher<GetRoomResponseDTO, NetworkError>
     }
     
 }

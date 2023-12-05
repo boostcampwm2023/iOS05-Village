@@ -99,7 +99,6 @@ final class WebSocket: NSObject {
                 print("메시지 전송 완료")
             }
         }
-
     }
     
     func receiveEvent() {
