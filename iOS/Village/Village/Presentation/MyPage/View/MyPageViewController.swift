@@ -17,6 +17,7 @@ final class MyPageViewController: UIViewController {
     private var cancellableBag: Set<AnyCancellable> = []
     
     private var logoutSubject = PassthroughSubject<Void, Never>()
+    private var deleteAccountSubject = PassthroughSubject<Void, Never>()
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -281,8 +282,9 @@ private extension MyPageViewController {
     
     func bindViewModel() {
         let output = viewModel.transform(input: Input(
-            logoutSubject: logoutSubject.eraseToAnyPublisher())
-        )
+            logoutSubject: logoutSubject.eraseToAnyPublisher(),
+            deleteAccountSubject: deleteAccountSubject.eraseToAnyPublisher()
+        ))
         
         output.logoutSucceed
             .receive(on: DispatchQueue.main)
@@ -291,13 +293,26 @@ private extension MyPageViewController {
                 case .finished:
                     break
                 case .failure(let error):
-                    dump(error)
+                    dump("Failed logout: \(error)")
                 }
             } receiveValue: {
                 NotificationCenter.default.post(Notification(name: .shouldLogin))
             }
             .store(in: &cancellableBag)
-
+        
+        output.deleteAccountSucceed
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump("Failed delete account: \(error)")
+                }
+            } receiveValue: {
+                NotificationCenter.default.post(Notification(name: .shouldLogin))
+            }
+            .store(in: &cancellableBag)
     }
     
 }
@@ -335,7 +350,12 @@ private extension MyPageViewController {
     }
     
     func deleteAccountButtonTapped() {
-        
+        let alert = UIAlertController(title: "회원탈퇴", message: "회원탈퇴 시 모든 정보가 삭제됩니다!\n진행하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        alert.addAction(UIAlertAction(title: "탈퇴하기", style: .destructive, handler: { [weak self] _ in
+            self?.deleteAccountSubject.send()
+        }))
+        self.present(alert, animated: true)
     }
     
 }
