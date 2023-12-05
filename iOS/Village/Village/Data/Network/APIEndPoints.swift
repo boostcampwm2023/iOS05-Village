@@ -87,6 +87,15 @@ struct APIEndPoints {
         )
     }
     
+    static func getChatRoom(with roomID: Int) -> EndPoint<GetRoomResponseDTO> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat/room/\(roomID)",
+            method: .GET
+        )
+    }
+    
+    
     static func loginAppleOAuth(with appleOAuthDTO: AppleOAuthDTO) -> EndPoint<AuthenticationToken> {
         EndPoint(
             baseURL: baseURL,
