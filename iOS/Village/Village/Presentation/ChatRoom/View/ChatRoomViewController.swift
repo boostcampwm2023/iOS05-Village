@@ -12,7 +12,6 @@ final class ChatRoomViewController: UIViewController {
     
     typealias ChatRoomDataSource = UITableViewDiffableDataSource<Section, Message>
     typealias ViewModel = ChatRoomViewModel
-    typealias Input = ViewModel.Input
     
     private lazy var dataSource: ChatRoomDataSource = ChatRoomDataSource(
         tableView: chatTableView,
@@ -170,12 +169,12 @@ final class ChatRoomViewController: UIViewController {
 private extension ChatRoomViewController {
     
     func bindViewModel() {
-        let output = viewModel.transform(input: ViewModel.Input(roomID: roomID.eraseToAnyPublisher()))
+        let output = viewModel.transformRoom(input: ViewModel.RoomInput(roomID: roomID.eraseToAnyPublisher()))
         
         bindRoomOutput(output)
     }
     
-    func bindRoomOutput(_ output: ViewModel.Output) {
+    func bindRoomOutput(_ output: ViewModel.RoomOutput) {
         output.chatRoom
                     .receive(on: DispatchQueue.main)
                     .sink { completion in
