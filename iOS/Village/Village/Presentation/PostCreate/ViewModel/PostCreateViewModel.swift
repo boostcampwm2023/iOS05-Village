@@ -77,6 +77,18 @@ final class PostCreateViewModel {
                 postID: postID
             )
         )
+        Task {
+            do {
+                try await APIProvider.shared.multipartRequest(with: modifyEndPoint)
+                updatePost()
+            } catch let error as NetworkError {
+                self.endOutput.send(completion: .failure(error))
+            }
+        }
+        
+    }
+    
+    func updatePost() {
         guard let id = postID else {
             endOutput.send(nil)
             return
@@ -84,7 +96,6 @@ final class PostCreateViewModel {
         let getPostEndpoint = APIEndPoints.getPost(id: id)
         Task {
             do {
-                try await APIProvider.shared.multipartRequest(with: modifyEndPoint)
                 guard let data = try await APIProvider.shared.request(with: getPostEndpoint) else {
                     self.endOutput.send(nil)
                     return
@@ -94,7 +105,6 @@ final class PostCreateViewModel {
                 self.endOutput.send(completion: .failure(error))
             }
         }
-        
     }
     
     init(useCase: PostCreateUseCase, isRequest: Bool, isEdit: Bool, postID: Int? = nil) {
