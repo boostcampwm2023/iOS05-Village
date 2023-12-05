@@ -61,16 +61,28 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
     const room = this.rooms.get(message['room_id']);
     const sender = message['sender'];
-    await this.chatService.saveMessage(message);
     if (room.size === 1) {
+      await this.chatService.saveMessage(message, false);
       await this.chatService.sendPush(message);
     } else {
+      await this.chatService.saveMessage(message, true);
       room.forEach((people) => {
         if (people !== client)
-          people.send(JSON.stringify({ sender, message: message['message'] }));
+          people.send(
+            JSON.stringify({
+              event: 'send-message',
+              data: {
+                sender: sender,
+                message: message['message'],
+                is_read: true,
+              },
+            }),
+          );
       });
     }
-    client.send(JSON.stringify({ sent: true }));
+    client.send(
+      JSON.stringify({ event: 'send-message', data: { sent: true } }),
+    );
   }
 
   @SubscribeMessage('join-room')
@@ -80,8 +92,21 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const roomId = message['room_id'];
     client.roomId = roomId;
-    if (this.rooms.has(roomId)) this.rooms.get(roomId).add(client);
-    else this.rooms.set(roomId, new Set([client]));
+    if (this.rooms.has(roomId)) {
+      this.rooms.get(roomId).add(client);
+
+      const room = this.rooms.get(roomId);
+
+      room.forEach((people) => {
+        if (people !== client)
+          people.send(
+            JSON.stringify({
+              event: 'join-room',
+              data: { 'opp-entered': true },
+            }),
+          );
+      });
+    } else this.rooms.set(roomId, new Set([client]));
     this.logger.debug(
       `[${client.userId}] join room : ${roomId}`,
       'ChatsGateway',
