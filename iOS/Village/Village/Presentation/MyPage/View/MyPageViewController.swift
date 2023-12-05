@@ -10,7 +10,10 @@ import Combine
 
 final class MyPageViewController: UIViewController {
     
-    private let viewModel: MyPageViewModel
+    typealias ViewModel = MyPageViewModel
+    typealias Input = ViewModel.Input
+    
+    private let viewModel: ViewModel
     private var cancellableBag: Set<AnyCancellable> = []
     
     private var logoutSubject = PassthroughSubject<Void, Never>()
@@ -277,7 +280,24 @@ private extension MyPageViewController {
     }
     
     func bindViewModel() {
+        let output = viewModel.transform(input: Input(
+            logoutSubject: logoutSubject.eraseToAnyPublisher())
+        )
         
+        output.logoutSucceed
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: {
+                NotificationCenter.default.post(Notification(name: .shouldLogin))
+            }
+            .store(in: &cancellableBag)
+
     }
     
 }
