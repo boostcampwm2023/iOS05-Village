@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../utils/S3Handler';
@@ -9,10 +9,12 @@ import { UserEntity } from '../entities/user.entity';
 import { PostListDto } from './dto/postList.dto';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
+import { FindOperator } from 'typeorm/find-options/FindOperator';
 
 interface WhereOption {
   is_request?: boolean;
   user_hash?: string;
+  title?: FindOperator<string>;
 }
 @Injectable()
 export class PostService {
@@ -36,6 +38,9 @@ export class PostService {
     }
     if (query.writer !== undefined) {
       where.user_hash = query.writer;
+    }
+    if (query.searchKeyword !== undefined) {
+      where.title = Like(`%${query.searchKeyword}%`);
     }
     return where;
   }
