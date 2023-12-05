@@ -346,9 +346,17 @@ private extension PostCreateViewController {
     func configureNavigation() {
         let titleLabel = UILabel()
         if viewModel.isRequest {
-            titleLabel.setTitle("대여 요청 등록")
+            if viewModel.isEdit {
+                titleLabel.setTitle("대여 요청 등록 편집")
+            } else {
+                titleLabel.setTitle("대여 요청 등록")
+            }
         } else {
-            titleLabel.setTitle("대여 등록")
+            if viewModel.isEdit {
+                titleLabel.setTitle("대여 등록 편집")
+            } else {
+                titleLabel.setTitle("대여 등록")
+            }
         }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let close = self.navigationItem.makeSFSymbolButton(

@@ -157,7 +157,6 @@ final class PostDetailViewController: UIViewController {
             guard let post = self?.viewModel.postDTO else { return }
             editVC.setEdit(post: post)
             self?.navigationController?.pushViewController(editVC, animated: true)
-//            self?.present(editNC, animated: true)
         }
         
         let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { _ in
