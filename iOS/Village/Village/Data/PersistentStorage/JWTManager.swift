@@ -14,7 +14,7 @@ final class JWTManager {
     private let keychainManager = KeychainManager<AuthenticationToken>()
     
     private let currentUserIDKey = "currentUserID"
-    private var currentUserID: String? {
+    var currentUserID: String? {
         UserDefaults.standard.string(forKey: currentUserIDKey)
     }
     
