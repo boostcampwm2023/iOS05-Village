@@ -247,10 +247,28 @@ private extension ChatRoomViewController {
     }
     
     func setRoomContent(room: GetRoomResponseDTO) {
-        
-//        imageURL = room.postImage
-//        setNavigationTitle(title: room.user)
-//        postView.setContent(url: room.postImage, title: room.postName, price: room.postPrice)
+        let postID = Just(room.postID).eraseToAnyPublisher()
+        let output = viewModel.transformPost(input: ViewModel.PostInput(postID: postID))
+        bindPostOutput(output)
+    }
+    
+    private func bindPostOutput(_ output: ViewModel.PostOutput) {
+        output.post.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] post in
+                self?.setPostContent(post: post)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func setPostContent(post: PostResponseDTO) {
+        postView.setContent(url: post.imageURL.first ?? "", title: post.title, price: String(post.price ?? 0))
     }
     
     func generateData() {
