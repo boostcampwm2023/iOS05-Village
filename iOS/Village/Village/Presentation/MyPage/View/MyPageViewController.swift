@@ -10,8 +10,13 @@ import Combine
 
 final class MyPageViewController: UIViewController {
     
-    private let viewModel: MyPageViewModel
+    typealias ViewModel = MyPageViewModel
+    typealias Input = ViewModel.Input
+    
+    private let viewModel: ViewModel
     private var cancellableBag: Set<AnyCancellable> = []
+    
+    private var logoutSubject = PassthroughSubject<Void, Never>()
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -275,7 +280,24 @@ private extension MyPageViewController {
     }
     
     func bindViewModel() {
+        let output = viewModel.transform(input: Input(
+            logoutSubject: logoutSubject.eraseToAnyPublisher())
+        )
         
+        output.logoutSucceed
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: {
+                NotificationCenter.default.post(Notification(name: .shouldLogin))
+            }
+            .store(in: &cancellableBag)
+
     }
     
 }
@@ -304,7 +326,12 @@ private extension MyPageViewController {
     }
     
     func logoutButtonTapped() {
-        
+        let alert = UIAlertController(title: "로그아웃", message: "정말 로그아웃하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        alert.addAction(UIAlertAction(title: "로그아웃", style: .default, handler: { [weak self] _ in
+            self?.logoutSubject.send()
+        }))
+        self.present(alert, animated: true)
     }
     
     func deleteAccountButtonTapped() {
