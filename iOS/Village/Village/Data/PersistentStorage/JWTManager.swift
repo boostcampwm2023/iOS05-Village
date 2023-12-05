@@ -44,6 +44,7 @@ final class JWTManager {
         guard let userID = currentUserID else { return }
         
         try keychainManager.delete(key: userID)
+        UserDefaults.standard.removeObject(forKey: currentUserIDKey)
     }
     
     func update(token: AuthenticationToken) throws {
