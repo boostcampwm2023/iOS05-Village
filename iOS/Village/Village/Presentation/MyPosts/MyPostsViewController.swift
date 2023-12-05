@@ -10,49 +10,68 @@ import Combine
 
 final class MyPostsViewController: UIViewController {
     
-    typealias RequestPostsDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
-    typealias RentPostsDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias MyPostsDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
     
     typealias ViewModel = MyPostsViewModel
     typealias Input = ViewModel.Input
     
-    enum Section {
-        case myPost
+    enum Section: String {
+        case request = "요청글"
+        case rent = "대여글"
+        
+        var index: Int {
+            switch self {
+            case .request:
+                return 0
+            case .rent:
+                return 1
+            }
+        }
+        
+        static func toSection(index: Int) -> Section {
+            switch index {
+            case 0:
+                return .request
+            default:
+                return .rent
+            }
+        }
     }
     
-    private lazy var requestPostsDataSource: RequestPostsDataSource = RequestPostsDataSource(
+    private let viewModel: ViewModel
+    
+    private lazy var dataSource: MyPostsDataSource = MyPostsDataSource(
         tableView: tableView) { [weak self] (tableView, indexPath, post) in
-            guard let self = self else {
-                return RequestPostTableViewCell()
+//            guard let self = self else {
+//                return RequestPostTableViewCell()
+//            }
+            if post.isRequest {
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: RequestPostTableViewCell.identifier,
+                    for: indexPath) as? RequestPostTableViewCell else {
+                    return RequestPostTableViewCell()
+                }
+                cell.configureData(post: post)
+                cell.selectionStyle = .none
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: RentPostTableViewCell.identifier,
+                    for: indexPath) as? RentPostTableViewCell else {
+                    return RentPostTableViewCell()
+                }
+                cell.configureData(post: post)
+                cell.selectionStyle = .none
+                return cell
             }
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: RequestPostTableViewCell.identifier,
-                for: indexPath) as? RequestPostTableViewCell else {
-                return RequestPostTableViewCell()
-            }
-            cell.configureData(post: post)
-            cell.selectionStyle = .none
-            return cell
         }
     
-    private lazy var rentPostsDataSource: RentPostsDataSource = RentPostsDataSource(
-        tableView: tableView) { [weak self] (tableView, indexPath, post) in
-            guard let self = self else {
-                return RentPostTableViewCell()
-            }
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: RentPostTableViewCell.identifier,
-                for: indexPath) as? RentPostTableViewCell else {
-                return RentPostTableViewCell()
-            }
-            cell.configureData(post: post)
-            cell.selectionStyle = .none
-            return cell
-        }
-    
-    private let requestSegmentedControl: UISegmentedControl = {
-        let control = UISegmentedControl()
+    private lazy var requestSegmentedControl: UISegmentedControl = {
+        let control = UISegmentedControl(items: [Section.request.rawValue, Section.rent.rawValue])
         control.translatesAutoresizingMaskIntoConstraints = false
+        control.addTarget(self, action: #selector(segmentedControlChanged), for: .valueChanged)
+        control.selectedSegmentIndex = Section.request.index
+        control.selectedSegmentTintColor = .primary500
         
         return control
     }()
@@ -71,8 +90,8 @@ final class MyPostsViewController: UIViewController {
     private var cancellableBag = Set<AnyCancellable>()
     
     init(viewModel: ViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -84,8 +103,11 @@ final class MyPostsViewController: UIViewController {
         
         setViewModel()
         setUI()
-        generateRequestData()
-        generateRentData()
+        generateData()
+    }
+    
+    @objc private func segmentedControlChanged() {
+        toggleData(to: Section.toSection(index: requestSegmentedControl.selectedSegmentIndex))
     }
     
 }
@@ -106,18 +128,25 @@ private extension MyPostsViewController {
         configureConstraints()
     }
     
-    func generateRequestData() {
+    func generateData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
-        snapshot.appendSections([.myPost])
-//        snapshot.appendItems()
-        rentPostsDataSource.apply(snapshot, animatingDifferences: true)
+        snapshot.appendSections([.request, .rent])
     }
     
-    func generateRentData() {        
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
-        snapshot.appendSections([.myPost])
-//        snapshot.appendItems()
-        requestPostsDataSource.apply(snapshot, animatingDifferences: true)
+    func toggleData(to section: Section) {
+        var snapshot = dataSource.snapshot()
+        if section == .rent {
+            snapshot.appendItems(
+                viewModel.rentPosts,
+                toSection: section
+            )
+        } else {
+            snapshot.appendItems(
+                viewModel.requestPosts,
+                toSection: section
+            )
+        }
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     func setNavigationUI() {
@@ -127,17 +156,31 @@ private extension MyPostsViewController {
     func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            requestSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            requestSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            requestSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            requestSegmentedControl.heightAnchor.constraint(equalToConstant: 50)
+            requestSegmentedControl.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10
+            ),
+            requestSegmentedControl.trailingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10
+            ),
+            requestSegmentedControl.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10
+            ),
+            requestSegmentedControl.heightAnchor.constraint(equalToConstant: 35)
         ])
         
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            tableView.topAnchor.constraint(equalTo: requestSegmentedControl.bottomAnchor, constant: 5),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5)
+            tableView.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10
+            ),
+            tableView.trailingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10
+            ),
+            tableView.topAnchor.constraint(
+                equalTo: requestSegmentedControl.bottomAnchor, constant: 5
+            ),
+            tableView.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5
+            )
         ])
         
     }
