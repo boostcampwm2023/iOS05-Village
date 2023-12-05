@@ -292,11 +292,15 @@ private extension MyPageViewController {
     }
     
     func hiddenPostButtonTapped() {
-        
+        let nextVC = PostMuteViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: false)
     }
     
     func hiddenUserButtonTapped() {
-        
+        let nextVC = BannedUserViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: false)
     }
     
     func logoutButtonTapped() {

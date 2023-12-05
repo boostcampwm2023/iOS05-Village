@@ -85,7 +85,6 @@ final class PostCreateViewModel {
                 self.endOutput.send(completion: .failure(error))
             }
         }
-        
     }
     
     func updatePost() {

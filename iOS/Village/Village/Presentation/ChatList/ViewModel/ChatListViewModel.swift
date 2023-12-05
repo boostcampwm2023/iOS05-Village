@@ -75,6 +75,19 @@ final class ChatListViewModel {
         }
     }
     
+    func deleteChatRoom(roomID: Int) {
+        let request = ChatRoomRequestDTO(roomID: roomID)
+        let endpoint = APIEndPoints.deleteChatRoom(with: request)
+        
+        Task {
+            do {
+                let _ = try await APIProvider.shared.request(with: endpoint)
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
     func updateTest(list: [ChatListResponseDTO]) {
         test = list
     }
