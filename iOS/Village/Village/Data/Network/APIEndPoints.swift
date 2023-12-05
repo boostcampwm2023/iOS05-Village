@@ -75,6 +75,19 @@ struct APIEndPoints {
         )
     }
     
+    static func postCreateChatRoom(with postRoomRequest: PostRoomRequestDTO) -> EndPoint<PostRoomResponseDTO> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat/room",
+            method: .POST,
+            bodyParameters: postRoomRequest,
+            headers: header?.mergeWith([
+                "Content-Type": "application/json",
+                "accept": "application/json"
+            ])
+        )
+    }
+    
     static func loginAppleOAuth(with appleOAuthDTO: AppleOAuthDTO) -> EndPoint<AuthenticationToken> {
         EndPoint(
             baseURL: baseURL,
