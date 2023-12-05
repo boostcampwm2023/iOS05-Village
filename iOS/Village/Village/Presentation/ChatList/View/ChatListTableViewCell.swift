@@ -1,14 +1,14 @@
 //
-//  ChatListCollectionViewCell.swift
+//  ChatListTableViewCell.swift
 //  Village
 //
-//  Created by 박동재 on 2023/11/23.
+//  Created by 박동재 on 2023/12/02.
 //
 
 import UIKit
 
-class ChatListCollectionViewCell: UICollectionViewCell {
-    
+class ChatListTableViewCell: UITableViewCell {
+
     private let chatView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -60,13 +60,13 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
     }
     
     required init?(coder: NSCoder) {
-        fatalError("Should not be called")
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func configureUI() {
@@ -181,5 +181,5 @@ class ChatListCollectionViewCell: UICollectionViewCell {
             postImageView.backgroundColor = .primary100
         }
     }
-    
+
 }
