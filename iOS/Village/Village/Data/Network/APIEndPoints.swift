@@ -142,5 +142,13 @@ struct APIEndPoints {
             headers: ["Content-Type": "application/json"]
         )
     }
+    
+    static func userDelete(userID: String) -> EndPoint<Void> {
+        EndPoint(
+            baseURL: baseURL,
+            path: "users/\(userID)",
+            method: .DELETE
+        )
+    }
   
 }
