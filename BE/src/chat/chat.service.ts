@@ -30,11 +30,12 @@ export class ChatService {
     private configService: ConfigService,
   ) {}
 
-  async saveMessage(message: ChatDto) {
+  async saveMessage(message: ChatDto, is_read: boolean) {
     const chat = new ChatEntity();
     chat.sender = message.sender;
     chat.message = message.message;
     chat.chat_room = message.room_id;
+    chat.is_read = is_read;
     await this.chatRepository.save(chat);
   }
 
@@ -109,6 +110,15 @@ export class ChatService {
   }
 
   async findRoomById(roomId: number, userId: string) {
+    await this.chatRepository
+      .createQueryBuilder('chat')
+      .update()
+      .set({ is_read: true })
+      .where('chat.chat_room = :roomId', { roomId: roomId })
+      .andWhere('chat.is_read = :isRead', { isRead: false })
+      .andWhere('chat.sender != :userId', { userId: userId })
+      .execute();
+
     const room = await this.chatRoomRepository.findOne({
       where: {
         id: roomId,
