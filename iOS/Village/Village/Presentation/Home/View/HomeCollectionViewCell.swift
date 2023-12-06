@@ -19,7 +19,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         setUI()
     }
     
-    let postSummaryView = PostSummaryView()
+    let postSummaryView = RentPostSummaryView()
     
     private func setUI() {
         self.addSubview(postSummaryView)

@@ -37,9 +37,13 @@ final class WebSocket: NSObject {
     private override init() {}
     
     func openWebSocket() throws {
+        let configuration = URLSessionConfiguration.default
+        guard let accessToken = JWTManager.shared.get()?.accessToken else { return }
+        configuration.httpAdditionalHeaders = ["Authorization": "Bearer \(accessToken)"]
+        
         guard let url = url else { throw WebSocketError.invalidURL }
 
-        let urlSession = URLSession.shared
+        let urlSession = URLSession(configuration: configuration)
         let webSocketTask = urlSession.webSocketTask(with: url)
         webSocketTask.resume()
         

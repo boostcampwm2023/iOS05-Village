@@ -158,5 +158,13 @@ struct APIEndPoints {
             method: .DELETE
         )
     }
+    
+    static func logout() -> EndPoint<Void> {
+        EndPoint(
+            baseURL: baseURL,
+            path: "logout",
+            method: .POST
+        )
+    }
   
 }
