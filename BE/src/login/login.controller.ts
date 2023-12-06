@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpException,
   Post,
   UseGuards,
@@ -9,12 +10,13 @@ import {
 import { LoginService, SocialProperties } from './login.service';
 import { AppleLoginDto } from './dto/appleLogin.dto';
 import { AuthGuard } from '../utils/auth.guard';
+import { UserHash } from '../utils/auth.decorator';
 
-@Controller('login')
+@Controller()
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
-  @Post('appleOAuth') // 임시
+  @Post('login/appleOAuth') // 임시
   async signInWithApple(@Body() body: AppleLoginDto) {
     const socialProperties: SocialProperties =
       await this.loginService.appleOAuth(body);
@@ -24,7 +26,7 @@ export class LoginController {
     return await this.loginService.login(socialProperties);
   }
 
-  @Post('refresh')
+  @Post('login/refresh')
   async refreshToken(@Body('refresh_token') refreshToken) {
     try {
       const payload = this.loginService.validateToken(refreshToken, 'refresh');
@@ -34,12 +36,18 @@ export class LoginController {
     }
   }
 
-  @Post('admin')
+  @Post('login/admin')
   loginAdmin(@Body('user') user) {
     return this.loginService.loginAdmin(user);
   }
 
-  @Get('expire')
+  @Get('login/expire')
   @UseGuards(AuthGuard)
   checkAccessToken() {}
+
+  @Post('logout')
+  logout(@Headers('Authorization') token, @UserHash() userId) {
+    const accessToken = token.split(' ')[1];
+    this.loginService.logout(userId, accessToken);
+  }
 }
