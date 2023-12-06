@@ -73,7 +73,7 @@ export class FcmHandler {
     await this.registrationTokenRepository.delete({ user_hash: userId });
   }
 
-  makeChatPushMessage(
+  createChatPushMessage(
     nickname: string,
     message: string,
     roomId: number,
