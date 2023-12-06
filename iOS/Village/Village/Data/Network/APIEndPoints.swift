@@ -19,7 +19,7 @@ struct APIEndPoints {
         )
     }
     
-    static func getPosts(queryParameter: GetPostsQueryDTO) -> EndPoint<[PostListResponseDTO]> {
+    static func getPosts(queryParameter: PostListRequestDTO? = nil) -> EndPoint<[PostListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
@@ -69,6 +69,14 @@ struct APIEndPoints {
             method: .PATCH,
             bodyParameters: requestDTO.httpBody,
             headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
+        )
+    }
+    
+    static func deletePost(with postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/\(postID)",
+            method: .DELETE
         )
     }
     
