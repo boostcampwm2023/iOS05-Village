@@ -80,9 +80,13 @@ final class PostCreateViewModel {
         Task {
             do {
                 try await APIProvider.shared.request(with: modifyEndPoint)
-                updatePost()
+                if isEdit {
+                    updatePost()
+                }
             } catch let error as NetworkError {
                 self.endOutput.send(completion: .failure(error))
+            } catch {
+                dump("Unknown Error")
             }
         }
     }

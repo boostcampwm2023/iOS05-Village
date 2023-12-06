@@ -24,22 +24,15 @@ extension Requestable {
         let url = try makeURL()
         var urlRequest = URLRequest(url: url)
         
-        if let bodyParameters = try bodyParameters?.toDictionary() {
-            urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: bodyParameters)
+        // TODO: JSON 형식이 안 맞는 경우와 Multipart로 바로 넣어야 하는 경우를 구분해야 함. 에러 처리가 안 됨.
+        do {
+            if let bodyParameters = try bodyParameters?.toDictionary() {
+                urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: bodyParameters)
+            }
+        } catch {
+            urlRequest.httpBody = bodyParameters as? Data
         }
         
-        urlRequest.httpMethod = method.rawValue
-        
-        headers?.forEach { urlRequest.setValue($1, forHTTPHeaderField: $0) }
-        
-        return urlRequest
-    }
-    
-    func makeMultipartURLRequest() throws -> URLRequest {
-        let url = try makeURL()
-        var urlRequest = URLRequest(url: url)
-        
-        urlRequest.httpBody = bodyParameters as? Data
         urlRequest.httpMethod = method.rawValue
         
         headers?.forEach { urlRequest.setValue($1, forHTTPHeaderField: $0) }
