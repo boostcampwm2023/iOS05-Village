@@ -118,14 +118,19 @@ final class ChatRoomViewController: UIViewController {
     }()
     
     @objc private func postViewTapped() {
-        guard let postID = self.postID else { return }
-        postID.sink(receiveValue: { value in
-            let nextVC = PostDetailViewController(postID: value)
-            nextVC.hidesBottomBarWhenPushed = true
-            
-            self.navigationController?.pushViewController(nextVC, animated: true)
-        })
-        .store(in: &cancellableBag)
+        var viewControllers = self.navigationController?.viewControllers ?? []
+        if viewControllers.count > 1 {
+            guard let postID = self.postID else { return }
+            postID.sink(receiveValue: { value in
+                let nextVC = PostDetailViewController(postID: value)
+                nextVC.hidesBottomBarWhenPushed = true
+                
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            })
+            .store(in: &cancellableBag)
+        } else {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     init(roomID: Int, opponentNickname: String) {
