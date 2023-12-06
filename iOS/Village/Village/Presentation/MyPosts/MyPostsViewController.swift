@@ -111,6 +111,7 @@ final class MyPostsViewController: UIViewController {
 
 private extension MyPostsViewController {
     
+    // TODO: ViewModel 초기 설정
     func setViewModel() {
         
     }
