@@ -104,6 +104,53 @@ final class PostDetailViewController: UIViewController {
         return button
     }()
     
+    private lazy var modifyAction = UIAlertAction(title: "편집하기", style: .default) { [weak self] _ in
+        guard let isRequest = self?.isRequest  else { return }
+        let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
+        let postCreateViewModel = PostCreateViewModel(
+            useCase: useCase,
+            isRequest: isRequest,
+            isEdit: true,
+            postID: self?.postID.output
+        )
+        let editVC = PostCreateViewController(viewModel: postCreateViewModel)
+        editVC.modalPresentationStyle = .fullScreen
+        editVC.editButtonTappedSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] post in
+                guard let fixedPost = post else { return }
+                self?.viewModel.postDTO = fixedPost
+                self?.setPostContent(post: fixedPost)
+            }
+            .store(in: &editVC.cancellableBag)
+        guard let id = self?.postID.output else { return }
+        let endpoint = APIEndPoints.getPost(id: id)
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                editVC.setEdit(post: data)
+                self?.navigationController?.pushViewController(editVC, animated: true)
+            } catch let error {
+                dump(error)
+            }
+        }
+    }
+    
+    private lazy var deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { [weak self] _ in
+        guard let id = self?.postID.output else { return }
+        self?.deletePostID.send(id)
+    }
+    
+    private lazy var hideAction = UIAlertAction(title: "게시글 숨기기", style: .default) { _ in
+        // TODO: hide post
+    }
+    
+    private lazy var banAction = UIAlertAction(title: "사용자 차단하기", style: .default) { _ in
+        // TODO: ban user
+    }
+    
+    private let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+    
     init(postID: Int) {
         self.postID = Just(postID)
         super.init(nibName: nil, bundle: nil)
@@ -133,55 +180,8 @@ final class PostDetailViewController: UIViewController {
     @objc
     private func moreBarButtonTapped() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        let modifyAction = UIAlertAction(title: "편집하기", style: .default) { [weak self] _ in
-            guard let isRequest = self?.isRequest  else { return }
-            let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
-            let postCreateViewModel = PostCreateViewModel(
-                useCase: useCase,
-                isRequest: isRequest,
-                isEdit: true,
-                postID: self?.postID.output
-            )
-            let editVC = PostCreateViewController(viewModel: postCreateViewModel)
-            editVC.modalPresentationStyle = .fullScreen
-            editVC.editButtonTappedSubject
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] post in
-                    guard let fixedPost = post else { return }
-                    self?.viewModel.postDTO = fixedPost
-                    self?.setPostContent(post: fixedPost)
-                }
-                .store(in: &editVC.cancellableBag)
-            guard let id = self?.postID.output else { return }
-            let endpoint = APIEndPoints.getPost(id: id)
-            Task {
-                do {
-                    guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                    editVC.setEdit(post: data)
-                    self?.navigationController?.pushViewController(editVC, animated: true)
-                } catch let error {
-                    dump(error)
-                }
-            }
-        }
-        
-        let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { [weak self] _ in
-            guard let id = self?.postID.output else { return }
-            self?.deletePostID.send(id)
-        }
-        
-        let hideAction = UIAlertAction(title: "숨기기", style: .default) { _ in
-            // TODO: hide post
-        }
-        
-        let banAction = UIAlertAction(title: "사용자 차단하기", style: .default) { _ in
-            // TODO: ban user
-        }
-        
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        
-        if userID == Just("me") {
+        guard let postUserID = userID?.output else { return }
+        if postUserID != JWTManager.shared.currentUserID {
             alert.addAction(hideAction)
             alert.addAction(banAction)
             alert.addAction(cancelAction)
@@ -197,7 +197,7 @@ final class PostDetailViewController: UIViewController {
     @objc
     private func chatButtonTapped() {
         guard let roomID = viewModel.createChatRoom(writer: "qwe", postID: 50149) else { return }
-        var viewControllers = self.navigationController?.viewControllers ?? []
+        let viewControllers = self.navigationController?.viewControllers ?? []
         if viewControllers.count > 1 {
             self.navigationController?.popViewController(animated: true)
         } else {
@@ -290,6 +290,12 @@ private extension PostDetailViewController {
                 self?.isRequest = post.isRequest
                 self?.userID = Just(post.userID)
                 self?.setLayoutConstraints()
+                
+                if post.userID == JWTManager.shared.currentUserID {
+                    self?.chatButton.isEnabled = false
+                    self?.chatButton.backgroundColor = .gray
+                    self?.chatButton.alpha = 0.4
+                }
             })
             .store(in: &cancellableBag)
         
