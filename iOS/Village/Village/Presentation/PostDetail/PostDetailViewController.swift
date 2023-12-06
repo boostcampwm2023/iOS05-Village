@@ -141,7 +141,7 @@ final class PostDetailViewController: UIViewController {
         self?.deletePostID.send(id)
     }
     
-    private lazy var hideAction = UIAlertAction(title: "숨기기", style: .default) { _ in
+    private lazy var hideAction = UIAlertAction(title: "게시글 숨기기", style: .default) { _ in
         // TODO: hide post
     }
     
