@@ -18,11 +18,14 @@ export class FcmHandler {
     @InjectRepository(RegistrationTokenEntity)
     private registrationTokenRepository: Repository<RegistrationTokenEntity>,
   ) {
-    admin.initializeApp({
-      credential: admin.credential.cert(
-        this.configService.get('GOOGLE_APPLICATION_CREDENTIALS'),
-      ),
-    });
+    if (admin.apps.length === 0) {
+      admin.initializeApp({
+        credential: admin.credential.cert(
+          this.configService.get('GOOGLE_APPLICATION_CREDENTIALS'),
+        ),
+      });
+      this.logger.log('Firebase Admin initialized');
+    }
   }
 
   async sendPush(userId: string, pushMessage: PushMessage) {

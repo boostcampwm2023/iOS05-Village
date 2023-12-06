@@ -6,13 +6,15 @@ import { JwtConfig } from '../config/jwt.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { AuthGuard } from 'src/utils/auth.guard';
+import { FcmHandler } from '../utils/fcmHandler';
+import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 
 @Module({
   imports: [
     JwtModule.registerAsync({ useClass: JwtConfig }),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, RegistrationTokenEntity]),
   ],
   controllers: [LoginController],
-  providers: [LoginService, AuthGuard],
+  providers: [LoginService, AuthGuard, FcmHandler],
 })
 export class LoginModule {}
