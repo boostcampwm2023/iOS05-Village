@@ -68,11 +68,7 @@ export class PostController {
   @UseInterceptors(FilesInterceptor('image', 12))
   async postModify(
     @Param('id') id: number,
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 })],
-      }),
-    )
+    @UploadedFiles(new FileSizeValidator())
     files: Array<Express.Multer.File>,
     @MultiPartBody(
       'post_info',
