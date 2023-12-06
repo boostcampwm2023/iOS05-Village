@@ -9,7 +9,7 @@ import Foundation
 
 struct APIEndPoints {
     
-    static let baseURL = "https://www.village-api.shop/"
+    static let baseURL = "http://49.50.167.220:3000/"
     
     static func getPosts() -> EndPoint<[PostListResponseDTO]> {
         return EndPoint(
@@ -72,12 +72,11 @@ struct APIEndPoints {
         )
     }
     
-    static func getChatList(with chatListResponse: ChatListRequestDTO) -> EndPoint<[ChatListResponseDTO]> {
+    static func getChatList() -> EndPoint<[GetChatListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
-            path: "chat",
-            method: .GET,
-            queryParameters: chatListResponse
+            path: "chat/room",
+            method: .GET
         )
     }
     
