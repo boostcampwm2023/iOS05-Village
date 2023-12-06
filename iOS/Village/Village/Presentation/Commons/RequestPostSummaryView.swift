@@ -1,22 +1,13 @@
 //
-//  RentPostSummaryView.swift
+//  RequestPostSummaryView.swift
 //  Village
 //
-//  Created by 박동재 on 2023/11/20.
+//  Created by 조성민 on 12/6/23.
 //
 
 import UIKit
 
-final class RentPostSummaryView: UIView {
-    
-    let postImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.layer.cornerRadius = 16
-        
-        return imageView
-    }()
+final class RequestPostSummaryView: UIView {
     
     let postTitleLabel: UILabel = {
         let label = UILabel()
@@ -26,10 +17,10 @@ final class RentPostSummaryView: UIView {
         return label
     }()
     
-    let postPriceLabel: UILabel = {
+    let postPeriodLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .systemFont(ofSize: 12, weight: .regular)
         
         return label
     }()
@@ -54,32 +45,23 @@ final class RentPostSummaryView: UIView {
     }
     
     private func setUI() {
-        addSubview(postImageView)
         addSubview(postTitleLabel)
-        addSubview(postPriceLabel)
+        addSubview(postPeriodLabel)
         addSubview(postAccessoryView)
         
         configureConstraints()
     }
     
     private func configureConstraints() {
-        
-        NSLayoutConstraint.activate([
-            postImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            postImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            postImageView.widthAnchor.constraint(equalToConstant: 80),
-            postImageView.heightAnchor.constraint(equalToConstant: 80)
-        ])
-        
         NSLayoutConstraint.activate([
             postTitleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -15),
-            postTitleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20),
+            postTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
             postTitleLabel.widthAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([
-            postPriceLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 15),
-            postPriceLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
+            postPeriodLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 15),
+            postPeriodLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30)
         ])
         
         NSLayoutConstraint.activate([
