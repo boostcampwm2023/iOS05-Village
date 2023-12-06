@@ -72,38 +72,29 @@ class BlockedUserTableViewCell: UITableViewCell {
     }
     
     private func setUI() {
-        self.contentView.addSubview(userView)
-        self.userView.addSubview(profileImageView)
-        self.userView.addSubview(nicknameLabel)
-        self.userView.addSubview(blockedButton)
+        self.contentView.addSubview(profileImageView)
+        self.contentView.addSubview(nicknameLabel)
+        self.contentView.addSubview(blockedButton)
         
         configureConstraints()
     }
     
     private func configureConstraints() {
         NSLayoutConstraint.activate([
-            userView.topAnchor.constraint(equalTo: self.topAnchor),
-            userView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            userView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            userView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            userView.heightAnchor.constraint(equalToConstant: 60)
-        ])
-        
-        NSLayoutConstraint.activate([
-            profileImageView.centerYAnchor.constraint(equalTo: userView.centerYAnchor),
-            profileImageView.leadingAnchor.constraint(equalTo: userView.leadingAnchor, constant: 20),
+            profileImageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+            profileImageView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20),
             profileImageView.widthAnchor.constraint(equalToConstant: 36),
             profileImageView.heightAnchor.constraint(equalToConstant: 36)
         ])
         
         NSLayoutConstraint.activate([
-            nicknameLabel.centerYAnchor.constraint(equalTo: userView.centerYAnchor),
+            nicknameLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15)
         ])
         
         NSLayoutConstraint.activate([
-            blockedButton.centerYAnchor.constraint(equalTo: userView.centerYAnchor),
-            blockedButton.trailingAnchor.constraint(equalTo: userView.trailingAnchor, constant: -10),
+            blockedButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+            blockedButton.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -10),
             blockedButton.widthAnchor.constraint(equalToConstant: 80),
             blockedButton.heightAnchor.constraint(equalToConstant: 30)
         ])
