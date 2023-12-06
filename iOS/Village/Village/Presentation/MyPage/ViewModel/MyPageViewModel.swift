@@ -34,7 +34,17 @@ final class MyPageViewModel {
     }
     
     private func logout() {
-        // TODO: 로그아웃 로직 구현
+        let endpoint = APIEndPoints.logout()
+        
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+                try JWTManager.shared.delete()
+                deleteAccountSucceed.send()
+            } catch {
+                deleteAccountSucceed.send(completion: .failure(error))
+            }
+        }
     }
     
     private func deleteAccount() {
@@ -46,7 +56,7 @@ final class MyPageViewModel {
                 try await APIProvider.shared.request(with: endpoint)
                 try JWTManager.shared.delete()
                 deleteAccountSucceed.send()
-            } catch let error {
+            } catch {
                 deleteAccountSucceed.send(completion: .failure(error))
             }
         }
