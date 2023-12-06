@@ -337,7 +337,7 @@ private extension MyPageViewController {
     }
     
     func hiddenUserButtonTapped() {
-        let nextVC = BannedUserViewController()
+        let nextVC = BlockedUserViewController()
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
