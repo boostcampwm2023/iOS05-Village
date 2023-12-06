@@ -10,11 +10,29 @@ import Combine
 
 class ChatListViewController: UIViewController {
     
-    typealias ChatListDataSource = UITableViewDiffableDataSource<Section, ChatListResponseDTO>
+    typealias ChatListDataSource = UITableViewDiffableDataSource<Section, GetChatListResponseDTO>
     typealias ViewModel = ChatListViewModel
-    typealias Input = ViewModel.Input
+    private var getChatListSubject = CurrentValueSubject<Void, Never>(())
+    private var cancellableBag = Set<AnyCancellable>()
     
+    enum Section {
+        case chat
+    }
+    
+    private var viewModel = ViewModel()
     private let reuseIdentifier = ChatListTableViewCell.identifier
+    
+    private lazy var chatListTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 80
+        tableView.register(ChatListTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.separatorStyle = .none
+        tableView.delegate = self
+        
+        return tableView
+    }()
+    
     private lazy var dataSource: ChatListDataSource = ChatListDataSource(
         tableView: chatListTableView,
         cellProvider: { [weak self] (tableView, indexPath, chatList) in
@@ -34,21 +52,17 @@ class ChatListViewController: UIViewController {
             return cell
         }
     )
-    
-    private var currentPage = CurrentValueSubject<Int, Never>(1)
-    private var viewModel = ViewModel()
-    
-    enum Section {
-        case chat
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setViewModel()
+        bindViewModel()
         setUI()
-        generateData()
     }
+    
+}
+
+extension ChatListViewController {
     
     private func setUI() {
         view.backgroundColor = .systemBackground
@@ -58,21 +72,26 @@ class ChatListViewController: UIViewController {
         configureConstraints()
     }
     
-    private func setViewModel() {
-//        MARK: 더미데이터를 위한 코드 채팅API 구현 후, 삭제 예정
-        guard let path = Bundle.main.path(forResource: "ChatList", ofType: "json") else { return }
-
-        guard let jsonString = try? String(contentsOfFile: path) else { return }
-        do {
-            let decoder = JSONDecoder()
-            let data = jsonString.data(using: .utf8)
-            
-            guard let data = data else { return }
-            let list = try decoder.decode([ChatListResponseDTO].self, from: data)
-            viewModel.updateTest(list: list)
-        } catch {
-            return
-        }
+    private func bindViewModel() {
+        let input = ViewModel.Input(getChatListSubject: getChatListSubject.eraseToAnyPublisher())
+        let output = viewModel.transform(input: input)
+        
+        bindChatListOutput(output)
+    }
+    
+    private func bindChatListOutput(_ output: ViewModel.Output) {
+        output.chatList.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] value in
+                self?.generateData(items: value)
+            }
+            .store(in: &cancellableBag)
     }
 
     private func setNavigationUI() {
@@ -81,17 +100,6 @@ class ChatListViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         self.navigationItem.backButtonDisplayMode = .minimal
     }
-    
-    private lazy var chatListTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.rowHeight = 80
-        tableView.register(ChatListTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        tableView.separatorStyle = .none
-        tableView.delegate = self
-        
-        return tableView
-    }()
     
     private func configureConstraints() {
         NSLayoutConstraint.activate([
@@ -102,13 +110,14 @@ class ChatListViewController: UIViewController {
         ])
     }
     
-    private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, ChatListResponseDTO>()
+    private func generateData(items: [GetChatListResponseDTO]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, GetChatListResponseDTO>()
         snapshot.appendSections([.chat])
-        snapshot.appendItems(viewModel.getTest())
+        snapshot.appendItems(items)
         
         dataSource.apply(snapshot, animatingDifferences: true)
     }
+    
 }
 
 extension ChatListViewController: UITableViewDelegate {

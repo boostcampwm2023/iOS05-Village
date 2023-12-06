@@ -119,15 +119,17 @@ class ChatListTableViewCell: UITableViewCell {
         ])
     }
     
-    func configureData(data: ChatListResponseDTO) async {
+    func configureData(data: GetChatListResponseDTO) async {
         nicknameLabel.text = data.user
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
 
         let currentData = Date()
+        
+        guard let lastChatDate = data.lastChatDate else { return }
 
-        if let date = dateFormatter.date(from: data.recentTime) {
+        if let date = dateFormatter.date(from: lastChatDate) {
             let timeInterval = currentData.timeIntervalSince(date)
             let minuteInterval = Int(timeInterval/60)
 
@@ -149,9 +151,9 @@ class ChatListTableViewCell: UITableViewCell {
             }
         }
         
-        recentChatLabel.text = data.recentChat.count > 10 ? String(data.recentChat.prefix(10)) + "..." : data.recentChat
-        await configureUserProfile(data.userProfile)
-        await configurePostImage(data.postImage)
+        recentChatLabel.text = lastChatDate.count > 10 ? String(lastChatDate.prefix(10)) + "..." : lastChatDate
+        await configureUserProfile(data.userProfileIMG)
+        await configurePostImage(data.postThumbnail)
     }
     
     func configureUserProfile(_ url: String?) async {
