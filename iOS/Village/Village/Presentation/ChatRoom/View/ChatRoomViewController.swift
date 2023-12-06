@@ -167,7 +167,7 @@ final class ChatRoomViewController: UIViewController {
     }
     
     func setSocket() {
-        WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
+        WebSocket.shared.url = URL(string: "ws://49.50.167.220:3000/chats")
         try? WebSocket.shared.openWebSocket()
         WebSocket.shared.sendJoinRoom(roomID: "164")
         
