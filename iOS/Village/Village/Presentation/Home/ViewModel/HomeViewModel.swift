@@ -18,10 +18,10 @@ final class HomeViewModel {
     
     func transform(input: Input) -> Output {
         input.needPostList
-            .sink(receiveValue: { [weak self] in
+            .sink(receiveValue: { [weak self] isRefresh in
                 guard let self = self else { return }
                 if !self.isPaging {
-                    self.getPosts()
+                    self.getPosts(isRefresh: isRefresh)
                 }
             })
             .store(in: &cancellableBag)
@@ -29,7 +29,9 @@ final class HomeViewModel {
         return Output(postList: postList.eraseToAnyPublisher())
     }
     
-    private func getPosts() {
+    private func getPosts(isRefresh: Bool) {
+        if isRefresh { lastPostID = nil }
+        
         let postRequestDTO = (lastPostID == nil) ? nil : PostListRequestDTO(page: lastPostID)
         let endpoint = APIEndPoints.getPosts(queryParameter: postRequestDTO)
         
@@ -53,7 +55,7 @@ final class HomeViewModel {
 extension HomeViewModel {
     
     struct Input {
-        var needPostList: AnyPublisher<Void, Never>
+        var needPostList: AnyPublisher<Bool, Never>
     }
     
     struct Output {
