@@ -83,6 +83,7 @@ final class MyPostsViewController: UIViewController {
         super.viewDidLoad()
         
         bindViewModel()
+        setNavigationUI()
         setUI()
         generateData()
     }
@@ -123,8 +124,6 @@ private extension MyPostsViewController {
     }
     
     func setUI() {
-        setNavigationUI()
-        
         view.addSubview(requestSegmentedControl)
         view.addSubview(tableView)
         
@@ -149,6 +148,7 @@ private extension MyPostsViewController {
     
     func setNavigationUI() {
         navigationItem.title = "내 게시글"
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     func configureConstraints() {
