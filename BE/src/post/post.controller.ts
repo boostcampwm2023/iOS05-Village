@@ -24,6 +24,7 @@ import { MultiPartBody } from '../utils/multiPartBody.decorator';
 import { PostListDto } from './dto/postList.dto';
 import { AuthGuard } from 'src/utils/auth.guard';
 import { UserHash } from 'src/utils/auth.decorator';
+import { FileSizeValidator } from '../utils/files.validator';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -40,11 +41,7 @@ export class PostController {
   @Post()
   @UseInterceptors(FilesInterceptor('image', 12))
   async postsCreate(
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 })],
-      }),
-    )
+    @UploadedFiles(new FileSizeValidator())
     files: Array<Express.Multer.File>,
     @MultiPartBody(
       'post_info',
