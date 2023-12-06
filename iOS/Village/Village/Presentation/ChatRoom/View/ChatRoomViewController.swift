@@ -107,12 +107,18 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    private let postView: PostView = {
+    private lazy var postView: PostView = {
         let postView = PostView()
         postView.translatesAutoresizingMaskIntoConstraints = false
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))
+        postView.addGestureRecognizer(tapGesture)
         
         return postView
     }()
+    
+    @objc private func postViewTapped() {
+        
+    }
     
     init(roomID: Int, opponentNickname: String) {
         self.roomID = Just(roomID)
