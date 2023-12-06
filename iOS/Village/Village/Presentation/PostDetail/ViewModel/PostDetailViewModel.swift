@@ -12,6 +12,7 @@ final class PostDetailViewModel {
     
     private var post = PassthroughSubject<PostResponseDTO, NetworkError>()
     private var user = PassthroughSubject<UserResponseDTO, NetworkError>()
+    private let deleteOutput = PassthroughSubject<Void, NetworkError>()
     private var responseData: PostRoomResponseDTO?
     private var cancellableBag = Set<AnyCancellable>()
     var postDTO: PostResponseDTO?
@@ -38,7 +39,16 @@ final class PostDetailViewModel {
             })
             .store(in: &cancellableBag)
         
-        return Output(post: post.eraseToAnyPublisher())
+        input.deleteInput
+            .sink { [weak self] postID in
+                self?.deletePost(postID: postID)
+            }
+            .store(in: &cancellableBag)
+        
+        return Output(
+            post: post.eraseToAnyPublisher(),
+            deleteOutput: deleteOutput.eraseToAnyPublisher()
+        )
     }
     
     func transformUser(input: UserInput) -> UserOutput {
@@ -78,16 +88,32 @@ final class PostDetailViewModel {
         }
     }
     
+    private func deletePost(postID: Int) {
+        let endpoint = APIEndPoints.deletePost(with: postID)
+        
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+                deleteOutput.send()
+            } catch let error as NetworkError {
+                deleteOutput.send(completion: .failure(error))
+            }
+        }
+        
+    }
+    
 }
 
 extension PostDetailViewModel {
     
     struct Input {
         var postID: AnyPublisher<Int, Never>
+        var deleteInput: AnyPublisher<Int, Never>
     }
     
     struct Output {
         var post: AnyPublisher<PostResponseDTO, NetworkError>
+        var deleteOutput: AnyPublisher<Void, NetworkError>
     }
     
     struct UserInput {
