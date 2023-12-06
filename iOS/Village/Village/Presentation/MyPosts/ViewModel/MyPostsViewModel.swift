@@ -13,23 +13,7 @@ final class MyPostsViewModel {
     var posts: [PostListResponseDTO] = []
     var isRequest: Bool = false {
         didSet {
-            let endpoint = APIEndPoints.getPosts(
-                queryParameter: GetPostsQueryDTO(
-                    searchKeyword: nil,
-                    requestFilter: requestFilter,
-                    writer: JWTManager.shared.currentUserID,
-                    page: nil
-                )
-            )
-            Task {
-                do {
-                    guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                    posts = data
-                    dump(posts)
-                } catch {
-                    dump(error)
-                }
-            }
+            updateInitPosts()
         }
     }
     private var requestFilter: String {
@@ -40,6 +24,10 @@ final class MyPostsViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     
     init() {
+        updateInitPosts()
+    }
+    
+    func updateInitPosts() {
         let endpoint = APIEndPoints.getPosts(
             queryParameter: GetPostsQueryDTO(
                 searchKeyword: nil,
@@ -52,7 +40,6 @@ final class MyPostsViewModel {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
                 posts = data
-                dump(posts)
             } catch {
                 dump(error)
             }
