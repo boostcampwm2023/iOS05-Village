@@ -9,11 +9,17 @@ import UIKit
 
 class RentPostTableViewCell: UITableViewCell {
 
-    private let postSummaryView = RentPostSummaryView()
+    private let postSummaryView: RentPostSummaryView = {
+        let view = RentPostSummaryView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(postSummaryView)
+        configureConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -50,6 +56,15 @@ class RentPostTableViewCell: UITableViewCell {
                 dump(error)
             }
         }
+    }
+    
+    private func configureConstraints() {
+        NSLayoutConstraint.activate([
+            postSummaryView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            postSummaryView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            postSummaryView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            postSummaryView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
     }
     
 }
