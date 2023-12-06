@@ -67,7 +67,6 @@
 		59E6A2072B1F374B00A2DF21 /* MyPostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2062B1F374B00A2DF21 /* MyPostsViewModel.swift */; };
 		59E6A2092B1F3AC200A2DF21 /* RequstPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */; };
 		59E6A20B2B1F3AD300A2DF21 /* RentPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A20A2B1F3AD300A2DF21 /* RentPostTableViewCell.swift */; };
-		59E6A20D2B1F865700A2DF21 /* GetPostsQueryDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A20C2B1F865700A2DF21 /* GetPostsQueryDTO.swift */; };
 		59E6A20F2B205C8500A2DF21 /* RequestPostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A20E2B205C8500A2DF21 /* RequestPostSummaryView.swift */; };
 		8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */; };
 		8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */; };
@@ -186,7 +185,6 @@
 		59E6A2062B1F374B00A2DF21 /* MyPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostsViewModel.swift; sourceTree = "<group>"; };
 		59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequstPostTableViewCell.swift; sourceTree = "<group>"; };
 		59E6A20A2B1F3AD300A2DF21 /* RentPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentPostTableViewCell.swift; sourceTree = "<group>"; };
-		59E6A20C2B1F865700A2DF21 /* GetPostsQueryDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetPostsQueryDTO.swift; sourceTree = "<group>"; };
 		59E6A20E2B205C8500A2DF21 /* RequestPostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestPostSummaryView.swift; sourceTree = "<group>"; };
 		8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndPoints.swift; sourceTree = "<group>"; };
 		8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListRequestDTO.swift; sourceTree = "<group>"; };
@@ -558,9 +556,9 @@
 			children = (
 				4416D4792B15E7E70052BF33 /* Protocol */,
 				4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */,
-				59D8F1042B103A7200A08E02 /* PostModifyRequestDTO.swift */,
 				8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */,
 				8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */,
+				59D8F1042B103A7200A08E02 /* PostModifyRequestDTO.swift */,
 				44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */,
 				44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */,
 				8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */,
@@ -568,7 +566,6 @@
 				8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */,
 				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
-				59E6A20C2B1F865700A2DF21 /* GetPostsQueryDTO.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1042,7 +1039,6 @@
 				59AABDDF2B0E1AE1002F6D0E /* PostCreateTitleView.swift in Sources */,
 				8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */,
 				444A509A2B0CE94E00454397 /* DateView.swift in Sources */,
-				59E6A20D2B1F865700A2DF21 /* GetPostsQueryDTO.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
 				59AABDE32B0E272C002F6D0E /* PostCreateTimeView.swift in Sources */,
 				59E6A20B2B1F3AD300A2DF21 /* RentPostTableViewCell.swift in Sources */,

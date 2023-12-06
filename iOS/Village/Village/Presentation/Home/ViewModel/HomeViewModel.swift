@@ -11,38 +11,39 @@ import Combine
 final class HomeViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var postList = PassthroughSubject<[PostListItem], Never>()
+    
+    private var postList = PassthroughSubject<[PostListItem], Error>()
+    private var lastPostID: String?
+    private var isPaging = false
     
     func transform(input: Input) -> Output {
-        input.currentPage
-            .sink(receiveValue: { [weak self] page in
-                print(page)
-                self?.getPosts(page: page)
+        input.needPostList
+            .sink(receiveValue: { [weak self] in
+                guard let self = self else { return }
+                if !self.isPaging {
+                    self.getPosts()
+                }
             })
             .store(in: &cancellableBag)
         
         return Output(postList: postList.eraseToAnyPublisher())
     }
     
-    private func getPosts(page: Int) {
-        let endpoint = page == 0 
-        ? APIEndPoints.getPosts()
-        : APIEndPoints.getPosts(
-            queryParameter:
-                GetPostsQueryDTO(
-                    searchKeyword: nil,
-                    requestFilter: nil,
-                    writer: nil,
-                    page: String(page)
-                )
-        )
+    private func getPosts() {
+        let postRequestDTO = (lastPostID == nil) ? nil : PostListRequestDTO(page: lastPostID)
+        let endpoint = APIEndPoints.getPosts(queryParameter: postRequestDTO)
         
         Task {
             do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                postList.send(data.map { PostListItem(dto: $0) })
-            } catch let error {
-                dump(error)
+                isPaging = true
+                guard let items = try await APIProvider.shared.request(with: endpoint),
+                      let lastID = items.last?.postID else { return }
+                lastPostID = "\(lastID)"
+                postList.send(items.map { PostListItem(dto: $0) })
+                isPaging = false
+            } catch {
+                postList.send(completion: .failure(error))
+                isPaging = false
             }
         }
     }
@@ -52,11 +53,11 @@ final class HomeViewModel {
 extension HomeViewModel {
     
     struct Input {
-        var currentPage: CurrentValueSubject<Int, Never>
+        var needPostList: AnyPublisher<Void, Never>
     }
     
     struct Output {
-        var postList: AnyPublisher<[PostListItem], Never>
+        var postList: AnyPublisher<[PostListItem], Error>
     }
     
 }
