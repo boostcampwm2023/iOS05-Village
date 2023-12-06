@@ -19,7 +19,7 @@ final class HomeViewController: UIViewController {
     private var collectionView: UICollectionView!
     private let refreshControl = UIRefreshControl()
     
-    private var currentPage = CurrentValueSubject<Int, Never>(1)
+    private var currentPage = CurrentValueSubject<Int, Never>(0)
     private var viewModel = ViewModel()
 
     private let floatingButton: FloatingButton = {

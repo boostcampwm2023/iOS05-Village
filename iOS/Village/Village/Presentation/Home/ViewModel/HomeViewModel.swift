@@ -16,6 +16,7 @@ final class HomeViewModel {
     func transform(input: Input) -> Output {
         input.currentPage
             .sink(receiveValue: { [weak self] page in
+                print(page)
                 self?.getPosts(page: page)
             })
             .store(in: &cancellableBag)
@@ -24,8 +25,17 @@ final class HomeViewModel {
     }
     
     private func getPosts(page: Int) {
-        let request = PostListRequestDTO(page: page)
-        let endpoint = APIEndPoints.getPosts(with: request)
+        let endpoint = page == 0 
+        ? APIEndPoints.getPosts()
+        : APIEndPoints.getPosts(
+            queryParameter:
+                GetPostsQueryDTO(
+                    searchKeyword: nil,
+                    requestFilter: nil,
+                    writer: nil,
+                    page: String(page)
+                )
+        )
         
         Task {
             do {

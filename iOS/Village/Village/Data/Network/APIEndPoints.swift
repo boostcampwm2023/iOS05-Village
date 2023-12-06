@@ -11,12 +11,11 @@ struct APIEndPoints {
     
     static let baseURL = "https://www.village-api.shop/"
     
-    static func getPosts(with requestDTO: PostListRequestDTO) -> EndPoint<[PostListResponseDTO]> {
+    static func getPosts() -> EndPoint<[PostListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
-            method: .GET,
-            queryParameters: requestDTO
+            method: .GET
         )
     }
     
