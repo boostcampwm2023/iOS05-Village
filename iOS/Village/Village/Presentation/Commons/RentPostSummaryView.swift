@@ -1,5 +1,5 @@
 //
-//  PostSummaryView.swift
+//  RentPostSummaryView.swift
 //  Village
 //
 //  Created by 박동재 on 2023/11/20.
@@ -7,14 +7,7 @@
 
 import UIKit
 
-final class PostSummaryView: UIView {
-    
-    let postView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        return view
-    }()
+final class RentPostSummaryView: UIView {
     
     let postImageView: UIImageView = {
         let imageView = UIImageView()
@@ -36,7 +29,7 @@ final class PostSummaryView: UIView {
     let postPriceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.font = .systemFont(ofSize: 14, weight: .regular)
         
         return label
     }()
@@ -61,11 +54,10 @@ final class PostSummaryView: UIView {
     }
     
     private func setUI() {
-        postView.addSubview(postImageView)
-        postView.addSubview(postTitleLabel)
-        postView.addSubview(postPriceLabel)
-        postView.addSubview(postAccessoryView)
-        self.addSubview(postView)
+        addSubview(postImageView)
+        addSubview(postTitleLabel)
+        addSubview(postPriceLabel)
+        addSubview(postAccessoryView)
         
         configureConstraints()
     }
@@ -73,33 +65,26 @@ final class PostSummaryView: UIView {
     private func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            postView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
-            postView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            postView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            postView.heightAnchor.constraint(equalToConstant: 100)
-        ])
-        
-        NSLayoutConstraint.activate([
-            postImageView.topAnchor.constraint(equalTo: postView.topAnchor, constant: 10),
-            postImageView.leadingAnchor.constraint(equalTo: postView.leadingAnchor, constant: 10),
+            postImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            postImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             postImageView.widthAnchor.constraint(equalToConstant: 80),
             postImageView.heightAnchor.constraint(equalToConstant: 80)
         ])
         
         NSLayoutConstraint.activate([
-            postTitleLabel.topAnchor.constraint(equalTo: postView.topAnchor, constant: 25),
+            postTitleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -15),
             postTitleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20),
             postTitleLabel.widthAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([
-            postPriceLabel.topAnchor.constraint(equalTo: postTitleLabel.bottomAnchor, constant: 10),
+            postPriceLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 15),
             postPriceLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
         ])
         
         NSLayoutConstraint.activate([
-            postAccessoryView.topAnchor.constraint(equalTo: postView.topAnchor, constant: 39),
-            postAccessoryView.leadingAnchor.constraint(equalTo: postTitleLabel.trailingAnchor, constant: 50)
+            postAccessoryView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            postAccessoryView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
         ])
     }
 }
