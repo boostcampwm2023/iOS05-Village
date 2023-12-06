@@ -68,7 +68,6 @@ final class ChatListViewModel {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
                 chatList.send(data)
-                dump(data)
             } catch let error as NetworkError {
                 chatList.send(completion: .failure(error))
             }

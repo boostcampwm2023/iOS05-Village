@@ -89,7 +89,6 @@ extension ChatListViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] value in
-                print(value)
                 self?.generateData(items: value)
             }
             .store(in: &cancellableBag)
