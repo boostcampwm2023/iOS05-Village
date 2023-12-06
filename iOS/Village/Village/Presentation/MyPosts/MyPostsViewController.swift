@@ -67,6 +67,7 @@ final class MyPostsViewController: UIViewController {
     }()
     
     private let paginationPublisher = PassthroughSubject<Void, Never>()
+    private let togglePublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(viewModel: ViewModel) {
@@ -87,7 +88,7 @@ final class MyPostsViewController: UIViewController {
     }
     
     @objc private func segmentedControlChanged() {
-        toggleData(to: requestSegmentedControl.selectedSegmentIndex)
+        togglePublisher.send()
     }
     
 }
@@ -96,13 +97,21 @@ private extension MyPostsViewController {
     
     func bindViewModel() {
         let output = viewModel.transform(input: MyPostsViewModel.Input(
-            nextPageUpdateSubject: paginationPublisher.eraseToAnyPublisher()
+            nextPageUpdateSubject: paginationPublisher.eraseToAnyPublisher(),
+            toggleSubject: togglePublisher.eraseToAnyPublisher()
         ))
         
         output.nextPageUpdateOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] posts in
                 self?.addNextPage(posts: posts)
+            }
+            .store(in: &cancellableBag)
+        
+        output.toggleUpdateOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] posts in
+                self?.toggleData(posts: posts)
             }
             .store(in: &cancellableBag)
     }
@@ -130,12 +139,11 @@ private extension MyPostsViewController {
         dataSource.apply(snapshot)
     }
     
-    func toggleData(to index: Int) {
-        viewModel.isRequest.toggle()
+    func toggleData(posts: [PostListResponseDTO]) {
         var snapshot = dataSource.snapshot()
         snapshot.deleteAllItems()
         snapshot.appendSections([.posts])
-        snapshot.appendItems(viewModel.posts)
+        snapshot.appendItems(posts)
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
