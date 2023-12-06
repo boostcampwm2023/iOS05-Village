@@ -72,6 +72,14 @@ struct APIEndPoints {
         )
     }
     
+    static func deletePost(with postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/\(postID)",
+            method: .DELETE
+        )
+    }
+    
     static func getChatList(with chatListResponse: ChatListRequestDTO) -> EndPoint<[ChatListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
