@@ -42,9 +42,6 @@ final class MyPostsViewController: UIViewController {
     
     private lazy var dataSource: MyPostsDataSource = MyPostsDataSource(
         tableView: tableView) { [weak self] (tableView, indexPath, post) in
-//            guard let self = self else {
-//                return RequestPostTableViewCell()
-//            }
             if post.isRequest {
                 guard let cell = tableView.dequeueReusableCell(
                     withIdentifier: RequestPostTableViewCell.identifier,
@@ -131,6 +128,7 @@ private extension MyPostsViewController {
     func generateData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
         snapshot.appendSections([.request, .rent])
+        dataSource.apply(snapshot)
     }
     
     func toggleData(to section: Section) {
