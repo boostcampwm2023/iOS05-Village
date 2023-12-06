@@ -83,6 +83,7 @@ final class PostCreateViewModel {
                 if isEdit {
                     updatePost()
                 }
+                endOutput.send(nil)
             } catch let error as NetworkError {
                 self.endOutput.send(completion: .failure(error))
             } catch {
