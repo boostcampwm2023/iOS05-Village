@@ -96,7 +96,7 @@ final class MyPageViewController: UIViewController {
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(myPostButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(myPostsButtonTapped), for: .touchUpInside)
         button.configuration = configuration
         button.contentHorizontalAlignment = .leading
 
@@ -324,20 +324,22 @@ private extension MyPageViewController {
         
     }
     
-    func myPostButtonTapped() {
-        
+    func myPostsButtonTapped() {
+        let nextVC = MyPostsViewController(viewModel: MyPostsViewModel())
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     func hiddenPostButtonTapped() {
         let nextVC = PostMuteViewController()
         nextVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(nextVC, animated: false)
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     func hiddenUserButtonTapped() {
         let nextVC = BannedUserViewController()
         nextVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(nextVC, animated: false)
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     func logoutButtonTapped() {
