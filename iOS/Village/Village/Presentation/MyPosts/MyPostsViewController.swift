@@ -188,10 +188,7 @@ private extension MyPostsViewController {
 extension MyPostsViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffsetY = scrollView.contentOffset.y
-        let tableViewContentSizeY = self.tableView.contentSize.height
-        let paginationY = tableViewContentSizeY * 0.3
-        if contentOffsetY > tableViewContentSizeY - paginationY {
+        if scrollView.contentOffset.y > self.tableView.contentSize.height - 1000 {
             paginationPublisher.send()
         }
     }
