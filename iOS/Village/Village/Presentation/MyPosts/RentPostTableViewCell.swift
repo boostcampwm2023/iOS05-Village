@@ -9,9 +9,11 @@ import UIKit
 
 class RentPostTableViewCell: UITableViewCell {
 
+    private let postSummaryView = PostSummaryView()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        contentView.addSubview(postSummaryView)
     }
     
     required init?(coder: NSCoder) {
@@ -19,7 +21,35 @@ class RentPostTableViewCell: UITableViewCell {
     }
     
     func configureData(post: PostListResponseDTO) {
+        postSummaryView.postTitleLabel.text = post.title
+        let price = post.price.map(String.init) ?? ""
+        postSummaryView.postPriceLabel.text = price != "" ? "\(price)원" : ""
         
+        configureImageView(imageURL: post.images.first)
+    }
+    
+    private func configureImageView(imageURL: String?) {
+        guard let imageURL = imageURL else {
+            postSummaryView.postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?
+                .withTintColor(.primary500, renderingMode: .alwaysOriginal)
+            postSummaryView.postImageView.backgroundColor = .primary100
+            return
+        }
+        
+        Task {
+            do {
+                let data = try await APIProvider.shared.request(from: imageURL)
+                guard let image = UIImage(data: data) else {
+                    postSummaryView.postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?
+                        .withTintColor(.primary500, renderingMode: .alwaysOriginal)
+                    postSummaryView.postImageView.backgroundColor = .primary100
+                    return
+                }
+                postSummaryView.postImageView.image = image
+            } catch {
+                dump(error)
+            }
+        }
     }
     
 }
