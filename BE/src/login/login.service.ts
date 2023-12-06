@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
@@ -22,6 +22,7 @@ export interface JwtTokens {
 @Injectable()
 export class LoginService {
   private jwksClient: jwksClient.JwksClient;
+  private readonly logger = new Logger('ChatsGateway');
   constructor(
     private jwtService: JwtService,
     @InjectRepository(UserEntity)
@@ -33,7 +34,7 @@ export class LoginService {
     });
   }
   async login(socialProperties: SocialProperties): Promise<JwtTokens> {
-    let user: UserEntity = await this.VerifyUserRegistration(socialProperties);
+    let user: UserEntity = await this.verifyUserRegistration(socialProperties);
     if (!user) {
       user = await this.registerUser(socialProperties);
     }
@@ -42,6 +43,9 @@ export class LoginService {
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
+  logout(userId, accessToken) {
+    this.logger.debug(`${userId} ${accessToken}`);
+  }
   async registerUser(socialProperties: SocialProperties) {
     const userEntity = new UserEntity();
     userEntity.nickname = this.generateRandomString(8);
@@ -65,7 +69,7 @@ export class LoginService {
     return result;
   }
 
-  async VerifyUserRegistration(
+  async verifyUserRegistration(
     socialProperties: SocialProperties,
   ): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
