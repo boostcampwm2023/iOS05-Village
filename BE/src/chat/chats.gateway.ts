@@ -25,13 +25,14 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger('ChatsGateway');
   constructor(private readonly chatService: ChatService) {}
   handleConnection(client: ChatWebSocket, ...args) {
-    const { authorization } = args[0].headers;
-    const userId = this.chatService.validateUser(authorization);
-    if (userId === null) {
-      client.close(1008, '토큰이 유효하지 않습니다.');
-    }
-    client.userId = userId;
-    this.logger.debug(`[${userId}] on connect`, 'ChatsGateway');
+    // const { authorization } = args[0].headers;
+    // const userId = this.chatService.validateUser(authorization);
+    // if (userId === null) {
+    //   client.close(1008, '토큰이 유효하지 않습니다.');
+    // }
+    // client.userId = userId;
+    // this.logger.debug(`[${userId}] on connect`, 'ChatsGateway');
+    this.logger.debug(`[] on connect`, 'ChatsGateway');
   }
 
   handleDisconnect(client: ChatWebSocket) {
