@@ -57,7 +57,7 @@ final class MyPostsViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.rowHeight = 80
+        tableView.rowHeight = 100
         tableView.register(RequestPostTableViewCell.self, forCellReuseIdentifier: RequestPostTableViewCell.identifier)
         tableView.register(RentPostTableViewCell.self, forCellReuseIdentifier: RentPostTableViewCell.identifier)
         tableView.separatorStyle = .none
@@ -168,10 +168,10 @@ private extension MyPostsViewController {
         
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor
             ),
             tableView.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor
             ),
             tableView.topAnchor.constraint(
                 equalTo: requestSegmentedControl.bottomAnchor, constant: 5
