@@ -1,5 +1,5 @@
 //
-//  PostSummaryView.swift
+//  RentPostSummaryView.swift
 //  Village
 //
 //  Created by 박동재 on 2023/11/20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PostSummaryView: UIView {
+final class RentPostSummaryView: UIView {
     
     let postView: UIView = {
         let view = UIView()

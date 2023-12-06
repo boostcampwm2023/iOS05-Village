@@ -89,7 +89,7 @@
 		8F8F0B912B1DB6C100BE97D2 /* PostMute.json in Resources */ = {isa = PBXBuildFile; fileRef = 8F8F0B902B1DB6C100BE97D2 /* PostMute.json */; };
 		8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */; };
 		8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */; };
-		8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */; };
+		8F95CF902B0B97F90024631F /* RentPostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF8F2B0B97F90024631F /* RentPostSummaryView.swift */; };
 		8F95CF922B0C57460024631F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF912B0C57460024631F /* NetworkError.swift */; };
 		8F95CF942B0C60E00024631F /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF932B0C60E00024631F /* HTTPMethod.swift */; };
 		8F95CF962B0C66910024631F /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF952B0C66910024631F /* Requestable.swift */; };
@@ -206,7 +206,7 @@
 		8F8F0B902B1DB6C100BE97D2 /* PostMute.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostMute.json; sourceTree = "<group>"; };
 		8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRoomRequestDTO.swift; sourceTree = "<group>"; };
 		8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRoomResponseDTO.swift; sourceTree = "<group>"; };
-		8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSummaryView.swift; sourceTree = "<group>"; };
+		8F95CF8F2B0B97F90024631F /* RentPostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentPostSummaryView.swift; sourceTree = "<group>"; };
 		8F95CF912B0C57460024631F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		8F95CF932B0C60E00024631F /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		8F95CF952B0C66910024631F /* Requestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
@@ -615,7 +615,7 @@
 		8F95CF8E2B0B97BA0024631F /* Commons */ = {
 			isa = PBXGroup;
 			children = (
-				8F95CF8F2B0B97F90024631F /* PostSummaryView.swift */,
+				8F95CF8F2B0B97F90024631F /* RentPostSummaryView.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -1011,7 +1011,7 @@
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
 				59AABDE32B0E272C002F6D0E /* PostCreateTimeView.swift in Sources */,
 				59E6A20B2B1F3AD300A2DF21 /* RentPostTableViewCell.swift in Sources */,
-				8F95CF902B0B97F90024631F /* PostSummaryView.swift in Sources */,
+				8F95CF902B0B97F90024631F /* RentPostSummaryView.swift in Sources */,
 				44425A642B038AEA00AAD64A /* FloatingButton.swift in Sources */,
 				59D8F1032B0FC4F700A08E02 /* PostCreateViewModel.swift in Sources */,
 				8F3D7A382B171B8400370536 /* WebSocket.swift in Sources */,

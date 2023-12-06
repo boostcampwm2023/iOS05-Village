@@ -9,7 +9,7 @@ import UIKit
 
 class RentPostTableViewCell: UITableViewCell {
 
-    private let postSummaryView = PostSummaryView()
+    private let postSummaryView = RentPostSummaryView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
