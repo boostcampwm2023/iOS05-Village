@@ -32,7 +32,6 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     client.userId = userId;
     this.logger.debug(`[${userId}] on connect`, 'ChatsGateway');
-    this.logger.debug(`[] on connect`, 'ChatsGateway');
   }
 
   handleDisconnect(client: ChatWebSocket) {
