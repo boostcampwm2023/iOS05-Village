@@ -14,8 +14,8 @@ final class PostDetailViewController: UIViewController {
     typealias Input = ViewModel.Input
     
     private let postID: Just<Int>
-    private let userID: Just<String>
-    private let isRequest: Bool
+    private var userID: Just<String>?
+    private var isRequest: Bool?
     
     private let viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
@@ -103,10 +103,8 @@ final class PostDetailViewController: UIViewController {
         return button
     }()
     
-    init(postID: Int, userID: String, isRequest: Bool) {
+    init(postID: Int) {
         self.postID = Just(postID)
-        self.userID = Just(userID)
-        self.isRequest = isRequest
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -121,8 +119,7 @@ final class PostDetailViewController: UIViewController {
         view.backgroundColor = .systemBackground
         configureUI()
         configureNavigationItem()
-        setLayoutConstraints()
-        bindViewModel()
+        bindPostViewModel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -204,6 +201,7 @@ final class PostDetailViewController: UIViewController {
     }
             
     private func pushChatRoomViewController(roomID: Int) {
+        guard let userID = self.userID else { return }
         userID.receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] userID in
                 let nextVC = ChatRoomViewController(roomID: roomID, opponentNickname: userID)
@@ -256,11 +254,16 @@ private extension PostDetailViewController {
         self.navigationItem.backButtonDisplayMode = .minimal
     }
     
-    private func bindViewModel() {
-        let output = viewModel.transform(input: Input(postID: postID.eraseToAnyPublisher(),
-                                                      userID: userID.eraseToAnyPublisher()))
+    private func bindPostViewModel() {
+        let output = viewModel.transformPost(input: Input(postID: postID.eraseToAnyPublisher()))
         
         bindPostOutput(output)
+    }
+    
+    private func bindUserViewModel() {
+        guard let userID = self.userID?.eraseToAnyPublisher() else { return }
+        let output = viewModel.transformUser(input: ViewModel.UserInput(userID: userID))
+        
         bindUserOutput(output)
     }
     
@@ -276,11 +279,14 @@ private extension PostDetailViewController {
                 }
             }, receiveValue: { [weak self] post in
                 self?.setPostContent(post: post)
+                self?.isRequest = post.isRequest
+                self?.userID = Just(post.userID)
+                self?.setLayoutConstraints()
             })
             .store(in: &cancellableBag)
     }
     
-    private func bindUserOutput(_ output: ViewModel.Output) {
+    private func bindUserOutput(_ output: ViewModel.UserOutput) {
         output.user
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -322,6 +328,7 @@ private extension PostDetailViewController {
             footerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
+        guard let isRequest = self.isRequest else { return }
         if isRequest {
             NSLayoutConstraint.activate([
                 chatButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
