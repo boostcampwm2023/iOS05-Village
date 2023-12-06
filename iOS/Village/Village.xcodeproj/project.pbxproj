@@ -409,6 +409,16 @@
 			path = VillageTests;
 			sourceTree = "<group>";
 		};
+		59AADE352B20AE4D00C3E17D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				59E6A2032B1F325E00A2DF21 /* MyPostsViewController.swift */,
+				59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */,
+				59E6A20A2B1F3AD300A2DF21 /* RentPostTableViewCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		59B6E26F2B17931F000864F9 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -512,10 +522,8 @@
 		59E6A2012B1F31FD00A2DF21 /* MyPosts */ = {
 			isa = PBXGroup;
 			children = (
+				59AADE352B20AE4D00C3E17D /* View */,
 				59E6A2052B1F373700A2DF21 /* ViewModel */,
-				59E6A2032B1F325E00A2DF21 /* MyPostsViewController.swift */,
-				59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */,
-				59E6A20A2B1F3AD300A2DF21 /* RentPostTableViewCell.swift */,
 			);
 			path = MyPosts;
 			sourceTree = "<group>";
