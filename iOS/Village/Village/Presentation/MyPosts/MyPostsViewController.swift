@@ -15,27 +15,8 @@ final class MyPostsViewController: UIViewController {
     typealias ViewModel = MyPostsViewModel
     typealias Input = ViewModel.Input
     
-    enum Section: String {
-        case request = "요청글"
-        case rent = "대여글"
-        
-        var index: Int {
-            switch self {
-            case .request:
-                return 0
-            case .rent:
-                return 1
-            }
-        }
-        
-        static func toSection(index: Int) -> Section {
-            switch index {
-            case 0:
-                return .request
-            default:
-                return .rent
-            }
-        }
+    enum Section {
+        case posts
     }
     
     private let viewModel: ViewModel
@@ -64,26 +45,28 @@ final class MyPostsViewController: UIViewController {
         }
     
     private lazy var requestSegmentedControl: UISegmentedControl = {
-        let control = UISegmentedControl(items: [Section.request.rawValue, Section.rent.rawValue])
+        let control = UISegmentedControl(items: ["대여글", "요청글"])
         control.translatesAutoresizingMaskIntoConstraints = false
         control.addTarget(self, action: #selector(segmentedControlChanged), for: .valueChanged)
-        control.selectedSegmentIndex = Section.request.index
+        control.selectedSegmentIndex = 0
         control.selectedSegmentTintColor = .primary500
         
         return control
     }()
     
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = 80
         tableView.register(RequestPostTableViewCell.self, forCellReuseIdentifier: RequestPostTableViewCell.identifier)
         tableView.register(RentPostTableViewCell.self, forCellReuseIdentifier: RentPostTableViewCell.identifier)
         tableView.separatorStyle = .none
+        tableView.delegate = self
         
         return tableView
     }()
     
+    private let paginationPublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(viewModel: ViewModel) {
@@ -98,22 +81,36 @@ final class MyPostsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setViewModel()
+        bindViewModel()
         setUI()
         generateData()
     }
     
     @objc private func segmentedControlChanged() {
-        toggleData(to: Section.toSection(index: requestSegmentedControl.selectedSegmentIndex))
+        toggleData(to: requestSegmentedControl.selectedSegmentIndex)
     }
     
 }
 
 private extension MyPostsViewController {
     
-    // TODO: ViewModel 초기 설정
-    func setViewModel() {
+    func bindViewModel() {
+        let output = viewModel.transform(input: MyPostsViewModel.Input(
+            nextPageUpdateSubject: paginationPublisher.eraseToAnyPublisher()
+        ))
         
+        output.nextPageUpdateOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] posts in
+                self?.addNextPage(posts: posts)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    func addNextPage(posts: [PostListResponseDTO]) {
+        var snapshot = dataSource.snapshot()
+        snapshot.appendItems(posts)
+        dataSource.apply(snapshot)
     }
     
     func setUI() {
@@ -128,24 +125,18 @@ private extension MyPostsViewController {
     
     func generateData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
-        snapshot.appendSections([.request, .rent])
+        snapshot.appendSections([.posts])
+        snapshot.appendItems(viewModel.posts)
         dataSource.apply(snapshot)
     }
     
-    func toggleData(to section: Section) {
+    func toggleData(to index: Int) {
+        viewModel.isRequest.toggle()
         var snapshot = dataSource.snapshot()
-        if section == .rent {
-            snapshot.appendItems(
-                viewModel.rentPosts,
-                toSection: section
-            )
-        } else {
-            snapshot.appendItems(
-                viewModel.requestPosts,
-                toSection: section
-            )
-        }
-        dataSource.apply(snapshot, animatingDifferences: true)
+        snapshot.deleteAllItems()
+        snapshot.appendSections([.posts])
+        snapshot.appendItems(viewModel.posts)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
     
     func setNavigationUI() {
@@ -182,6 +173,19 @@ private extension MyPostsViewController {
             )
         ])
         
+    }
+    
+}
+
+extension MyPostsViewController: UITableViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffsetY = scrollView.contentOffset.y
+        let tableViewContentSizeY = self.tableView.contentSize.height
+        let paginationY = tableViewContentSizeY * 0.3
+        if contentOffsetY > tableViewContentSizeY - paginationY {
+            paginationPublisher.send()
+        }
     }
     
 }
