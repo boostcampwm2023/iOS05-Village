@@ -55,6 +55,7 @@ final class ChatRoomViewController: UIViewController {
     private let opponentNickname: Just<String>
     
     private var imageURL: String?
+    private var postID: AnyPublisher<Int, Never>?
     
     private let keyboardStackView: UIStackView = {
         let stackView = UIStackView()
@@ -117,7 +118,14 @@ final class ChatRoomViewController: UIViewController {
     }()
     
     @objc private func postViewTapped() {
-        
+        guard let postID = self.postID else { return }
+        postID.sink(receiveValue: { value in
+            let nextVC = PostDetailViewController(postID: value)
+            nextVC.hidesBottomBarWhenPushed = true
+            
+            self.navigationController?.pushViewController(nextVC, animated: true)
+        })
+        .store(in: &cancellableBag)
     }
     
     init(roomID: Int, opponentNickname: String) {
@@ -253,7 +261,8 @@ private extension ChatRoomViewController {
     }
     
     func setRoomContent(room: GetRoomResponseDTO) {
-        let postID = Just(room.postID).eraseToAnyPublisher()
+        self.postID = Just(room.postID).eraseToAnyPublisher()
+        guard let postID = self.postID else { return }
         let output = viewModel.transformPost(input: ViewModel.PostInput(postID: postID))
         bindPostOutput(output)
     }
