@@ -249,7 +249,6 @@ private extension PostDetailViewController {
         postContentView.addArrangedSubview(postInfoView)
         footerView.addSubview(priceLabel)
         footerView.addSubview(chatButton)
-        
     }
     
     func configureNavigationItem() {
