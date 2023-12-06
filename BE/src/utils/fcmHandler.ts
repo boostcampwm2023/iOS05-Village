@@ -27,23 +27,7 @@ export class FcmHandler {
 
   async sendPush(userId: string, pushMessage: PushMessage) {
     const registrationToken = await this.getRegistrationToken(userId);
-    const message = {
-      token: registrationToken,
-      notification: {
-        title: pushMessage.title,
-        body: pushMessage.body,
-      },
-      apns: {
-        payload: {
-          aps: {
-            sound: 'default',
-          },
-        },
-      },
-      data: {
-        ...pushMessage.data,
-      },
-    };
+    const message = this.createPushMessage(registrationToken, pushMessage);
     admin
       .messaging()
       .send(message)
@@ -71,6 +55,26 @@ export class FcmHandler {
 
   async removeRegistrationToken(userId: string) {
     await this.registrationTokenRepository.delete({ user_hash: userId });
+  }
+
+  createPushMessage(registrationToken: string, pushMessage: PushMessage) {
+    return {
+      token: registrationToken,
+      notification: {
+        title: pushMessage.title,
+        body: pushMessage.body,
+      },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'default',
+          },
+        },
+      },
+      data: {
+        ...pushMessage.data,
+      },
+    };
   }
 
   createChatPushMessage(
