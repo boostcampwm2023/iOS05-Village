@@ -16,6 +16,7 @@ final class PostDetailViewController: UIViewController {
     private let postID: Just<Int>
     private var userID: Just<String>?
     private var isRequest: Bool?
+    private var deletePostID = PassthroughSubject<Int, Never>()
     
     private let viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
@@ -105,7 +106,6 @@ final class PostDetailViewController: UIViewController {
     
     init(postID: Int) {
         self.postID = Just(postID)
-        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -153,7 +153,6 @@ final class PostDetailViewController: UIViewController {
                     self?.setPostContent(post: fixedPost)
                 }
                 .store(in: &editVC.cancellableBag)
-            guard let post = self?.viewModel.postDTO else { return }
             guard let id = self?.postID.output else { return }
             let endpoint = APIEndPoints.getPost(id: id)
             Task {
@@ -167,8 +166,9 @@ final class PostDetailViewController: UIViewController {
             }
         }
         
-        let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { _ in
-            // TODO: delete post
+        let deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { [weak self] _ in
+            guard let id = self?.postID.output else { return }
+            self?.deletePostID.send(id)
         }
         
         let hideAction = UIAlertAction(title: "숨기기", style: .default) { _ in
@@ -260,7 +260,10 @@ private extension PostDetailViewController {
     }
     
     private func bindPostViewModel() {
-        let output = viewModel.transformPost(input: Input(postID: postID.eraseToAnyPublisher()))
+        let output = viewModel.transformPost(input: Input(
+            postID: postID.eraseToAnyPublisher(),
+            deleteInput: deletePostID.eraseToAnyPublisher()
+        ))
         
         bindPostOutput(output)
     }
@@ -289,6 +292,21 @@ private extension PostDetailViewController {
                 self?.setLayoutConstraints()
             })
             .store(in: &cancellableBag)
+        
+        output.deleteOutput
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            })
+            .store(in: &cancellableBag)
+        
     }
     
     private func bindUserOutput(_ output: ViewModel.UserOutput) {
