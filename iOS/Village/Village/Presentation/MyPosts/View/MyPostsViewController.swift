@@ -83,6 +83,7 @@ final class MyPostsViewController: UIViewController {
         super.viewDidLoad()
         
         bindViewModel()
+        setNavigationUI()
         setUI()
         generateData()
     }
@@ -123,8 +124,6 @@ private extension MyPostsViewController {
     }
     
     func setUI() {
-        setNavigationUI()
-        
         view.addSubview(requestSegmentedControl)
         view.addSubview(tableView)
         
@@ -149,6 +148,7 @@ private extension MyPostsViewController {
     
     func setNavigationUI() {
         navigationItem.title = "내 게시글"
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     func configureConstraints() {
@@ -191,6 +191,14 @@ extension MyPostsViewController: UITableViewDelegate {
         if scrollView.contentOffset.y > self.tableView.contentSize.height - 1000 {
             paginationPublisher.send()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedPost = viewModel.posts[indexPath.row]
+        let nextVC = PostDetailViewController(postID: selectedPost.postID)
+        nextVC.hidesBottomBarWhenPushed = true
+        nextVC.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextVC, animated: true)
     }
     
 }

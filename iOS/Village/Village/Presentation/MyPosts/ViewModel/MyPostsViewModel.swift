@@ -35,7 +35,7 @@ final class MyPostsViewModel {
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                if posts != data {
+                if posts.last != data.last && !data.isEmpty {
                     posts = data
                     toggleOutput.send(data)
                 }
@@ -58,8 +58,8 @@ final class MyPostsViewModel {
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                if posts != data {
-                    posts = data
+                if posts.last != data.last && !data.isEmpty {
+                    posts.append(contentsOf: data)
                     nextPageUpdateOutput.send(data)
                 }
             } catch {
