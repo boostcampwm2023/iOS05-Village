@@ -11,6 +11,8 @@ import {
   HttpException,
   UseGuards,
   Body,
+  ParseFilePipe,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './createUser.dto';
@@ -38,7 +40,12 @@ export class UsersController {
   @Post()
   @UseInterceptors(FileInterceptor('profileImage'))
   async usersCreate(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 })],
+      }),
+    )
+    file: Express.Multer.File,
     @MultiPartBody(
       'profile',
       new ValidationPipe({ validateCustomDecorators: true }),

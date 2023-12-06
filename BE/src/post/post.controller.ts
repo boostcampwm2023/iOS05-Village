@@ -4,7 +4,9 @@ import {
   Get,
   HttpCode,
   HttpException,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Patch,
   Post,
   Query,
@@ -38,7 +40,12 @@ export class PostController {
   @Post()
   @UseInterceptors(FilesInterceptor('image', 12))
   async postsCreate(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 })],
+      }),
+    )
+    files: Array<Express.Multer.File>,
     @MultiPartBody(
       'post_info',
       new ValidationPipe({ validateCustomDecorators: true }),
@@ -64,7 +71,11 @@ export class PostController {
   @UseInterceptors(FilesInterceptor('image', 12))
   async postModify(
     @Param('id') id: number,
-    @UploadedFiles()
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 })],
+      }),
+    )
     files: Array<Express.Multer.File>,
     @MultiPartBody(
       'post_info',
