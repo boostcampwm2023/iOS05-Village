@@ -25,7 +25,7 @@ final class MyPostsViewModel {
     
     func updateInitPosts() {
         let endpoint = APIEndPoints.getPosts(
-            queryParameter: GetPostsQueryDTO(
+            queryParameter: PostListRequestDTO(
                 searchKeyword: nil,
                 requestFilter: requestFilter,
                 writer: JWTManager.shared.currentUserID,
@@ -48,7 +48,7 @@ final class MyPostsViewModel {
     func updateNextPosts() {
         guard let lastPostID = posts.last?.postID else { return }
         let endpoint = APIEndPoints.getPosts(
-            queryParameter: GetPostsQueryDTO(
+            queryParameter: PostListRequestDTO(
                 searchKeyword: nil,
                 requestFilter: requestFilter,
                 writer: JWTManager.shared.currentUserID,
