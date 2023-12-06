@@ -99,6 +99,7 @@
 		8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF9B2B0C81640024631F /* APIProvider.swift */; };
 		8FBB65C92B20586100C6A133 /* BlockedUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65C82B20586100C6A133 /* BlockedUserViewModel.swift */; };
 		8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */; };
+		8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */; };
 		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
@@ -219,6 +220,7 @@
 		8F95CF9B2B0C81640024631F /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
 		8FBB65C82B20586100C6A133 /* BlockedUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserViewModel.swift; sourceTree = "<group>"; };
 		8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserTableViewCell.swift; sourceTree = "<group>"; };
+		8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatListResponseDTO.swift; sourceTree = "<group>"; };
 		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
@@ -569,6 +571,7 @@
 				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
 				59E6A20C2B1F865700A2DF21 /* GetPostsQueryDTO.swift */,
+				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1028,6 +1031,7 @@
 				444A50902B0C60F900454397 /* ImagePageView.swift in Sources */,
 				59110EFB2B15F3D60009E9AC /* ChatRoomTableViewCell.swift in Sources */,
 				444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */,
+				8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
 				446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */,
 				8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */,
