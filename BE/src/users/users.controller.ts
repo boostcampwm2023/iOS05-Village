@@ -21,6 +21,7 @@ import { MultiPartBody } from 'src/utils/multiPartBody.decorator';
 import { UpdateUsersDto } from './usersUpdate.dto';
 import { AuthGuard } from 'src/utils/auth.guard';
 import { UserHash } from '../utils/auth.decorator';
+import { FileSizeValidator } from '../utils/files.validator';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -70,7 +71,7 @@ export class UsersController {
   async usersModify(
     @Param('id') id: string,
     @MultiPartBody('profile') body: UpdateUsersDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(new FileSizeValidator()) file: Express.Multer.File,
     @UserHash() userId,
   ) {
     await this.usersService.updateUserById(id, body, file, userId);

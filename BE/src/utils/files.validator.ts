@@ -8,7 +8,7 @@ import {
 @Injectable()
 export class FileSizeValidator implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata): any {
-    if (value.length === 0) {
+    if (value === undefined || value.length === 0) {
       return value;
     }
     const maxSize = 1024 * 1024 * 20;
