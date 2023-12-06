@@ -16,7 +16,7 @@ final class HomeViewController: UIViewController {
     
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     
-    private var needPostList = CurrentValueSubject<Void, Never>(())
+    private var needPostList = CurrentValueSubject<Bool, Never>(false)
     private var viewModel = ViewModel()
     
     private lazy var collectionViewLayout: UICollectionViewLayout = {
@@ -109,7 +109,12 @@ final class HomeViewController: UIViewController {
         
         setupUI()
         bindViewModel()
-        generateData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        refreshPost()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -224,14 +229,15 @@ private extension HomeViewController {
     
     @objc
     private func refreshPost() {
-        bindViewModel()
+        initializeDataSource()
+        needPostList.send(true)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
             self.collectionView.refreshControl?.endRefreshing()
         }
     }
     
-    func generateData() {
+    func initializeDataSource() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
         snapshot.appendSections([.main])
         dataSource.apply(snapshot, animatingDifferences: true)
@@ -257,7 +263,7 @@ extension HomeViewController: UICollectionViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y > collectionView.contentSize.height - 1300 {
-            needPostList.send()
+            needPostList.send(false)
         }
     }
     
