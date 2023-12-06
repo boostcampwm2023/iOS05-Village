@@ -65,14 +65,24 @@ final class ChatRoomViewModel {
     
     private var test: ChatRoomResponseDTO?
     
-    func transform(input: Input) -> Output {
+    func transformRoom(input: RoomInput) -> RoomOutput {
         input.roomID
             .sink(receiveValue: { [weak self] id in
                 self?.getChatRoomData(id: id)
             })
             .store(in: &cancellableBag)
         
-        return Output(chatRoom: chatRoom.eraseToAnyPublisher())
+        return RoomOutput(chatRoom: chatRoom.eraseToAnyPublisher())
+    }
+    
+    func transformPost(input: PostInput) -> PostOutput {
+        input.postID
+            .sink(receiveValue: { [weak self] id in
+                self?.getPost(id: id)
+            })
+            .store(in: &cancellableBag)
+        
+        return PostOutput(post: post.eraseToAnyPublisher())
     }
     
     func getChatRoomData(id: Int) {
@@ -93,6 +103,19 @@ final class ChatRoomViewModel {
         }
     }
     
+    func getPost(id: Int) {
+        let endpoint = APIEndPoints.getPost(id: id)
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                post.send(data)
+                dump(data)
+            } catch let error as NetworkError {
+                post.send(completion: .failure(error))
+            }
+        }
+    }
+    
     func getLog() -> [Message]? {
         return chatLog
     }
@@ -109,12 +132,20 @@ final class ChatRoomViewModel {
 
 extension ChatRoomViewModel {
     
-    struct Input {
+    struct RoomInput {
         var roomID: AnyPublisher<Int, Never>
     }
     
-    struct Output {
+    struct RoomOutput {
         var chatRoom: AnyPublisher<GetRoomResponseDTO, NetworkError>
+    }
+    
+    struct PostInput {
+        var postID: AnyPublisher<Int, Never>
+    }
+    
+    struct PostOutput {
+        var post: AnyPublisher<PostResponseDTO, NetworkError>
     }
     
 }

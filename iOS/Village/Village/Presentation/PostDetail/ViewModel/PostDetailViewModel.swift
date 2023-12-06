@@ -31,20 +31,24 @@ final class PostDetailViewModel {
         return responseData
     }
     
-    func transform(input: Input) -> Output {
+    func transformPost(input: Input) -> Output {
         input.postID
             .sink(receiveValue: { [weak self] id in
                 self?.getPost(id: id)
             })
             .store(in: &cancellableBag)
         
+        return Output(post: post.eraseToAnyPublisher())
+    }
+    
+    func transformUser(input: UserInput) -> UserOutput {
         input.userID
             .sink(receiveValue: { [weak self] id in
                 self?.getUser(id: id)
             })
             .store(in: &cancellableBag)
         
-        return Output(post: post.eraseToAnyPublisher(), user: user.eraseToAnyPublisher())
+        return UserOutput(user: user.eraseToAnyPublisher())
     }
     
     private func getPost(id: Int) {
@@ -80,11 +84,17 @@ extension PostDetailViewModel {
     
     struct Input {
         var postID: AnyPublisher<Int, Never>
-        var userID: AnyPublisher<String, Never>
     }
     
     struct Output {
         var post: AnyPublisher<PostResponseDTO, NetworkError>
+    }
+    
+    struct UserInput {
+        var userID: AnyPublisher<String, Never>
+    }
+    
+    struct UserOutput {
         var user: AnyPublisher<UserResponseDTO, NetworkError>
     }
     

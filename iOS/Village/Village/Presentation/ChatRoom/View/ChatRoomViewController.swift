@@ -12,7 +12,6 @@ final class ChatRoomViewController: UIViewController {
     
     typealias ChatRoomDataSource = UITableViewDiffableDataSource<Section, Message>
     typealias ViewModel = ChatRoomViewModel
-    typealias Input = ViewModel.Input
     
     private lazy var dataSource: ChatRoomDataSource = ChatRoomDataSource(
         tableView: chatTableView,
@@ -56,6 +55,7 @@ final class ChatRoomViewController: UIViewController {
     private let opponentNickname: Just<String>
     
     private var imageURL: String?
+    private var postID: AnyPublisher<Int, Never>?
     
     private let keyboardStackView: UIStackView = {
         let stackView = UIStackView()
@@ -108,12 +108,30 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    private let postView: PostView = {
+    private lazy var postView: PostView = {
         let postView = PostView()
         postView.translatesAutoresizingMaskIntoConstraints = false
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))
+        postView.addGestureRecognizer(tapGesture)
         
         return postView
     }()
+    
+    @objc private func postViewTapped() {
+        var viewControllers = self.navigationController?.viewControllers ?? []
+        if viewControllers.count > 1 {
+            guard let postID = self.postID else { return }
+            postID.sink(receiveValue: { value in
+                let nextVC = PostDetailViewController(postID: value)
+                nextVC.hidesBottomBarWhenPushed = true
+                
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            })
+            .store(in: &cancellableBag)
+        } else {
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
     
     init(roomID: Int, opponentNickname: String) {
         self.roomID = Just(roomID)
@@ -170,12 +188,12 @@ final class ChatRoomViewController: UIViewController {
 private extension ChatRoomViewController {
     
     func bindViewModel() {
-        let output = viewModel.transform(input: ViewModel.Input(roomID: roomID.eraseToAnyPublisher()))
+        let output = viewModel.transformRoom(input: ViewModel.RoomInput(roomID: roomID.eraseToAnyPublisher()))
         
         bindRoomOutput(output)
     }
     
-    func bindRoomOutput(_ output: ViewModel.Output) {
+    func bindRoomOutput(_ output: ViewModel.RoomOutput) {
         output.chatRoom
                     .receive(on: DispatchQueue.main)
                     .sink { completion in
@@ -248,10 +266,29 @@ private extension ChatRoomViewController {
     }
     
     func setRoomContent(room: GetRoomResponseDTO) {
-        
-//        imageURL = room.postImage
-//        setNavigationTitle(title: room.user)
-//        postView.setContent(url: room.postImage, title: room.postName, price: room.postPrice)
+        self.postID = Just(room.postID).eraseToAnyPublisher()
+        guard let postID = self.postID else { return }
+        let output = viewModel.transformPost(input: ViewModel.PostInput(postID: postID))
+        bindPostOutput(output)
+    }
+    
+    private func bindPostOutput(_ output: ViewModel.PostOutput) {
+        output.post.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] post in
+                self?.setPostContent(post: post)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func setPostContent(post: PostResponseDTO) {
+        postView.setContent(url: post.imageURL.first ?? "", title: post.title, price: String(post.price ?? 0))
     }
     
     func generateData() {
