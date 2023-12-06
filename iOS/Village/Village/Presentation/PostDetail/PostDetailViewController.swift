@@ -197,7 +197,7 @@ final class PostDetailViewController: UIViewController {
     @objc
     private func chatButtonTapped() {
         guard let roomID = viewModel.createChatRoom(writer: "qwe", postID: 50149) else { return }
-        var viewControllers = self.navigationController?.viewControllers ?? []
+        let viewControllers = self.navigationController?.viewControllers ?? []
         if viewControllers.count > 1 {
             self.navigationController?.popViewController(animated: true)
         } else {
@@ -249,6 +249,7 @@ private extension PostDetailViewController {
         postContentView.addArrangedSubview(postInfoView)
         footerView.addSubview(priceLabel)
         footerView.addSubview(chatButton)
+        
     }
     
     func configureNavigationItem() {
@@ -290,6 +291,12 @@ private extension PostDetailViewController {
                 self?.isRequest = post.isRequest
                 self?.userID = Just(post.userID)
                 self?.setLayoutConstraints()
+                
+                if post.userID == JWTManager.shared.currentUserID {
+                    self?.chatButton.isEnabled = false
+                    self?.chatButton.backgroundColor = .gray
+                    self?.chatButton.alpha = 0.4
+                }
             })
             .store(in: &cancellableBag)
         
