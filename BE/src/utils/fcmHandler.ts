@@ -55,6 +55,7 @@ export class FcmHandler {
       })
       .catch((error) => {
         this.logger.error(error, 'FcmHandler');
+        this.removeRegistrationToken(userId);
       });
   }
 
@@ -66,6 +67,10 @@ export class FcmHandler {
       throw new Error('no registration token');
     }
     return registrationToken.registration_token;
+  }
+
+  async removeRegistrationToken(userId: string) {
+    await this.registrationTokenRepository.delete({ user_hash: userId });
   }
 
   makeChatPushMessage(
