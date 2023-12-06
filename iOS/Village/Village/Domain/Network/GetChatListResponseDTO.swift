@@ -9,12 +9,14 @@ import Foundation
 
 struct GetChatListResponseDTO: Hashable, Codable {
 
-    let roomID: String
+    let roomID: Int
     let writer: String?
-    let writerProfileIMG: String
+    let writerProfileIMG: String?
+    let writerNickname: String?
     let user: String
     let userProfileIMG: String?
-    let postID: String?
+    let userNickname: String?
+    let postID: Int
     let postTitle: String?
     let postThumbnail: String?
     let lastChat: String?
@@ -24,8 +26,10 @@ struct GetChatListResponseDTO: Hashable, Codable {
         case roomID = "room_id"
         case writer
         case writerProfileIMG = "writer_profile_img"
-        case user = "recent_chat"
+        case writerNickname = "writer_nickname"
+        case user
         case userProfileIMG = "user_profile_img"
+        case userNickname = "user_nickname"
         case postID = "post_id"
         case postTitle = "post_title"
         case postThumbnail = "post_thumbnail"
