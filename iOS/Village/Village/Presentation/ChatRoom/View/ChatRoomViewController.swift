@@ -137,15 +137,21 @@ final class ChatRoomViewController: UIViewController {
         
         setSocket()
         bindViewModel()
+        DispatchQueue.main.async {
+            if !self.viewModel.getLog().isEmpty {
+                self.chatTableView.scrollToRow(
+                    at: IndexPath(row: self.viewModel.getLog().count-1, section: 0), at: .bottom, animated: false
+                )
+            }
+        }
         setNavigationUI()
         setUI()
-        generateData()
         setUpNotification()
         view.backgroundColor = .systemBackground
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+        super.viewWillDisappear(false)
 
         self.roomID.receive(on: DispatchQueue.main)
             .sink { roomID in
@@ -153,6 +159,18 @@ final class ChatRoomViewController: UIViewController {
             }
             .store(in: &cancellableBag)
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//        DispatchQueue.main.async {
+//            if !self.viewModel.getLog().isEmpty {
+//                self.chatTableView.scrollToRow(
+//                    at: IndexPath(row: self.viewModel.getLog().count-1, section: 0), at: .bottom, animated: false
+//                )
+//            }
+//        }
+//    }
     
     func setSocket() {
         WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
@@ -169,7 +187,8 @@ final class ChatRoomViewController: UIViewController {
                 let sender = message.sender
                 let message = message.message
                 self?.viewModel.appendLog(sender: sender, message: message)
-                self?.generateData()
+                guard let count = self?.viewModel.getLog().count else { return }
+                self?.addGenerateData(chat: Message(sender: sender, message: message, count: count))
 //                self?.viewModel.appendLog(newLog: message)
             }
             .store(in: &cancellableBag)
@@ -192,10 +211,15 @@ private extension ChatRoomViewController {
                         count: (self?.viewModel.getLog().count ?? 0) + 1
                     )
                     self?.viewModel.appendLog(sender: currentUserID, message: text)
-                    self?.generateData()
+                    guard let count = self?.viewModel.getLog().count else { return }
+                    self?.addGenerateData(chat: Message(sender: currentUserID, message: text, count: count))
                 }
                 .store(in: &cancellableBag)
             self.keyboardTextField.text = nil
+            DispatchQueue.main.async {
+                let rowIndex = self.viewModel.getLog().count-1
+                self.chatTableView.scrollToRow(at: IndexPath(row: rowIndex, section: 0), at: .bottom, animated: false)
+            }
         }
     }
     
@@ -298,6 +322,13 @@ private extension ChatRoomViewController {
                     } receiveValue: { [weak self] room in
                         self?.setRoomContent(room: room)
                         self?.generateData()
+                        guard let isEmpty = self?.viewModel.getLog().isEmpty else { return }
+                        if !isEmpty {
+                            guard let count = self?.viewModel.getLog().count else { return }
+                            self?.chatTableView.scrollToRow(
+                                at: IndexPath(row: count-1, section: 0), at: .bottom, animated: false
+                            )
+                        }
                     }
                     .store(in: &cancellableBag)
     }
@@ -337,6 +368,13 @@ private extension ChatRoomViewController {
         snapshot.appendSections([.room])
         snapshot.appendItems(viewModel.getLog())
 
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    func addGenerateData(chat: Message) {
+        var snapshot = dataSource.snapshot()
+        snapshot.appendItems([chat], toSection: .room)
+        
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
