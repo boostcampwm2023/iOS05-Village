@@ -96,6 +96,7 @@
 		8F95CF982B0C7B270024631F /* Responsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF972B0C7B270024631F /* Responsable.swift */; };
 		8F95CF9A2B0C7C440024631F /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF992B0C7C440024631F /* EndPoint.swift */; };
 		8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF9B2B0C81640024631F /* APIProvider.swift */; };
+		8F97D06C2B222EFA00A19754 /* OpponentChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */; };
 		8FBB65C92B20586100C6A133 /* BlockedUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65C82B20586100C6A133 /* BlockedUserViewModel.swift */; };
 		8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */; };
 		8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */; };
@@ -216,6 +217,7 @@
 		8F95CF972B0C7B270024631F /* Responsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Responsable.swift; sourceTree = "<group>"; };
 		8F95CF992B0C7C440024631F /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
 		8F95CF9B2B0C81640024631F /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
+		8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentChatTableViewCell.swift; sourceTree = "<group>"; };
 		8FBB65C82B20586100C6A133 /* BlockedUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserViewModel.swift; sourceTree = "<group>"; };
 		8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserTableViewCell.swift; sourceTree = "<group>"; };
 		8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatListResponseDTO.swift; sourceTree = "<group>"; };
@@ -568,7 +570,6 @@
 				8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */,
 				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
-				59E6A20C2B1F865700A2DF21 /* GetPostsQueryDTO.swift */,
 				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
 			);
 			path = Network;
@@ -579,6 +580,7 @@
 			children = (
 				8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */,
 				59110EFA2B15F3D60009E9AC /* ChatRoomTableViewCell.swift */,
+				8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */,
 				8F3D79DB2B135BF000370536 /* CustomView */,
 			);
 			path = View;
@@ -1008,6 +1010,7 @@
 				4416D48E2B174CBA0052BF33 /* KeychainError.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
 				8F95CF982B0C7B270024631F /* Responsable.swift in Sources */,
+				8F97D06C2B222EFA00A19754 /* OpponentChatTableViewCell.swift in Sources */,
 				8F8F0B8F2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift in Sources */,
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
 				44C1F5F32B0FF63C0047A436 /* PostResponseDTO.swift in Sources */,
