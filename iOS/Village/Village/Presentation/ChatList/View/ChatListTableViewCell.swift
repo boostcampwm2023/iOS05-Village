@@ -120,14 +120,18 @@ class ChatListTableViewCell: UITableViewCell {
     }
     
     func configureData(data: GetChatListResponseDTO) async {
-        nicknameLabel.text = data.user
+        nicknameLabel.text = data.user != JWTManager.shared.currentUserID
+        ? data.userNickname
+        : data.writerNickname
 
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'.000Z'"
+        
         let currentData = Date()
         
-        guard let lastChatDate = data.lastChatDate else { return }
+        guard let lastChatDate = data.lastChatDate,
+              let lastChat = data.lastChat
+        else { return }
 
         if let date = dateFormatter.date(from: lastChatDate) {
             let timeInterval = currentData.timeIntervalSince(date)
@@ -151,7 +155,7 @@ class ChatListTableViewCell: UITableViewCell {
             }
         }
         
-        recentChatLabel.text = lastChatDate.count > 10 ? String(lastChatDate.prefix(10)) + "..." : lastChatDate
+        recentChatLabel.text = lastChat.count > 10 ? String(lastChat.prefix(10)) + "..." : lastChat
         await configureUserProfile(data.userProfileIMG)
         await configurePostImage(data.postThumbnail)
     }
