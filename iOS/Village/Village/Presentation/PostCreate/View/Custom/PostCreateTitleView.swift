@@ -10,8 +10,6 @@ import Combine
 
 final class PostCreateTitleView: UIStackView {
     
-    var currentTextSubject = CurrentValueSubject<String, Never>("")
-    
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
@@ -40,7 +38,7 @@ final class PostCreateTitleView: UIStackView {
         return label
     }()
     
-    private lazy var titleTextField: UITextField = {
+    lazy var titleTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLayer()
@@ -51,12 +49,11 @@ final class PostCreateTitleView: UIStackView {
         textField.rightViewMode = .always
         textField.inputAccessoryView = keyboardToolBar
         textField.delegate = self
-        textField.addTarget(self, action: #selector(textFieldDidChanged), for: .editingChanged)
         
         return textField
     }()
     
-    private let titleWarningLabel: UILabel = {
+    let titleWarningLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "제목을 작성해야 합니다."
@@ -82,18 +79,9 @@ final class PostCreateTitleView: UIStackView {
         endEditing(true)
     }
     
-    @objc private func textFieldDidChanged() {
-        currentTextSubject.send(titleTextField.text ?? "")
-    }
-    
     func warn(_ enable: Bool) {
         let alpha: CGFloat = enable ? 1 : 0
         titleWarningLabel.alpha = alpha
-    }
-    
-    func setEdit(title: String) {
-        titleTextField.text = title
-        textFieldDidChanged()
     }
     
 }

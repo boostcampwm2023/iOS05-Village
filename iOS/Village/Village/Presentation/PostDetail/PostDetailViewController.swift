@@ -104,49 +104,53 @@ final class PostDetailViewController: UIViewController {
         return button
     }()
     
-    private lazy var modifyAction = UIAlertAction(title: "편집하기", style: .default) { [weak self] _ in
-        guard let isRequest = self?.isRequest  else { return }
-        let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
-        let postCreateViewModel = PostCreateViewModel(
-            useCase: useCase,
-            isRequest: isRequest,
-            isEdit: true,
-            postID: self?.postID.output
-        )
-        let editVC = PostCreateViewController(viewModel: postCreateViewModel)
-        editVC.modalPresentationStyle = .fullScreen
-        editVC.editButtonTappedSubject
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] post in
-                guard let fixedPost = post else { return }
-                self?.viewModel.postDTO = fixedPost
-                self?.setPostContent(post: fixedPost)
+    private var modifyAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "편집하기", style: .default) { [weak self] _ in
+            guard let isRequest = self?.isRequest  else {
+                return
             }
-            .store(in: &editVC.cancellableBag)
-        guard let id = self?.postID.output else { return }
-        let endpoint = APIEndPoints.getPost(id: id)
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                editVC.setEdit(post: data)
-                self?.navigationController?.pushViewController(editVC, animated: true)
-            } catch let error {
-                dump(error)
-            }
+            let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
+            let postCreateViewModel = PostCreateViewModel(
+                useCase: useCase,
+                isRequest: isRequest,
+                isEdit: true,
+                postID: self?.postID.output
+            )
+            let editVC = PostCreateViewController(viewModel: postCreateViewModel)
+            editVC.editButtonTappedSubject
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] in
+                    guard let id = self?.postID.output else { return }
+                    self?.viewModel.getPost(id: id)
+                }
+                .store(in: &editVC.cancellableBag)
+            let editNC = UINavigationController(rootViewController: editVC)
+            editNC.modalPresentationStyle = .fullScreen
+            self?.present(editNC, animated: true)
         }
+        return action
     }
     
-    private lazy var deleteAction = UIAlertAction(title: "삭제하기", style: .destructive) { [weak self] _ in
-        guard let id = self?.postID.output else { return }
-        self?.deletePostID.send(id)
+    private var deleteAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "삭제하기", style: .destructive) { [weak self] _ in
+            guard let id = self?.postID.output else { return }
+            self?.deletePostID.send(id)
+        }
+        return action
     }
     
-    private lazy var hideAction = UIAlertAction(title: "게시글 숨기기", style: .default) { _ in
-        // TODO: hide post
+    private var hideAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "게시글 숨기기", style: .default) { _ in
+            // TODO: hide post
+        }
+        return action
     }
     
-    private lazy var banAction = UIAlertAction(title: "사용자 차단하기", style: .default) { _ in
-        // TODO: ban user
+    private var banAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .default) { _ in
+            // TODO: ban user
+        }
+        return action
     }
     
     private let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)

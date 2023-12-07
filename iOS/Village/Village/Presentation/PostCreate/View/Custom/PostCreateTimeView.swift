@@ -21,8 +21,6 @@ enum PickerLocale: String {
 
 final class PostCreateTimeView: UIStackView {
     
-    var currentTimeSubject = CurrentValueSubject<Date?, Never>(nil)
-    
     private let timeStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +36,8 @@ final class PostCreateTimeView: UIStackView {
         datePicker.locale = Locale(identifier: PickerLocale.korea.rawValue)
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.datePickerMode = .date
+        datePicker.minimumDate = Date()
+        
         return datePicker
     }()
     
@@ -60,7 +60,7 @@ final class PostCreateTimeView: UIStackView {
         return toolbar
     }()
     
-    private lazy var dateTextField: UITextField = {
+    lazy var dateTextField: UITextField = {
         let textfield = UITextField()
         textfield.translatesAutoresizingMaskIntoConstraints = false
         textfield.setLayer()
@@ -102,7 +102,7 @@ final class PostCreateTimeView: UIStackView {
         return toolbar
     }()
     
-    private lazy var hourTextField: UITextField = {
+    lazy var hourTextField: UITextField = {
         let textfield = UITextField()
         textfield.translatesAutoresizingMaskIntoConstraints = false
         textfield.setLayer()
@@ -116,7 +116,7 @@ final class PostCreateTimeView: UIStackView {
         
         return textfield
     }()
-
+    
     private var selectedDate: String?
     private var selectedHour: String?
     private let hours = [
@@ -125,10 +125,11 @@ final class PostCreateTimeView: UIStackView {
         "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
         "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
     ]
-    var time: Date? {
-        didSet {
-            currentTimeSubject.send(time)
-        }
+    var time: Date?
+    var timeString: String {
+        guard let date = selectedDate,
+              let hour = selectedHour else { return "" }
+        return date + " " + hour
     }
     
     private let isRequest: Bool
@@ -184,7 +185,8 @@ final class PostCreateTimeView: UIStackView {
     func setEdit(time: String) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        guard let timeDate = dateFormatter.date(from: time) else { return }
+        guard var timeDate = dateFormatter.date(from: time) else { return }
+        timeDate -= 540 * 60
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: timeDate)
         dateFormatter.dateFormat = "HH:mm"
@@ -199,6 +201,15 @@ final class PostCreateTimeView: UIStackView {
         dateTextField.text = dateString
         hourTextField.text = hourString
         setTime()
+    }
+    
+    func changeWarn(enable: Bool) {
+        if enable {
+            timeWarningLabel.text = "종료 시간을 시작 시간보다 늦게 설정해주세요."
+            warn(true)
+        } else {
+            timeWarningLabel.text = "시간을 선택해야 합니다."
+        }
     }
     
 }

@@ -11,8 +11,9 @@ import Combine
 final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
-    private var postButtonTappedSubject = PassthroughSubject<Void, Never>()
-    var editButtonTappedSubject = PassthroughSubject<PostResponseDTO?, Never>()
+    var editButtonTappedSubject = PassthroughSubject<Void, Never>()
+    private let editSetSubject = PassthroughSubject<Void, Never>()
+    private let postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -120,7 +121,9 @@ final class PostCreateViewController: UIViewController {
         configureConstraints()
         setUpNotification()
         bind()
-        
+        if viewModel.isEdit {
+            editSetSubject.send()
+        }
         view.backgroundColor = .systemBackground
         super.viewDidLoad()
     }
@@ -136,55 +139,28 @@ final class PostCreateViewController: UIViewController {
     
     var cancellableBag: Set<AnyCancellable> = []
     
-    func bind() {
+    private func bind() {
         let input = PostCreateViewModel.Input(
-            titleSubject: postCreateTitleView.currentTextSubject,
-            startTimeSubject: postCreateStartTimeView.currentTimeSubject,
-            endTimeSubject: postCreateEndTimeView.currentTimeSubject,
-            priceSubject: postCreatePriceView.currentPriceSubject,
-            detailSubject: postCreateDetailView.currentDetailSubject,
-            postButtonTappedSubject: postButtonTappedSubject
+            postInfoInput: postInfoPublisher,
+            editSetInput: editSetSubject
         )
-        handleViewModelOutput(output: viewModel.transform(input: input))
-    }
-    
-    func handleViewModelOutput(output: PostCreateViewModel.Output) {
-        subscribePriceOutput(output: output)
-    }
-    
-    func subscribePriceOutput(output: PostCreateViewModel.Output) {
-        output.priceValidationResult
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] prevPriceString in
-                self?.postCreatePriceView.revertChange(text: prevPriceString)
-            }
-            .store(in: &cancellableBag)
         
-        output.postButtonTappedTitleWarningResult
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] bool in
-                self?.postCreateTitleView.warn(!bool)
-            }
-            .store(in: &cancellableBag)
+        let output = viewModel.transform(input: input)
         
-        output.postButtonTappedStartTimeWarningResult
+        output.warningResult
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] bool in
-                self?.postCreateStartTimeView.warn(!bool)
-            }
-            .store(in: &cancellableBag)
-        
-        output.postButtonTappedEndTimeWarningResult
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] bool in
-                self?.postCreateEndTimeView.warn(!bool)
-            }
-            .store(in: &cancellableBag)
-        
-        output.postButtonTappedPriceWarningResult
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] bool in
-                self?.postCreatePriceView.warn(!bool)
+            .sink { [weak self] warning in
+                self?.postCreateTitleView.warn(warning.titleWarning)
+                if let priceWarning = warning.priceWarning {
+                    self?.postCreatePriceView.warn(priceWarning)
+                }
+                if warning.startTimeWarning || warning.endTimeWarning {
+                    self?.postCreateStartTimeView.warn(warning.startTimeWarning)
+                    self?.postCreateEndTimeView.warn(warning.endTimeWarning)
+                } else {
+                    self?.postCreateStartTimeView.changeWarn(enable: warning.timeSequenceWarning)
+                    self?.postCreateEndTimeView.changeWarn(enable: warning.timeSequenceWarning)
+                }
             }
             .store(in: &cancellableBag)
         
@@ -197,27 +173,26 @@ final class PostCreateViewController: UIViewController {
                 case .failure(let error):
                     dump(error)
                 }
-            }, receiveValue: { [weak self] post in
+            }, receiveValue: { [weak self] in
                 self?.dismiss(animated: true)
                 self?.navigationController?.popViewController(animated: true)
-                guard let isEdit = self?.viewModel.isEdit else { return }
-                if isEdit {
-                    self?.editButtonTappedSubject.send(post)
+                
+                if self?.viewModel.isEdit == true {
+                    self?.editButtonTappedSubject.send()
                 }
             })
             .store(in: &cancellableBag)
         
-    }
-    
-    func setEdit(post: PostResponseDTO) {
-        postCreateTitleView.setEdit(title: post.title)
-        postCreateDetailView.setEdit(detail: post.description)
-        postCreateStartTimeView.setEdit(time: post.startDate)
-        postCreateEndTimeView.setEdit(time: post.endDate)
-        if !post.isRequest {
-            postCreatePriceView.setEdit(price: post.price)
-        }
-        viewModel.setEdit(post: post)
+        output.editInitOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] post in
+                self?.postCreateTitleView.titleTextField.text = post.title
+                self?.postCreateStartTimeView.setEdit(time: post.startDate)
+                self?.postCreateEndTimeView.setEdit(time: post.endDate)
+                self?.postCreatePriceView.priceTextField.text = post.price?.priceText()
+                self?.postCreateDetailView.detailTextView.text = post.description
+            }
+            .store(in: &cancellableBag)
     }
     
 }
@@ -226,13 +201,22 @@ final class PostCreateViewController: UIViewController {
 private extension PostCreateViewController {
     
     func close(_ sender: UIBarButtonItem) {
-        
         navigationController?.popViewController(animated: true)
         dismiss(animated: true)
     }
     
     func post(_ sender: UIButton) {
-        postButtonTappedSubject.send()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = ""
+        postInfoPublisher.send(
+            PostModifyInfo(
+                title: postCreateTitleView.titleTextField.text ?? "",
+                startTime: postCreateStartTimeView.timeString,
+                endTime: postCreateEndTimeView.timeString,
+                price: postCreatePriceView.priceTextField.text ?? "",
+                detail: postCreateDetailView.detailTextView.text ?? ""
+            )
+        )
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {
