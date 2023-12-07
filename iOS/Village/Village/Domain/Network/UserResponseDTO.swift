@@ -10,7 +10,7 @@ import Foundation
 struct UserResponseDTO: Hashable, Decodable {
     
     let nickname: String
-    let profileImageURL: String?
+    let profileImageURL: String
     
     enum CodingKeys: String, CodingKey {
         case nickname
