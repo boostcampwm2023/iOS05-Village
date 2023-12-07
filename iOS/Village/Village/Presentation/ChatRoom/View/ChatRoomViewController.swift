@@ -89,16 +89,6 @@ final class ChatRoomViewController: UIViewController {
         return textField
     }()
     
-    @objc func sendbuttonTapped() {
-        if let text = self.keyboardTextField.text,
-           !text.isEmpty {
-            WebSocket.shared.sendMessage(roomID: "164", sender: "me", message: text)
-            viewModel.appendLog(sender: "me", message: text)
-            generateData()
-            self.keyboardTextField.text = nil
-        }
-    }
-    
     private lazy var keyboardSendButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -144,13 +134,21 @@ final class ChatRoomViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        WebSocket.shared.sendDisconnectRoom(roomID: "164")
+        self.roomID.receive(on: DispatchQueue.main)
+            .sink { roomID in
+                WebSocket.shared.sendDisconnectRoom(roomID: roomID)
+            }
+            .store(in: &cancellableBag)
     }
     
     func setSocket() {
-        WebSocket.shared.url = URL(string: "ws://49.50.167.220:3000/chats")
+        WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
         try? WebSocket.shared.openWebSocket()
-        WebSocket.shared.sendJoinRoom(roomID: "164")
+        self.roomID.receive(on: DispatchQueue.main)
+            .sink { roomID in
+                WebSocket.shared.sendJoinRoom(roomID: roomID)
+            }
+            .store(in: &cancellableBag)
         
         MessageManager.shared.messageSubject
             .receive(on: DispatchQueue.main)
@@ -168,6 +166,24 @@ final class ChatRoomViewController: UIViewController {
 
 private extension ChatRoomViewController {
     
+    @objc func sendbuttonTapped() {
+        guard let currentUserID = JWTManager.shared.currentUserID else { return }
+        if let text = self.keyboardTextField.text,
+           !text.isEmpty {
+            self.roomID.receive(on: DispatchQueue.main)
+                .sink { [weak self] roomID in
+                    WebSocket.shared.sendMessage(
+                        roomID: roomID,
+                        sender: currentUserID,
+                        message: text,
+                        count: (self?.viewModel.getLog()?.count ?? 0) + 1
+                    )
+                    self?.viewModel.appendLog(sender: currentUserID, message: text)
+                    self?.generateData()
+                }
+                .store(in: &cancellableBag)
+            self.keyboardTextField.text = nil
+        }
     }
     
     @objc private func postViewTapped() {
