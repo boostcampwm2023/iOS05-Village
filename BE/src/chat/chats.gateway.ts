@@ -113,18 +113,4 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       'ChatsGateway',
     );
   }
-
-  @SubscribeMessage('leave-room')
-  leaveRoom(
-    @MessageBody() message: object,
-    @ConnectedSocket() client: ChatWebSocket,
-  ) {
-    const roomId = message['room_id'];
-    const room = this.rooms.get(roomId);
-    room.delete(client);
-    if (room.size === 0) {
-      this.rooms.delete(roomId);
-    }
-    console.log(this.rooms);
-  }
 }
