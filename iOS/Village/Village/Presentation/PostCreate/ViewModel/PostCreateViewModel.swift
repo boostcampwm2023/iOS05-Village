@@ -16,8 +16,7 @@ struct PostWarning {
     let priceWarning: Bool?
     
     var validation: Bool {
-        !(titleWarning && startTimeWarning && endTimeWarning && priceWarning == nil ||
-        titleWarning && startTimeWarning && endTimeWarning && priceWarning == true)
+        !(titleWarning || startTimeWarning || endTimeWarning || priceWarning == true)
     }
     
 }
@@ -128,7 +127,7 @@ final class PostCreateViewModel {
                     endTimeWarning: post.endTime.isEmpty,
                     priceWarning: post.price?.isEmpty
                 )
-                if warning.validation {
+                if warning.validation == true {
                     modifyPost(post: post)
                 } else {
                     warningPublisher.send(warning)
