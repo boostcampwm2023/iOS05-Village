@@ -183,7 +183,8 @@ final class PostCreateTimeView: UIStackView {
     func setEdit(time: String) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        guard let timeDate = dateFormatter.date(from: time) else { return }
+        guard var timeDate = dateFormatter.date(from: time) else { return }
+        timeDate -= 540 * 60
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: timeDate)
         dateFormatter.dateFormat = "HH:mm"
