@@ -13,25 +13,19 @@ final class ChatRoomViewController: UIViewController {
     typealias ChatRoomDataSource = UITableViewDiffableDataSource<Section, Message>
     typealias ViewModel = ChatRoomViewModel
     
-    private lazy var dataSource: ChatRoomDataSource = ChatRoomDataSource(
-        tableView: chatTableView,
-        cellProvider: { [weak self] (tableView, indexPath, message) in
-            guard let self = self else { return ChatRoomTableViewCell() }
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: self.reuseIdentifier,
-                for: indexPath) as? ChatRoomTableViewCell else {
-                return ChatRoomTableViewCell()
-            }
-            cell.configureData(
-                message: message.message,
-                profileImageURL: "",
-                // TODO: 나중에 해시값으로 바꾸기
-                isMine: message.sender == "me"
-            )
-            cell.selectionStyle = .none
-            return cell
-        }
-    )
+    enum Section {
+        case room
+    }
+    
+    private var viewModel = ViewModel()
+    private var cancellableBag = Set<AnyCancellable>()
+    
+    private let roomID: Just<Int>
+    private let opponentNickname: String
+    
+    private var imageURL: String?
+    private var postID: AnyPublisher<Int, Never>?
+    
     private let reuseIdentifier = ChatRoomTableViewCell.identifier
     private lazy var chatTableView: UITableView = {
         let tableView = UITableView()
@@ -44,32 +38,39 @@ final class ChatRoomViewController: UIViewController {
         return tableView
     }()
     
-    private var viewModel = ViewModel()
-    private var cancellableBag = Set<AnyCancellable>()
+    private lazy var dataSource: ChatRoomDataSource = ChatRoomDataSource(
+        tableView: chatTableView,
+        cellProvider: { [weak self] (tableView, indexPath, message) in
+            guard let self = self else { return ChatRoomTableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: self.reuseIdentifier,
+                for: indexPath) as? ChatRoomTableViewCell else {
+                return ChatRoomTableViewCell()
+            }
+            cell.configureData(
+                message: message.message,
+                profileImageURL: "",
+                isMine: message.sender == JWTManager.shared.currentUserID
+            )
+            cell.selectionStyle = .none
+            return cell
+        }
+    )
     
-    enum Section {
-        case room
-    }
-    
-    private let roomID: Just<Int>
-    private let opponentNickname: Just<String>
-    
-    private var imageURL: String?
-    private var postID: AnyPublisher<Int, Never>?
-    
-    private let keyboardStackView: UIStackView = {
+    private lazy var keyboardStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         
         return stackView
     }()
+    
     private lazy var keyBoardStackViewBottomConstraint = keyboardStackView.bottomAnchor.constraint(
         equalTo: view.safeAreaLayoutGuide.bottomAnchor, 
         constant: -20
     )
     
-    private let keyboardMoreButton: UIButton = {
+    private lazy var keyboardMoreButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.plus.rawValue), for: .normal)
@@ -78,7 +79,7 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    private let keyboardTextField: UITextField = {
+    private lazy var keyboardTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "메시지를 입력해주세요."
@@ -98,7 +99,7 @@ final class ChatRoomViewController: UIViewController {
         }
     }
     
-    private let keyboardSendButton: UIButton = {
+    private lazy var keyboardSendButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.paperplane.rawValue), for: .normal)
@@ -117,25 +118,9 @@ final class ChatRoomViewController: UIViewController {
         return postView
     }()
     
-    @objc private func postViewTapped() {
-        var viewControllers = self.navigationController?.viewControllers ?? []
-        if viewControllers.count > 1 {
-            guard let postID = self.postID else { return }
-            postID.sink(receiveValue: { value in
-                let nextVC = PostDetailViewController(postID: value)
-                nextVC.hidesBottomBarWhenPushed = true
-                
-                self.navigationController?.pushViewController(nextVC, animated: true)
-            })
-            .store(in: &cancellableBag)
-        } else {
-            self.navigationController?.popViewController(animated: true)
-        }
-    }
-    
     init(roomID: Int, opponentNickname: String) {
         self.roomID = Just(roomID)
-        self.opponentNickname = Just(opponentNickname)
+        self.opponentNickname = opponentNickname
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -162,10 +147,6 @@ final class ChatRoomViewController: UIViewController {
         WebSocket.shared.sendDisconnectRoom(roomID: "164")
     }
     
-    @objc private func ellipsisTapped() {
-        // TODO: 더보기 버튼 클릭 액션
-    }
-    
     func setSocket() {
         WebSocket.shared.url = URL(string: "ws://49.50.167.220:3000/chats")
         try? WebSocket.shared.openWebSocket()
@@ -187,30 +168,34 @@ final class ChatRoomViewController: UIViewController {
 
 private extension ChatRoomViewController {
     
-    func bindViewModel() {
-        let output = viewModel.transformRoom(input: ViewModel.RoomInput(roomID: roomID.eraseToAnyPublisher()))
-        
-        bindRoomOutput(output)
     }
     
-    func bindRoomOutput(_ output: ViewModel.RoomOutput) {
-        output.chatRoom
-                    .receive(on: DispatchQueue.main)
-                    .sink { completion in
-                        switch completion {
-                        case .finished:
-                            break
-                        case .failure(let error):
-                            dump(error)
-                        }
-                    } receiveValue: { [weak self] room in
-                        self?.setRoomContent(room: room)
-                        self?.generateData()
-                    }
-                    .store(in: &cancellableBag)
+    @objc private func postViewTapped() {
+        var viewControllers = self.navigationController?.viewControllers ?? []
+        if viewControllers.count > 1 {
+            guard let postID = self.postID else { return }
+            postID.sink(receiveValue: { value in
+                let nextVC = PostDetailViewController(postID: value)
+                nextVC.hidesBottomBarWhenPushed = true
+                
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            })
+            .store(in: &cancellableBag)
+        } else {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
+    
+    @objc private func ellipsisTapped() {
+        // TODO: 더보기 버튼 클릭 액션
+    }
+    
+}
+
+private extension ChatRoomViewController {
     
     func setUI() {
+        setNavigationTitle(title: self.opponentNickname)
         view.addSubview(postView)
         view.addSubview(chatTableView)
         
@@ -265,7 +250,34 @@ private extension ChatRoomViewController {
         navigationItem.title = title
     }
     
+    func bindViewModel() {
+        let output = viewModel.transformRoom(input: ViewModel.RoomInput(roomID: roomID.eraseToAnyPublisher()))
+        
+        bindRoomOutput(output)
+    }
+    
+    func bindRoomOutput(_ output: ViewModel.RoomOutput) {
+        output.chatRoom
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            dump(error)
+                        }
+                    } receiveValue: { [weak self] room in
+                        self?.setRoomContent(room: room)
+                        self?.generateData()
+                    }
+                    .store(in: &cancellableBag)
+    }
+    
     func setRoomContent(room: GetRoomResponseDTO) {
+        room.chatLog.forEach { [weak self] chat in
+            self?.viewModel.appendLog(sender: chat.sender, message: chat.message)
+        }
+        
         self.postID = Just(room.postID).eraseToAnyPublisher()
         guard let postID = self.postID else { return }
         let output = viewModel.transformPost(input: ViewModel.PostInput(postID: postID))
