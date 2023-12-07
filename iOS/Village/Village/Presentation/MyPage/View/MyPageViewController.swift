@@ -321,7 +321,9 @@ private extension MyPageViewController {
 private extension MyPageViewController {
     
     func profileEditButtonTapped() {
-        
+        let nextVC = SignUpViewController(viewModel: SignUpViewModel())
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     func myPostsButtonTapped() {
