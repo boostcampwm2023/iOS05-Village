@@ -21,8 +21,6 @@ enum PickerLocale: String {
 
 final class PostCreateTimeView: UIStackView {
     
-    var currentTimeSubject = CurrentValueSubject<Date?, Never>(nil)
-    
     private let timeStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -60,7 +58,7 @@ final class PostCreateTimeView: UIStackView {
         return toolbar
     }()
     
-    private lazy var dateTextField: UITextField = {
+    lazy var dateTextField: UITextField = {
         let textfield = UITextField()
         textfield.translatesAutoresizingMaskIntoConstraints = false
         textfield.setLayer()
@@ -102,7 +100,7 @@ final class PostCreateTimeView: UIStackView {
         return toolbar
     }()
     
-    private lazy var hourTextField: UITextField = {
+    lazy var hourTextField: UITextField = {
         let textfield = UITextField()
         textfield.translatesAutoresizingMaskIntoConstraints = false
         textfield.setLayer()
@@ -116,7 +114,7 @@ final class PostCreateTimeView: UIStackView {
         
         return textfield
     }()
-
+    
     private var selectedDate: String?
     private var selectedHour: String?
     private let hours = [
@@ -125,10 +123,11 @@ final class PostCreateTimeView: UIStackView {
         "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
         "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
     ]
-    var time: Date? {
-        didSet {
-            currentTimeSubject.send(time)
-        }
+    var time: Date?
+    var timeString: String {
+        guard let date = selectedDate,
+              let hour = selectedHour else { return "" }
+        return date + " " + hour
     }
     
     private let isRequest: Bool

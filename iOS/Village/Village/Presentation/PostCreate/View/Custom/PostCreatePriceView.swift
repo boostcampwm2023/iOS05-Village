@@ -10,8 +10,6 @@ import Combine
 
 final class PostCreatePriceView: UIStackView {
     
-    var currentPriceSubject = CurrentValueSubject<String, Never>("")
-    
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
         let hideKeyboardButton = UIBarButtonItem(
@@ -40,7 +38,7 @@ final class PostCreatePriceView: UIStackView {
         return label
     }()
     
-    private lazy var priceTextField: UITextField = {
+    lazy var priceTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLayer()
@@ -57,12 +55,11 @@ final class PostCreatePriceView: UIStackView {
         textField.inputAccessoryView = keyboardToolBar
         textField.delegate = self
         textField.keyboardType = .numberPad
-        textField.addTarget(self, action: #selector(textFieldDidChanged), for: .editingChanged)
         
         return textField
     }()
     
-    private let priceWarningLabel: UILabel = {
+    let priceWarningLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "하루 대여 가격을 설정해야 합니다."
@@ -88,24 +85,10 @@ final class PostCreatePriceView: UIStackView {
         endEditing(true)
     }
     
-    @objc private func textFieldDidChanged() {
-        currentPriceSubject.send(priceTextField.text ?? "")
-    }
-    
     func warn(_ enable: Bool) {
         let alpha: CGFloat = enable ? 1 : 0
         priceWarningLabel.alpha = alpha
     }
-    
-    func revertChange(text: String) {
-        priceTextField.text = text
-    }
-    
-    func setEdit(price: Int?) {
-        priceTextField.text = price?.priceText()
-        textFieldDidChanged()
-    }
-    
 }
 
 private extension PostCreatePriceView {

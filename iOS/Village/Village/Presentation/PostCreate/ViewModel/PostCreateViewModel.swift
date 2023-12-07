@@ -53,6 +53,14 @@ final class PostCreateViewModel {
     }
     
     func modifyPost(post: PostModifyInfo) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd HH:mm"
+        guard let startTime = dateFormatter.date(from: post.startTime),
+              let endTime = dateFormatter.date(from: post.endTime) else { return }
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let startTimeString = dateFormatter.string(from: startTime)
+        let endTimeString = dateFormatter.string(from: endTime)
+        
         let modifyEndPoint = APIEndPoints.modifyPost(
             with: PostModifyRequestDTO(
                 postInfo: PostInfoDTO(
@@ -60,8 +68,8 @@ final class PostCreateViewModel {
                     description: post.detail,
                     price: priceToInt(price: post.price),
                     isRequest: isRequest,
-                    startDate: post.startTime,
-                    endDate: post.endTime
+                    startDate: startTimeString,
+                    endDate: endTimeString
                 ),
                 image: [],
                 postID: postID
