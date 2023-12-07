@@ -41,11 +41,7 @@ export class UsersController {
   @Post()
   @UseInterceptors(FileInterceptor('profileImage'))
   async usersCreate(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 })],
-      }),
-    )
+    @UploadedFile(new FileSizeValidator())
     file: Express.Multer.File,
     @MultiPartBody(
       'profile',
