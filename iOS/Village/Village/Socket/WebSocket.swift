@@ -19,10 +19,14 @@ struct ReceiveMessage: Hashable, Codable {
     
     let sender: String
     let message: String
+    let isRead: Bool
+    let count: Int
     
     enum CodingKeys: String, CodingKey {
         case sender
         case message
+        case isRead = "is_read"
+        case count
     }
     
 }
@@ -54,12 +58,12 @@ final class WebSocket: NSObject {
         self.receiveEvent()
     }
     
-    func sendJoinRoom(roomID: String) {
+    func sendJoinRoom(roomID: Int) {
         let joinRoomEvent = """
         {
           "event": "join-room",
           "data": {
-            "room": "\(roomID)"
+            "room_id": \(roomID)
           }
         }
         """
@@ -67,14 +71,15 @@ final class WebSocket: NSObject {
         send(data: jsonData)
     }
     
-    func sendMessage(roomID: String, sender: String, message: String) {
+    func sendMessage(roomID: Int, sender: String, message: String, count: Int) {
         let sendMessageEvent = """
         {
           "event": "send-message",
           "data": {
-            "room": "\(roomID)",
+            "room_id": \(roomID),
             "message": "\(message)",
-            "sender": "\(sender)"
+            "sender": "\(sender)",
+            "count": \(count)
           }
         }
         """
@@ -82,12 +87,12 @@ final class WebSocket: NSObject {
         send(data: jsonData)
     }
     
-    func sendDisconnectRoom(roomID: String) {
+    func sendDisconnectRoom(roomID: Int) {
         let disconnectRoomEvent = """
         {
           "event": "leave-room",
           "data": {
-            "room": "\(roomID)"
+            "room_id": \(roomID)
           }
         }
         """
