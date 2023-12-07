@@ -18,16 +18,50 @@ export class FcmHandler {
     @InjectRepository(RegistrationTokenEntity)
     private registrationTokenRepository: Repository<RegistrationTokenEntity>,
   ) {
-    admin.initializeApp({
-      credential: admin.credential.cert(
-        this.configService.get('GOOGLE_APPLICATION_CREDENTIALS'),
-      ),
-    });
+    if (admin.apps.length === 0) {
+      admin.initializeApp({
+        credential: admin.credential.cert(
+          this.configService.get('GOOGLE_APPLICATION_CREDENTIALS'),
+        ),
+      });
+      this.logger.log('Firebase Admin initialized');
+    }
   }
 
   async sendPush(userId: string, pushMessage: PushMessage) {
     const registrationToken = await this.getRegistrationToken(userId);
-    const message = {
+    const message = this.createPushMessage(registrationToken, pushMessage);
+    admin
+      .messaging()
+      .send(message)
+      .then((response) => {
+        this.logger.debug(
+          `Push Notification Success : ${response} `,
+          'FcmHandler',
+        );
+      })
+      .catch((error) => {
+        this.logger.error(error, 'FcmHandler');
+        this.removeRegistrationToken(userId);
+      });
+  }
+
+  private async getRegistrationToken(userId: string): Promise<string> {
+    const registrationToken = await this.registrationTokenRepository.findOne({
+      where: { user_hash: userId },
+    });
+    if (registrationToken === null) {
+      throw new Error('no registration token');
+    }
+    return registrationToken.registration_token;
+  }
+
+  async removeRegistrationToken(userId: string) {
+    await this.registrationTokenRepository.delete({ user_hash: userId });
+  }
+
+  createPushMessage(registrationToken: string, pushMessage: PushMessage) {
+    return {
       token: registrationToken,
       notification: {
         title: pushMessage.title,
@@ -44,31 +78,9 @@ export class FcmHandler {
         ...pushMessage.data,
       },
     };
-    admin
-      .messaging()
-      .send(message)
-      .then((response) => {
-        this.logger.debug(
-          `Push Notification Success : ${response} `,
-          'FcmHandler',
-        );
-      })
-      .catch((error) => {
-        this.logger.error(error, 'FcmHandler');
-      });
   }
 
-  private async getRegistrationToken(userId: string): Promise<string> {
-    const registrationToken = await this.registrationTokenRepository.findOne({
-      where: { user_hash: userId },
-    });
-    if (registrationToken === null) {
-      throw new Error('no registration token');
-    }
-    return registrationToken.registration_token;
-  }
-
-  makeChatPushMessage(
+  createChatPushMessage(
     nickname: string,
     message: string,
     roomId: number,
