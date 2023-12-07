@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PhotosUI
 
 final class SignUpViewController: UIViewController {
     
@@ -85,14 +86,36 @@ private extension SignUpViewController {
 }
 
 @objc
-private extension SignUpViewController {
+extension SignUpViewController {
     
     func completeButtonTapped() {
         dump("Complete Button Tapped")
     }
     
     func imageClicked() {
-        dump("Image Clicked")
+        let photoLibrary = PHPhotoLibrary.shared()
+        var configuration = PHPickerConfiguration(photoLibrary: photoLibrary)
+        
+        configuration.selectionLimit = 1
+        configuration.filter = .any(of: [.images])
+        DispatchQueue.main.async {
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            picker.isEditing = true
+            self.present(picker, animated: true, completion: nil)
+        }
+        
+    }
+}
+extension SignUpViewController: PHPickerViewControllerDelegate {
+
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        guard let result = results.first else { return }
+        result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, _) in
+            guard let image = image as? UIImage else { return }
+            self?.profileImageView.setProfile(image: image)
+        }
     }
     
 }
