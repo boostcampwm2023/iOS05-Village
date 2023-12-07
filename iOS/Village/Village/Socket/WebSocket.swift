@@ -63,7 +63,7 @@ final class WebSocket: NSObject {
         {
           "event": "join-room",
           "data": {
-            "room_id": "\(roomID)"
+            "room_id": \(roomID)
           }
         }
         """
@@ -76,10 +76,10 @@ final class WebSocket: NSObject {
         {
           "event": "send-message",
           "data": {
-            "room_id": "\(roomID)",
+            "room_id": \(roomID),
             "message": "\(message)",
             "sender": "\(sender)",
-            "count": "\(count)"
+            "count": \(count)
           }
         }
         """
@@ -92,7 +92,7 @@ final class WebSocket: NSObject {
         {
           "event": "leave-room",
           "data": {
-            "room_id": "\(roomID)"
+            "room_id": \(roomID)
           }
         }
         """

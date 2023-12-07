@@ -10,14 +10,14 @@ import Foundation
 struct GetChatListResponseDTO: Hashable, Codable {
 
     let roomID: Int
-    let writer: String
+    let writer: String?
     let writerProfileIMG: String?
-    let writerNickname: String
-    let user: String
+    let writerNickname: String?
+    let user: String?
     let userProfileIMG: String?
-    let userNickname: String
+    let userNickname: String?
     let postID: Int
-    let postTitle: String
+    let postTitle: String?
     let postThumbnail: String?
     let lastChat: String?
     let lastChatDate: String?
