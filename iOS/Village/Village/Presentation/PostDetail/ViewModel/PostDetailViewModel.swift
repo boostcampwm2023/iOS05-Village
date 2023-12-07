@@ -12,24 +12,26 @@ final class PostDetailViewModel {
     
     private var post = PassthroughSubject<PostResponseDTO, NetworkError>()
     private var user = PassthroughSubject<UserResponseDTO, NetworkError>()
+    private var roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
     private let deleteOutput = PassthroughSubject<Void, NetworkError>()
     private var responseData: PostRoomResponseDTO?
     private var cancellableBag = Set<AnyCancellable>()
     var postDTO: PostResponseDTO?
     
-    func createChatRoom(writer: String, postID: Int) -> PostRoomResponseDTO? {
+    func createChatRoom(writer: String, postID: Int) -> RoomIDOutput {
         let request = PostRoomRequestDTO(writer: writer, postID: postID)
         let endpoint = APIEndPoints.postCreateChatRoom(with: request)
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                responseData = data
+                roomID.send(data)
             } catch let error as NetworkError {
                 dump(error)
+                roomID.send(completion: .failure(error))
             }
         }
         
-        return responseData
+        return RoomIDOutput(roomID: roomID.eraseToAnyPublisher())
     }
     
     func transformPost(input: Input) -> Output {
@@ -122,6 +124,15 @@ extension PostDetailViewModel {
     
     struct UserOutput {
         var user: AnyPublisher<UserResponseDTO, NetworkError>
+    }
+    
+    struct RoomIDInput {
+        var postID: AnyPublisher<Int, Never>
+        var userID: AnyPublisher<String, Never>
+    }
+    
+    struct RoomIDOutput {
+        var roomID: AnyPublisher<PostRoomResponseDTO, NetworkError>
     }
     
 }
