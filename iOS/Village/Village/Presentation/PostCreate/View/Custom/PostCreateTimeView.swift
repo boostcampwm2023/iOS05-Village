@@ -186,7 +186,6 @@ final class PostCreateTimeView: UIStackView {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         guard var timeDate = dateFormatter.date(from: time) else { return }
-        timeDate -= 540 * 60
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: timeDate)
         dateFormatter.dateFormat = "HH:mm"
