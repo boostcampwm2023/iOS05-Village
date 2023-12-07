@@ -203,7 +203,23 @@ private extension ChatRoomViewController {
     }
     
     @objc private func ellipsisTapped() {
-        // TODO: 더보기 버튼 클릭 액션
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "채팅방 나가기", style: .default) { _ in
+            // TODO: delete room
+        }
+        
+        let reportAction = UIAlertAction(title: "신고하기", style: .destructive) { _ in
+            // TODO: report user
+        }
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        alert.addAction(deleteAction)
+        alert.addAction(reportAction)
+        alert.addAction(cancelAction)
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
 }
