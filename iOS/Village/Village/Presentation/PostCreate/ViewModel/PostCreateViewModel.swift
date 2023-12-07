@@ -38,7 +38,8 @@ final class PostCreateViewModel {
     let postID: Int?
     
     private let warningPublisher = PassthroughSubject<PostWarning, Never>()
-    private let endOutput = PassthroughSubject<PostResponseDTO?, NetworkError>()
+    private let endOutput = PassthroughSubject<Void, NetworkError>()
+    private let editInitPublisher = PassthroughSubject<PostInfoDTO, Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -78,33 +79,11 @@ final class PostCreateViewModel {
         Task {
             do {
                 try await APIProvider.shared.request(with: modifyEndPoint)
-                if isEdit {
-                    updatePost()
-                }
-                endOutput.send(nil)
+                endOutput.send()
             } catch let error as NetworkError {
                 self.endOutput.send(completion: .failure(error))
             } catch {
                 dump("Unknown Error")
-            }
-        }
-    }
-    
-    func updatePost() {
-        guard let id = postID else {
-            endOutput.send(nil)
-            return
-        }
-        let getPostEndpoint = APIEndPoints.getPost(id: id)
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: getPostEndpoint) else {
-                    self.endOutput.send(nil)
-                    return
-                }
-                self.endOutput.send(data)
-            } catch let error as NetworkError {
-                self.endOutput.send(completion: .failure(error))
             }
         }
     }
@@ -114,6 +93,30 @@ final class PostCreateViewModel {
         self.isRequest = isRequest
         self.isEdit = isEdit
         self.postID = postID
+    }
+    
+    func setEdit() {
+        guard let id = postID else { return }
+        let endpoint = APIEndPoints.getPost(id: id)
+        
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                
+                editInitPublisher.send(
+                    PostInfoDTO(
+                        title: data.title,
+                        description: data.description,
+                        price: data.price,
+                        isRequest: data.isRequest,
+                        startDate: data.startDate,
+                        endDate: data.endDate
+                    )
+                )
+            } catch {
+                dump(error)
+            }
+        }
     }
     
     func transform(input: Input) -> Output {
@@ -135,9 +138,16 @@ final class PostCreateViewModel {
             }
             .store(in: &cancellableBag)
         
+        input.editSetInput
+            .sink { [weak self] in
+                self?.setEdit()
+            }
+            .store(in: &cancellableBag)
+        
         return Output(
             warningResult: warningPublisher.eraseToAnyPublisher(),
-            endResult: endOutput.eraseToAnyPublisher()
+            endResult: endOutput.eraseToAnyPublisher(),
+            editInitOutput: editInitPublisher.eraseToAnyPublisher()
         )
     }
     
@@ -148,13 +158,15 @@ extension PostCreateViewModel {
     struct Input {
         
         var postInfoInput: PassthroughSubject<PostModifyInfo, Never>
+        var editSetInput: PassthroughSubject<Void, Never>
         
     }
     
     struct Output {
         
         var warningResult: AnyPublisher<PostWarning, Never>
-        var endResult: AnyPublisher<PostResponseDTO?, NetworkError>
+        var endResult: AnyPublisher<Void, NetworkError>
+        var editInitOutput: AnyPublisher<PostInfoDTO, Never>
         
     }
     

@@ -61,7 +61,7 @@ final class PostDetailViewModel {
         return UserOutput(user: user.eraseToAnyPublisher())
     }
     
-    private func getPost(id: Int) {
+    func getPost(id: Int) {
         let endpoint = APIEndPoints.getPost(id: id)
         
         Task {

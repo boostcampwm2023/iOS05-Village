@@ -11,7 +11,8 @@ import Combine
 final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
-    var editButtonTappedSubject = PassthroughSubject<PostResponseDTO?, Never>()
+    var editButtonTappedSubject = PassthroughSubject<Void, Never>()
+    private let editSetSubject = PassthroughSubject<Void, Never>()
     private var postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
@@ -120,7 +121,9 @@ final class PostCreateViewController: UIViewController {
         configureConstraints()
         setUpNotification()
         bind()
-        
+        if viewModel.isEdit {
+            editSetSubject.send()
+        }
         view.backgroundColor = .systemBackground
         super.viewDidLoad()
     }
@@ -138,7 +141,8 @@ final class PostCreateViewController: UIViewController {
     
     private func bind() {
         let input = PostCreateViewModel.Input(
-            postInfoInput: postInfoPublisher
+            postInfoInput: postInfoPublisher,
+            editSetInput: editSetSubject
         )
         
         let output = viewModel.transform(input: input)
@@ -164,28 +168,26 @@ final class PostCreateViewController: UIViewController {
                 case .failure(let error):
                     dump(error)
                 }
-            }, receiveValue: { [weak self] post in
+            }, receiveValue: { [weak self] in
                 self?.dismiss(animated: true)
                 self?.navigationController?.popViewController(animated: true)
                 
-                // TODO: edit인 경우 해야함
-                guard let isEdit = self?.viewModel.isEdit else { return }
-                if isEdit {
-                    self?.editButtonTappedSubject.send(post)
+                if self?.viewModel.isEdit == true {
+                    self?.editButtonTappedSubject.send()
                 }
             })
             .store(in: &cancellableBag)
         
-    }
-    
-    func setEdit(post: PostResponseDTO) {
-//        postCreateTitleView.setEdit(title: post.title)
-//        postCreateDetailView.setEdit(detail: post.description)
-//        postCreateStartTimeView.setEdit(time: post.startDate)
-//        postCreateEndTimeView.setEdit(time: post.endDate)
-//        if !post.isRequest {
-//            postCreatePriceView.setEdit(price: post.price)
-//        }
+        output.editInitOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] post in
+                self?.postCreateTitleView.titleTextField.text = post.title
+                self?.postCreateStartTimeView.setEdit(time: post.startDate)
+                self?.postCreateEndTimeView.setEdit(time: post.endDate)
+                self?.postCreatePriceView.priceTextField.text = post.price?.priceText()
+                self?.postCreateDetailView.detailTextView.text = post.description
+            }
+            .store(in: &cancellableBag)
     }
     
 }
