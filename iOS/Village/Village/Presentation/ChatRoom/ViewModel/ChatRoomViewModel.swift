@@ -77,7 +77,7 @@ final class ChatRoomViewModel {
         chatLog.append(Message(sender: sender, message: message, count: chatLog.count))
     }
     
-    func getLog() -> [Message]? {
+    func getLog() -> [Message] {
         return chatLog
     }
     
