@@ -69,6 +69,7 @@ export class ChatService {
   }
 
   async findRoomList(userId: string) {
+    let now = new Set();
     const rooms = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
       .select([
@@ -85,9 +86,8 @@ export class ChatService {
       .orWhere('chat_room.writer = :userId', {
         userId: userId,
       })
-      .innerJoin('chat', 'chat', 'chat_room.id = chat.chat_room')
+      .leftJoin('chat', 'chat', 'chat_room.id = chat.chat_room')
       .orderBy('chat.id', 'DESC')
-      .limit(1)
       .addSelect(['user.w.user_hash', 'user.w.profile_img', 'user.w.nickname'])
       .leftJoin('user', 'user.w', 'user.w.user_hash = chat_room.writer')
       .addSelect(['user.u.user_hash', 'user.u.profile_img', 'user.u.nickname'])
@@ -96,8 +96,7 @@ export class ChatService {
       .leftJoin('post', 'post', 'post.id = chat_room.post_id')
       .getRawMany();
 
-    console.log(rooms);
-    return rooms
+    const result = rooms
       .reduce((acc, cur) => {
         acc.push({
           room_id: cur.chat_room_id,
@@ -117,7 +116,16 @@ export class ChatService {
       }, [])
       .sort((a, b) => {
         return b.last_chat_date - a.last_chat_date;
-      });
+      })
+      .reduce((acc, cur) => {
+        if (!now.has(cur.room_id)) {
+          acc.push(cur);
+          now.add(cur.room_id);
+        }
+        return acc;
+      }, []);
+
+    return result;
   }
 
   async findRoomById(roomId: number, userId: string) {
