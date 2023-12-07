@@ -31,8 +31,8 @@ final class ChatRoomViewController: UIViewController {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 80
         tableView.register(ChatRoomTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.register(OpponentChatTableViewCell.self, forCellReuseIdentifier: OpponentChatTableViewCell.identifier)
         tableView.separatorStyle = .none
         
         return tableView
@@ -42,18 +42,31 @@ final class ChatRoomViewController: UIViewController {
         tableView: chatTableView,
         cellProvider: { [weak self] (tableView, indexPath, message) in
             guard let self = self else { return ChatRoomTableViewCell() }
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: self.reuseIdentifier,
-                for: indexPath) as? ChatRoomTableViewCell else {
-                return ChatRoomTableViewCell()
+            if message.sender == JWTManager.shared.currentUserID {
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: ChatRoomTableViewCell.identifier,
+                    for: indexPath) as? ChatRoomTableViewCell else {
+                    return ChatRoomTableViewCell()
+                }
+                cell.configureData(
+                    message: message.message,
+                    profileImageURL: ""
+                )
+                cell.selectionStyle = .none
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: OpponentChatTableViewCell.identifier,
+                    for: indexPath) as? OpponentChatTableViewCell else {
+                    return OpponentChatTableViewCell()
+                }
+                cell.configureData(
+                    message: message.message,
+                    profileImageURL: ""
+                )
+                cell.selectionStyle = .none
+                return cell
             }
-            cell.configureData(
-                message: message.message,
-                profileImageURL: "",
-                isMine: message.sender == JWTManager.shared.currentUserID
-            )
-            cell.selectionStyle = .none
-            return cell
         }
     )
     
@@ -176,7 +189,7 @@ private extension ChatRoomViewController {
                         roomID: roomID,
                         sender: currentUserID,
                         message: text,
-                        count: (self?.viewModel.getLog()?.count ?? 0) + 1
+                        count: (self?.viewModel.getLog().count ?? 0) + 1
                     )
                     self?.viewModel.appendLog(sender: currentUserID, message: text)
                     self?.generateData()
@@ -322,9 +335,8 @@ private extension ChatRoomViewController {
     func generateData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Message>()
         snapshot.appendSections([.room])
-        if let log = viewModel.getLog() {
-            snapshot.appendItems(log)
-        }
+        snapshot.appendItems(viewModel.getLog())
+
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
