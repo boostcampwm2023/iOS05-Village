@@ -96,6 +96,7 @@ export class ChatService {
       .leftJoin('post', 'post', 'post.id = chat_room.post_id')
       .getRawMany();
 
+    console.log(rooms);
     return rooms
       .reduce((acc, cur) => {
         acc.push({
