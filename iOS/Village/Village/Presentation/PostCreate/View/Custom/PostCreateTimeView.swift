@@ -36,6 +36,8 @@ final class PostCreateTimeView: UIStackView {
         datePicker.locale = Locale(identifier: PickerLocale.korea.rawValue)
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.datePickerMode = .date
+        datePicker.minimumDate = Date()
+        
         return datePicker
     }()
     
@@ -199,6 +201,15 @@ final class PostCreateTimeView: UIStackView {
         dateTextField.text = dateString
         hourTextField.text = hourString
         setTime()
+    }
+    
+    func changeWarn(enable: Bool) {
+        if enable {
+            timeWarningLabel.text = "종료 시간을 시작 시간보다 늦게 설정해주세요."
+            warn(true)
+        } else {
+            timeWarningLabel.text = "시간을 선택해야 합니다."
+        }
     }
     
 }

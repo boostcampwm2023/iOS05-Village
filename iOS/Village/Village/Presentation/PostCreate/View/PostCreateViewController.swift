@@ -13,7 +13,7 @@ final class PostCreateViewController: UIViewController {
     private let viewModel: PostCreateViewModel
     var editButtonTappedSubject = PassthroughSubject<Void, Never>()
     private let editSetSubject = PassthroughSubject<Void, Never>()
-    private var postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
+    private let postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -151,10 +151,15 @@ final class PostCreateViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] warning in
                 self?.postCreateTitleView.warn(warning.titleWarning)
-                self?.postCreateStartTimeView.warn(warning.startTimeWarning)
-                self?.postCreateEndTimeView.warn(warning.endTimeWarning)
                 if let priceWarning = warning.priceWarning {
                     self?.postCreatePriceView.warn(priceWarning)
+                }
+                if warning.startTimeWarning || warning.endTimeWarning {
+                    self?.postCreateStartTimeView.warn(warning.startTimeWarning)
+                    self?.postCreateEndTimeView.warn(warning.endTimeWarning)
+                } else {
+                    self?.postCreateStartTimeView.changeWarn(enable: warning.timeSequenceWarning)
+                    self?.postCreateEndTimeView.changeWarn(enable: warning.timeSequenceWarning)
                 }
             }
             .store(in: &cancellableBag)
