@@ -29,21 +29,23 @@ export class FcmHandler {
   }
 
   async sendPush(userId: string, pushMessage: PushMessage) {
-    const registrationToken = await this.getRegistrationToken(userId);
-    const message = this.createPushMessage(registrationToken, pushMessage);
-    admin
-      .messaging()
-      .send(message)
-      .then((response) => {
-        this.logger.debug(
-          `Push Notification Success : ${response} `,
-          'FcmHandler',
-        );
-      })
-      .catch((error) => {
-        this.logger.error(error, 'FcmHandler');
-        this.removeRegistrationToken(userId);
-      });
+    try {
+      const registrationToken = await this.getRegistrationToken(userId);
+      const message = this.createPushMessage(registrationToken, pushMessage);
+      admin
+        .messaging()
+        .send(message)
+        .then((response) => {
+          this.logger.debug(
+            `Push Notification Success : ${response} `,
+            'FcmHandler',
+          );
+        })
+        .catch((error) => {
+          this.logger.error(error, 'FcmHandler');
+          this.removeRegistrationToken(userId);
+        });
+    } catch {}
   }
 
   private async getRegistrationToken(userId: string): Promise<string> {
@@ -51,6 +53,7 @@ export class FcmHandler {
       where: { user_hash: userId },
     });
     if (registrationToken === null) {
+      this.logger.error('토큰이 없습니다.', 'FcmHandler');
       throw new Error('no registration token');
     }
     return registrationToken.registration_token;
