@@ -60,6 +60,12 @@ class ChatListViewController: UIViewController {
         setUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(false)
+        
+        bindViewModel()
+    }
+    
 }
 
 extension ChatListViewController {
@@ -115,7 +121,7 @@ extension ChatListViewController {
         snapshot.appendSections([.chat])
         snapshot.appendItems(items)
         
-        dataSource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
     
 }
@@ -169,7 +175,7 @@ extension ChatListViewController: UITableViewDelegate {
         cancelAction.setValue(UIColor.systemRed, forKey: "titleTextColor")
         alertController.addAction(cancelAction)
         
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: false, completion: nil)
     }
     
     func handleAlertOKAction() {
