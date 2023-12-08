@@ -340,7 +340,10 @@ private extension MyPageViewController {
 private extension MyPageViewController {
     
     func profileEditButtonTapped() {
-        let nextVC = SignUpViewController(viewModel: SignUpViewModel())
+        let nextVC = SignUpViewController(viewModel: SignUpViewModel(
+            profileImageData: viewModel.profileImageDataSubject.value,
+            nickname: viewModel.nicknameSubject.value
+        ))
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)
     }

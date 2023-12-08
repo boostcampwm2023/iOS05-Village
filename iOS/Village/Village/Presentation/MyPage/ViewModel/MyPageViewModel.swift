@@ -13,14 +13,14 @@ final class MyPageViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     private var logoutSucceed = PassthroughSubject<Void, Error>()
     private var deleteAccountSucceed = PassthroughSubject<Void, Error>()
-    private var nicknameSubject = CurrentValueSubject<String, Never>("")
-    private var profileImageDataSubject = CurrentValueSubject<Data?, Never>(nil)
+    var nicknameSubject = CurrentValueSubject<String, Never>("")
+    var profileImageDataSubject = CurrentValueSubject<Data?, Never>(nil)
     
     init() {
         getUserInfo()
     }
     
-    private func getUserInfo() {
+    func getUserInfo() {
         guard let userID = JWTManager.shared.currentUserID else { return }
         let endpoint = APIEndPoints.getUser(id: userID)
         
