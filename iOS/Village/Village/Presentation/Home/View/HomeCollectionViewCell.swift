@@ -32,8 +32,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     
     func configureData(post: PostListItem) {
         postSummaryView.postTitleLabel.text = post.title
-        let price = post.price.map(String.init) ?? ""
-        postSummaryView.postPriceLabel.text = price != "" ? "\(price)원" : ""
+        postSummaryView.setPrice(price: post.price)
     }
     
     func configureImage(image: UIImage?) {

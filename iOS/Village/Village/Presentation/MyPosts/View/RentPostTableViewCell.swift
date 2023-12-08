@@ -28,9 +28,7 @@ class RentPostTableViewCell: UITableViewCell {
     
     func configureData(post: PostListResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
-        let price = post.price.map(String.init) ?? ""
-        postSummaryView.postPriceLabel.text = price != "" ? "\(price)원" : ""
-        
+        postSummaryView.setPrice(price: post.price)
         configureImageView(imageURL: post.images.first)
     }
     
