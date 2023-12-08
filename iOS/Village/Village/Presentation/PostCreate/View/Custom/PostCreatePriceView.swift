@@ -127,7 +127,7 @@ extension PostCreatePriceView: UITextFieldDelegate {
         replacementString string: String
     ) -> Bool {
         guard let text = textField.text else { return true }
-        if text.count + string.count > 15 { return false }
+        if text.count + string.count > 11 { return false }
         if !string.isEmpty {
             guard let inputInt = Int(string) else { return false }
         }
