@@ -10,19 +10,37 @@ import Combine
 
 final class SignUpViewModel {
     
-    var profileInfoSubject: CurrentValueSubject<ProfileInfo, Never>
     private let previousInfo: ProfileInfo
+    private var nowInfo: ProfileInfo
+    
+    private var cancellableBag = Set<AnyCancellable>()
+    
     init(profileInfo: ProfileInfo) {
-        self.profileInfoSubject = CurrentValueSubject<ProfileInfo, Never>(profileInfo)
         previousInfo = profileInfo
+        nowInfo = profileInfo
     }
     
     func transform(input: Input) -> Output {
-        profileInfoSubject.send(profileInfoSubject.value)
+        input.nicknameInput
+            .receive(on: DispatchQueue.main)
+            .sink { nickname in
+                self.nowInfo.nickname = nickname
+            }
+            .store(in: &cancellableBag)
+        
+        input.profileImageDataInput
+            .receive(on: DispatchQueue.main)
+            .sink { profileImageData in
+                self.nowInfo.profileImage = profileImageData
+            }
+            .store(in: &cancellableBag)
         
         return Output(
-            profileInfoOutput: profileInfoSubject.eraseToAnyPublisher()
         )
+    }
+    
+    func getPreviousInfo() -> ProfileInfo {
+        return previousInfo
     }
     
 }
@@ -30,11 +48,11 @@ final class SignUpViewModel {
 extension SignUpViewModel {
     
     struct Input {
-        
+        let nicknameInput: PassthroughSubject<String, Never>
+        let profileImageDataInput: PassthroughSubject<Data?, Never>
     }
     
     struct Output {
-        let profileInfoOutput: AnyPublisher<ProfileInfo, Never>
     }
     
 }

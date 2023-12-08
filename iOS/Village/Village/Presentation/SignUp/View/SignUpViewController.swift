@@ -15,6 +15,8 @@ final class SignUpViewController: UIViewController {
     
     private let viewModel: ViewModel
     
+    private let nicknameSubject = PassthroughSubject<String, Never>()
+    private let profileImageDataSubject = PassthroughSubject<Data?, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     private lazy var profileImageView: ProfileImageView = {
@@ -49,6 +51,7 @@ final class SignUpViewController: UIViewController {
         setLayoutConstraints()
         bindViewModel()
         bindNickname()
+        getPreviousInfo()
     }
     
 }
@@ -89,26 +92,28 @@ private extension SignUpViewController {
     }
     
     func bindViewModel() {
-        let output = viewModel.transform(input: ViewModel.Input())
+        let output = viewModel.transform(input: ViewModel.Input(
+            nicknameInput: nicknameSubject,
+            profileImageDataInput: profileImageDataSubject
+        ))
         
-        output.profileInfoOutput
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] profileInfo in
-                self?.nicknameTextField.setNickname(nickname: profileInfo.nickname)
-                guard let data = profileInfo.profileImage,
-                      let image = UIImage(data: data) else { return }
-                self?.profileImageView.setProfile(image: image)
-            }
-            .store(in: &cancellableBag)
     }
     
     func bindNickname() {
         nicknameTextField.nicknameText
             .receive(on: DispatchQueue.main)
             .sink { [weak self] nickname in
-                self?.viewModel.profileInfoSubject.value.nickname = nickname
+                self?.nicknameSubject.send(nickname)
             }
             .store(in: &cancellableBag)
+    }
+    
+    func getPreviousInfo() {
+        let previousInfo = viewModel.getPreviousInfo()
+        nicknameTextField.setNickname(nickname: previousInfo.nickname)
+        guard let data = previousInfo.profileImage,
+              let image = UIImage(data: data) else { return }
+        profileImageView.setProfile(image: image)
     }
     
 }
@@ -147,7 +152,7 @@ extension SignUpViewController: PHPickerViewControllerDelegate {
                 self?.profileImageView.setProfile(image: scaleImage)
             }
             let data = scaleImage.pngData()
-            self?.viewModel.profileInfoSubject.value.profileImage = data
+            self?.profileImageDataSubject.send(data)
         }
     }
     
