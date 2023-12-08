@@ -314,24 +314,17 @@ private extension MyPageViewController {
             }
             .store(in: &cancellableBag)
         
-        output.nicknameOutput
+        output.profileInfoOutput
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] nickname in
-                self?.nicknameLabel.text = nickname
+            .sink { [weak self] profileInfo in
+                guard let data = profileInfo?.profileImage,
+                      let image = UIImage(data: data) else { return }
+                self?.profileImageView.image = image
+                self?.nicknameLabel.text = profileInfo?.nickname
                 guard let userID = JWTManager.shared.currentUserID else { return }
                 self?.hashIDLabel.text = "#" + userID
             }
             .store(in: &cancellableBag)
-        
-        output.profileImageDataOutput
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] profileImageData in
-                guard let data = profileImageData,
-                      let image = UIImage(data: data) else { return }
-                self?.profileImageView.image = image
-            }
-            .store(in: &cancellableBag)
-        
     }
     
 }
@@ -340,9 +333,9 @@ private extension MyPageViewController {
 private extension MyPageViewController {
     
     func profileEditButtonTapped() {
+        guard let postInfo = viewModel.profileInfoSubject.value else { return }
         let nextVC = SignUpViewController(viewModel: SignUpViewModel(
-            profileImageData: viewModel.profileImageDataSubject.value,
-            nickname: viewModel.nicknameSubject.value
+            profileInfo: postInfo
         ))
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)

@@ -8,13 +8,20 @@
 import Foundation
 import Combine
 
+struct ProfileInfo {
+    
+    let nickname: String
+    let profileImage: Data?
+    
+}
+
 final class MyPageViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     private var logoutSucceed = PassthroughSubject<Void, Error>()
     private var deleteAccountSucceed = PassthroughSubject<Void, Error>()
-    var nicknameSubject = CurrentValueSubject<String, Never>("")
-    var profileImageDataSubject = CurrentValueSubject<Data?, Never>(nil)
+    
+    var profileInfoSubject = CurrentValueSubject<ProfileInfo?, Never>(nil)
     
     init() {
         getUserInfo()
@@ -27,9 +34,11 @@ final class MyPageViewModel {
         Task {
             do {
                 guard let userData = try await APIProvider.shared.request(with: endpoint) else { return }
-                nicknameSubject.send(userData.nickname)
                 let userImageData = try await APIProvider.shared.request(from: userData.profileImageURL)
-                profileImageDataSubject.send(userImageData)
+                profileInfoSubject.send(ProfileInfo(
+                    nickname: userData.nickname,
+                    profileImage: userImageData
+                ))
             } catch let error as NetworkError {
                 dump(error)
             } catch {
@@ -37,8 +46,6 @@ final class MyPageViewModel {
             }
         }
     }
-    
-    
     
     func transform(input: Input) -> Output {
         input.logoutSubject
@@ -56,8 +63,7 @@ final class MyPageViewModel {
         return Output(
             logoutSucceed: logoutSucceed.eraseToAnyPublisher(),
             deleteAccountSucceed: deleteAccountSucceed.eraseToAnyPublisher(),
-            nicknameOutput: nicknameSubject.eraseToAnyPublisher(),
-            profileImageDataOutput: profileImageDataSubject.eraseToAnyPublisher()
+            profileInfoOutput: profileInfoSubject.eraseToAnyPublisher()
         )
     }
     
@@ -102,8 +108,7 @@ extension MyPageViewModel {
     struct Output {
         var logoutSucceed: AnyPublisher<Void, Error>
         var deleteAccountSucceed: AnyPublisher<Void, Error>
-        var nicknameOutput: AnyPublisher<String, Never>
-        var profileImageDataOutput: AnyPublisher<Data?, Never>
+        var profileInfoOutput: AnyPublisher<ProfileInfo?, Never>
     }
     
 }
