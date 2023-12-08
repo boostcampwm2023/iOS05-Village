@@ -31,7 +31,7 @@ final class FCMManager {
             let endPoint = APIEndPoints.fcmTokenSend(fcmToken: token)
             Task {
                 do {
-                    let _ = try await APIProvider.shared.request(with: endPoint)
+                    try await APIProvider.shared.request(with: endPoint)
                 }
             }
         }

@@ -25,6 +25,7 @@ final class APIProvider: Provider {
         self.interceptor = interceptor
     }
     
+    @discardableResult
     func request<R: Decodable, E: Requestable&Responsable>(with endpoint: E) async throws -> R? where E.Response == R {
         guard let data = try await sendRequest(with: endpoint) else { return nil }
         

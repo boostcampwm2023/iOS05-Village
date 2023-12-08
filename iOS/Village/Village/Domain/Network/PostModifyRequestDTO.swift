@@ -15,7 +15,7 @@ struct PostModifyRequestDTO: Encodable, MultipartFormData {
     let boundary = UUID().uuidString
     
     var httpBody: Data {
-        var body = NSMutableData()
+        let body = NSMutableData()
         
         var fieldString = "--\(boundary)\r\n"
         fieldString += "Content-Disposition: form-data; name=\"post_info\"\r\n"
