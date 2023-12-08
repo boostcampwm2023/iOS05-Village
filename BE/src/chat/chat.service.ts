@@ -146,7 +146,6 @@ export class ChatService {
     });
 
     this.checkAuth(room, userId);
-    console.log(room);
     return {
       writer: room.writer,
       writer_profile_img:
