@@ -13,6 +13,32 @@ final class MyPageViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     private var logoutSucceed = PassthroughSubject<Void, Error>()
     private var deleteAccountSucceed = PassthroughSubject<Void, Error>()
+    private var nicknameSubject = CurrentValueSubject<String, Never>("")
+    private var profileImageDataSubject = CurrentValueSubject<Data?, Never>(nil)
+    
+    init() {
+        getUserInfo()
+    }
+    
+    private func getUserInfo() {
+        guard let userID = JWTManager.shared.currentUserID else { return }
+        let endpoint = APIEndPoints.getUser(id: userID)
+        
+        Task {
+            do {
+                guard let userData = try await APIProvider.shared.request(with: endpoint) else { return }
+                nicknameSubject.send(userData.nickname)
+                let userImageData = try await APIProvider.shared.request(from: userData.profileImageURL)
+                profileImageDataSubject.send(userImageData)
+            } catch let error as NetworkError {
+                dump(error)
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
+    
     
     func transform(input: Input) -> Output {
         input.logoutSubject
@@ -29,7 +55,9 @@ final class MyPageViewModel {
         
         return Output(
             logoutSucceed: logoutSucceed.eraseToAnyPublisher(),
-            deleteAccountSucceed: deleteAccountSucceed.eraseToAnyPublisher()
+            deleteAccountSucceed: deleteAccountSucceed.eraseToAnyPublisher(),
+            nicknameOutput: nicknameSubject.eraseToAnyPublisher(),
+            profileImageDataOutput: profileImageDataSubject.eraseToAnyPublisher()
         )
     }
     
@@ -74,6 +102,8 @@ extension MyPageViewModel {
     struct Output {
         var logoutSucceed: AnyPublisher<Void, Error>
         var deleteAccountSucceed: AnyPublisher<Void, Error>
+        var nicknameOutput: AnyPublisher<String, Never>
+        var profileImageDataOutput: AnyPublisher<Data?, Never>
     }
     
 }

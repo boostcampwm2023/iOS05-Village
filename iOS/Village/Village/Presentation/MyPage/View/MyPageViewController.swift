@@ -313,6 +313,25 @@ private extension MyPageViewController {
                 NotificationCenter.default.post(Notification(name: .shouldLogin))
             }
             .store(in: &cancellableBag)
+        
+        output.nicknameOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] nickname in
+                self?.nicknameLabel.text = nickname
+                guard let userID = JWTManager.shared.currentUserID else { return }
+                self?.hashIDLabel.text = "#" + userID
+            }
+            .store(in: &cancellableBag)
+        
+        output.profileImageDataOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] profileImageData in
+                guard let data = profileImageData,
+                      let image = UIImage(data: data) else { return }
+                self?.profileImageView.image = image
+            }
+            .store(in: &cancellableBag)
+        
     }
     
 }
