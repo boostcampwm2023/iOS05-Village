@@ -55,6 +55,7 @@ final class PostCreatePriceView: UIStackView {
         textField.inputAccessoryView = keyboardToolBar
         textField.delegate = self
         textField.keyboardType = .numberPad
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         return textField
     }()
@@ -89,6 +90,12 @@ final class PostCreatePriceView: UIStackView {
         let alpha: CGFloat = enable ? 1 : 0
         priceWarningLabel.alpha = alpha
     }
+    
+    @objc func textFieldDidChange() {
+        guard var text = priceTextField.text else { return }
+        priceTextField.text = Int(text.replacingOccurrences(of: ",", with: ""))?.priceText()
+    }
+    
 }
 
 private extension PostCreatePriceView {
@@ -121,6 +128,9 @@ extension PostCreatePriceView: UITextFieldDelegate {
     ) -> Bool {
         guard let text = textField.text else { return true }
         if text.count + string.count > 15 { return false }
+        if !string.isEmpty {
+            guard let inputInt = Int(string) else { return false }
+        }
         warn(false)
         return true
     }

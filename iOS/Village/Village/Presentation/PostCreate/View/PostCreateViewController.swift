@@ -158,7 +158,6 @@ final class PostCreateViewController: UIViewController {
                     self?.postCreateStartTimeView.warn(warning.startTimeWarning)
                     self?.postCreateEndTimeView.warn(warning.endTimeWarning)
                 } else {
-                    self?.postCreateStartTimeView.changeWarn(enable: warning.timeSequenceWarning)
                     self?.postCreateEndTimeView.changeWarn(enable: warning.timeSequenceWarning)
                 }
             }
