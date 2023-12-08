@@ -39,6 +39,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     func configureImage(image: UIImage?) {
         if image != nil {
             postSummaryView.postImageView.image = image
+            postSummaryView.postImageView.backgroundColor = nil
         } else {
             postSummaryView.postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?
                 .withTintColor(.primary500, renderingMode: .alwaysOriginal)
