@@ -7,12 +7,15 @@
 
 import UIKit
 import PhotosUI
+import Combine
 
 final class SignUpViewController: UIViewController {
     
     typealias ViewModel = SignUpViewModel
     
     private let viewModel: ViewModel
+    
+    private var cancellableBag = Set<AnyCancellable>()
     
     private lazy var profileImageView: ProfileImageView = {
         let imageView = ProfileImageView()
@@ -44,6 +47,8 @@ final class SignUpViewController: UIViewController {
         setNavigationUI()
         configureUI()
         setLayoutConstraints()
+        bindViewModel()
+        bindNickname()
     }
     
 }
@@ -83,6 +88,29 @@ private extension SignUpViewController {
         ])
     }
     
+    func bindViewModel() {
+        let output = viewModel.transform(input: ViewModel.Input())
+        
+        output.profileInfoOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] profileInfo in
+                self?.nicknameTextField.setNickname(nickname: profileInfo.nickname)
+                guard let data = profileInfo.profileImage,
+                      let image = UIImage(data: data) else { return }
+                self?.profileImageView.setProfile(image: image)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    func bindNickname() {
+        nicknameTextField.nicknameText
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] nickname in
+                self?.viewModel.profileInfoSubject.value.nickname = nickname
+            }
+            .store(in: &cancellableBag)
+    }
+    
 }
 
 @objc
@@ -114,9 +142,12 @@ extension SignUpViewController: PHPickerViewControllerDelegate {
         guard let result = results.first else { return }
         result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, _) in
             guard let image = image as? UIImage else { return }
+            let scaleImage = image.resize(newWidth: 100, newHeight: 100)
             DispatchQueue.main.async {
-                self?.profileImageView.setProfile(image: image)
+                self?.profileImageView.setProfile(image: scaleImage)
             }
+            let data = scaleImage.pngData()
+            self?.viewModel.profileInfoSubject.value.profileImage = data
         }
     }
     

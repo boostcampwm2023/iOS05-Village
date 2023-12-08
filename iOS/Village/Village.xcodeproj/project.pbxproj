@@ -39,6 +39,7 @@
 		59110EFB2B15F3D60009E9AC /* ChatRoomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110EFA2B15F3D60009E9AC /* ChatRoomTableViewCell.swift */; };
 		59110EFD2B15F5340009E9AC /* UITableViewCell+Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */; };
 		59110F042B1725C20009E9AC /* NotificationName+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110F032B1725C20009E9AC /* NotificationName+.swift */; };
+		59457BC72B233EE5003F798C /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59457BC62B233EE5003F798C /* UIImage+Resize.swift */; };
 		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
 		5975E98C2B035919007CEF13 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* Users.json */; };
@@ -158,6 +159,7 @@
 		59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Identifier.swift"; sourceTree = "<group>"; };
 		59110F022B1714BE0009E9AC /* Village.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Village.entitlements; sourceTree = "<group>"; };
 		59110F032B1725C20009E9AC /* NotificationName+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationName+.swift"; sourceTree = "<group>"; };
+		59457BC62B233EE5003F798C /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		5975E9872B035919007CEF13 /* Post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Post.json; sourceTree = "<group>"; };
 		5975E9882B035919007CEF13 /* Posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
 		5975E9892B035919007CEF13 /* Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Users.json; sourceTree = "<group>"; };
@@ -756,6 +758,7 @@
 				8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */,
 				59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */,
 				59110F032B1725C20009E9AC /* NotificationName+.swift */,
+				59457BC62B233EE5003F798C /* UIImage+Resize.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1014,6 +1017,7 @@
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */,
 				4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */,
+				59457BC72B233EE5003F798C /* UIImage+Resize.swift in Sources */,
 				5980D75F2B0FB6DB00A6B370 /* PostCreateRepository.swift in Sources */,
 				4416D48E2B174CBA0052BF33 /* KeychainError.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,

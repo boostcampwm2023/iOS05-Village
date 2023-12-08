@@ -10,8 +10,8 @@ import Combine
 
 struct ProfileInfo {
     
-    let nickname: String
-    let profileImage: Data?
+    var nickname: String
+    var profileImage: Data?
     
 }
 
