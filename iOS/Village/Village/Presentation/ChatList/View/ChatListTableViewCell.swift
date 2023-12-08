@@ -135,7 +135,7 @@ class ChatListTableViewCell: UITableViewCell {
 
         if let date = dateFormatter.date(from: lastChatDate) {
             let timeInterval = currentData.timeIntervalSince(date)
-            let minuteInterval = Int(timeInterval/60)
+            let minuteInterval = Int(timeInterval/60) - 540
 
             if minuteInterval >= 60 * 24 {
                 dateFormatter.dateFormat = "yy.MM.dd"

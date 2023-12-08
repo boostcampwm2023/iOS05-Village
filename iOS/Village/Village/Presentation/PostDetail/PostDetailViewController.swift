@@ -200,23 +200,31 @@ final class PostDetailViewController: UIViewController {
     
     @objc
     private func chatButtonTapped() {
-        guard let roomID = viewModel.createChatRoom(writer: "qwe", postID: 50149) else { return }
+        guard let userID = self.userID?.output else { return }
+        let roomID = viewModel.createChatRoom(writer: userID, postID: self.postID.output)
         let viewControllers = self.navigationController?.viewControllers ?? []
-        if viewControllers.count > 1 {
+        if viewControllers.count > 2 {
             self.navigationController?.popViewController(animated: true)
         } else {
-            pushChatRoomViewController(roomID: roomID.roomID)
+            pushChatRoomViewController(output: roomID)
         }
     }
             
-    private func pushChatRoomViewController(roomID: Int) {
-        guard let userID = self.userID else { return }
-        userID.receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] userID in
-                let nextVC = ChatRoomViewController(roomID: roomID, opponentNickname: userID)
+    private func pushChatRoomViewController(output: PostDetailViewModel.RoomIDOutput) {
+        guard let userID = self.userID?.output else { return }
+        output.roomID.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] roomID in
+                let nextVC = ChatRoomViewController(roomID: roomID.roomID, opponentNickname: userID)
                 nextVC.hidesBottomBarWhenPushed = true
                 self?.navigationController?.pushViewController(nextVC, animated: true)
-            })
+            }
             .store(in: &cancellableBag)
     }
     
@@ -235,7 +243,7 @@ final class PostDetailViewController: UIViewController {
     }
     
     private func setUserContent(user: UserResponseDTO) {
-        userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+        userInfoView.setContent(imageURL: user.profileImageURL ?? "", nickname: user.nickname)
     }
 
 }
@@ -294,6 +302,8 @@ private extension PostDetailViewController {
                 self?.isRequest = post.isRequest
                 self?.userID = Just(post.userID)
                 self?.setLayoutConstraints()
+                
+                self?.bindUserViewModel()
                 
                 if post.userID == JWTManager.shared.currentUserID {
                     self?.chatButton.isEnabled = false

@@ -1,13 +1,13 @@
 //
-//  ChatRoomTableViewCell.swift
+//  OpponentChatTableViewCell.swift
 //  Village
 //
-//  Created by 조성민 on 11/28/23.
+//  Created by 박동재 on 12/8/23.
 //
 
 import UIKit
 
-final class ChatRoomTableViewCell: UITableViewCell {
+final class OpponentChatTableViewCell: UITableViewCell {
     
     private let messageView: UITextView = {
         let textView = UITextView()
@@ -19,7 +19,7 @@ final class ChatRoomTableViewCell: UITableViewCell {
         textView.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         textView.textColor = .white
         textView.sizeToFit()
-        textView.backgroundColor = .myChatMessage
+        textView.backgroundColor = .userChatMessage
         
         return textView
     }()
@@ -61,7 +61,7 @@ final class ChatRoomTableViewCell: UITableViewCell {
 
 }
 
-private extension ChatRoomTableViewCell {
+private extension OpponentChatTableViewCell {
     
     func setUI() {
         contentView.addSubview(messageView)
@@ -73,11 +73,11 @@ private extension ChatRoomTableViewCell {
     func setConstraints() {
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            profileImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             profileImageView.widthAnchor.constraint(equalToConstant: 24),
             profileImageView.heightAnchor.constraint(equalToConstant: 24),
             messageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            messageView.trailingAnchor.constraint(equalTo: profileImageView.leadingAnchor, constant: -10),
+            messageView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 10),
             messageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 255)
         ])
