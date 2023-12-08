@@ -116,8 +116,7 @@ private extension SignUpViewController {
         output.completeButtonOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                self?.dismiss(animated: true)
-                // TODO: 마이페이지 새로고침
+                self?.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellableBag)
         

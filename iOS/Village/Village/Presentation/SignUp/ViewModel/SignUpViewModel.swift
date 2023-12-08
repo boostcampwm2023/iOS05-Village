@@ -56,7 +56,30 @@ final class SignUpViewModel {
     }
     
     func updateProfile() {
-        // TODO: completeButtonOutput.send()
+        var nickname: String?
+        var image: Data?
+        if nowInfo.nickname != previousInfo.nickname {
+            nickname = nowInfo.nickname
+        }
+        if nowInfo.profileImage != previousInfo.profileImage {
+            image = nowInfo.profileImage
+        }
+        guard let userID = JWTManager.shared.currentUserID else { return }
+        let endpoint = APIEndPoints.patchUser(
+            userInfo: PatchUserDTO(
+                userInfo: PatchUserInfo(nickname: nickname),
+                image: image,
+                userID: userID
+            )
+        )
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+                completeButtonOutput.send()
+            } catch {
+                dump(error)
+            }
+        }
     }
     
 }
