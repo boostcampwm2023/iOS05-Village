@@ -9,8 +9,6 @@ import UIKit
 import Combine
 
 final class NicknameTextField: UIView {
-    
-    var nicknameText = PassthroughSubject<String, Never>()
 
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
@@ -29,10 +27,9 @@ final class NicknameTextField: UIView {
         return label
     }()
     
-    private lazy var textField: UITextField = {
+    lazy var textField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .valueChanged)
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
         textField.setLayer(borderColor: .systemGray4)
@@ -49,11 +46,6 @@ final class NicknameTextField: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("should not be called")
-    }
-    
-    @objc
-    private func textFieldDidChange() {
-        nicknameText.send(textField.text ?? "")
     }
 
 }
