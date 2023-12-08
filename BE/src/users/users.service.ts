@@ -100,17 +100,11 @@ export class UsersService {
     file: Express.Multer.File,
     userId: string,
   ) {
-    if (body === undefined) {
-      throw new HttpException('수정 할 것이 없는데 요청을 보냈습니다.', 400);
-    }
     await this.checkAuth(id, userId);
-
-    const nickname = body.nickname;
-    const isImageChanged = body.is_image_changed;
-    if (nickname) {
-      await this.changeNickname(id, nickname);
+    if (body) {
+      await this.changeNickname(id, body.nickname);
     }
-    if (isImageChanged !== undefined) {
+    if (file !== undefined) {
       await this.changeImages(id, file);
     }
   }
@@ -128,18 +122,11 @@ export class UsersService {
 
   async changeImages(userId: string, file: Express.Multer.File) {
     try {
-      if (file === undefined) {
-        await this.userRepository.update(
-          { user_hash: userId },
-          { profile_img: null },
-        );
-      } else {
-        const fileLocation = await this.s3Handler.uploadFile(file);
-        await this.userRepository.update(
-          { user_hash: userId },
-          { profile_img: fileLocation },
-        );
-      }
+      const fileLocation = await this.s3Handler.uploadFile(file);
+      await this.userRepository.update(
+        { user_hash: userId },
+        { profile_img: fileLocation },
+      );
     } catch (e) {
       throw new HttpException('서버 오류입니다.', 500);
     }
