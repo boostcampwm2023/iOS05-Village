@@ -8,18 +8,12 @@
 import UIKit
 import Combine
 
-enum PostType {
-    
-    case rent
-    case request
-    
-}
-
 final class PostCreateViewController: UIViewController {
     
     private let viewModel: PostCreateViewModel
-    private var postButtonTappedSubject = PassthroughSubject<Void, Never>()
-    private let type: PostType
+    var editButtonTappedSubject = PassthroughSubject<Void, Never>()
+    private let editSetSubject = PassthroughSubject<Void, Never>()
+    private let postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -68,14 +62,14 @@ final class PostCreateViewController: UIViewController {
     }()
     
     private lazy var postCreateStartTimeView: PostCreateTimeView = {
-        let view = PostCreateTimeView(postType: type, timeType: .start)
+        let view = PostCreateTimeView(isRequest: viewModel.isRequest, timeType: .start)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
     private lazy var postCreateEndTimeView: PostCreateTimeView = {
-        let view = PostCreateTimeView(postType: type, timeType: .end)
+        let view = PostCreateTimeView(isRequest: viewModel.isRequest, timeType: .end)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -104,7 +98,11 @@ final class PostCreateViewController: UIViewController {
     
     private lazy var postButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
-        configuration.title = "작성하기"
+        if viewModel.isEdit {
+            configuration.title = "편집완료"
+        } else {
+            configuration.title = "작성하기"
+        }
         configuration.titleAlignment = .center
         configuration.baseBackgroundColor = .primary500
         configuration.cornerStyle = .medium
@@ -123,14 +121,15 @@ final class PostCreateViewController: UIViewController {
         configureConstraints()
         setUpNotification()
         bind()
-        
+        if viewModel.isEdit {
+            editSetSubject.send()
+        }
         view.backgroundColor = .systemBackground
         super.viewDidLoad()
     }
     
-    init(viewModel: PostCreateViewModel, type: PostType) {
+    init(viewModel: PostCreateViewModel) {
         self.viewModel = viewModel
-        self.type = type
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -138,57 +137,60 @@ final class PostCreateViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var cancellableBag: Set<AnyCancellable> = []
+    var cancellableBag: Set<AnyCancellable> = []
     
-    func bind() {
+    private func bind() {
         let input = PostCreateViewModel.Input(
-            titleSubject: postCreateTitleView.currentTextSubject,
-            startTimeSubject: postCreateStartTimeView.currentTimeSubject,
-            endTimeSubject: postCreateEndTimeView.currentTimeSubject,
-            priceSubject: postCreatePriceView.currentPriceSubject,
-            detailSubject: postCreateDetailView.currentDetailSubject,
-            postButtonTappedSubject: postButtonTappedSubject
+            postInfoInput: postInfoPublisher,
+            editSetInput: editSetSubject
         )
-        handleViewModelOutput(output: viewModel.transform(input: input))
-    }
-    
-    func handleViewModelOutput(output: PostCreateViewModel.Output) {
-        subscribePriceOutput(output: output)
-    }
-    
-    func subscribePriceOutput(output: PostCreateViewModel.Output) {
-        output.priceValidationResult
+        
+        let output = viewModel.transform(input: input)
+        
+        output.warningResult
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] prevPriceString in
-                self?.postCreatePriceView.revertChange(text: prevPriceString)
+            .sink { [weak self] warning in
+                self?.postCreateTitleView.warn(warning.titleWarning)
+                if let priceWarning = warning.priceWarning {
+                    self?.postCreatePriceView.warn(priceWarning)
+                }
+                if warning.startTimeWarning || warning.endTimeWarning {
+                    self?.postCreateStartTimeView.warn(warning.startTimeWarning)
+                    self?.postCreateEndTimeView.warn(warning.endTimeWarning)
+                } else {
+                    self?.postCreateStartTimeView.changeWarn(enable: warning.timeSequenceWarning)
+                    self?.postCreateEndTimeView.changeWarn(enable: warning.timeSequenceWarning)
+                }
             }
             .store(in: &cancellableBag)
         
-        output.postButtonTappedTitleWarningResult
+        output.endResult
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] bool in
-                self?.postCreateTitleView.warn(!bool)
-            }
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] in
+                self?.dismiss(animated: true)
+                self?.navigationController?.popViewController(animated: true)
+                
+                if self?.viewModel.isEdit == true {
+                    self?.editButtonTappedSubject.send()
+                }
+            })
             .store(in: &cancellableBag)
         
-        output.postButtonTappedStartTimeWarningResult
+        output.editInitOutput
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] bool in
-                self?.postCreateStartTimeView.warn(!bool)
-            }
-            .store(in: &cancellableBag)
-        
-        output.postButtonTappedEndTimeWarningResult
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] bool in
-                self?.postCreateEndTimeView.warn(!bool)
-            }
-            .store(in: &cancellableBag)
-        
-        output.postButtonTappedPriceWarningResult
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] bool in
-                self?.postCreatePriceView.warn(!bool)
+            .sink { [weak self] post in
+                self?.postCreateTitleView.titleTextField.text = post.title
+                self?.postCreateStartTimeView.setEdit(time: post.startDate)
+                self?.postCreateEndTimeView.setEdit(time: post.endDate)
+                self?.postCreatePriceView.priceTextField.text = post.price?.priceText()
+                self?.postCreateDetailView.detailTextView.text = post.description
             }
             .store(in: &cancellableBag)
     }
@@ -199,12 +201,22 @@ final class PostCreateViewController: UIViewController {
 private extension PostCreateViewController {
     
     func close(_ sender: UIBarButtonItem) {
+        navigationController?.popViewController(animated: true)
         dismiss(animated: true)
     }
     
-    // TODO: 작성하기 버튼 눌렀을 때 작동 구현
     func post(_ sender: UIButton) {
-        postButtonTappedSubject.send()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = ""
+        postInfoPublisher.send(
+            PostModifyInfo(
+                title: postCreateTitleView.titleTextField.text ?? "",
+                startTime: postCreateStartTimeView.timeString,
+                endTime: postCreateEndTimeView.timeString,
+                price: postCreatePriceView.priceTextField.text ?? "",
+                detail: postCreateDetailView.detailTextView.text ?? ""
+            )
+        )
     }
     
     func hideKeyboard(_ sender: UIBarButtonItem) {
@@ -272,7 +284,7 @@ private extension PostCreateViewController {
         stackView.addArrangedSubview(postCreateStartTimeView)
         stackView.addArrangedSubview(postCreateEndTimeView)
         
-        if type == .rent {
+        if !viewModel.isRequest {
             stackView.addArrangedSubview(postCreatePriceView)
         }
         
@@ -315,7 +327,7 @@ private extension PostCreateViewController {
             postCreateDetailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
         ])
         
-        if type == .rent {
+        if !viewModel.isRequest {
             NSLayoutConstraint.activate([
                 postCreatePriceView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -50)
             ])
@@ -324,11 +336,18 @@ private extension PostCreateViewController {
     
     func configureNavigation() {
         let titleLabel = UILabel()
-        switch type {
-        case .rent:
-            titleLabel.setTitle("대여 등록")
-        case .request:
-            titleLabel.setTitle("대여 요청 등록")
+        if viewModel.isRequest {
+            if viewModel.isEdit {
+                titleLabel.setTitle("대여 요청 등록 편집")
+            } else {
+                titleLabel.setTitle("대여 요청 등록")
+            }
+        } else {
+            if viewModel.isEdit {
+                titleLabel.setTitle("대여 등록 편집")
+            } else {
+                titleLabel.setTitle("대여 등록")
+            }
         }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         let close = self.navigationItem.makeSFSymbolButton(

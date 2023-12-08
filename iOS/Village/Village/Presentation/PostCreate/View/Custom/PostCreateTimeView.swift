@@ -21,8 +21,6 @@ enum PickerLocale: String {
 
 final class PostCreateTimeView: UIStackView {
     
-    var currentTimeSubject = CurrentValueSubject<Date?, Never>(nil)
-    
     private let timeStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +36,8 @@ final class PostCreateTimeView: UIStackView {
         datePicker.locale = Locale(identifier: PickerLocale.korea.rawValue)
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.datePickerMode = .date
+        datePicker.minimumDate = Date()
+        
         return datePicker
     }()
     
@@ -60,7 +60,7 @@ final class PostCreateTimeView: UIStackView {
         return toolbar
     }()
     
-    private lazy var dateTextField: UITextField = {
+    lazy var dateTextField: UITextField = {
         let textfield = UITextField()
         textfield.translatesAutoresizingMaskIntoConstraints = false
         textfield.setLayer()
@@ -102,7 +102,7 @@ final class PostCreateTimeView: UIStackView {
         return toolbar
     }()
     
-    private lazy var hourTextField: UITextField = {
+    lazy var hourTextField: UITextField = {
         let textfield = UITextField()
         textfield.translatesAutoresizingMaskIntoConstraints = false
         textfield.setLayer()
@@ -116,7 +116,7 @@ final class PostCreateTimeView: UIStackView {
         
         return textfield
     }()
-
+    
     private var selectedDate: String?
     private var selectedHour: String?
     private let hours = [
@@ -125,22 +125,14 @@ final class PostCreateTimeView: UIStackView {
         "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
         "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
     ]
-    var time: Date? {
-        didSet {
-            currentTimeSubject.send(time)
-        }
+    var time: Date?
+    var timeString: String {
+        guard let date = selectedDate,
+              let hour = selectedHour else { return "" }
+        return date + " " + hour
     }
     
-//    {
-//        guard let date = selectedDate, let hour = selectedHour else { return nil }
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy.MM.ddHH:mm"
-//        formatter.locale = Locale(identifier: PickerLocale.korea.rawValue)
-//
-//        return formatter.date(from: date + hour)
-//    }
-    
-    private let postType: PostType
+    private let isRequest: Bool
     private let timeType: TimeType
     
     private lazy var timeHeaderLabel: UILabel = {
@@ -148,11 +140,10 @@ final class PostCreateTimeView: UIStackView {
         
         switch timeType {
         case .start:
-            switch postType {
-            case .rent:
-                label.text = "대여 시작 가능"
-            case .request:
+            if isRequest {
                 label.text = "대여 시작"
+            } else {
+                label.text = "대여 시작 가능"
             }
         case .end:
             label.text = "대여 종료"
@@ -173,8 +164,8 @@ final class PostCreateTimeView: UIStackView {
         return label
     }()
     
-    init(postType: PostType, timeType: TimeType) {
-        self.postType = postType
+    init(isRequest: Bool, timeType: TimeType) {
+        self.isRequest = isRequest
         self.timeType = timeType
         super.init(frame: .zero)
         setUp()
@@ -189,6 +180,36 @@ final class PostCreateTimeView: UIStackView {
     func warn(_ enable: Bool) {
         let alpha: CGFloat = enable ? 1 : 0
         timeWarningLabel.alpha = alpha
+    }
+    
+    func setEdit(time: String) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        guard var timeDate = dateFormatter.date(from: time) else { return }
+        timeDate -= 540 * 60
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: timeDate)
+        dateFormatter.dateFormat = "HH:mm"
+        let hourString = dateFormatter.string(from: timeDate)
+        
+        selectedDate = dateString
+        selectedHour = hourString
+        datePicker.date = timeDate
+        
+        guard let hourIndex = hours.firstIndex(of: hourString) else { return }
+        hourPicker.selectRow(hourIndex, inComponent: 0, animated: false)
+        dateTextField.text = dateString
+        hourTextField.text = hourString
+        setTime()
+    }
+    
+    func changeWarn(enable: Bool) {
+        if enable {
+            timeWarningLabel.text = "종료 시간을 시작 시간보다 늦게 설정해주세요."
+            warn(true)
+        } else {
+            timeWarningLabel.text = "시간을 선택해야 합니다."
+        }
     }
     
 }

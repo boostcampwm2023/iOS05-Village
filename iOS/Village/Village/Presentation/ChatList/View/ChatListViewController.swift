@@ -10,52 +10,88 @@ import Combine
 
 class ChatListViewController: UIViewController {
     
-    typealias ChatListDataSource = UICollectionViewDiffableDataSource<Section, ChatListResponseDTO>
+    typealias ChatListDataSource = UITableViewDiffableDataSource<Section, GetChatListResponseDTO>
     typealias ViewModel = ChatListViewModel
-    typealias Input = ViewModel.Input
-    
-    private var dataSource: ChatListDataSource!
-    private let reuseIdentifier = ChatListCollectionViewCell.identifier
-    private var collectionView: UICollectionView!
-    
-    private var currentPage = CurrentValueSubject<Int, Never>(1)
-    private var viewModel = ViewModel()
+    private var getChatListSubject = CurrentValueSubject<Void, Never>(())
+    private var cancellableBag = Set<AnyCancellable>()
     
     enum Section {
         case chat
     }
+    
+    private var viewModel = ViewModel()
+    private let reuseIdentifier = ChatListTableViewCell.identifier
+    
+    private lazy var chatListTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 80
+        tableView.register(ChatListTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.separatorStyle = .none
+        tableView.delegate = self
+        
+        return tableView
+    }()
+    
+    private lazy var dataSource: ChatListDataSource = ChatListDataSource(
+        tableView: chatListTableView,
+        cellProvider: { [weak self] (tableView, indexPath, chatList) in
+            guard let self = self else { return ChatListTableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: self.reuseIdentifier,
+                for: indexPath) as? ChatListTableViewCell else {
+                return ChatListTableViewCell()
+            }
+            Task {
+                do {
+                    await cell.configureData(data: chatList)
+                }
+            }
+            cell.selectionStyle = .none
+            
+            return cell
+        }
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setViewModel()
+        bindViewModel()
         setUI()
-        generateData()
     }
+    
+}
+
+extension ChatListViewController {
     
     private func setUI() {
         view.backgroundColor = .systemBackground
         
+        view.addSubview(chatListTableView)
         setNavigationUI()
-        configureCollectionView()
-        configureDataSource()
+        configureConstraints()
     }
     
-    private func setViewModel() {
-//        MARK: 더미데이터를 위한 코드 채팅API 구현 후, 삭제 예정
-        guard let path = Bundle.main.path(forResource: "ChatList", ofType: "json") else { return }
-
-        guard let jsonString = try? String(contentsOfFile: path) else { return }
-        do {
-            let decoder = JSONDecoder()
-            let data = jsonString.data(using: .utf8)
-            
-            guard let data = data else { return }
-            let list = try decoder.decode([ChatListResponseDTO].self, from: data)
-            viewModel.updateTest(list: list)
-        } catch {
-            return
-        }
+    private func bindViewModel() {
+        let input = ViewModel.Input(getChatListSubject: getChatListSubject.eraseToAnyPublisher())
+        let output = viewModel.transform(input: input)
+        
+        bindChatListOutput(output)
+    }
+    
+    private func bindChatListOutput(_ output: ViewModel.Output) {
+        output.chatList.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] value in
+                self?.generateData(items: value)
+            }
+            .store(in: &cancellableBag)
     }
 
     private func setNavigationUI() {
@@ -65,70 +101,80 @@ class ChatListViewController: UIViewController {
         self.navigationItem.backButtonDisplayMode = .minimal
     }
     
-    private func configureCollectionView() {
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.delegate = self
-        view.addSubview(collectionView)
+    private func configureConstraints() {
+        NSLayoutConstraint.activate([
+            chatListTableView.topAnchor.constraint(equalTo: view.topAnchor),
+            chatListTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            chatListTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            chatListTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
     
-    private func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(80.0)
-        )
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 0.0, trailing: 0.0)
-        section.interGroupSpacing = 0.0
-        
-        return UICollectionViewCompositionalLayout(section: section)
-    }
-    
-    private func configureDataSource() {
-        collectionView.register(ChatListCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        dataSource = ChatListDataSource(collectionView: collectionView) { (collectionView, indexPath, chatList) ->
-            UICollectionViewCell? in
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: self.reuseIdentifier,
-                for: indexPath
-            ) as? ChatListCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            
-            Task {
-                do {
-                    await cell.configureData(data: chatList)
-                }
-            }
-            
-            return cell
-        }
-    }
-    
-    private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, ChatListResponseDTO>()
+    private func generateData(items: [GetChatListResponseDTO]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, GetChatListResponseDTO>()
         snapshot.appendSections([.chat])
-        snapshot.appendItems(viewModel.getTest())
+        snapshot.appendItems(items)
         
         dataSource.apply(snapshot, animatingDifferences: true)
     }
+    
 }
 
-extension ChatListViewController: UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+extension ChatListViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let chat = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let chatRoomVC = ChatRoomViewController(roomID: 1)
+        let chatRoomVC = ChatRoomViewController(roomID: chat.roomID, opponentNickname: chat.userNickname!)
         chatRoomVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(chatRoomVC, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) 
+    -> UISwipeActionsConfiguration? {
+        let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
+            self.handleDeleteAction(forRowAt: indexPath)
+            completion(true)
+        }
+        let configuration = UISwipeActionsConfiguration(actions: [delete])
+        
+        return configuration
+    }
+    
+    func handleDeleteAction(forRowAt indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "", message: "", preferredStyle: .alert)
+        alertController.view.subviews.first?.subviews.first?.subviews.first?.backgroundColor = .myChatMessage
+        
+        let attributedTitle = NSAttributedString(
+            string: "",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
+        )
+        alertController.setValue(attributedTitle, forKey: "attributedTitle")
+        
+        let attributedMessage = NSAttributedString(
+            string: "채팅방을 나가면 채팅 목록 및 대화 내용이 삭제되고 복구할 수 없어요. \n채팅방에서 나가시겠어요?",
+            attributes: [
+                NSAttributedString.Key.foregroundColor: UIColor.white,
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16.0)]
+        )
+        alertController.setValue(attributedMessage, forKey: "attributedMessage")
+        
+        let okAction = UIAlertAction(title: "삭제", style: .default) { (_) in
+            self.handleAlertOKAction()
+        }
+        okAction.setValue(UIColor.white, forKey: "titleTextColor")
+        alertController.addAction(okAction)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        cancelAction.setValue(UIColor.systemRed, forKey: "titleTextColor")
+        alertController.addAction(cancelAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func handleAlertOKAction() {
+        print("ok.")
+        viewModel.deleteChatRoom(roomID: 1)
     }
     
 }

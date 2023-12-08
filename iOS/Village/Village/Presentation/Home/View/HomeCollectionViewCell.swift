@@ -15,14 +15,19 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setUI()
+        fatalError("init(coder:) has not been implemented")
     }
     
-    let postSummaryView = PostSummaryView()
+    private let postSummaryView: RentPostSummaryView = {
+        let view = RentPostSummaryView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
     
     private func setUI() {
-        self.addSubview(postSummaryView)
+        addSubview(postSummaryView)
+        setLayoutConstraints()
     }
     
     func configureData(post: PostListItem) {
@@ -40,4 +45,14 @@ final class HomeCollectionViewCell: UICollectionViewCell {
             postSummaryView.postImageView.backgroundColor = .primary100
         }
     }
+    
+    private func setLayoutConstraints() {
+        NSLayoutConstraint.activate([
+            postSummaryView.topAnchor.constraint(equalTo: topAnchor),
+            postSummaryView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            postSummaryView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            postSummaryView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+    
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PostListItem: Hashable {
+struct PostListItem {
     
     let title: String
     let price: Int?
@@ -23,6 +23,14 @@ struct PostListItem: Hashable {
         self.userID = dto.userID
         self.isRequest = dto.isRequest
         self.imageURL = dto.images.first
+    }
+    
+}
+
+extension PostListItem: Hashable {
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.postID == rhs.postID
     }
     
 }

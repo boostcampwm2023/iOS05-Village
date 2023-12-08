@@ -14,8 +14,9 @@ final class PostDetailViewController: UIViewController {
     typealias Input = ViewModel.Input
     
     private let postID: Just<Int>
-    private let userID: Just<String>
-    private let isRequest: Bool
+    private var userID: Just<String>?
+    private var isRequest: Bool?
+    private var deletePostID = PassthroughSubject<Int, Never>()
     
     private let viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
@@ -98,15 +99,64 @@ final class PostDetailViewController: UIViewController {
                                                     .foregroundColor: UIColor.white])
         button.setAttributedTitle(title, for: .normal)
         button.layer.cornerRadius = 6
+        button.addTarget(target, action: #selector(chatButtonTapped), for: .touchUpInside)
         
         return button
     }()
     
-    init(postID: Int, userID: String, isRequest: Bool) {
+    private var modifyAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "편집하기", style: .default) { [weak self] _ in
+            guard let isRequest = self?.isRequest  else {
+                return
+            }
+            let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
+            let postCreateViewModel = PostCreateViewModel(
+                useCase: useCase,
+                isRequest: isRequest,
+                isEdit: true,
+                postID: self?.postID.output
+            )
+            let editVC = PostCreateViewController(viewModel: postCreateViewModel)
+            editVC.editButtonTappedSubject
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] in
+                    guard let id = self?.postID.output else { return }
+                    self?.viewModel.getPost(id: id)
+                }
+                .store(in: &editVC.cancellableBag)
+            let editNC = UINavigationController(rootViewController: editVC)
+            editNC.modalPresentationStyle = .fullScreen
+            self?.present(editNC, animated: true)
+        }
+        return action
+    }
+    
+    private var deleteAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "삭제하기", style: .destructive) { [weak self] _ in
+            guard let id = self?.postID.output else { return }
+            self?.deletePostID.send(id)
+        }
+        return action
+    }
+    
+    private var hideAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "게시글 숨기기", style: .default) { _ in
+            // TODO: hide post
+        }
+        return action
+    }
+    
+    private var banAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .default) { _ in
+            // TODO: ban user
+        }
+        return action
+    }
+    
+    private let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+    
+    init(postID: Int) {
         self.postID = Just(postID)
-        self.userID = Just(userID)
-        self.isRequest = isRequest
-        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -120,18 +170,62 @@ final class PostDetailViewController: UIViewController {
         view.backgroundColor = .systemBackground
         configureUI()
         configureNavigationItem()
-        setLayoutConstraints()
-        bindViewModel()
+        bindPostViewModel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let postDTO = viewModel.postDTO else { return }
+        setPostContent(post: postDTO)
+        viewModel.postDTO = postDTO
+
     }
     
     @objc
     private func moreBarButtonTapped() {
-        // TODO: 더보기 버튼 기능 구현
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        guard let postUserID = userID?.output else { return }
+        if postUserID != JWTManager.shared.currentUserID {
+            alert.addAction(hideAction)
+            alert.addAction(banAction)
+            alert.addAction(cancelAction)
+        } else {
+            alert.addAction(modifyAction)
+            alert.addAction(deleteAction)
+            alert.addAction(cancelAction)
+        }
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     @objc
     private func chatButtonTapped() {
-        // TODO: 채팅하기 버튼 기능 구현
+        guard let userID = self.userID?.output else { return }
+        let roomID = viewModel.createChatRoom(writer: userID, postID: self.postID.output)
+        let viewControllers = self.navigationController?.viewControllers ?? []
+        if viewControllers.count > 2 {
+            self.navigationController?.popViewController(animated: true)
+        } else {
+            pushChatRoomViewController(output: roomID)
+        }
+    }
+            
+    private func pushChatRoomViewController(output: PostDetailViewModel.RoomIDOutput) {
+        guard let userID = self.userID?.output else { return }
+        output.roomID.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] roomID in
+                let nextVC = ChatRoomViewController(roomID: roomID.roomID, opponentNickname: userID)
+                nextVC.hidesBottomBarWhenPushed = true
+                self?.navigationController?.pushViewController(nextVC, animated: true)
+            }
+            .store(in: &cancellableBag)
     }
     
     private func setPostContent(post: PostResponseDTO) {
@@ -149,7 +243,7 @@ final class PostDetailViewController: UIViewController {
     }
     
     private func setUserContent(user: UserResponseDTO) {
-        userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+        userInfoView.setContent(imageURL: user.profileImageURL ?? "", nickname: user.nickname)
     }
 
 }
@@ -177,11 +271,19 @@ private extension PostDetailViewController {
         self.navigationItem.backButtonDisplayMode = .minimal
     }
     
-    private func bindViewModel() {
-        let output = viewModel.transform(input: Input(postID: postID.eraseToAnyPublisher(),
-                                                      userID: userID.eraseToAnyPublisher()))
+    private func bindPostViewModel() {
+        let output = viewModel.transformPost(input: Input(
+            postID: postID.eraseToAnyPublisher(),
+            deleteInput: deletePostID.eraseToAnyPublisher()
+        ))
         
         bindPostOutput(output)
+    }
+    
+    private func bindUserViewModel() {
+        guard let userID = self.userID?.eraseToAnyPublisher() else { return }
+        let output = viewModel.transformUser(input: ViewModel.UserInput(userID: userID))
+        
         bindUserOutput(output)
     }
     
@@ -197,11 +299,37 @@ private extension PostDetailViewController {
                 }
             }, receiveValue: { [weak self] post in
                 self?.setPostContent(post: post)
+                self?.isRequest = post.isRequest
+                self?.userID = Just(post.userID)
+                self?.setLayoutConstraints()
+                
+                self?.bindUserViewModel()
+                
+                if post.userID == JWTManager.shared.currentUserID {
+                    self?.chatButton.isEnabled = false
+                    self?.chatButton.backgroundColor = .gray
+                    self?.chatButton.alpha = 0.4
+                }
             })
             .store(in: &cancellableBag)
+        
+        output.deleteOutput
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            })
+            .store(in: &cancellableBag)
+        
     }
     
-    private func bindUserOutput(_ output: ViewModel.Output) {
+    private func bindUserOutput(_ output: ViewModel.UserOutput) {
         output.user
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -243,6 +371,7 @@ private extension PostDetailViewController {
             footerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
+        guard let isRequest = self.isRequest else { return }
         if isRequest {
             NSLayoutConstraint.activate([
                 chatButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),

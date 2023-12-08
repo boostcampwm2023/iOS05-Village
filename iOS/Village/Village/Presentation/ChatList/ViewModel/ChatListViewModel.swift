@@ -47,29 +47,41 @@ struct ChatListRequestDTO: Codable {
 final class ChatListViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var chatList = PassthroughSubject<[ChatListResponseDTO], Never>()
+    private var chatList = PassthroughSubject<[GetChatListResponseDTO], NetworkError>()
     
     private var test: [ChatListResponseDTO] = []
     
     func transform(input: Input) -> Output {
-        input.currentPage
-            .sink(receiveValue: { [weak self] page in
-                self?.getChatList(page: page)
+        input.getChatListSubject
+            .sink(receiveValue: { [weak self] () in
+                self?.getChatList()
             })
             .store(in: &cancellableBag)
         
         return Output(chatList: chatList.eraseToAnyPublisher())
     }
     
-    private func getChatList(page: Int) {
-        let request = ChatListRequestDTO(page: page)
-        let endpoint = APIEndPoints.getChatList(with: request)
+    private func getChatList() {
+        let endpoint = APIEndPoints.getChatList()
         
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                chatList.send(data.map { ChatListResponseDTO(dto: $0) })
-            } catch let error {
+                chatList.send(data)
+            } catch let error as NetworkError {
+                chatList.send(completion: .failure(error))
+            }
+        }
+    }
+    
+    func deleteChatRoom(roomID: Int) {
+        let request = ChatRoomRequestDTO(roomID: roomID)
+        let endpoint = APIEndPoints.deleteChatRoom(with: request)
+        
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+            } catch {
                 dump(error)
             }
         }
@@ -88,11 +100,11 @@ final class ChatListViewModel {
 extension ChatListViewModel {
     
     struct Input {
-        var currentPage: CurrentValueSubject<Int, Never>
+        var getChatListSubject: AnyPublisher<Void, Never>
     }
     
     struct Output {
-        var chatList: AnyPublisher<[ChatListResponseDTO], Never>
+        var chatList: AnyPublisher<[GetChatListResponseDTO], NetworkError>
     }
     
 }

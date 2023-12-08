@@ -53,11 +53,11 @@ final class PostInfoView: UIView {
     func setContent(title: String, startDate: String, endDate: String, description: String) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        
+        dateFormatter.timeZone = TimeZone(identifier: "ko_KR")
         titleLabel.text = title
         if let start = dateFormatter.date(from: startDate),
            let end = dateFormatter.date(from: endDate) {
-            durationView.setDuration(from: start, to: end)
+            durationView.setDuration(from: start - 540 * 60, to: end - 540 * 60)
         }
         setDescriptionLabel(description)
     }

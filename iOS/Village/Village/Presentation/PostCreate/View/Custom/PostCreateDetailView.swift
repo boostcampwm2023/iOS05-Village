@@ -10,8 +10,6 @@ import Combine
 
 final class PostCreateDetailView: UIStackView {
     
-    var currentDetailSubject = CurrentValueSubject<String, Never>("")
-    
     private let detailHeaderLabel: UILabel = {
         let label = UILabel()
         label.text = "자세한 설명"
@@ -20,7 +18,7 @@ final class PostCreateDetailView: UIStackView {
         return label
     }()
     
-    private lazy var detailTextView: UITextView = {
+    lazy var detailTextView: UITextView = {
         let textView = UITextView()
         textView.setLayer()
         textView.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
@@ -101,7 +99,6 @@ extension PostCreateDetailView: UITextViewDelegate {
                 constraint.constant = estimatedSize.height
             }
         }
-        currentDetailSubject.send(textView.text)
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {

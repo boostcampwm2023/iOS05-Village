@@ -11,19 +11,20 @@ struct APIEndPoints {
     
     static let baseURL = "https://www.village-api.shop/"
     
-    static var header: [String: String]? {
-        guard let accessToken = JWTManager.shared.get()?.accessToken else { return nil }
-        
-        return ["Authorization": "Bearer \(accessToken)"]
+    static func getPosts() -> EndPoint<[PostListResponseDTO]> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts",
+            method: .GET
+        )
     }
     
-    static func getPosts(with requestDTO: PostListRequestDTO) -> EndPoint<[PostListResponseDTO]> {
+    static func getPosts(queryParameter: PostListRequestDTO? = nil) -> EndPoint<[PostListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
             method: .GET,
-            queryParameters: requestDTO,
-            headers: header
+            queryParameters: queryParameter
         )
     }
     
@@ -31,8 +32,7 @@ struct APIEndPoints {
         return EndPoint(
             baseURL: baseURL,
             path: "posts/\(id)",
-            method: .GET,
-            headers: header
+            method: .GET
         )
     }
     
@@ -40,28 +40,81 @@ struct APIEndPoints {
         return EndPoint(
             baseURL: baseURL,
             path: "users/\(id)",
-            method: .GET,
-            headers: header
+            method: .GET
         )
     }
     
-    static func createPost(with requestDTO: PostCreateRequestDTO) -> EndPoint<Void> {
+    static func modifyPost(with requestDTO: PostModifyRequestDTO) -> EndPoint<Void> {
+        
+        var path = "posts"
+        var method = HTTPMethod.POST
+        if let id = requestDTO.postID {
+            path += "/\(id)"
+            method = .PATCH
+        }
+        
         return EndPoint(
             baseURL: baseURL,
-            path: "posts",
-            method: .POST,
+            path: path,
+            method: method,
             bodyParameters: requestDTO.httpBody,
-            headers: header?.mergeWith(["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"])
+            headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
         )
     }
     
-    static func getChatList(with chatListResponse: ChatListRequestDTO) -> EndPoint<[ChatListResponseDTO]> {
+    static func editPost(with requestDTO: PostModifyRequestDTO, postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/\(postID)",
+            method: .PATCH,
+            bodyParameters: requestDTO.httpBody,
+            headers: ["Content-Type": "multipart/form-data; boundary=\(requestDTO.boundary)"]
+        )
+    }
+    
+    static func deletePost(with postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/\(postID)",
+            method: .DELETE
+        )
+    }
+    
+    static func getChatList() -> EndPoint<[GetChatListResponseDTO]> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat/room",
+            method: .GET
+        )
+    }
+    
+    static func deleteChatRoom(with chatRoomRequest: ChatRoomRequestDTO) -> EndPoint<Void> {
         return EndPoint(
             baseURL: baseURL,
             path: "chat",
-            method: .GET,
-            queryParameters: chatListResponse,
-            headers: header
+            method: .DELETE,
+            queryParameters: chatRoomRequest
+        )
+    }
+    
+    static func postCreateChatRoom(with postRoomRequest: PostRoomRequestDTO) -> EndPoint<PostRoomResponseDTO> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat/room",
+            method: .POST,
+            bodyParameters: postRoomRequest,
+            headers: [
+                "Content-Type": "application/json",
+                "accept": "application/json"
+            ]
+        )
+    }
+    
+    static func getChatRoom(with roomID: Int) -> EndPoint<GetRoomResponseDTO> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat/room/\(roomID)",
+            method: .GET
         )
     }
     
@@ -79,8 +132,7 @@ struct APIEndPoints {
         EndPoint(
             baseURL: baseURL,
             path: "login/expire",
-            method: .GET,
-            headers: header
+            method: .GET
         )
     }
     
@@ -92,14 +144,34 @@ struct APIEndPoints {
             path: "login/refresh",
             method: .POST,
             bodyParameters: body,
-            headers: header?.mergeWith(["Content-Type": "application/json"])
+            headers: ["Content-Type": "application/json"]
+        )
+    }
+    
+    static func fcmTokenSend(fcmToken: String) -> EndPoint<String> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/registration-token",
+            method: .POST,
+            bodyParameters: ["registration_token": fcmToken],
+            headers: ["Content-Type": "application/json"]
+        )
+    }
+    
+    static func userDelete(userID: String) -> EndPoint<Void> {
+        EndPoint(
+            baseURL: baseURL,
+            path: "users/\(userID)",
+            method: .DELETE
+        )
+    }
+    
+    static func logout() -> EndPoint<Void> {
+        EndPoint(
+            baseURL: baseURL,
+            path: "logout",
+            method: .POST
         )
     }
   
-}
-
-fileprivate extension Dictionary<String, String> {
-    func mergeWith(_ dict: [String: String]) -> [String: String]? {
-        return self.merging(dict) { (current, _) in current }
-    }
 }

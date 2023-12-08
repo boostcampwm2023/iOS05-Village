@@ -14,16 +14,79 @@ final class HomeViewController: UIViewController {
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
     
-    private var dataSource: HomeDataSource!
     private let reuseIdentifier = HomeCollectionViewCell.identifier
-    private var collectionView: UICollectionView!
     
-    private var currentPage = CurrentValueSubject<Int, Never>(1)
+    private var needPostList = CurrentValueSubject<Bool, Never>(false)
     private var viewModel = ViewModel()
-
+    
+    private lazy var collectionViewLayout: UICollectionViewLayout = {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(100.0)
+        )
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 4.0, trailing: 0.0)
+        section.interGroupSpacing = 8.0
+        
+        return UICollectionViewCompositionalLayout(section: section)
+    }()
+    
+    private lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
+        
+        return control
+    }()
+    
+    private lazy var dataSource = HomeDataSource(
+        collectionView: collectionView) { [weak self] (collectionView, indexPath, post) -> HomeCollectionViewCell? in
+        guard let self = self,
+              let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.reuseIdentifier, 
+                                                            for: indexPath) as? HomeCollectionViewCell else {
+            return HomeCollectionViewCell()
+        }
+        
+        cell.configureData(post: post)
+        
+        if let imageURL = post.imageURL {
+            Task {
+                do {
+                    let data = try await APIProvider.shared.request(from: imageURL)
+                    cell.configureImage(image: UIImage(data: data))
+                } catch {
+                    dump(error)
+                }
+            }
+        } else {
+            cell.configureImage(image: nil)
+        }
+        
+        return cell
+    }
+    
+    private lazy var collectionView: UICollectionView = {
+        let view = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.delegate = self
+        view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        view.refreshControl = refreshControl
+        view.refreshControl?.tintColor = .primary500
+        
+        return view
+    }()
+    
     private let floatingButton: FloatingButton = {
         let button = FloatingButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
+        
         return button
     }()
     
@@ -31,6 +94,7 @@ final class HomeViewController: UIViewController {
         let menu = MenuView()
         menu.isHidden = true
         menu.translatesAutoresizingMaskIntoConstraints = false
+        
         return menu
     }()
     
@@ -43,8 +107,14 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        bindViewModel()
         setupUI()
+        bindViewModel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        refreshPost()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -57,8 +127,8 @@ final class HomeViewController: UIViewController {
         setNavigationUI()
         setMenuUI()
         bindFloatingButton()
-        configureCollectionView()
         
+        view.addSubview(collectionView)
         view.addSubview(floatingButton)
         view.addSubview(menuView)
         setLayoutConstraint()
@@ -78,12 +148,18 @@ final class HomeViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        viewModel.transform(input: Input(currentPage: currentPage))
+        viewModel.transform(input: Input(needPostList: needPostList.eraseToAnyPublisher()))
             .postList
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] list in
-                self?.configureDataSource()
-                self?.generateData(postList: list)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] list in
+                self?.appendData(postList: list)
             })
             .store(in: &cancellableBag)
     }
@@ -102,15 +178,15 @@ final class HomeViewController: UIViewController {
     private func setMenuUI() {
         let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
         let presentPostRequestNC = UIAction(title: "대여 요청하기") { [weak self] _ in
-            let requestViewModel = PostCreateViewModel(useCase: useCase, postType: .request)
-            let postRequestVC = PostCreateViewController(viewModel: requestViewModel, type: .request)
+            let requestViewModel = PostCreateViewModel(useCase: useCase, isRequest: true, isEdit: false, postID: nil)
+            let postRequestVC = PostCreateViewController(viewModel: requestViewModel)
             let postRequestNC = UINavigationController(rootViewController: postRequestVC)
             postRequestNC.modalPresentationStyle = .fullScreen
             self?.present(postRequestNC, animated: true)
         }
         let presentPostRentNC = UIAction(title: "대여 등록하기") { [weak self] _ in
-            let rentViewModel = PostCreateViewModel(useCase: useCase, postType: .rent)
-            let postRentVC = PostCreateViewController(viewModel: rentViewModel, type: .rent)
+            let rentViewModel = PostCreateViewModel(useCase: useCase, isRequest: false, isEdit: false, postID: nil)
+            let postRentVC = PostCreateViewController(viewModel: rentViewModel)
             let postRentNC = UINavigationController(rootViewController: postRentVC)
             postRentNC.modalPresentationStyle = .fullScreen
             self?.present(postRentNC, animated: true)
@@ -139,72 +215,37 @@ final class HomeViewController: UIViewController {
             menuView.trailingAnchor.constraint(equalTo: floatingButton.trailingAnchor, constant: 0),
             menuView.bottomAnchor.constraint(equalTo: floatingButton.topAnchor, constant: -15)
         ])
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
 }
 
 private extension HomeViewController {
     
-    func configureCollectionView() {
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.delegate = self
-        view.addSubview(collectionView)
-    }
-    
-    func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(100.0)
-        )
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
+    @objc
+    private func refreshPost() {
+        initializeDataSource()
+        needPostList.send(true)
         
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 4.0, trailing: 0.0)
-        section.interGroupSpacing = 8.0
-        
-        return UICollectionViewCompositionalLayout(section: section)
-    }
-    
-    func configureDataSource() {
-        collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        dataSource = HomeDataSource(collectionView: collectionView) { (collectionView, indexPath, post) ->
-            HomeCollectionViewCell? in
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: self.reuseIdentifier,
-                for: indexPath
-            ) as? HomeCollectionViewCell else {
-                return HomeCollectionViewCell()
-            }
-            
-            cell.configureData(post: post)
-            
-            if let imageURL = post.imageURL {
-                Task {
-                    do {
-                        let data = try await APIProvider.shared.request(from: imageURL)
-                        cell.configureImage(image: UIImage(data: data))
-                    } catch {
-                        dump(error)
-                    }
-                }
-            } else {
-                cell.configureImage(image: nil)
-            }
-            
-            return cell
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            self.collectionView.refreshControl?.endRefreshing()
         }
     }
     
-    func generateData(postList: [PostListItem]) {
+    func initializeDataSource() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
         snapshot.appendSections([.main])
-        
-        snapshot.appendItems(postList)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func appendData(postList: [PostListItem]) {
+        var snapshot = dataSource.snapshot()
+        snapshot.appendItems(postList, toSection: .main)
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
@@ -215,11 +256,15 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let postDetailVC = PostDetailViewController(postID: post.postID,
-                                                    userID: post.userID,
-                                                    isRequest: post.isRequest)
+        let postDetailVC = PostDetailViewController(postID: post.postID)
         postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y > collectionView.contentSize.height - 1300 {
+            needPostList.send(false)
+        }
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

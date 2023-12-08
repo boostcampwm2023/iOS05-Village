@@ -1,5 +1,5 @@
 //
-//  PostCreateRequestDTO.swift
+//  PostModifyRequestDTO.swift
 //  Village
 //
 //  Created by 조성민 on 11/24/23.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct PostCreateRequestDTO: Encodable, MultipartFormData {
+struct PostModifyRequestDTO: Encodable, MultipartFormData {
     
     let postInfo: PostInfoDTO
     let image: [Data]
-    
+    var postID: Int?
     let boundary = UUID().uuidString
     
     var httpBody: Data {

@@ -1,14 +1,14 @@
 //
-//  ChatListCollectionViewCell.swift
+//  ChatListTableViewCell.swift
 //  Village
 //
-//  Created by 박동재 on 2023/11/23.
+//  Created by 박동재 on 2023/12/02.
 //
 
 import UIKit
 
-class ChatListCollectionViewCell: UICollectionViewCell {
-    
+class ChatListTableViewCell: UITableViewCell {
+
     private let chatView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -60,13 +60,13 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
     }
     
     required init?(coder: NSCoder) {
-        fatalError("Should not be called")
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func configureUI() {
@@ -119,17 +119,23 @@ class ChatListCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configureData(data: ChatListResponseDTO) async {
-        nicknameLabel.text = data.user
+    func configureData(data: GetChatListResponseDTO) async {
+        nicknameLabel.text = data.user != JWTManager.shared.currentUserID
+        ? data.userNickname
+        : data.writerNickname
 
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'.000Z'"
+        
         let currentData = Date()
+        
+        guard let lastChatDate = data.lastChatDate,
+              let lastChat = data.lastChat
+        else { return }
 
-        if let date = dateFormatter.date(from: data.recentTime) {
+        if let date = dateFormatter.date(from: lastChatDate) {
             let timeInterval = currentData.timeIntervalSince(date)
-            let minuteInterval = Int(timeInterval/60)
+            let minuteInterval = Int(timeInterval/60) - 540
 
             if minuteInterval >= 60 * 24 {
                 dateFormatter.dateFormat = "yy.MM.dd"
@@ -149,9 +155,9 @@ class ChatListCollectionViewCell: UICollectionViewCell {
             }
         }
         
-        recentChatLabel.text = data.recentChat.count > 10 ? String(data.recentChat.prefix(10)) + "..." : data.recentChat
-        await configureUserProfile(data.userProfile)
-        await configurePostImage(data.postImage)
+        recentChatLabel.text = lastChat.count > 10 ? String(lastChat.prefix(10)) + "..." : lastChat
+        await configureUserProfile(data.userProfileIMG)
+        await configurePostImage(data.postThumbnail)
     }
     
     func configureUserProfile(_ url: String?) async {
@@ -181,5 +187,5 @@ class ChatListCollectionViewCell: UICollectionViewCell {
             postImageView.backgroundColor = .primary100
         }
     }
-    
+
 }

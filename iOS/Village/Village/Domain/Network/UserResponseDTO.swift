@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserResponseDTO: Decodable {
+struct UserResponseDTO: Hashable, Decodable {
     
     let nickname: String
     let profileImageURL: String

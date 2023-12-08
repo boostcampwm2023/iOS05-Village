@@ -31,11 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate {
     
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
-        let token = tokenParts.joined()
-    }
-    
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Failed to register: \(error)")
     }
@@ -76,12 +71,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
               let rootViewController = windowScene?.rootViewController as? AppTabBarController,
               let navigationController = rootViewController.selectedViewController as? UINavigationController,
               let roomIDString = content["room_id"] as? String,
+              let opponentNickname = content["title"] as? String,
               let roomID = Int(roomIDString) else {
             completionHandler()
             return
         }
         
-        navigationController.pushViewController(ChatRoomViewController(roomID: roomID), animated: true)
+        navigationController.pushViewController(ChatRoomViewController(roomID: roomID, opponentNickname: opponentNickname), animated: true)
         completionHandler()
     }
     
@@ -89,13 +85,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 extension AppDelegate: MessagingDelegate {
     
-    func application(application: UIApplication,
-                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Messaging.messaging().apnsToken = deviceToken
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
+        FCMManager.shared.fcmToken = fcmToken
         NotificationCenter.default.post(
             name: .fcmToken,
             object: nil,
