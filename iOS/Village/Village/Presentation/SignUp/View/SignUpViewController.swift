@@ -17,6 +17,7 @@ final class SignUpViewController: UIViewController {
     
     private let nicknameSubject = PassthroughSubject<String, Never>()
     private let profileImageDataSubject = PassthroughSubject<Data?, Never>()
+    private let completeButtonSubject = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     private lazy var profileImageView: ProfileImageView = {
@@ -101,13 +102,22 @@ private extension SignUpViewController {
     func bindViewModel() {
         let output = viewModel.transform(input: ViewModel.Input(
             nicknameInput: nicknameSubject,
-            profileImageDataInput: profileImageDataSubject
+            profileImageDataInput: profileImageDataSubject,
+            completeButtonSubject: completeButtonSubject
         ))
         
-        output.completeButtonOutput
+        output.completeButtonEnableOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isEnable in
                 self?.completeButton.isEnabled = isEnable
+            }
+            .store(in: &cancellableBag)
+        
+        output.completeButtonOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.dismiss(animated: true)
+                // TODO: 마이페이지 새로고침
             }
             .store(in: &cancellableBag)
         
@@ -136,7 +146,7 @@ private extension SignUpViewController {
 extension SignUpViewController {
     
     func completeButtonTapped() {
-        dump("Complete Button Tapped")
+        completeButtonSubject.send()
     }
     
     func imageClicked() {

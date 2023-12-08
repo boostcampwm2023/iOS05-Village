@@ -12,7 +12,8 @@ final class SignUpViewModel {
     
     private let previousInfo: ProfileInfo
     private var nowInfo: ProfileInfo
-    private let completeButtonOutput = PassthroughSubject<Bool, Never>()
+    private let completeButtonEnableOutput = PassthroughSubject<Bool, Never>()
+    private let completeButtonOutput = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(profileInfo: ProfileInfo) {
@@ -25,7 +26,7 @@ final class SignUpViewModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] nickname in
                 self?.nowInfo.nickname = nickname
-                self?.completeButtonOutput.send(self?.nowInfo != self?.previousInfo)
+                self?.completeButtonEnableOutput.send(self?.nowInfo != self?.previousInfo)
             }
             .store(in: &cancellableBag)
         
@@ -33,17 +34,29 @@ final class SignUpViewModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profileImageData in
                 self?.nowInfo.profileImage = profileImageData
-                self?.completeButtonOutput.send(self?.nowInfo != self?.previousInfo)
+                self?.completeButtonEnableOutput.send(self?.nowInfo != self?.previousInfo)
+            }
+            .store(in: &cancellableBag)
+        
+        input.completeButtonSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.updateProfile()
             }
             .store(in: &cancellableBag)
         
         return Output(
+            completeButtonEnableOutput: completeButtonEnableOutput.eraseToAnyPublisher(),
             completeButtonOutput: completeButtonOutput.eraseToAnyPublisher()
         )
     }
     
     func getPreviousInfo() -> ProfileInfo {
         return previousInfo
+    }
+    
+    func updateProfile() {
+        // TODO: completeButtonOutput.send()
     }
     
 }
@@ -53,10 +66,12 @@ extension SignUpViewModel {
     struct Input {
         let nicknameInput: PassthroughSubject<String, Never>
         let profileImageDataInput: PassthroughSubject<Data?, Never>
+        let completeButtonSubject: PassthroughSubject<Void, Never>
     }
     
     struct Output {
-        let completeButtonOutput: AnyPublisher<Bool, Never>
+        let completeButtonEnableOutput: AnyPublisher<Bool, Never>
+        let completeButtonOutput: AnyPublisher<Void, Never>
     }
     
 }
