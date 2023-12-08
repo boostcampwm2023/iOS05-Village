@@ -87,4 +87,13 @@ final class RentPostSummaryView: UIView {
             postAccessoryView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
         ])
     }
+    
+    func setPrice(price: Int?) {
+        var priceText = ""
+        if let price = price {
+            priceText = price.priceText()
+        }
+        postPriceLabel.text = priceText.isEmpty ? "" : "\(priceText)원"
+    }
+    
 }
