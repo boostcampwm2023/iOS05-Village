@@ -11,6 +11,8 @@ import {
   HttpException,
   UseGuards,
   Body,
+  ParseFilePipe,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './createUser.dto';
@@ -19,6 +21,7 @@ import { MultiPartBody } from 'src/utils/multiPartBody.decorator';
 import { UpdateUsersDto } from './usersUpdate.dto';
 import { AuthGuard } from 'src/utils/auth.guard';
 import { UserHash } from '../utils/auth.decorator';
+import { FileSizeValidator } from '../utils/files.validator';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -38,7 +41,8 @@ export class UsersController {
   @Post()
   @UseInterceptors(FileInterceptor('profileImage'))
   async usersCreate(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(new FileSizeValidator())
+    file: Express.Multer.File,
     @MultiPartBody(
       'profile',
       new ValidationPipe({ validateCustomDecorators: true }),
@@ -54,18 +58,19 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async usersRemove(@Param('id') id: string) {
-    await this.usersService.removeUser(id);
+  async usersRemove(@Param('id') id: string, @UserHash() userId) {
+    await this.usersService.removeUser(id, userId);
   }
 
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image'))
   async usersModify(
-    @Param('id') userId: string,
+    @Param('id') id: string,
     @MultiPartBody('profile') body: UpdateUsersDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(new FileSizeValidator()) file: Express.Multer.File,
+    @UserHash() userId,
   ) {
-    await this.usersService.updateUserById(userId, body, file);
+    await this.usersService.updateUserById(id, body, file, userId);
   }
 
   @Post('registration-token')

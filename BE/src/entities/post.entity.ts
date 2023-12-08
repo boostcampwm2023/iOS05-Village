@@ -12,6 +12,7 @@ import {
 import { UserEntity } from './user.entity';
 import { PostImageEntity } from './postImage.entity';
 import { BlockPostEntity } from './blockPost.entity';
+import { ChatRoomEntity } from './chatRoom.entity';
 
 @Entity('post')
 export class PostEntity {
@@ -25,13 +26,13 @@ export class PostEntity {
   price: number;
 
   @Column({ type: 'text', nullable: false, charset: 'utf8' })
-  contents: string;
+  description: string;
 
   @Column({ nullable: false })
-  user_id: number;
+  user_hash: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => UserEntity, (user) => user.user_hash)
+  @JoinColumn({ name: 'user_hash', referencedColumnName: 'user_hash' })
   user: UserEntity;
 
   @Column({ type: 'datetime', nullable: false })

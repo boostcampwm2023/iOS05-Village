@@ -7,11 +7,19 @@ export class UpdatePostDto {
 
   @IsOptional()
   @IsString()
-  contents?: string;
+  description?: string;
 
   @IsOptional()
   @IsNumber() // 전화번호 형식 검증
   price?: number;
+
+  @IsOptional()
+  @IsString()
+  start_date?: string;
+
+  @IsOptional()
+  @IsString()
+  end_date?: string;
 
   @IsOptional()
   @IsString({ each: true })

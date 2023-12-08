@@ -179,4 +179,5 @@ lerna-debug.log*
 
 /envs
 /logs
+firebase.json
 

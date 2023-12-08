@@ -4,7 +4,9 @@ import {
   Get,
   HttpCode,
   HttpException,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Patch,
   Post,
   Query,
@@ -22,6 +24,7 @@ import { MultiPartBody } from '../utils/multiPartBody.decorator';
 import { PostListDto } from './dto/postList.dto';
 import { AuthGuard } from 'src/utils/auth.guard';
 import { UserHash } from 'src/utils/auth.decorator';
+import { FilesSizeValidator } from '../utils/files.validator';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -38,7 +41,8 @@ export class PostController {
   @Post()
   @UseInterceptors(FilesInterceptor('image', 12))
   async postsCreate(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles(new FilesSizeValidator())
+    files: Array<Express.Multer.File>,
     @MultiPartBody(
       'post_info',
       new ValidationPipe({ validateCustomDecorators: true }),
@@ -64,33 +68,31 @@ export class PostController {
   @UseInterceptors(FilesInterceptor('image', 12))
   async postModify(
     @Param('id') id: number,
-    @UploadedFiles()
+    @UploadedFiles(new FilesSizeValidator())
     files: Array<Express.Multer.File>,
     @MultiPartBody(
       'post_info',
       new ValidationPipe({ validateCustomDecorators: true }),
     )
     body: UpdatePostDto,
+    @UserHash() userId,
   ) {
-    const isFixed = await this.postService.updatePostById(id, body, files);
+    const isFixed = await this.postService.updatePostById(
+      id,
+      body,
+      files,
+      userId,
+    );
 
     if (isFixed) {
       return HttpCode(200);
-    } else if (isFixed === false) {
-      throw new HttpException('게시글이 존재하지 않습니다.', 404);
     } else {
       throw new HttpException('서버 오류입니다.', 500);
     }
   }
 
   @Delete('/:id')
-  async postRemove(@Param('id') id: number) {
-    const isRemoved = await this.postService.removePost(id);
-
-    if (isRemoved) {
-      return HttpCode(200);
-    } else {
-      throw new HttpException('게시글이 존재하지 않습니다.', 404);
-    }
+  async postRemove(@Param('id') id: number, @UserHash() userId) {
+    await this.postService.removePost(id, userId);
   }
 }

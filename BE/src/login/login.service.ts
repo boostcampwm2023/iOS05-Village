@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
@@ -8,6 +8,7 @@ import { hashMaker } from '../utils/hashMaker';
 import { AppleLoginDto } from './dto/appleLogin.dto';
 import * as jwt from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
+import { FcmHandler } from '../utils/fcmHandler';
 
 export interface SocialProperties {
   OAuthDomain: string;
@@ -22,18 +23,20 @@ export interface JwtTokens {
 @Injectable()
 export class LoginService {
   private jwksClient: jwksClient.JwksClient;
+  private readonly logger = new Logger('ChatsGateway');
   constructor(
-    private jwtService: JwtService,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private configService: ConfigService,
+    private jwtService: JwtService,
+    private fcmHandler: FcmHandler,
   ) {
     this.jwksClient = jwksClient({
       jwksUri: 'https://appleid.apple.com/auth/keys',
     });
   }
   async login(socialProperties: SocialProperties): Promise<JwtTokens> {
-    let user: UserEntity = await this.VerifyUserRegistration(socialProperties);
+    let user: UserEntity = await this.verifyUserRegistration(socialProperties);
     if (!user) {
       user = await this.registerUser(socialProperties);
     }
@@ -42,6 +45,9 @@ export class LoginService {
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
+  async logout(userId, accessToken) {
+    await this.fcmHandler.removeRegistrationToken(userId);
+  }
   async registerUser(socialProperties: SocialProperties) {
     const userEntity = new UserEntity();
     userEntity.nickname = this.generateRandomString(8);
@@ -65,7 +71,7 @@ export class LoginService {
     return result;
   }
 
-  async VerifyUserRegistration(
+  async verifyUserRegistration(
     socialProperties: SocialProperties,
   ): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
