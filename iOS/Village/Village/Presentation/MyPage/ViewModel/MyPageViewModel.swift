@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-struct ProfileInfo {
+struct ProfileInfo: Equatable {
     
     var nickname: String
     var profileImage: Data?

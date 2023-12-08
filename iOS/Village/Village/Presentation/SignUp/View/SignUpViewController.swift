@@ -34,6 +34,18 @@ final class SignUpViewController: UIViewController {
         return textField
     }()
     
+    private lazy var completeButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(
+            title: "완료",
+            style: .done,
+            target: self,
+            action: #selector(completeButtonTapped)
+        )
+        button.isEnabled = false
+        
+        return button
+    }()
+    
     init(viewModel: ViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -67,12 +79,7 @@ private extension SignUpViewController {
     func setNavigationUI() {
         navigationItem.title = "프로필 설정"
         navigationItem.backButtonDisplayMode = .minimal
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "완료",
-            style: .done,
-            target: self,
-            action: #selector(completeButtonTapped)
-        )
+        navigationItem.rightBarButtonItem = completeButton
     }
     
     func setLayoutConstraints() {
@@ -96,6 +103,13 @@ private extension SignUpViewController {
             nicknameInput: nicknameSubject,
             profileImageDataInput: profileImageDataSubject
         ))
+        
+        output.completeButtonOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isEnable in
+                self?.completeButton.isEnabled = isEnable
+            }
+            .store(in: &cancellableBag)
         
     }
     

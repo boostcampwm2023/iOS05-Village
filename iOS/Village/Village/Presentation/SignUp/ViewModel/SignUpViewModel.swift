@@ -12,7 +12,7 @@ final class SignUpViewModel {
     
     private let previousInfo: ProfileInfo
     private var nowInfo: ProfileInfo
-    
+    private let completeButtonOutput = PassthroughSubject<Bool, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(profileInfo: ProfileInfo) {
@@ -23,19 +23,22 @@ final class SignUpViewModel {
     func transform(input: Input) -> Output {
         input.nicknameInput
             .receive(on: DispatchQueue.main)
-            .sink { nickname in
-                self.nowInfo.nickname = nickname
+            .sink { [weak self] nickname in
+                self?.nowInfo.nickname = nickname
+                self?.completeButtonOutput.send(self?.nowInfo != self?.previousInfo)
             }
             .store(in: &cancellableBag)
         
         input.profileImageDataInput
             .receive(on: DispatchQueue.main)
-            .sink { profileImageData in
-                self.nowInfo.profileImage = profileImageData
+            .sink { [weak self] profileImageData in
+                self?.nowInfo.profileImage = profileImageData
+                self?.completeButtonOutput.send(self?.nowInfo != self?.previousInfo)
             }
             .store(in: &cancellableBag)
         
         return Output(
+            completeButtonOutput: completeButtonOutput.eraseToAnyPublisher()
         )
     }
     
@@ -53,6 +56,7 @@ extension SignUpViewModel {
     }
     
     struct Output {
+        let completeButtonOutput: AnyPublisher<Bool, Never>
     }
     
 }

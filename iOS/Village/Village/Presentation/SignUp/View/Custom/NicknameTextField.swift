@@ -32,7 +32,7 @@ final class NicknameTextField: UIView {
     private lazy var textField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .valueChanged)
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
         textField.setLayer(borderColor: .systemGray4)
