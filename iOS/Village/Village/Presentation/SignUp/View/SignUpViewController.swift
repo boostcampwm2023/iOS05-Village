@@ -114,7 +114,9 @@ extension SignUpViewController: PHPickerViewControllerDelegate {
         guard let result = results.first else { return }
         result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, _) in
             guard let image = image as? UIImage else { return }
-            self?.profileImageView.setProfile(image: image)
+            DispatchQueue.main.async {
+                self?.profileImageView.setProfile(image: image)
+            }
         }
     }
     
