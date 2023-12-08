@@ -142,12 +142,21 @@ export class ChatService {
       where: {
         id: roomId,
       },
-      relations: ['chats'],
+      relations: ['chats', 'userUser', 'writerUser'],
     });
 
     this.checkAuth(room, userId);
-
     return {
+      writer: room.writer,
+      writer_profile_img:
+        room.writerUser.profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : room.writerUser.profile_img,
+      user: room.user,
+      user_profile_img:
+        room.userUser.profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : room.userUser.profile_img,
       post_id: room.post_id,
       chat_log: room.chats,
     };
