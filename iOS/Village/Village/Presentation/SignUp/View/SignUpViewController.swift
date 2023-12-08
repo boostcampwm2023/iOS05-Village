@@ -20,6 +20,8 @@ final class SignUpViewController: UIViewController {
     private let completeButtonSubject = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
+    let updateSuccessSubject = PassthroughSubject<Void, Never>()
+    
     private lazy var profileImageView: ProfileImageView = {
         let imageView = ProfileImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -117,6 +119,7 @@ private extension SignUpViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.navigationController?.popViewController(animated: true)
+                self?.updateSuccessSubject.send()
             }
             .store(in: &cancellableBag)
         

@@ -338,6 +338,12 @@ private extension MyPageViewController {
             profileInfo: postInfo
         ))
         nextVC.hidesBottomBarWhenPushed = true
+        nextVC.updateSuccessSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.viewModel.getUserInfo()
+            }
+            .store(in: &cancellableBag)
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
