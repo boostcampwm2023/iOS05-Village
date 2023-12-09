@@ -56,6 +56,7 @@ export class PostsBlockService {
         start_date: blockedPost.start_date,
         end_date: blockedPost.end_date,
         is_request: blockedPost.is_request,
+        price: blockedPost.price,
       };
     });
   }
