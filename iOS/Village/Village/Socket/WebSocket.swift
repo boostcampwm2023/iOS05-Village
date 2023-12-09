@@ -10,9 +10,21 @@ import Combine
 
 class MessageManager {
     static let shared = MessageManager()
-    let messageSubject = PassthroughSubject<ReceiveMessage, Never>()
+    let messageSubject = PassthroughSubject<ReceiveMessageDTO, Never>()
     
     private init() {}
+}
+
+struct ReceiveMessageDTO: Hashable, Codable {
+
+    let event: String
+    let data: ReceiveMessage
+
+    enum CodingKeys: String, CodingKey {
+        case event
+        case data
+    }
+
 }
 
 struct ReceiveMessage: Hashable, Codable {
@@ -109,7 +121,7 @@ final class WebSocket: NSObject {
                     if let jsonData = text.data(using: .utf8) {
                         do {
                             let decoder = JSONDecoder()
-                            let message = try decoder.decode(ReceiveMessage.self, from: jsonData)
+                            let message = try decoder.decode(ReceiveMessageDTO.self, from: jsonData)
                             MessageManager.shared.messageSubject.send(message)
                         } catch {
                             dump(error)
