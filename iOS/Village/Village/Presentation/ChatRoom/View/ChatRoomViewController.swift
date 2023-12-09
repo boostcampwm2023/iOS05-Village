@@ -161,12 +161,12 @@ final class ChatRoomViewController: UIViewController {
         
         MessageManager.shared.messageSubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] message in
-                let sender = message.sender
-                let message = message.message
-                self?.viewModel.appendLog(sender: sender, message: message)
+            .sink { [weak self] data in
+                let data = data.data
+                self?.viewModel.appendLog(sender: data.sender, message: data.message)
                 guard let count = self?.viewModel.getLog().count else { return }
-                self?.addGenerateData(chat: Message(sender: sender, message: message, count: count))
+                self?.addGenerateData(chat: Message(sender: data.sender, message: data.message, count: count))
+                self?.chatTableView.scrollToRow(at: IndexPath(row: count-1, section: 0), at: .bottom, animated: false)
             }
             .store(in: &cancellableBag)
     }
