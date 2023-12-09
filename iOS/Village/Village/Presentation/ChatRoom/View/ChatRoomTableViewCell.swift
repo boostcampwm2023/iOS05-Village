@@ -40,23 +40,17 @@ final class ChatRoomTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func hideProfile() {
-        profileImageView.isHidden = true
+    override func prepareForReuse() {
+        profileImageView.image = nil
     }
     
-    func configureData(message: String, profileImageURL: String) {
+    func configureData(message: String) {
         messageView.text = message
         messageView.sizeToFit()
-        Task {
-            do {
-                let data = try await APIProvider.shared.request(from: profileImageURL)
-                
-                profileImageView.image = UIImage(data: data)
-                
-            } catch let error {
-                dump(error)
-            }
-        }
+    }
+    
+    func configureImage(image: Data) {
+        profileImageView.image = UIImage(data: image)
     }
 
 }
