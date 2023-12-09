@@ -107,9 +107,7 @@ final class ChatRoomViewModel {
     }
     
     func checkSender(message: Message) -> Bool {
-        debugPrint("\(message) \(chatLog.count)")
         if message.count >= 1 {
-            debugPrint(chatLog[message.count-1].sender != chatLog[message.count].sender)
             return chatLog[message.count-1].sender != chatLog[message.count].sender ? true : false
         }
         return true
