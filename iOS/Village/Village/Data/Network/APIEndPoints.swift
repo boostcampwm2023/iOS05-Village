@@ -192,4 +192,20 @@ struct APIEndPoints {
         )
     }
     
+    static func getHiddenPosts(requestFilter: RequestFilterDTO?) -> EndPoint<[PostMuteResponseDTO]> {
+        guard let filter = requestFilter else {
+            return EndPoint(
+                baseURL: baseURL,
+                path: "posts/block",
+                method: .GET
+            )
+        }
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/block",
+            method: .GET,
+            queryParameters: filter
+        )
+    }
+    
 }
