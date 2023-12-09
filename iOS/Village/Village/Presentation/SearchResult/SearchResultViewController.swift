@@ -6,9 +6,21 @@
 //
 
 import UIKit
+import Combine
 
-class SearchResultViewController: UIViewController {
-
+final class SearchResultViewController: UIViewController {
+    
+    private let postTitle: String
+    
+    init(title: String) {
+        self.postTitle = title
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

@@ -7,9 +7,10 @@
 
 import UIKit
 
-class SearchViewController: UIViewController {
+final class SearchViewController: UIViewController {
     
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
+    private var searchTitle: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,12 +38,13 @@ class SearchViewController: UIViewController {
 extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     
     func updateSearchResults(for searchController: UISearchController) {
-        dump(searchController.searchBar.text)
+        self.searchTitle = searchController.searchBar.text ?? ""
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let keyword = self.searchController.searchBar.text else { return }
-        self.navigationController?.pushViewController(SearchResultViewController(), animated: true)
+        self.navigationController?.pushViewController(
+            SearchResultViewController(title: self.searchTitle), animated: true
+        )
     }
     
 }
