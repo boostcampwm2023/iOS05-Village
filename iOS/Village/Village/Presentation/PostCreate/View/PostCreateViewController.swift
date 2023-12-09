@@ -7,13 +7,17 @@
 
 import UIKit
 import Combine
+import PhotosUI
 
 final class PostCreateViewController: UIViewController {
+    
+    typealias ViewModel = PostCreateViewModel
     
     private let viewModel: PostCreateViewModel
     var editButtonTappedSubject = PassthroughSubject<Void, Never>()
     private let editSetSubject = PassthroughSubject<Void, Never>()
     private let postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
+    private let selectedImagePublisher = PassthroughSubject<[Data], Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -52,6 +56,17 @@ final class PostCreateViewController: UIViewController {
     
     private lazy var scrollViewBottomConstraint: NSLayoutConstraint = {
         return scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 0)
+    }()
+    
+    private lazy var imageUploadView: ImageUploadView = {
+        let action = UIAction { [weak self] _ in
+            self?.presentPHPickerViewController()
+        }
+        let view = ImageUploadView(frame: .zero, action: action)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        return view
     }()
     
     private lazy var postCreateTitleView: PostCreateTitleView = {
@@ -115,7 +130,9 @@ final class PostCreateViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         
+        view.backgroundColor = .systemBackground
         configureNavigation()
         configureUI()
         configureConstraints()
@@ -124,8 +141,6 @@ final class PostCreateViewController: UIViewController {
         if viewModel.isEdit {
             editSetSubject.send()
         }
-        view.backgroundColor = .systemBackground
-        super.viewDidLoad()
     }
     
     init(viewModel: PostCreateViewModel) {
@@ -140,13 +155,21 @@ final class PostCreateViewController: UIViewController {
     var cancellableBag: Set<AnyCancellable> = []
     
     private func bind() {
-        let input = PostCreateViewModel.Input(
+        let input = ViewModel.Input(
             postInfoInput: postInfoPublisher,
-            editSetInput: editSetSubject
+            editSetInput: editSetSubject,
+            selectedImagePublisher: selectedImagePublisher.eraseToAnyPublisher()
         )
         
         let output = viewModel.transform(input: input)
+        handleWarningResult(output)
+        handleEndResult(output)
+        handleEditInitOutput(output)
+        handleImageOutput(output)
         
+    }
+    
+    private func handleWarningResult(_ output: ViewModel.Output) {
         output.warningResult
             .receive(on: DispatchQueue.main)
             .sink { [weak self] warning in
@@ -162,7 +185,9 @@ final class PostCreateViewController: UIViewController {
                 }
             }
             .store(in: &cancellableBag)
-        
+    }
+    
+    private func handleEndResult(_ output: ViewModel.Output) {
         output.endResult
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -181,7 +206,9 @@ final class PostCreateViewController: UIViewController {
                 }
             })
             .store(in: &cancellableBag)
-        
+    }
+    
+    private func handleEditInitOutput(_ output: ViewModel.Output) {
         output.editInitOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] post in
@@ -190,6 +217,16 @@ final class PostCreateViewController: UIViewController {
                 self?.postCreateEndTimeView.setEdit(time: post.endDate)
                 self?.postCreatePriceView.priceTextField.text = post.price?.priceText()
                 self?.postCreateDetailView.detailTextView.text = post.description
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func handleImageOutput(_ output: ViewModel.Output) {
+        output.imageOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] imageItemList in
+                guard let self = self else { return }
+                self.imageUploadView.setImageItem(items: imageItemList, currentCount: self.viewModel.imagesCount)
             }
             .store(in: &cancellableBag)
     }
@@ -281,6 +318,9 @@ private extension PostCreateViewController {
         scrollView.addSubview(stackView)
         postButtonView.addSubview(postButton)
         
+        if !viewModel.isRequest {
+            stackView.addArrangedSubview(imageUploadView)
+        }
         stackView.addArrangedSubview(postCreateTitleView)
         stackView.addArrangedSubview(postCreateStartTimeView)
         stackView.addArrangedSubview(postCreateEndTimeView)
@@ -356,6 +396,50 @@ private extension PostCreateViewController {
         )
         self.navigationItem.rightBarButtonItems = [close]
         self.navigationItem.backButtonDisplayMode = .minimal
+    }
+    
+}
+
+extension PostCreateViewController: PHPickerViewControllerDelegate {
+    
+    private var configuration: PHPickerConfiguration {
+        var config = PHPickerConfiguration()
+        config.selectionLimit = Constant.maxImageCount - viewModel.imagesCount
+        config.filter = .images
+        
+        return config
+    }
+    
+    private func presentPHPickerViewController() {
+        guard configuration.selectionLimit > 0 else {
+            showImageMaximumAlert()
+            return
+        }
+        let pickerVC = PHPickerViewController(configuration: configuration)
+        pickerVC.delegate = self
+        self.present(pickerVC, animated: true)
+    }
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        
+        results.forEach { result in
+            let itemProvider = result.itemProvider
+            if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
+                    guard let image = image as? UIImage,
+                          let jpegData = image.jpegData(compressionQuality: 0.1) else { return }
+                    self?.selectedImagePublisher.send([jpegData])
+                }
+            }
+        }
+        
+        picker.dismiss(animated: true)
+    }
+    
+    private func showImageMaximumAlert() {
+        let alert = UIAlertController(title: "이미지는 최대 12장 첨부 가능합니다!", message: nil, preferredStyle: .alert)
+        alert.addAction(.init(title: "확인", style: .cancel))
+        self.present(alert, animated: true)
     }
     
 }
