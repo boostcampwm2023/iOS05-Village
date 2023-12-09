@@ -83,6 +83,7 @@
 		8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D7A392B173B7C00370536 /* WebSocketError.swift */; };
 		8F3D7A3C2B175D5000370536 /* chat-server.ts in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D7A3B2B175D5000370536 /* chat-server.ts */; };
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
+		8F81E8402B246C0F00C5687C /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81E83F2B246C0F00C5687C /* SearchResultViewController.swift */; };
 		8F8F0B832B1B36DD00BE97D2 /* ChatListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B822B1B36DD00BE97D2 /* ChatListTableViewCell.swift */; };
 		8F8F0B852B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */; };
 		8F8F0B882B1D980900BE97D2 /* PostMuteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */; };
@@ -207,6 +208,7 @@
 		8F3D7A3B2B175D5000370536 /* chat-server.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.typescript; path = "chat-server.ts"; sourceTree = "<group>"; };
 		8F3D7A3E2B18ED2300370536 /* VillageRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VillageRelease.entitlements; sourceTree = "<group>"; };
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		8F81E83F2B246C0F00C5687C /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
 		8F8F0B822B1B36DD00BE97D2 /* ChatListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListTableViewCell.swift; sourceTree = "<group>"; };
 		8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomRequestDTO.swift; sourceTree = "<group>"; };
 		8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteViewController.swift; sourceTree = "<group>"; };
@@ -628,6 +630,14 @@
 			path = Socket;
 			sourceTree = "<group>";
 		};
+		8F81E83E2B246BEF00C5687C /* SearchResult */ = {
+			isa = PBXGroup;
+			children = (
+				8F81E83F2B246C0F00C5687C /* SearchResultViewController.swift */,
+			);
+			path = SearchResult;
+			sourceTree = "<group>";
+		};
 		8F8F0B862B1D905C00BE97D2 /* PostMute */ = {
 			isa = PBXGroup;
 			children = (
@@ -712,6 +722,7 @@
 				8F95CF8E2B0B97BA0024631F /* Commons */,
 				8FBE3B062B04763200660530 /* Home */,
 				8FD52A492B0B0A20005EE367 /* Search */,
+				8F81E83E2B246BEF00C5687C /* SearchResult */,
 				8FD52A462B09D1AD005EE367 /* MyPage */,
 				8FD52A4F2B0B51A2005EE367 /* ChatRoom */,
 				8FC7FE792B07A88400B91D3B /* PostDetail */,
@@ -1067,6 +1078,7 @@
 				8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */,
 				444A509A2B0CE94E00454397 /* DateView.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
+				8F81E8402B246C0F00C5687C /* SearchResultViewController.swift in Sources */,
 				59AABDE32B0E272C002F6D0E /* PostCreateTimeView.swift in Sources */,
 				59E6A20B2B1F3AD300A2DF21 /* RentPostTableViewCell.swift in Sources */,
 				8F95CF902B0B97F90024631F /* RentPostSummaryView.swift in Sources */,
