@@ -22,8 +22,10 @@ final class ChatRoomViewController: UIViewController {
     
     private let roomID: Just<Int>
     private let opponentNickname: String
+    private var writer: String?
+    private var user: String?
     
-    private var imageURL: String?
+//    private var imageURL: String?
     private var postID: AnyPublisher<Int, Never>?
     
     private let reuseIdentifier = ChatRoomTableViewCell.identifier
@@ -48,11 +50,16 @@ final class ChatRoomViewController: UIViewController {
                     for: indexPath) as? ChatRoomTableViewCell else {
                     return ChatRoomTableViewCell()
                 }
-                cell.configureData(
-                    message: message.message,
-                    profileImageURL: ""
-                )
+                cell.configureData(message: message.message)
+                if viewModel.checkSender(message: message) {
+                    if message.sender == self.user {
+                        cell.configureImage(image: viewModel.getUserData())
+                    } else {
+                        cell.configureImage(image: viewModel.getWriterData())
+                    }
+                }
                 cell.selectionStyle = .none
+                
                 return cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(
@@ -60,11 +67,16 @@ final class ChatRoomViewController: UIViewController {
                     for: indexPath) as? OpponentChatTableViewCell else {
                     return OpponentChatTableViewCell()
                 }
-                cell.configureData(
-                    message: message.message,
-                    profileImageURL: ""
-                )
+                cell.configureData(message: message.message)
+                if viewModel.checkSender(message: message) {
+                    if message.sender == self.user {
+                        cell.configureImage(image: viewModel.getUserData())
+                    } else {
+                        cell.configureImage(image: viewModel.getWriterData())
+                    }
+                }
                 cell.selectionStyle = .none
+                
                 return cell
             }
         }
@@ -97,7 +109,7 @@ final class ChatRoomViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "메시지를 입력해주세요."
         textField.borderStyle = .roundedRect
-        textField.backgroundColor = .grey100
+        textField.backgroundColor = .keyboardTextField
         
         return textField
     }()
@@ -185,11 +197,11 @@ private extension ChatRoomViewController {
                         roomID: roomID,
                         sender: currentUserID,
                         message: text,
-                        count: (self?.viewModel.getLog().count ?? 0) + 1
+                        count: (self?.viewModel.getLog().count ?? 1) - 1
                     )
                     self?.viewModel.appendLog(sender: currentUserID, message: text)
                     guard let count = self?.viewModel.getLog().count else { return }
-                    self?.addGenerateData(chat: Message(sender: currentUserID, message: text, count: count))
+                    self?.addGenerateData(chat: Message(sender: currentUserID, message: text, count: count-1))
                 }
                 .store(in: &cancellableBag)
             self.keyboardTextField.text = nil
@@ -298,7 +310,6 @@ private extension ChatRoomViewController {
                         }
                     } receiveValue: { [weak self] room in
                         self?.setRoomContent(room: room)
-                        self?.generateData()
                         guard let isEmpty = self?.viewModel.getLog().isEmpty else { return }
                         if !isEmpty {
                             guard let count = self?.viewModel.getLog().count else { return }
@@ -314,6 +325,10 @@ private extension ChatRoomViewController {
         room.chatLog.forEach { [weak self] chat in
             self?.viewModel.appendLog(sender: chat.sender, message: chat.message)
         }
+        self.writer = room.writer
+        self.user = room.user
+        self.viewModel.getData(writerURL: room.writerProfileIMG, userURL: room.userProfileIMG)
+        self.generateData()
         
         self.postID = Just(room.postID).eraseToAnyPublisher()
         guard let postID = self.postID else { return }
