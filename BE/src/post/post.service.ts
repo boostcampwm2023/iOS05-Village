@@ -261,6 +261,5 @@ export class PostService {
     return {
       titles: titles.slice(0, 5),
     };
-    // return titles.slice(0, 5);
   }
 }
