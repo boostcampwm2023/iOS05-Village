@@ -30,7 +30,7 @@ final class ImageUploadView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.showsHorizontalScrollIndicator = false
         view.isScrollEnabled = true
-        view.clipsToBounds = true
+        view.clipsToBounds = false
         view.contentInset = .zero
         view.register(ImageViewCell.self,
                       forCellWithReuseIdentifier: imageViewCellReuseIdentifier)
