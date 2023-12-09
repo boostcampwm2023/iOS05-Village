@@ -35,6 +35,7 @@ final class NicknameTextField: UIView {
         textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        textField.delegate = self
         textField.setLayer(borderColor: .systemGray4)
         
         return textField
@@ -79,6 +80,21 @@ private extension NicknameTextField {
         ])
         
         textField.heightAnchor.constraint(equalToConstant: 45).isActive = true
+    }
+    
+}
+
+extension NicknameTextField: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        guard let text = textField.text else { return false }
+        
+        if text.count + string.count > 10 {
+            return false
+        }
+        
+        return true
     }
     
 }

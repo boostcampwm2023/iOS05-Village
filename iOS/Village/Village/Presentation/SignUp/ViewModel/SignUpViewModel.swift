@@ -26,7 +26,10 @@ final class SignUpViewModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] nickname in
                 self?.nowInfo.nickname = nickname
-                self?.completeButtonEnableOutput.send(self?.nowInfo != self?.previousInfo)
+                self?.completeButtonEnableOutput.send(
+                    self?.nowInfo != self?.previousInfo &&
+                    !nickname.isEmpty
+                )
             }
             .store(in: &cancellableBag)
         
