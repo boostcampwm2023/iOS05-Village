@@ -47,7 +47,7 @@ export class LoginService {
     await this.cacheManager.set(
       user.user_hash,
       refreshToken,
-      60 * 60 * 24 * 14,
+      this.configService.get('JWT_REFRESH_EXPIRES_IN'),
     );
     return { access_token: accessToken, refresh_token: refreshToken };
   }
