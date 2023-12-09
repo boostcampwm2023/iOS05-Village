@@ -173,12 +173,22 @@ final class PostCreateViewModel {
             }
             .store(in: &cancellableBag)
         
+        input.deleteImagePublisher
+            .sink { [weak self] item in
+                self?.deleteImage(item: item)
+            }
+            .store(in: &cancellableBag)
+        
         return Output(
             warningResult: warningPublisher.eraseToAnyPublisher(),
             endResult: endOutput.eraseToAnyPublisher(),
             editInitOutput: editInitPublisher.eraseToAnyPublisher(),
             imageOutput: imageOutput.eraseToAnyPublisher()
         )
+    }
+    
+    func deleteImage(item: ImageItem) {
+        images.removeAll(where: {$0.id == item.id})
     }
     
 }
@@ -190,6 +200,7 @@ extension PostCreateViewModel {
         var postInfoInput: PassthroughSubject<PostModifyInfo, Never>
         var editSetInput: PassthroughSubject<Void, Never>
         var selectedImagePublisher: AnyPublisher<[Data], Never>
+        var deleteImagePublisher: AnyPublisher<ImageItem, Never>
         
     }
     
