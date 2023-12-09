@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class FileSizeValidator implements PipeTransform {
+export class FilesSizeValidator implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata): any {
-    if (value === undefined || value.length === 0) {
+    if (value.length === 0) {
       return value;
     }
     const maxSize = 1024 * 1024 * 20;
@@ -20,6 +20,22 @@ export class FileSizeValidator implements PipeTransform {
         );
       }
     }
-    return undefined;
+    return value;
+  }
+}
+
+export class FileSizeValidator implements PipeTransform {
+  transform(value: any, metadata: ArgumentMetadata): any {
+    if (value === undefined) {
+      return value;
+    }
+    const maxSize = 1024 * 1024 * 20;
+    const file: Express.Multer.File = value;
+    if (file.size > maxSize) {
+      throw new BadRequestException(
+        `File ${file.originalname} exceeds the allowed size limit`,
+      );
+    }
+    return value;
   }
 }

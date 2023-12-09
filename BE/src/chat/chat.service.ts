@@ -69,63 +69,65 @@ export class ChatService {
   }
 
   async findRoomList(userId: string) {
-    let now = new Set();
+    const subquery = this.chatRepository
+      .createQueryBuilder('chat')
+      .select('chat.id', 'id')
+      .addSelect('chat.chat_room', 'chat_room')
+      .addSelect('chat.message', 'message')
+      .addSelect('chat.create_date', 'create_date')
+      .where(
+        'chat.id IN (SELECT MAX(chat.id) FROM chat GROUP BY chat.chat_room)',
+      );
+
     const rooms = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
+      .innerJoin(
+        '(' + subquery.getQuery() + ')',
+        'chat_info',
+        'chat_room.id = chat_info.chat_room',
+      )
+      .leftJoin(
+        'chat_room.writerUser',
+        'writer',
+        'chat_room.writerUser = writer.user_hash',
+      )
+      .leftJoin(
+        'chat_room.userUser',
+        'user',
+        'chat_room.userUser = user.user_hash',
+      )
+      .leftJoin('chat_room.post', 'post', 'chat_room.post = post.id')
       .select([
-        'chat_room.user',
-        'chat_room.writer',
-        'chat_room.id',
-        'chat_room.post_id',
-        'chat.message',
-        'chat.create_date',
+        'chat_room.id as room_id',
+        'chat_room.writer as writer',
+        'writer.nickname as writer_nickname',
+        'writer.profile_img as writer_profile_img',
+        'chat_room.user as user',
+        'user.nickname as user_nickname',
+        'user.profile_img as user_profile_img',
+        'chat_room.post_id as post_id',
+        'post.title as post_title',
+        'post.thumbnail as post_thumbnail',
+        'chat_info.create_date as last_chat_date',
+        'chat_info.message as last_chat',
       ])
-      .where('chat_room.user = :userId', {
-        userId: userId,
-      })
-      .orWhere('chat_room.writer = :userId', {
-        userId: userId,
-      })
-      .leftJoin('chat', 'chat', 'chat_room.id = chat.chat_room')
-      .orderBy('chat.id', 'DESC')
-      .addSelect(['user.w.user_hash', 'user.w.profile_img', 'user.w.nickname'])
-      .leftJoin('user', 'user.w', 'user.w.user_hash = chat_room.writer')
-      .addSelect(['user.u.user_hash', 'user.u.profile_img', 'user.u.nickname'])
-      .leftJoin('user', 'user.u', 'user.u.user_hash = chat_room.user')
-      .addSelect(['post.thumbnail', 'post.title'])
-      .leftJoin('post', 'post', 'post.id = chat_room.post_id')
+      .where('chat_room.writer = :userId', { userId: userId })
+      .orWhere('chat_room.user = :userId', { userId: userId })
+      .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
-    const result = rooms
-      .reduce((acc, cur) => {
-        acc.push({
-          room_id: cur.chat_room_id,
-          post_id: cur.chat_room_post_id,
-          post_title: cur.post_title,
-          post_thumbnail: cur.post_thumbnail,
-          user: cur['user.w_user_hash'],
-          user_profile_img: cur['user.w_profile_img'],
-          user_nickname: cur['user.w_nickname'],
-          writer: cur['user.u_user_hash'],
-          writer_profile_img: cur['user.u_profile_img'],
-          writer_nickname: cur['user.u_nickname'],
-          last_chat: cur.chat_message,
-          last_chat_date: cur.chat_create_date,
-        });
-        return acc;
-      }, [])
-      .sort((a, b) => {
-        return b.last_chat_date - a.last_chat_date;
-      })
-      .reduce((acc, cur) => {
-        if (!now.has(cur.room_id)) {
-          acc.push(cur);
-          now.add(cur.room_id);
-        }
-        return acc;
-      }, []);
-
-    return result;
+    return rooms.reduce((acc, cur) => {
+      cur.writer_profile_img =
+        cur.writer_profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : cur.writer_profile_img;
+      cur.user_profile_img =
+        cur.user_profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : cur.user_profile_img;
+      acc.push(cur);
+      return acc;
+    }, []);
   }
 
   async findRoomById(roomId: number, userId: string) {
@@ -142,12 +144,21 @@ export class ChatService {
       where: {
         id: roomId,
       },
-      relations: ['chats'],
+      relations: ['chats', 'userUser', 'writerUser'],
     });
 
     this.checkAuth(room, userId);
-
     return {
+      writer: room.writer,
+      writer_profile_img:
+        room.writerUser.profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : room.writerUser.profile_img,
+      user: room.user,
+      user_profile_img:
+        room.userUser.profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : room.userUser.profile_img,
       post_id: room.post_id,
       chat_log: room.chats,
     };

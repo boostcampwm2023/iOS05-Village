@@ -24,7 +24,7 @@ import { MultiPartBody } from '../utils/multiPartBody.decorator';
 import { PostListDto } from './dto/postList.dto';
 import { AuthGuard } from 'src/utils/auth.guard';
 import { UserHash } from 'src/utils/auth.decorator';
-import { FileSizeValidator } from '../utils/files.validator';
+import { FilesSizeValidator } from '../utils/files.validator';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -41,7 +41,7 @@ export class PostController {
   @Post()
   @UseInterceptors(FilesInterceptor('image', 12))
   async postsCreate(
-    @UploadedFiles(new FileSizeValidator())
+    @UploadedFiles(new FilesSizeValidator())
     files: Array<Express.Multer.File>,
     @MultiPartBody(
       'post_info',
@@ -68,7 +68,7 @@ export class PostController {
   @UseInterceptors(FilesInterceptor('image', 12))
   async postModify(
     @Param('id') id: number,
-    @UploadedFiles(new FileSizeValidator())
+    @UploadedFiles(new FilesSizeValidator())
     files: Array<Express.Multer.File>,
     @MultiPartBody(
       'post_info',
