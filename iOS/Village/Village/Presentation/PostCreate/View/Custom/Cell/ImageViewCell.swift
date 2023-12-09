@@ -50,10 +50,12 @@ final class ImageViewCell: UICollectionViewCell {
         super.prepareForReuse()
         
         imageView.image = nil
+        deleteButton.removeTarget(nil, action: nil, for: .touchUpInside)
     }
     
-    func setImage(data: Data) {
-        imageView.image = UIImage(data: data)
+    func configure(imageData: Data, deleteAction: UIAction) {
+        imageView.image = UIImage(data: imageData)
+        deleteButton.addAction(deleteAction, for: .touchUpInside)
     }
     
 }
