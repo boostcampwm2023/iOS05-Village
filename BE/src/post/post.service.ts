@@ -223,7 +223,6 @@ export class PostService {
     post.end_date = createPostDto.end_date;
     post.user_hash = userHash;
     post.thumbnail = imageLocations.length > 0 ? imageLocations[0] : null;
-    // 이미지 추가
     const res = await this.postRepository.save(post);
     if (res.is_request === false) {
       await this.createImages(imageLocations, res.id);
@@ -248,5 +247,16 @@ export class PostService {
     await this.postImageRepository.softDelete({ post_id: postId });
     await this.blockPostRepository.softDelete({ blocked_post: postId });
     await this.postRepository.softDelete({ id: postId });
+  }
+
+  async findPostsTitles(searchKeyword: string) {
+    const posts: PostEntity[] = await this.postRepository.find({
+      where: { title: Like(`%${searchKeyword}%`) },
+      order: {
+        create_date: 'desc',
+      },
+    });
+    const titles: string[] = posts.map((post) => post.title);
+    return titles.slice(0, 5);
   }
 }

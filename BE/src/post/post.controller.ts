@@ -4,9 +4,7 @@ import {
   Get,
   HttpCode,
   HttpException,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   Patch,
   Post,
   Query,
@@ -36,6 +34,11 @@ export class PostController {
   async postsList(@Query() query: PostListDto, @UserHash() userId: string) {
     const posts = await this.postService.findPosts(query, userId);
     return posts;
+  }
+
+  @Get('/titles')
+  async postsTitlesList(@Query('searchKeyword') searchKeyword) {
+    return await this.postService.findPostsTitles(searchKeyword);
   }
 
   @Post()
