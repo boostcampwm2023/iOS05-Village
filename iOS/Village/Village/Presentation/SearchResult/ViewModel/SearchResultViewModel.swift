@@ -12,19 +12,38 @@ final class SearchResultViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     private var searchResultList = PassthroughSubject<[PostListResponseDTO], NetworkError>()
+    private var postTitle: String = ""
+    
+    enum Filter: String {
+        case request = "0"
+        case rent = "1"
+    }
+    
+    private var searchFilter = Filter.request
     
     func transform(input: Input) -> Output {
         input.postTitle
             .sink { [weak self] title in
-                self?.getList(title: title)
+                self?.postTitle = title
+                self?.getList()
+            }
+            .store(in: &cancellableBag)
+        
+        input.toggleSubject
+            .sink { [weak self] in
+                self?.searchFilter = self?.searchFilter == .request ? .rent : .request
+                self?.getList()
             }
             .store(in: &cancellableBag)
         
         return Output(searchResultList: searchResultList.eraseToAnyPublisher())
     }
     
-    private func getList(title: String) {
-        let request = PostListRequestDTO(searchKeyword: title)
+    private func getList() {
+        let request = PostListRequestDTO(
+            searchKeyword: self.postTitle,
+            requestFilter: searchFilter.rawValue
+            )
         let endpoint = APIEndPoints.getPosts(queryParameter: request)
 
         Task {
@@ -43,9 +62,18 @@ extension SearchResultViewModel {
     
     struct Input {
         var postTitle: AnyPublisher<String, Never>
+        var toggleSubject: AnyPublisher<Void, Never>
     }
     
     struct Output {
+        var searchResultList: AnyPublisher<[PostListResponseDTO], NetworkError>
+    }
+    
+    struct FilterInput {
+        var postTitle: AnyPublisher<String, Never>
+    }
+    
+    struct FilterOutput {
         var searchResultList: AnyPublisher<[PostListResponseDTO], NetworkError>
     }
     

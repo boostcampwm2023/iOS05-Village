@@ -112,7 +112,10 @@ extension SearchResultViewController {
     }
     
     private func bindViewModel() {
-        let input = ViewModel.Input(postTitle: Just(postTitle).eraseToAnyPublisher())
+        let input = ViewModel.Input(
+            postTitle: Just(postTitle).eraseToAnyPublisher(),
+            toggleSubject: self.togglePublisher.eraseToAnyPublisher()
+        )
         let output = viewModel.transform(input: input)
         
         output.searchResultList.receive(on: DispatchQueue.main)
@@ -133,7 +136,7 @@ extension SearchResultViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
         snapshot.appendSections([.list])
         snapshot.appendItems(list)
-        dataSource.apply(snapshot)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
     
     @objc private func segmentedControlChanged() {
