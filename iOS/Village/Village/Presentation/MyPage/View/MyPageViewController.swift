@@ -25,6 +25,7 @@ final class MyPageViewController: UIViewController {
         imageView.tintColor = .primary500
         imageView.setLayer(borderWidth: 0, cornerRadius: 16)
         imageView.backgroundColor = .primary100
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -86,7 +87,6 @@ final class MyPageViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 10
         stackView.alignment = .leading
         
         return stackView
@@ -236,7 +236,9 @@ private extension MyPageViewController {
         
         view.addSubview(profileStackView)
         profileStackView.addArrangedSubview(nicknameLabel)
+        profileStackView.setCustomSpacing(2, after: nicknameLabel)
         profileStackView.addArrangedSubview(hashIDLabel)
+        profileStackView.setCustomSpacing(6, after: hashIDLabel)
         profileStackView.addArrangedSubview(profileEditButton)
         
         view.addSubview(activityStackView)
