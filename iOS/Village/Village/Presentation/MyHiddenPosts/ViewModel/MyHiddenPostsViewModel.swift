@@ -8,6 +8,13 @@
 import Foundation
 import Combine
 
+struct HidePostInfo {
+    
+    let postID: Int
+    let bool: Bool
+    
+}
+
 final class MyHiddenPostsViewModel {
     
     var posts: [PostMuteResponseDTO] = []
@@ -24,6 +31,12 @@ final class MyHiddenPostsViewModel {
             .sink { [weak self] in
                 self?.requestFilter = self?.requestFilter == "0" ? "1" : "0"
                 self?.getMyHiddenPosts()
+            }
+            .store(in: &cancellableBag)
+        
+        input.toggleHideSubject
+            .sink { [weak self] hideInfo in
+                self?.toggleHide(hideInfo: hideInfo)
             }
             .store(in: &cancellableBag)
         
@@ -53,16 +66,32 @@ final class MyHiddenPostsViewModel {
         }
     }
     
+    private func toggleHide(hideInfo: HidePostInfo) {
+        let endpoint = hideInfo.bool ?
+        APIEndPoints.hidePost(postID: hideInfo.postID) :
+        APIEndPoints.unhidePost(postID: hideInfo.postID)
+        
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+            } catch {
+                dump(error)
+            }
+        }
+        
+    }
+    
 }
 
 extension MyHiddenPostsViewModel {
     
     struct Input {
-        var toggleSubject: AnyPublisher<Void, Never>
+        let toggleSubject: AnyPublisher<Void, Never>
+        let toggleHideSubject: AnyPublisher<HidePostInfo, Never>
     }
     
     struct Output {
-        var toggleUpdateOutput: AnyPublisher<[PostMuteResponseDTO], Never>
+        let toggleUpdateOutput: AnyPublisher<[PostMuteResponseDTO], Never>
     }
     
 }
