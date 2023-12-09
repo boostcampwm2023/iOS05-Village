@@ -421,18 +421,22 @@ extension PostCreateViewController: PHPickerViewControllerDelegate {
     }
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        
-        results.forEach { result in
-            let itemProvider = result.itemProvider
-            if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
-                    guard let image = image as? UIImage,
-                          let jpegData = image.jpegData(compressionQuality: 0.1) else { return }
-                    self?.selectedImagePublisher.send([jpegData])
-                }
+        let itemProviders = results.map(\.itemProvider)
+        let dispatchGroup = DispatchGroup()
+        var imageData = [Data]()
+        itemProviders.forEach { itemProvider in
+            dispatchGroup.enter()
+            itemProvider.loadObject(ofClass: UIImage.self) { uiimage, _ in
+                guard let image = uiimage as? UIImage,
+                      let jpegData = image.jpegData(compressionQuality: 0.1) else { return }
+                
+                imageData.append(jpegData)
+                dispatchGroup.leave()
             }
         }
-        
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            self?.selectedImagePublisher.send(imageData)
+        }
         picker.dismiss(animated: true)
     }
     
