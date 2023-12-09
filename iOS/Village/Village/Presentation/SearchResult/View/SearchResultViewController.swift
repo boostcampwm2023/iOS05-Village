@@ -10,9 +10,12 @@ import Combine
 
 final class SearchResultViewController: UIViewController {
     
+    typealias SearchResultDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
     typealias ViewModel = SearchResultViewModel
     
-    private let viewModel = ViewModel()
+    enum Section { case list }
+    
+    private var viewModel = ViewModel()
     private let togglePublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -33,6 +36,41 @@ final class SearchResultViewController: UIViewController {
         return control
     }()
     
+    private lazy var dataSource = SearchResultDataSource(
+        tableView: listTableView) { [weak self] (tableView, indexPath, post) in
+            dump(post)
+            if post.isRequest {
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: SearchRequstTableViewCell.identifier,
+                    for: indexPath) as? SearchRequstTableViewCell else {
+                    return SearchRequstTableViewCell()
+                }
+                cell.configureData(post: post)
+                cell.selectionStyle = .none
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: SearchRentTableViewCell.identifier,
+                    for: indexPath) as? SearchRentTableViewCell else {
+                    return SearchRentTableViewCell()
+                }
+                cell.configureData(post: post)
+                cell.selectionStyle = .none
+                return cell
+            }
+        }
+    
+    private lazy var listTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 100
+        tableView.register(SearchRequstTableViewCell.self, forCellReuseIdentifier: SearchRequstTableViewCell.identifier)
+        tableView.register(SearchRentTableViewCell.self, forCellReuseIdentifier: SearchRentTableViewCell.identifier)
+        tableView.separatorStyle = .none
+        
+        return tableView
+    }()
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -49,8 +87,10 @@ final class SearchResultViewController: UIViewController {
 extension SearchResultViewController {
     
     private func setUI() {
+        self.navigationItem.title = "검색결과"
         self.view.backgroundColor = .systemBackground
         self.view.addSubview(requestSegmentedControl)
+        self.view.addSubview(listTableView)
         
         configureConstraints()
     }
@@ -61,6 +101,13 @@ extension SearchResultViewController {
             requestSegmentedControl.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
             requestSegmentedControl.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 10),
             requestSegmentedControl.heightAnchor.constraint(equalToConstant: 35)
+        ])
+        
+        NSLayoutConstraint.activate([
+            listTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            listTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            listTableView.topAnchor.constraint(equalTo: requestSegmentedControl.bottomAnchor, constant: 5),
+            listTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 5)
         ])
     }
     
@@ -76,10 +123,17 @@ extension SearchResultViewController {
                 case .failure(let error):
                     dump(error)
                 }
-            } receiveValue: { postList in
-                // TODO: 데이터 테이블 뷰? 컬렉션 뷰에 추가하기
+            } receiveValue: { [weak self] postList in
+                self?.generateData(list: postList)
             }
             .store(in: &cancellableBag)
+    }
+    
+    private func generateData(list: [PostListResponseDTO]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
+        snapshot.appendSections([.list])
+        snapshot.appendItems(list)
+        dataSource.apply(snapshot)
     }
     
     @objc private func segmentedControlChanged() {
