@@ -32,7 +32,7 @@ struct PostModifyRequestDTO: Encodable, MultipartFormData {
         
         image.forEach { image in
             body.appendString("--\(boundary)\r\n")
-            body.appendString("Content-Disposition: form-data; name=\"image\";\r\n")
+            body.appendString("Content-Disposition: form-data; name=\"image\"; filename=\"image.png\"\r\n")
             body.appendString("Content-Type: image\r\n\r\n")
             body.append(image)
             body.appendString("\r\n")
