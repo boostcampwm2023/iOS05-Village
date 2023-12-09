@@ -11,7 +11,7 @@ import Combine
 final class SearchResultViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var searchResultList = PassthroughSubject<[PostListItem], NetworkError>()
+    private var searchResultList = PassthroughSubject<[PostListResponseDTO], NetworkError>()
     
     func transform(input: Input) -> Output {
         input.postTitle
@@ -30,6 +30,7 @@ final class SearchResultViewModel {
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                searchResultList.send(data)
             } catch {
                 dump(error)
             }
@@ -45,7 +46,7 @@ extension SearchResultViewModel {
     }
     
     struct Output {
-        var searchResultList: AnyPublisher<[PostListItem], NetworkError>
+        var searchResultList: AnyPublisher<[PostListResponseDTO], NetworkError>
     }
     
 }
