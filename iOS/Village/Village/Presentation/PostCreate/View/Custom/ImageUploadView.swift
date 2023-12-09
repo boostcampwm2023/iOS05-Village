@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class ImageUploadView: UIView {
 
@@ -14,7 +15,9 @@ final class ImageUploadView: UIView {
     private let imageViewCellReuseIdentifier = ImageViewCell.identifier
     private let cameraButtonCellReuseIdentifier = CameraButtonCell.identifier
     private let cellSize = CGSize(width: 60, height: 60)
-    private var cameraButtonAction: UIAction
+    private let cameraButtonAction: UIAction
+    private let deleteImagePublisher: PassthroughSubject<ImageItem, Never>
+    private var imageCount = 0
     
     private lazy var collectionViewLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
@@ -51,7 +54,7 @@ final class ImageUploadView: UIView {
                         as? CameraButtonCell else { return UICollectionViewCell() }
                 
                 cell.addButtonAction(cameraButtonAction)
-                cell.setImageCount(count)
+                cell.setImageCount(imageCount)
                 return cell
                 
             case .imageItem(let imageItem):
@@ -59,14 +62,21 @@ final class ImageUploadView: UIView {
                     withReuseIdentifier: self.imageViewCellReuseIdentifier, for: indexPath)
                         as? ImageViewCell else { return UICollectionViewCell() }
                 
-                cell.setImage(data: imageItem.data)
+                let action = UIAction { _ in
+                    self.deleteImage(item: imageItem)
+                    self.deleteImagePublisher.send(imageItem)
+                }
+                cell.configure(imageData: imageItem.data, deleteAction: action)
                 
                 return cell
             }
     })
     
-    init(frame: CGRect, action: UIAction) {
-        self.cameraButtonAction = action
+    init(frame: CGRect = .zero,
+         cameraButtonAction: UIAction,
+         deleteImagePublisher: PassthroughSubject<ImageItem, Never>) {
+        self.cameraButtonAction = cameraButtonAction
+        self.deleteImagePublisher = deleteImagePublisher
         
         super.init(frame: frame)
         
@@ -79,12 +89,8 @@ final class ImageUploadView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setCollectionViewDelegate(delegate: UICollectionViewDelegate) {
-        collectionView.delegate = delegate
-    }
-    
-    func setImageItem(items: [ImageItem], currentCount: Int) {
-        appendImages(items, currentCount)
+    func setImageItem(items: [ImageItem]) {
+        appendImages(items)
     }
 
 }
@@ -104,16 +110,24 @@ extension ImageUploadView {
     private func setDataSource() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([.button, .image])
-        snapshot.appendItems([.cameraButton(0)], toSection: .button)
+        snapshot.appendItems([.cameraButton(imageCount)], toSection: .button)
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    private func appendImages(_ items: [ImageItem], _ currentCount: Int) {
+    private func appendImages(_ items: [ImageItem]) {
         var snapshot = dataSource.snapshot()
-        snapshot.deleteItems(snapshot.itemIdentifiers(inSection: .button))
-        snapshot.appendItems([.cameraButton(currentCount)], toSection: .button)
+        imageCount += items.count
+        snapshot.reconfigureItems(snapshot.itemIdentifiers(inSection: .button))
         snapshot.appendItems(items.map { .imageItem($0) }, toSection: .image)
         dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func deleteImage(item: ImageItem) {
+        var snapshot = dataSource.snapshot()
+        imageCount -= 1
+        snapshot.reconfigureItems(snapshot.itemIdentifiers(inSection: .button))
+        snapshot.deleteItems([.imageItem(item)])
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
 }
