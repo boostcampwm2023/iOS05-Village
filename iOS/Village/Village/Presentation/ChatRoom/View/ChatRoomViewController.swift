@@ -109,7 +109,7 @@ final class ChatRoomViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "메시지를 입력해주세요."
         textField.borderStyle = .roundedRect
-        textField.backgroundColor = .grey100
+        textField.backgroundColor = .keyboardTextField
         
         return textField
     }()
