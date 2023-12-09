@@ -14,7 +14,8 @@ import { PostsBlockModule } from './posts-block/posts-block.module';
 import { UsersBlockModule } from './users-block/users-block.module';
 import { LoginModule } from './login/login.module';
 import { ChatModule } from './chat/chat.module';
-import { RedisService } from './utils/redis';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-ioredis';
 
 @Module({
   imports: [
@@ -34,6 +35,11 @@ import { RedisService } from './utils/redis';
     UsersModule,
     LoginModule,
     ChatModule,
+    CacheModule.register({
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -43,7 +49,6 @@ import { RedisService } from './utils/redis';
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
-    //RedisService,
   ],
 })
 export class AppModule {}
