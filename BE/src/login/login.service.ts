@@ -183,7 +183,7 @@ export class LoginService {
       await this.cacheManager.set(
         user.user_hash,
         refreshToken,
-        60 * 60 * 24 * 2,
+        this.configService.get('JWT_REFRESH_EXPIRES_IN'),
       );
       return { access_token: accessToken, refresh_token: refreshToken };
     } else {
@@ -197,7 +197,11 @@ export class LoginService {
     });
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
-    await this.cacheManager.set(user.user_hash, refreshToken, 60 * 60 * 24 * 2);
+    await this.cacheManager.set(
+      user.user_hash,
+      refreshToken,
+      this.configService.get('JWT_REFRESH_EXPIRES_IN'),
+    );
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 }
