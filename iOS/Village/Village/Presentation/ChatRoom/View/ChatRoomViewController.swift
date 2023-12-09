@@ -23,9 +23,7 @@ final class ChatRoomViewController: UIViewController {
     private let roomID: Just<Int>
     private let opponentNickname: String
     private var writer: String?
-    private var writerIMG: String?
     private var user: String?
-    private var userIMG: String?
     
 //    private var imageURL: String?
     private var postID: AnyPublisher<Int, Never>?
@@ -46,9 +44,6 @@ final class ChatRoomViewController: UIViewController {
         tableView: chatTableView,
         cellProvider: { [weak self] (tableView, indexPath, message) in
             guard let self = self else { return ChatRoomTableViewCell() }
-            guard let imageURL = self.writer == message.sender ? self.writerIMG : self.userIMG else {
-                return ChatRoomTableViewCell()
-            }
             if message.sender == JWTManager.shared.currentUserID {
                 guard let cell = tableView.dequeueReusableCell(
                     withIdentifier: ChatRoomTableViewCell.identifier,
@@ -56,8 +51,15 @@ final class ChatRoomViewController: UIViewController {
                     return ChatRoomTableViewCell()
                 }
                 cell.configureData(message: message.message)
-                cell.configureImage(imageURL: imageURL)
+                if viewModel.checkSender(message: message) {
+                    if message.sender == self.user {
+                        cell.configureImage(image: viewModel.getUserData())
+                    } else {
+                        cell.configureImage(image: viewModel.getWriterData())
+                    }
+                }
                 cell.selectionStyle = .none
+                
                 return cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(
@@ -66,8 +68,15 @@ final class ChatRoomViewController: UIViewController {
                     return OpponentChatTableViewCell()
                 }
                 cell.configureData(message: message.message)
-                cell.configureImage(imageURL: imageURL)
+                if viewModel.checkSender(message: message) {
+                    if message.sender == self.user {
+                        cell.configureImage(image: viewModel.getUserData())
+                    } else {
+                        cell.configureImage(image: viewModel.getWriterData())
+                    }
+                }
                 cell.selectionStyle = .none
+                
                 return cell
             }
         }
@@ -188,11 +197,11 @@ private extension ChatRoomViewController {
                         roomID: roomID,
                         sender: currentUserID,
                         message: text,
-                        count: (self?.viewModel.getLog().count ?? 0) + 1
+                        count: (self?.viewModel.getLog().count ?? 1) - 1
                     )
                     self?.viewModel.appendLog(sender: currentUserID, message: text)
                     guard let count = self?.viewModel.getLog().count else { return }
-                    self?.addGenerateData(chat: Message(sender: currentUserID, message: text, count: count))
+                    self?.addGenerateData(chat: Message(sender: currentUserID, message: text, count: count-1))
                 }
                 .store(in: &cancellableBag)
             self.keyboardTextField.text = nil
@@ -301,7 +310,6 @@ private extension ChatRoomViewController {
                         }
                     } receiveValue: { [weak self] room in
                         self?.setRoomContent(room: room)
-                        self?.generateData()
                         guard let isEmpty = self?.viewModel.getLog().isEmpty else { return }
                         if !isEmpty {
                             guard let count = self?.viewModel.getLog().count else { return }
@@ -318,9 +326,10 @@ private extension ChatRoomViewController {
             self?.viewModel.appendLog(sender: chat.sender, message: chat.message)
         }
         self.writer = room.writer
-        self.writerIMG = room.writerProfileIMG
         self.user = room.user
-        self.userIMG = room.userProfileIMG
+        self.viewModel.getData(writerURL: room.writerProfileIMG, userURL: room.userProfileIMG)
+        self.generateData()
+        
         self.postID = Just(room.postID).eraseToAnyPublisher()
         guard let postID = self.postID else { return }
         let output = viewModel.transformPost(input: ViewModel.PostInput(postID: postID))

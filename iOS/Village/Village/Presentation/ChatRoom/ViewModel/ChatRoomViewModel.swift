@@ -26,6 +26,8 @@ final class ChatRoomViewModel {
     
     private var chatRoom = PassthroughSubject<GetRoomResponseDTO, NetworkError>()
     private var post = PassthroughSubject<PostResponseDTO, NetworkError>()
+    private var writerProfileData: Data?
+    private var userProfileData: Data?
     private var cancellableBag = Set<AnyCancellable>()
     private var chatLog: [Message] = []
     
@@ -79,6 +81,38 @@ final class ChatRoomViewModel {
     
     func getLog() -> [Message] {
         return chatLog
+    }
+    
+    func getData(writerURL: String, userURL: String) {
+        Task {
+            do {
+                let writerData = try await APIProvider.shared.request(from: writerURL)
+                let userData = try await APIProvider.shared.request(from: userURL)
+                writerProfileData = writerData
+                userProfileData = userData
+            } catch let error {
+                dump(error)
+            }
+        }
+    }
+    
+    func getUserData() -> Data {
+        guard let data = userProfileData else { return Data() }
+        return data
+    }
+    
+    func getWriterData() -> Data {
+        guard let data = writerProfileData else { return Data() }
+        return data
+    }
+    
+    func checkSender(message: Message) -> Bool {
+        debugPrint("\(message) \(chatLog.count)")
+        if message.count >= 1 {
+            debugPrint(chatLog[message.count-1].sender != chatLog[message.count].sender)
+            return chatLog[message.count-1].sender != chatLog[message.count].sender ? true : false
+        }
+        return true
     }
     
 }
