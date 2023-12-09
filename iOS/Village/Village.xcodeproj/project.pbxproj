@@ -69,6 +69,7 @@
 		59E2C1602B248A6D004428F7 /* MyHiddenPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E2C15F2B248A6D004428F7 /* MyHiddenPostsViewController.swift */; };
 		59E2C1622B248AB9004428F7 /* MyHiddenPostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E2C1612B248AB9004428F7 /* MyHiddenPostsViewModel.swift */; };
 		59E2C1642B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E2C1632B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift */; };
+		59E2C1662B24B6D9004428F7 /* RequestFilterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */; };
 		59E6A2042B1F325E00A2DF21 /* MyPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2032B1F325E00A2DF21 /* MyPostsViewController.swift */; };
 		59E6A2072B1F374B00A2DF21 /* MyPostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2062B1F374B00A2DF21 /* MyPostsViewModel.swift */; };
 		59E6A2092B1F3AC200A2DF21 /* RequstPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */; };
@@ -194,6 +195,7 @@
 		59E2C15F2B248A6D004428F7 /* MyHiddenPostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHiddenPostsViewController.swift; sourceTree = "<group>"; };
 		59E2C1612B248AB9004428F7 /* MyHiddenPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHiddenPostsViewModel.swift; sourceTree = "<group>"; };
 		59E2C1632B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenRequestPostTableViewCell.swift; sourceTree = "<group>"; };
+		59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestFilterDTO.swift; sourceTree = "<group>"; };
 		59E6A2032B1F325E00A2DF21 /* MyPostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostsViewController.swift; sourceTree = "<group>"; };
 		59E6A2062B1F374B00A2DF21 /* MyPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostsViewModel.swift; sourceTree = "<group>"; };
 		59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequstPostTableViewCell.swift; sourceTree = "<group>"; };
@@ -609,6 +611,7 @@
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
 				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
 				59457BC82B237615003F798C /* PatchUserDTO.swift */,
+				59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1037,6 +1040,7 @@
 				8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */,
 				4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */,
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
+				59E2C1662B24B6D9004428F7 /* RequestFilterDTO.swift in Sources */,
 				8F1E2CEE2B1F163D00179E34 /* GetRoomResponseDTO.swift in Sources */,
 				59E6A20F2B205C8500A2DF21 /* RequestPostSummaryView.swift in Sources */,
 				8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */,

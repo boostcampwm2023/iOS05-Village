@@ -69,7 +69,14 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
     
     func configureData(post: PostMuteResponseDTO) {
         postTitleLabel.text = post.title
-        postPeriodLabel.text = post.startDate + " ~ " + post.endDate
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        guard let startDate = dateFormatter.date(from: post.startDate),
+              let endDate = dateFormatter.date(from: post.endDate) else { return }
+        dateFormatter.dateFormat = "yyyy.MM.dd HH시"
+        let startDateString = dateFormatter.string(from: startDate)
+        let endDateString = dateFormatter.string(from: endDate)
+        postPeriodLabel.text = startDateString + " ~ " + endDateString
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -91,19 +98,19 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
     private func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            postTitleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -15),
-            postTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
+            postTitleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -15),
+            postTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
             postTitleLabel.widthAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([
-            postPeriodLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 15),
-            postPeriodLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30)
+            postPeriodLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 15),
+            postPeriodLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30)
         ])
         
         NSLayoutConstraint.activate([
-            postMuteButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            postMuteButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
+            postMuteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            postMuteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         ])
     }
 

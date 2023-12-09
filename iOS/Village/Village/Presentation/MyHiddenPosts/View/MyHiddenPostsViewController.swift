@@ -36,7 +36,7 @@ final class MyHiddenPostsViewController: UIViewController {
                 cell.hideToggleSubject
                     .receive(on: DispatchQueue.main)
                     .sink { bool in
-                        print("숨기기 toggled")
+                        // TODO: 숨김 해제 or 숨기기 클릭시 작동
                     }
                     .store(in: &self.cancellableBag)
                 
@@ -53,7 +53,7 @@ final class MyHiddenPostsViewController: UIViewController {
                 cell.hideToggleSubject
                     .receive(on: DispatchQueue.main)
                     .sink { bool in
-                        print("숨기기 toggled")
+                        // TODO: 숨김 해제 or 숨기기 클릭시 작동
                     }
                     .store(in: &self.cancellableBag)
                 
@@ -77,11 +77,11 @@ final class MyHiddenPostsViewController: UIViewController {
         tableView.rowHeight = 100
         tableView.register(
             HiddenRentPostTableViewCell.self,
-            forCellReuseIdentifier: RentPostTableViewCell.identifier
+            forCellReuseIdentifier: HiddenRentPostTableViewCell.identifier
         )
         tableView.register(
             HiddenRequestPostTableViewCell.self,
-            forCellReuseIdentifier: RequestPostTableViewCell.identifier
+            forCellReuseIdentifier: HiddenRequestPostTableViewCell.identifier
         )
         tableView.separatorStyle = .none
         
@@ -119,14 +119,16 @@ private extension MyHiddenPostsViewController {
     
     func bindViewModel() {
         let output = viewModel.transform(input: MyHiddenPostsViewModel.Input(
-            
+            toggleSubject: togglePublisher.eraseToAnyPublisher()
         ))
-    }
-    
-    func addNextPage(posts: [PostMuteResponseDTO]) {
-        var snapshot = dataSource.snapshot()
-        snapshot.appendItems(posts)
-        dataSource.apply(snapshot)
+        
+        output.toggleUpdateOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] posts in
+                self?.toggleData(posts: posts)
+            }
+            .store(in: &cancellableBag)
+        
     }
     
     func setUI() {

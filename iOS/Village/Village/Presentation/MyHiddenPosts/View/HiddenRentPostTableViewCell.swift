@@ -108,31 +108,32 @@ final class HiddenRentPostTableViewCell: UITableViewCell {
     private func configureUI() {
         contentView.addSubview(postImageView)
         contentView.addSubview(postTitleLabel)
+        contentView.addSubview(postPriceLabel)
         contentView.addSubview(postMuteButton)
     }
     
     private func configureConstraints() {
         NSLayoutConstraint.activate([
-            postImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            postImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            postImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            postImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             postImageView.widthAnchor.constraint(equalToConstant: 80),
             postImageView.heightAnchor.constraint(equalToConstant: 80)
         ])
         
         NSLayoutConstraint.activate([
-            postTitleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -15),
+            postTitleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -15),
             postTitleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20),
             postTitleLabel.widthAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([
-            postPriceLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 15),
+            postPriceLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 15),
             postPriceLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
         ])
         
         NSLayoutConstraint.activate([
-            postMuteButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            postMuteButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
+            postMuteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            postMuteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         ])
     }
     
