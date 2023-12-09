@@ -1,34 +1,26 @@
 //
-//  PostMuteTableViewCell.swift
+//  HiddenRequestPostTableViewCell.swift
 //  Village
 //
-//  Created by 박동재 on 2023/12/04.
+//  Created by 조성민 on 12/9/23.
 //
 
 import UIKit
 
-final class PostMuteTableViewCell: UITableViewCell {
-    
-    private let postView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        return view
-    }()
-    
-    private let postImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.layer.cornerRadius = 16
-        
-        return imageView
-    }()
+class HiddenRequestPostTableViewCell: UITableViewCell {
     
     private let postTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .bold)
+        
+        return label
+    }()
+    
+    private let postPriceLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 14, weight: .regular)
         
         return label
     }()
@@ -61,7 +53,7 @@ final class PostMuteTableViewCell: UITableViewCell {
             postMuteButton.configuration?.attributedTitle = titleAttribute
         }
     }
-    
+
     func configureData(post: PostMuteResponseDTO) {
         postTitleLabel.text = post.title
         
@@ -89,10 +81,9 @@ final class PostMuteTableViewCell: UITableViewCell {
     }
     
     private func configureUI() {
-        postView.addSubview(postImageView)
-        postView.addSubview(postTitleLabel)
-        postView.addSubview(postMuteButton)
-        self.contentView.addSubview(postView)
+        contentView.addSubview(postImageView)
+        contentView.addSubview(postTitleLabel)
+        contentView.addSubview(postMuteButton)
         
         configureConstraints()
     }
@@ -100,30 +91,27 @@ final class PostMuteTableViewCell: UITableViewCell {
     private func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            postView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
-            postView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            postView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            postView.heightAnchor.constraint(equalToConstant: 80)
+            postImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            postImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            postImageView.widthAnchor.constraint(equalToConstant: 80),
+            postImageView.heightAnchor.constraint(equalToConstant: 80)
         ])
         
         NSLayoutConstraint.activate([
-            postImageView.topAnchor.constraint(equalTo: postView.topAnchor, constant: 10),
-            postImageView.leadingAnchor.constraint(equalTo: postView.leadingAnchor, constant: 10),
-            postImageView.widthAnchor.constraint(equalToConstant: 60),
-            postImageView.heightAnchor.constraint(equalToConstant: 60)
-        ])
-        
-        NSLayoutConstraint.activate([
-            postTitleLabel.centerYAnchor.constraint(equalTo: postView.centerYAnchor),
+            postTitleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -15),
             postTitleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20),
             postTitleLabel.widthAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([
-            postMuteButton.topAnchor.constraint(equalTo: postView.topAnchor, constant: 25),
-            postMuteButton.trailingAnchor.constraint(equalTo: postView.trailingAnchor, constant: -20),
-            postMuteButton.widthAnchor.constraint(equalToConstant: 80),
-            postMuteButton.heightAnchor.constraint(equalToConstant: 30)
+            postPriceLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 15),
+            postPriceLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            postMuteButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            postMuteButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
         ])
     }
+
 }
