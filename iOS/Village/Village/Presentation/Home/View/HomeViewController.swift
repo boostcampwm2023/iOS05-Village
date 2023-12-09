@@ -196,9 +196,8 @@ final class HomeViewController: UIViewController {
     
     @objc private func searchButtonTapped() {
         let nextVC = SearchViewController()
-        let presentSearchNV = UINavigationController(rootViewController: nextVC)
-        presentSearchNV.modalPresentationStyle = .fullScreen
-        self.present(presentSearchNV, animated: true)
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     private func setLayoutConstraint() {

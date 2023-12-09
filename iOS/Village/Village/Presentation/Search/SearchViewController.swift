@@ -26,19 +26,10 @@ class SearchViewController: UIViewController {
         searchController.searchBar.delegate = self
         searchController.hidesNavigationBarDuringPresentation = false
         
-        let arrowLeft = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(backButtonTapped), symbolName: .arrowLeft
-        )
-        
-        navigationItem.leftBarButtonItem = arrowLeft
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchController.searchBar)
         navigationItem.backButtonDisplayMode = .minimal
         navigationItem.hidesSearchBarWhenScrolling = false
 
-    }
-    
-    @objc private func backButtonTapped() {
-        self.dismiss(animated: true)
     }
 
 }
