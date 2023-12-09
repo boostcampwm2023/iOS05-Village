@@ -14,7 +14,6 @@ import { PostsBlockModule } from './posts-block/posts-block.module';
 import { UsersBlockModule } from './users-block/users-block.module';
 import { LoginModule } from './login/login.module';
 import { ChatModule } from './chat/chat.module';
-import { RedisService } from './utils/redis';
 
 @Module({
   imports: [
@@ -43,7 +42,6 @@ import { RedisService } from './utils/redis';
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
-    //RedisService,
   ],
 })
 export class AppModule {}
