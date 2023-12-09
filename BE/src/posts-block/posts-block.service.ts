@@ -52,6 +52,9 @@ export class PostsBlockService {
         title: blockedPost.title,
         post_image: blockedPost.thumbnail,
         post_id: blockedPost.id,
+        start_date: blockedPost.start_date,
+        end_date: blockedPost.end_date,
+        is_request: blockedPost.is_request,
       };
     });
   }
