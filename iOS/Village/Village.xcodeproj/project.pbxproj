@@ -85,6 +85,8 @@
 		8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 8F628D182B0349FE0013042E /* .swiftlint.yml */; };
 		8F81E8402B246C0F00C5687C /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81E83F2B246C0F00C5687C /* SearchResultViewController.swift */; };
 		8F81E8422B247A8B00C5687C /* SearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81E8412B247A8B00C5687C /* SearchResultViewModel.swift */; };
+		8F81E8462B248B0A00C5687C /* SearchRequstTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81E8452B248B0A00C5687C /* SearchRequstTableViewCell.swift */; };
+		8F81E8482B248B5F00C5687C /* SearchRentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81E8472B248B5F00C5687C /* SearchRentTableViewCell.swift */; };
 		8F8F0B832B1B36DD00BE97D2 /* ChatListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B822B1B36DD00BE97D2 /* ChatListTableViewCell.swift */; };
 		8F8F0B852B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */; };
 		8F8F0B882B1D980900BE97D2 /* PostMuteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */; };
@@ -211,6 +213,8 @@
 		8F628D182B0349FE0013042E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8F81E83F2B246C0F00C5687C /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
 		8F81E8412B247A8B00C5687C /* SearchResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewModel.swift; sourceTree = "<group>"; };
+		8F81E8452B248B0A00C5687C /* SearchRequstTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRequstTableViewCell.swift; sourceTree = "<group>"; };
+		8F81E8472B248B5F00C5687C /* SearchRentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRentTableViewCell.swift; sourceTree = "<group>"; };
 		8F8F0B822B1B36DD00BE97D2 /* ChatListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListTableViewCell.swift; sourceTree = "<group>"; };
 		8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomRequestDTO.swift; sourceTree = "<group>"; };
 		8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteViewController.swift; sourceTree = "<group>"; };
@@ -653,6 +657,8 @@
 			isa = PBXGroup;
 			children = (
 				8F81E83F2B246C0F00C5687C /* SearchResultViewController.swift */,
+				8F81E8452B248B0A00C5687C /* SearchRequstTableViewCell.swift */,
+				8F81E8472B248B5F00C5687C /* SearchRentTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1120,9 +1126,11 @@
 				8F3D79E02B136C6800370536 /* ChatRoomViewModel.swift in Sources */,
 				44C1F5ED2B0FE44A0047A436 /* UserResponseDTO.swift in Sources */,
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
+				8F81E8482B248B5F00C5687C /* SearchRentTableViewCell.swift in Sources */,
 				8F95CF962B0C66910024631F /* Requestable.swift in Sources */,
 				59D8F1052B103A7200A08E02 /* PostModifyRequestDTO.swift in Sources */,
 				8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */,
+				8F81E8462B248B0A00C5687C /* SearchRequstTableViewCell.swift in Sources */,
 				59AABDE12B0E1BB8002F6D0E /* PostCreatePriceView.swift in Sources */,
 				8F8F0B832B1B36DD00BE97D2 /* ChatListTableViewCell.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */,
