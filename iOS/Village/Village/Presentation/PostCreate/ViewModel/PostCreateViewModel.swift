@@ -37,10 +37,15 @@ final class PostCreateViewModel {
     let isRequest: Bool
     let isEdit: Bool
     let postID: Int?
+    private var images = [Data]()
+    var imagesCount: Int {
+        images.count
+    }
     
     private let warningPublisher = PassthroughSubject<PostWarning, Never>()
     private let endOutput = PassthroughSubject<Void, NetworkError>()
     private let editInitPublisher = PassthroughSubject<PostInfoDTO, Never>()
+    private let imageOutput = PassthroughSubject<[ImageItem], Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -54,7 +59,7 @@ final class PostCreateViewModel {
         return Int(price)
     }
     
-    func modifyPost(post: PostModifyInfo) {
+    func modifyPost(post: PostModifyInfo, images: [Data]) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy.MM.dd HH:mm"
         guard let startTime = dateFormatter.date(from: post.startTime),
@@ -73,7 +78,7 @@ final class PostCreateViewModel {
                     startDate: startTimeString,
                     endDate: endTimeString
                 ),
-                image: [],
+                image: images,
                 postID: postID
             )
         )
@@ -143,11 +148,11 @@ final class PostCreateViewModel {
                     titleWarning: post.title.isEmpty,
                     startTimeWarning: post.startTime.isEmpty,
                     endTimeWarning: post.endTime.isEmpty,
-                    priceWarning: isRequest ? nil : post.price?.isEmpty,
+                    priceWarning: self.isRequest ? nil : post.price?.isEmpty,
                     timeSequenceWarning: timeSequenceWarn(startTimeString: post.startTime, endTimeString: post.endTime)
                 )
                 if warning.validation == true {
-                    modifyPost(post: post)
+                    modifyPost(post: post, images: images)
                 } else {
                     warningPublisher.send(warning)
                 }
@@ -160,10 +165,19 @@ final class PostCreateViewModel {
             }
             .store(in: &cancellableBag)
         
+        input.selectedImagePublisher
+            .sink { [weak self] data in
+                let imageItems = data.map { ImageItem(data: $0) }
+                self?.images += data
+                self?.imageOutput.send(imageItems)
+            }
+            .store(in: &cancellableBag)
+        
         return Output(
             warningResult: warningPublisher.eraseToAnyPublisher(),
             endResult: endOutput.eraseToAnyPublisher(),
-            editInitOutput: editInitPublisher.eraseToAnyPublisher()
+            editInitOutput: editInitPublisher.eraseToAnyPublisher(),
+            imageOutput: imageOutput.eraseToAnyPublisher()
         )
     }
     
@@ -175,6 +189,7 @@ extension PostCreateViewModel {
         
         var postInfoInput: PassthroughSubject<PostModifyInfo, Never>
         var editSetInput: PassthroughSubject<Void, Never>
+        var selectedImagePublisher: AnyPublisher<[Data], Never>
         
     }
     
@@ -183,6 +198,7 @@ extension PostCreateViewModel {
         var warningResult: AnyPublisher<PostWarning, Never>
         var endResult: AnyPublisher<Void, NetworkError>
         var editInitOutput: AnyPublisher<PostInfoDTO, Never>
+        var imageOutput: AnyPublisher<[ImageItem], Never>
         
     }
     
