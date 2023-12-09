@@ -35,8 +35,10 @@ final class MyHiddenPostsViewController: UIViewController {
                 cell.selectionStyle = .none
                 cell.hideToggleSubject
                     .receive(on: DispatchQueue.main)
-                    .sink { bool in
-                        // TODO: 숨김 해제 or 숨기기 클릭시 작동
+                    .sink { [weak self] isHidden in
+                        self?.hideTogglePublisher.send(HidePostInfo(
+                            postID: post.postID, isHidden: isHidden)
+                        )
                     }
                     .store(in: &self.cancellableBag)
                 
@@ -52,8 +54,10 @@ final class MyHiddenPostsViewController: UIViewController {
                 cell.selectionStyle = .none
                 cell.hideToggleSubject
                     .receive(on: DispatchQueue.main)
-                    .sink { bool in
-                        // TODO: 숨김 해제 or 숨기기 클릭시 작동
+                    .sink { [weak self] isHidden in
+                        self?.hideTogglePublisher.send(HidePostInfo(
+                            postID: post.postID, isHidden: isHidden)
+                        )
                     }
                     .store(in: &self.cancellableBag)
                 
@@ -89,6 +93,7 @@ final class MyHiddenPostsViewController: UIViewController {
     }()
     
     private let togglePublisher = PassthroughSubject<Void, Never>()
+    private let hideTogglePublisher = PassthroughSubject<HidePostInfo, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(viewModel: ViewModel) {
@@ -119,7 +124,8 @@ private extension MyHiddenPostsViewController {
     
     func bindViewModel() {
         let output = viewModel.transform(input: MyHiddenPostsViewModel.Input(
-            toggleSubject: togglePublisher.eraseToAnyPublisher()
+            toggleSubject: togglePublisher.eraseToAnyPublisher(),
+            toggleHideSubject: hideTogglePublisher.eraseToAnyPublisher()
         ))
         
         output.toggleUpdateOutput

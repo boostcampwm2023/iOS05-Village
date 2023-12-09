@@ -76,7 +76,7 @@ final class HiddenRentPostTableViewCell: UITableViewCell {
     
     @objc private func muteButtonTapped() {
         if postMuteButton.titleLabel?.text == "숨김 해제" {
-            postMuteButton.configuration?.baseBackgroundColor = .black
+            postMuteButton.configuration?.baseBackgroundColor = .grey800
             postMuteButton.configuration?.attributedTitle = hideOnString
             hideToggleSubject.send(false)
         } else {
@@ -133,7 +133,9 @@ final class HiddenRentPostTableViewCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             postMuteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            postMuteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
+            postMuteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            postMuteButton.widthAnchor.constraint(equalToConstant: 80)
+            
         ])
     }
     
