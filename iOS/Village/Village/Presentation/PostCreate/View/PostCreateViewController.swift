@@ -18,6 +18,7 @@ final class PostCreateViewController: UIViewController {
     private let editSetSubject = PassthroughSubject<Void, Never>()
     private let postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
     private let selectedImagePublisher = PassthroughSubject<[Data], Never>()
+    private let deleteImagePublisher = PassthroughSubject<ImageItem, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -62,7 +63,8 @@ final class PostCreateViewController: UIViewController {
         let action = UIAction { [weak self] _ in
             self?.presentPHPickerViewController()
         }
-        let view = ImageUploadView(frame: .zero, action: action)
+        let view = ImageUploadView(cameraButtonAction: action,
+                                   deleteImagePublisher: deleteImagePublisher)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
@@ -158,7 +160,8 @@ final class PostCreateViewController: UIViewController {
         let input = ViewModel.Input(
             postInfoInput: postInfoPublisher,
             editSetInput: editSetSubject,
-            selectedImagePublisher: selectedImagePublisher.eraseToAnyPublisher()
+            selectedImagePublisher: selectedImagePublisher.eraseToAnyPublisher(),
+            deleteImagePublisher: deleteImagePublisher.eraseToAnyPublisher()
         )
         
         let output = viewModel.transform(input: input)
@@ -226,7 +229,7 @@ final class PostCreateViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] imageItemList in
                 guard let self = self else { return }
-                self.imageUploadView.setImageItem(items: imageItemList, currentCount: self.viewModel.imagesCount)
+                self.imageUploadView.setImageItem(items: imageItemList)
             }
             .store(in: &cancellableBag)
     }
@@ -406,6 +409,7 @@ extension PostCreateViewController: PHPickerViewControllerDelegate {
         var config = PHPickerConfiguration()
         config.selectionLimit = Constant.maxImageCount - viewModel.imagesCount
         config.filter = .images
+        config.selection = .ordered
         
         return config
     }
