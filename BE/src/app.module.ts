@@ -30,6 +30,7 @@ import { RedisConfigProvider } from './config/redis.config';
       useClass: MysqlConfigProvider,
     }),
     CacheModule.registerAsync({
+      isGlobal: true,
       useClass: RedisConfigProvider,
     }),
     PostsBlockModule,

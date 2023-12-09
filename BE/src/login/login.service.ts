@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
@@ -9,6 +9,7 @@ import { AppleLoginDto } from './dto/appleLogin.dto';
 import * as jwt from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
 import { FcmHandler } from '../utils/fcmHandler';
+import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 
 export interface SocialProperties {
   OAuthDomain: string;
@@ -30,6 +31,7 @@ export class LoginService {
     private configService: ConfigService,
     private jwtService: JwtService,
     private fcmHandler: FcmHandler,
+    @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
   ) {
     this.jwksClient = jwksClient({
       jwksUri: 'https://appleid.apple.com/auth/keys',
@@ -45,8 +47,13 @@ export class LoginService {
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
-  async logout(userId, accessToken) {
-    await this.fcmHandler.removeRegistrationToken(userId);
+  async logout(accessToken) {
+    const decodedToken: any = jwt.decode(accessToken);
+    if (decodedToken && decodedToken.exp) {
+      await this.fcmHandler.removeRegistrationToken(decodedToken.userId);
+      const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
+      await this.cacheManager.set(accessToken, 'logout', { ttl });
+    }
   }
   async registerUser(socialProperties: SocialProperties) {
     const userEntity = new UserEntity();
