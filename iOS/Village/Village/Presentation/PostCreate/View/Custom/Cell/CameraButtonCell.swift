@@ -13,7 +13,7 @@ final class CameraButtonCell: UICollectionViewCell {
         var configuration = UIButton.Configuration.plain()
         configuration.imagePlacement = .top
         configuration.image = UIImage(systemName: ImageSystemName.cameraFill.rawValue)
-        configuration.baseForegroundColor = .grey100
+        configuration.baseForegroundColor = .grey800
         configuration.imagePadding = 5
         
         let button = UIButton(configuration: configuration)
