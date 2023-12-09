@@ -150,28 +150,6 @@ final class ChatRoomViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(false)
-
-        self.roomID.receive(on: DispatchQueue.main)
-            .sink { roomID in
-                WebSocket.shared.sendDisconnectRoom(roomID: roomID)
-            }
-            .store(in: &cancellableBag)
-    }
-    
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        
-//        DispatchQueue.main.async {
-//            if !self.viewModel.getLog().isEmpty {
-//                self.chatTableView.scrollToRow(
-//                    at: IndexPath(row: self.viewModel.getLog().count-1, section: 0), at: .bottom, animated: false
-//                )
-//            }
-//        }
-//    }
-    
     func setSocket() {
         WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
         try? WebSocket.shared.openWebSocket()
@@ -183,13 +161,12 @@ final class ChatRoomViewController: UIViewController {
         
         MessageManager.shared.messageSubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] message in
-                let sender = message.sender
-                let message = message.message
-                self?.viewModel.appendLog(sender: sender, message: message)
+            .sink { [weak self] data in
+                let data = data.data
+                self?.viewModel.appendLog(sender: data.sender, message: data.message)
                 guard let count = self?.viewModel.getLog().count else { return }
-                self?.addGenerateData(chat: Message(sender: sender, message: message, count: count))
-//                self?.viewModel.appendLog(newLog: message)
+                self?.addGenerateData(chat: Message(sender: data.sender, message: data.message, count: count))
+                self?.chatTableView.scrollToRow(at: IndexPath(row: count-1, section: 0), at: .bottom, animated: false)
             }
             .store(in: &cancellableBag)
     }
