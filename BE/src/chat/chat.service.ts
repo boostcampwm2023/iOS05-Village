@@ -81,7 +81,7 @@ export class ChatService {
 
     const rooms = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
-      .leftJoin(
+      .innerJoin(
         '(' + subquery.getQuery() + ')',
         'chat_info',
         'chat_room.id = chat_info.chat_room',
@@ -113,6 +113,7 @@ export class ChatService {
       ])
       .where('chat_room.writer = :userId', { userId: userId })
       .orWhere('chat_room.user = :userId', { userId: userId })
+      .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
     return rooms.reduce((acc, cur) => {
