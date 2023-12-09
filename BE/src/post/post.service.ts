@@ -249,4 +249,18 @@ export class PostService {
     await this.blockPostRepository.softDelete({ blocked_post: postId });
     await this.postRepository.softDelete({ id: postId });
   }
+
+  async findPostsTitles(searchKeyword: string) {
+    const posts: PostEntity[] = await this.postRepository.find({
+      where: { title: Like(`%${searchKeyword}%`) },
+      order: {
+        create_date: 'desc',
+      },
+    });
+    const titles: string[] = posts.map((post) => post.title);
+    return {
+      titles: titles.slice(0, 5),
+    };
+    // return titles.slice(0, 5);
+  }
 }
