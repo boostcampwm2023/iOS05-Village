@@ -39,10 +39,11 @@ export class PostsBlockService {
     await this.blockPostRepository.save(blockPostEntity);
   }
 
-  async findBlockedPosts(blockerId: string) {
+  async findBlockedPosts(blockerId: string, requestFilter: number) {
     const blockLists = await this.blockPostRepository.find({
       where: {
         blocker: blockerId,
+        blockedPost: this.getRequestFilter(requestFilter),
       },
       relations: ['blockedPost'],
     });
@@ -57,6 +58,13 @@ export class PostsBlockService {
         is_request: blockedPost.is_request,
       };
     });
+  }
+
+  getRequestFilter(requestFilter: number) {
+    if (requestFilter === undefined) {
+      return undefined;
+    }
+    return { is_request: requestFilter === 1 };
   }
 
   async removeBlockPosts(blockedPostId: number, userId: string) {
