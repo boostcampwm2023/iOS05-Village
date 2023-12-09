@@ -14,6 +14,8 @@ final class PostDetailViewModel {
     private var user = PassthroughSubject<UserResponseDTO, NetworkError>()
     private var roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
     private let deleteOutput = PassthroughSubject<Void, NetworkError>()
+    private let hideOutput = PassthroughSubject<Void, NetworkError>()
+    
     private var responseData: PostRoomResponseDTO?
     private var cancellableBag = Set<AnyCancellable>()
     var postDTO: PostResponseDTO?
@@ -47,9 +49,16 @@ final class PostDetailViewModel {
             }
             .store(in: &cancellableBag)
         
+        input.hideInput
+            .sink { [weak self] postID in
+                self?.hidePost(postID: postID)
+            }
+            .store(in: &cancellableBag)
+        
         return Output(
             post: post.eraseToAnyPublisher(),
-            deleteOutput: deleteOutput.eraseToAnyPublisher()
+            deleteOutput: deleteOutput.eraseToAnyPublisher(),
+            hideOutput: hideOutput.eraseToAnyPublisher()
         )
     }
     
@@ -101,7 +110,21 @@ final class PostDetailViewModel {
                 deleteOutput.send(completion: .failure(error))
             }
         }
+    }
+    
+    private func hidePost(postID: Int) {
+        let endpoint = APIEndPoints.hidePost(postID: postID)
         
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+                hideOutput.send()
+            } catch let error as NetworkError {
+                hideOutput.send(completion: .failure(error))
+            } catch {
+                dump(error)
+            }
+        }
     }
     
 }
@@ -111,11 +134,13 @@ extension PostDetailViewModel {
     struct Input {
         var postID: AnyPublisher<Int, Never>
         var deleteInput: AnyPublisher<Int, Never>
+        let hideInput: AnyPublisher<Int, Never>
     }
     
     struct Output {
         var post: AnyPublisher<PostResponseDTO, NetworkError>
         var deleteOutput: AnyPublisher<Void, NetworkError>
+        var hideOutput: AnyPublisher<Void, NetworkError>
     }
     
     struct UserInput {

@@ -17,6 +17,7 @@ final class PostDetailViewController: UIViewController {
     private var userID: Just<String>?
     private var isRequest: Bool?
     private var deletePostID = PassthroughSubject<Int, Never>()
+    private let hidePost = PassthroughSubject<Int, Never>()
     
     private let viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
@@ -140,8 +141,9 @@ final class PostDetailViewController: UIViewController {
     }
     
     private var hideAction: UIAlertAction {
-        lazy var action = UIAlertAction(title: "게시글 숨기기", style: .default) { _ in
-            // TODO: hide post
+        lazy var action = UIAlertAction(title: "게시글 숨기기", style: .default) { [weak self] _ in
+            guard let id = self?.postID.output else { return }
+            self?.hidePost.send(id)
         }
         return action
     }
@@ -243,7 +245,7 @@ final class PostDetailViewController: UIViewController {
     }
     
     private func setUserContent(user: UserResponseDTO) {
-        userInfoView.setContent(imageURL: user.profileImageURL ?? "", nickname: user.nickname)
+        userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
     }
 
 }
@@ -274,7 +276,8 @@ private extension PostDetailViewController {
     private func bindPostViewModel() {
         let output = viewModel.transformPost(input: Input(
             postID: postID.eraseToAnyPublisher(),
-            deleteInput: deletePostID.eraseToAnyPublisher()
+            deleteInput: deletePostID.eraseToAnyPublisher(),
+            hideInput: hidePost.eraseToAnyPublisher()
         ))
         
         bindPostOutput(output)
@@ -314,6 +317,20 @@ private extension PostDetailViewController {
             .store(in: &cancellableBag)
         
         output.deleteOutput
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            })
+            .store(in: &cancellableBag)
+        
+        output.hideOutput
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {

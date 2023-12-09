@@ -184,4 +184,12 @@ struct APIEndPoints {
         )
     }
     
+    static func hidePost(postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/block/\(postID)",
+            method: .POST
+        )
+    }
+    
 }
