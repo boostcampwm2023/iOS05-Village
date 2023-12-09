@@ -14,15 +14,15 @@ final class HomeViewModel {
     
     private var postList = PassthroughSubject<[PostListItem], Error>()
     private var lastPostID: String?
-    private var isPaging = false
+    private var isLoading = false
+    private let lock = NSLock()
     
     func transform(input: Input) -> Output {
         input.needPostList
             .sink(receiveValue: { [weak self] isRefresh in
-                guard let self = self else { return }
-                if !self.isPaging {
-                    self.getPosts(isRefresh: isRefresh)
-                }
+                guard let self = self,
+                      isLoading == false else { return }
+                self.getPosts(isRefresh: isRefresh)
             })
             .store(in: &cancellableBag)
         
@@ -30,22 +30,26 @@ final class HomeViewModel {
     }
     
     private func getPosts(isRefresh: Bool) {
-        if isRefresh { lastPostID = nil }
-        
-        let postRequestDTO = (lastPostID == nil) ? nil : PostListRequestDTO(page: lastPostID)
-        let endpoint = APIEndPoints.getPosts(queryParameter: postRequestDTO)
-        
-        Task {
-            do {
-                isPaging = true
-                guard let items = try await APIProvider.shared.request(with: endpoint),
-                      let lastID = items.last?.postID else { return }
-                lastPostID = "\(lastID)"
-                postList.send(items.map { PostListItem(dto: $0) })
-                isPaging = false
-            } catch {
-                postList.send(completion: .failure(error))
-                isPaging = false
+        lock.withLock {
+            if isRefresh { lastPostID = nil }
+            
+            let postRequestDTO = (lastPostID == nil) ? nil : PostListRequestDTO(page: lastPostID)
+            let endpoint = APIEndPoints.getPosts(queryParameter: postRequestDTO)
+            
+            Task {
+                do {
+                    isLoading = true
+                    guard let items = try await APIProvider.shared.request(with: endpoint),
+                          let lastID = items.last?.postID else {
+                        isLoading = false
+                        return
+                    }
+                    lastPostID = "\(lastID)"
+                    postList.send(items.map { PostListItem(dto: $0) })
+                } catch {
+                    postList.send(completion: .failure(error))
+                }
+                isLoading = false
             }
         }
     }

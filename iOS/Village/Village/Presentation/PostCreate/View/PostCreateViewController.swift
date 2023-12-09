@@ -158,7 +158,6 @@ final class PostCreateViewController: UIViewController {
                     self?.postCreateStartTimeView.warn(warning.startTimeWarning)
                     self?.postCreateEndTimeView.warn(warning.endTimeWarning)
                 } else {
-                    self?.postCreateStartTimeView.changeWarn(enable: warning.timeSequenceWarning)
                     self?.postCreateEndTimeView.changeWarn(enable: warning.timeSequenceWarning)
                 }
             }
@@ -208,12 +207,14 @@ private extension PostCreateViewController {
     func post(_ sender: UIButton) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = ""
+        guard var priceText = postCreatePriceView.priceTextField.text else { return }
+        priceText = priceText.replacingOccurrences(of: ",", with: "")
         postInfoPublisher.send(
             PostModifyInfo(
                 title: postCreateTitleView.titleTextField.text ?? "",
                 startTime: postCreateStartTimeView.timeString,
                 endTime: postCreateEndTimeView.timeString,
-                price: postCreatePriceView.priceTextField.text ?? "",
+                price: priceText,
                 detail: postCreateDetailView.detailTextView.text ?? ""
             )
         )

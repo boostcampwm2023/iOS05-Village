@@ -8,11 +8,44 @@
 import Foundation
 import Combine
 
+struct ProfileInfo: Equatable {
+    
+    var nickname: String
+    var profileImage: Data?
+    
+}
+
 final class MyPageViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     private var logoutSucceed = PassthroughSubject<Void, Error>()
     private var deleteAccountSucceed = PassthroughSubject<Void, Error>()
+    
+    var profileInfoSubject = CurrentValueSubject<ProfileInfo?, Never>(nil)
+    
+    init() {
+        getUserInfo()
+    }
+    
+    func getUserInfo() {
+        guard let userID = JWTManager.shared.currentUserID else { return }
+        let endpoint = APIEndPoints.getUser(id: userID)
+        
+        Task {
+            do {
+                guard let userData = try await APIProvider.shared.request(with: endpoint) else { return }
+                let userImageData = try await APIProvider.shared.request(from: userData.profileImageURL)
+                profileInfoSubject.send(ProfileInfo(
+                    nickname: userData.nickname,
+                    profileImage: userImageData
+                ))
+            } catch let error as NetworkError {
+                dump(error)
+            } catch {
+                dump(error)
+            }
+        }
+    }
     
     func transform(input: Input) -> Output {
         input.logoutSubject
@@ -29,7 +62,8 @@ final class MyPageViewModel {
         
         return Output(
             logoutSucceed: logoutSucceed.eraseToAnyPublisher(),
-            deleteAccountSucceed: deleteAccountSucceed.eraseToAnyPublisher()
+            deleteAccountSucceed: deleteAccountSucceed.eraseToAnyPublisher(),
+            profileInfoOutput: profileInfoSubject.eraseToAnyPublisher()
         )
     }
     
@@ -74,6 +108,7 @@ extension MyPageViewModel {
     struct Output {
         var logoutSucceed: AnyPublisher<Void, Error>
         var deleteAccountSucceed: AnyPublisher<Void, Error>
+        var profileInfoOutput: AnyPublisher<ProfileInfo?, Never>
     }
     
 }

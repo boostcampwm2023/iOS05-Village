@@ -173,5 +173,15 @@ struct APIEndPoints {
             method: .POST
         )
     }
-  
+    
+    static func patchUser(userInfo: PatchUserDTO) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/\(userInfo.userID)",
+            method: .PATCH,
+            bodyParameters: userInfo.httpBody,
+            headers: ["Content-Type": "multipart/form-data; boundary=\(userInfo.boundary)"]
+        )
+    }
+    
 }

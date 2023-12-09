@@ -43,6 +43,10 @@ final class ProfileImageView: UIView {
     required init?(coder: NSCoder) {
         fatalError("should not be called")
     }
+    
+    func setProfile(image: UIImage) {
+        profileImageView.image = image
+    }
 
 }
 

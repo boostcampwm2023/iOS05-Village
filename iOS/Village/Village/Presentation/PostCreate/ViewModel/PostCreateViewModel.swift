@@ -47,6 +47,7 @@ final class PostCreateViewModel {
     private let useCase: PostCreateUseCase
     
     func priceToInt(price: String?) -> Int? {
+        if isRequest { return nil }
         guard var price = price else { return nil }
         price = price.replacingOccurrences(of: ".", with: "")
         
@@ -142,7 +143,7 @@ final class PostCreateViewModel {
                     titleWarning: post.title.isEmpty,
                     startTimeWarning: post.startTime.isEmpty,
                     endTimeWarning: post.endTime.isEmpty,
-                    priceWarning: post.price?.isEmpty,
+                    priceWarning: isRequest ? nil : post.price?.isEmpty,
                     timeSequenceWarning: timeSequenceWarn(startTimeString: post.startTime, endTimeString: post.endTime)
                 )
                 if warning.validation == true {

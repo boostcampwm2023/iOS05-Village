@@ -22,10 +22,10 @@ final class MyPageViewController: UIViewController {
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: ImageSystemName.personFill.rawValue)
         imageView.tintColor = .primary500
         imageView.setLayer(borderWidth: 0, cornerRadius: 16)
         imageView.backgroundColor = .primary100
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -34,7 +34,6 @@ final class MyPageViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        label.text = "닉네임"
         
         return label
     }()
@@ -43,7 +42,6 @@ final class MyPageViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 16)
-        label.text = "#123123"
         label.textColor = .secondaryLabel
         
         return label
@@ -81,6 +79,15 @@ final class MyPageViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 10
+        
+        return stackView
+    }()
+    
+    private let profileStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.alignment = .leading
         
         return stackView
     }()
@@ -226,17 +233,21 @@ private extension MyPageViewController {
     
     func setUI() {
         view.addSubview(profileImageView)
-        view.addSubview(nicknameLabel)
-        view.addSubview(hashIDLabel)
-        view.addSubview(profileEditButton)
-        view.addSubview(activityStackView)
-        view.addSubview(accountStackView)
         
+        view.addSubview(profileStackView)
+        profileStackView.addArrangedSubview(nicknameLabel)
+        profileStackView.setCustomSpacing(2, after: nicknameLabel)
+        profileStackView.addArrangedSubview(hashIDLabel)
+        profileStackView.setCustomSpacing(6, after: hashIDLabel)
+        profileStackView.addArrangedSubview(profileEditButton)
+        
+        view.addSubview(activityStackView)
         activityStackView.addArrangedSubview(activityLabel)
         activityStackView.addArrangedSubview(myPostButton)
         activityStackView.addArrangedSubview(hiddenPostButton)
         activityStackView.addArrangedSubview(hiddenUserButton)
         
+        view.addSubview(accountStackView)
         accountStackView.addArrangedSubview(accountLabel)
         accountStackView.addArrangedSubview(logoutButton)
         accountStackView.addArrangedSubview(deleteAccountButton)
@@ -252,18 +263,8 @@ private extension MyPageViewController {
         ])
         
         NSLayoutConstraint.activate([
-            nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15),
-            nicknameLabel.bottomAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: -5)
-        ])
-        
-        NSLayoutConstraint.activate([
-            hashIDLabel.leadingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor, constant: 5),
-            hashIDLabel.bottomAnchor.constraint(equalTo: nicknameLabel.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            profileEditButton.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15),
-            profileEditButton.topAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 5)
+            profileStackView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15),
+            profileStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0)
         ])
         
         NSLayoutConstraint.activate([
@@ -313,6 +314,18 @@ private extension MyPageViewController {
                 NotificationCenter.default.post(Notification(name: .shouldLogin))
             }
             .store(in: &cancellableBag)
+        
+        output.profileInfoOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] profileInfo in
+                guard let data = profileInfo?.profileImage,
+                      let image = UIImage(data: data) else { return }
+                self?.profileImageView.image = image
+                self?.nicknameLabel.text = profileInfo?.nickname
+                guard let userID = JWTManager.shared.currentUserID else { return }
+                self?.hashIDLabel.text = "#" + userID
+            }
+            .store(in: &cancellableBag)
     }
     
 }
@@ -321,7 +334,18 @@ private extension MyPageViewController {
 private extension MyPageViewController {
     
     func profileEditButtonTapped() {
-        
+        guard let postInfo = viewModel.profileInfoSubject.value else { return }
+        let nextVC = SignUpViewController(viewModel: SignUpViewModel(
+            profileInfo: postInfo
+        ))
+        nextVC.hidesBottomBarWhenPushed = true
+        nextVC.updateSuccessSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.viewModel.getUserInfo()
+            }
+            .store(in: &cancellableBag)
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     func myPostsButtonTapped() {
