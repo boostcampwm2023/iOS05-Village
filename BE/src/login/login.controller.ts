@@ -46,8 +46,9 @@ export class LoginController {
   checkAccessToken() {}
 
   @Post('logout')
-  logout(@Headers('Authorization') token, @UserHash() userId) {
+  @UseGuards(AuthGuard)
+  async logout(@Headers('Authorization') token) {
     const accessToken = token.split(' ')[1];
-    this.loginService.logout(userId, accessToken);
+    await this.loginService.logout(accessToken);
   }
 }
