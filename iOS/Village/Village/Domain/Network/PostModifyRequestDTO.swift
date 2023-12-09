@@ -15,7 +15,7 @@ struct PostModifyRequestDTO: Encodable, MultipartFormData {
     let boundary = UUID().uuidString
     
     var httpBody: Data {
-        var body = NSMutableData()
+        let body = NSMutableData()
         
         var fieldString = "--\(boundary)\r\n"
         fieldString += "Content-Disposition: form-data; name=\"post_info\"\r\n"
@@ -69,7 +69,7 @@ struct PostInfoDTO: Encodable {
     
 }
 
-private extension NSMutableData {
+extension NSMutableData {
     
     func appendString(_ string: String) {
         if let data = string.data(using: .utf8) {

@@ -57,7 +57,7 @@ final class PostInfoView: UIView {
         titleLabel.text = title
         if let start = dateFormatter.date(from: startDate),
            let end = dateFormatter.date(from: endDate) {
-            durationView.setDuration(from: start - 540 * 60, to: end - 540 * 60)
+            durationView.setDuration(from: start, to: end)
         }
         setDescriptionLabel(description)
     }

@@ -224,7 +224,7 @@ private extension ChatRoomViewController {
     }
     
     @objc private func postViewTapped() {
-        var viewControllers = self.navigationController?.viewControllers ?? []
+        let viewControllers = self.navigationController?.viewControllers ?? []
         if viewControllers.count > 1 {
             guard let postID = self.postID else { return }
             postID.sink(receiveValue: { value in
