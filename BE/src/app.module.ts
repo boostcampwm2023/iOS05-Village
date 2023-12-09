@@ -15,7 +15,7 @@ import { UsersBlockModule } from './users-block/users-block.module';
 import { LoginModule } from './login/login.module';
 import { ChatModule } from './chat/chat.module';
 import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-ioredis';
+import { RedisConfigProvider } from './config/redis.config';
 
 @Module({
   imports: [
@@ -29,17 +29,15 @@ import * as redisStore from 'cache-manager-ioredis';
     TypeOrmModule.forRootAsync({
       useClass: MysqlConfigProvider,
     }),
+    CacheModule.registerAsync({
+      useClass: RedisConfigProvider,
+    }),
     PostsBlockModule,
     UsersBlockModule,
     PostModule,
     UsersModule,
     LoginModule,
     ChatModule,
-    CacheModule.register({
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-    }),
   ],
   controllers: [AppController],
   providers: [
