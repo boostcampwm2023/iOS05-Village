@@ -12,7 +12,7 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
     
     let hideToggleSubject = PassthroughSubject<Bool, Never>()
     
-    let postTitleLabel: UILabel = {
+    private let postTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .bold)
@@ -20,7 +20,7 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
         return label
     }()
     
-    let postPeriodLabel: UILabel = {
+    private let postPeriodLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 12, weight: .regular)
@@ -96,7 +96,6 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
     }
     
     private func configureConstraints() {
-        
         NSLayoutConstraint.activate([
             postTitleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -15),
             postTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),

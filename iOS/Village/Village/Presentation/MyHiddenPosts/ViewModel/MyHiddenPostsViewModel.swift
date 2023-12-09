@@ -36,7 +36,7 @@ final class MyHiddenPostsViewModel {
         getMyHiddenPosts()
     }
     
-    func getMyHiddenPosts() {        
+    private func getMyHiddenPosts() {        
         let endpoint = APIEndPoints.getHiddenPosts(
             requestFilter: RequestFilterDTO(
                 requestFilter: requestFilter
