@@ -120,10 +120,38 @@ final class PostCreateViewModel {
                         endDate: data.endDate
                     )
                 )
+                setEditImage(imageURL: data.imageURL)
             } catch {
                 dump(error)
             }
         }
+    }
+    
+    private func setEditImage(imageURL: [String]) {
+        Task { [weak self] in
+            guard let self = self else { return }
+            do {
+                let data = try await self.getImageData(imageURL)
+                self.images = data.map { ImageItem(data: $0) }
+                self.imageOutput.send(self.images)
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
+    private func getImageData(_ urls: [String]) async throws -> [Data] {
+        let imageData = try await withThrowingTaskGroup(of: Data.self, returning: [Data].self) { taskGroup in
+            urls.forEach { url in
+                taskGroup.addTask { try await APIProvider.shared.request(from: url) }
+            }
+            var imageData = [Data]()
+            for try await data in taskGroup {
+                imageData.append(data)
+            }
+            return imageData
+        }
+        return imageData
     }
     
     func timeSequenceWarn(startTimeString: String, endTimeString: String) -> Bool {
