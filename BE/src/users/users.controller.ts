@@ -13,6 +13,8 @@ import {
   Body,
   ParseFilePipe,
   MaxFileSizeValidator,
+  Header,
+  Headers,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './createUser.dto';
@@ -58,8 +60,12 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async usersRemove(@Param('id') id: string, @UserHash() userId) {
-    await this.usersService.removeUser(id, userId);
+  async usersRemove(
+    @Param('id') id: string,
+    @UserHash() userId: string,
+    @Headers('authorization') token: string,
+  ) {
+    await this.usersService.removeUser(id, userId, token);
   }
 
   @Patch(':id')
