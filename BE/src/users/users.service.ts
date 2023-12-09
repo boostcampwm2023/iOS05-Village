@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './createUser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
@@ -12,10 +12,14 @@ import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ConfigService } from '@nestjs/config';
+import * as jwt from 'jsonwebtoken';
+import { FcmHandler } from 'src/utils/fcmHandler';
+import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
     @InjectRepository(PostEntity)
     private postRepository: Repository<PostEntity>,
     @InjectRepository(UserEntity)
@@ -30,6 +34,7 @@ export class UsersService {
     private registrationTokenRepository: Repository<RegistrationTokenEntity>,
     private s3Handler: S3Handler,
     private configService: ConfigService,
+    private fcmHandler: FcmHandler,
   ) {}
 
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
@@ -57,8 +62,15 @@ export class UsersService {
     }
   }
 
-  async removeUser(id: string, userId) {
+  async removeUser(id: string, userId: string, accessToken: string) {
     const userPk = await this.checkAuth(id, userId);
+    const decodedToken: any = jwt.decode(accessToken);
+    if (decodedToken && decodedToken.exp) {
+      await this.fcmHandler.removeRegistrationToken(decodedToken.userId);
+      const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
+      await this.cacheManager.set(accessToken, 'logout', { ttl });
+    }
+
     await this.deleteCascadingUser(userPk, userId);
     return true;
   }

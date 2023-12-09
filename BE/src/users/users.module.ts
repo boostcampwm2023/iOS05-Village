@@ -10,6 +10,7 @@ import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { AuthGuard } from 'src/utils/auth.guard';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
+import { FcmHandler } from 'src/utils/fcmHandler';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService, S3Handler, AuthGuard],
+  providers: [UsersService, S3Handler, AuthGuard, FcmHandler],
 })
 export class UsersModule {}
