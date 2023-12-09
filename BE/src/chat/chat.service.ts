@@ -181,8 +181,12 @@ export class ChatService {
       chatRoom.writerUser.user_hash === message.sender
         ? chatRoom.userUser
         : chatRoom.writerUser;
+    const sender: UserEntity =
+      chatRoom.writerUser.user_hash !== message.sender
+        ? chatRoom.userUser
+        : chatRoom.writerUser;
     const pushMessage: PushMessage = this.fcmHandler.createChatPushMessage(
-      receiver.nickname,
+      sender.nickname,
       message.message,
       message.room_id,
     );
