@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class HiddenRequestPostTableViewCell: UITableViewCell {
     
-    private let postTitleLabel: UILabel = {
+    let hideToggleSubject = PassthroughSubject<Bool, Never>()
+    
+    let postTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .bold)
@@ -17,15 +20,15 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let postPriceLabel: UILabel = {
+    let postPeriodLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .systemFont(ofSize: 12, weight: .regular)
         
         return label
     }()
     
-    private var postMuteButton: UIButton = {
+    private lazy var postMuteButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.titleAlignment = .center
         configuration.baseBackgroundColor = .primary500
@@ -40,40 +43,39 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
         return button
     }()
     
+    private let hideOnString: AttributedString = {
+        var titleAttribute = AttributedString.init("숨기기")
+        titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
+        return titleAttribute
+    }()
+    
+    private let hideOffString: AttributedString = {
+        var titleAttribute = AttributedString.init("숨김 해제")
+        titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
+        return titleAttribute
+    }()
+    
     @objc private func muteButtonTapped() {
         if postMuteButton.titleLabel?.text == "숨김 해제" {
             postMuteButton.configuration?.baseBackgroundColor = .black
-            var titleAttribute = AttributedString.init("숨기기")
-            titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
-            postMuteButton.configuration?.attributedTitle = titleAttribute
+            postMuteButton.configuration?.attributedTitle = hideOnString
+            hideToggleSubject.send(false)
         } else {
             postMuteButton.configuration?.baseBackgroundColor = .primary500
-            var titleAttribute = AttributedString.init("숨김 해제")
-            titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
-            postMuteButton.configuration?.attributedTitle = titleAttribute
+            postMuteButton.configuration?.attributedTitle = hideOffString
+            hideToggleSubject.send(true)
         }
-    }
-
-    func configureData(post: PostMuteResponseDTO) {
-        postTitleLabel.text = post.title
-        
-        configureImage(url: post.images.first ?? "")
     }
     
-    func configureImage(url: String) {
-        Task {
-            do {
-                let data = try await APIProvider.shared.request(from: url)
-                postImageView.image = UIImage(data: data)
-            } catch let error {
-                dump(error)
-            }
-        }
+    func configureData(post: PostMuteResponseDTO) {
+        postTitleLabel.text = post.title
+        postPeriodLabel.text = post.startDate + " ~ " + post.endDate
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
+        configureConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -81,31 +83,22 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
     }
     
     private func configureUI() {
-        contentView.addSubview(postImageView)
         contentView.addSubview(postTitleLabel)
+        contentView.addSubview(postPeriodLabel)
         contentView.addSubview(postMuteButton)
-        
-        configureConstraints()
     }
     
     private func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            postImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            postImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            postImageView.widthAnchor.constraint(equalToConstant: 80),
-            postImageView.heightAnchor.constraint(equalToConstant: 80)
-        ])
-        
-        NSLayoutConstraint.activate([
             postTitleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -15),
-            postTitleLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20),
+            postTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
             postTitleLabel.widthAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([
-            postPriceLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 15),
-            postPriceLabel.leadingAnchor.constraint(equalTo: postImageView.trailingAnchor, constant: 20)
+            postPeriodLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 15),
+            postPeriodLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30)
         ])
         
         NSLayoutConstraint.activate([

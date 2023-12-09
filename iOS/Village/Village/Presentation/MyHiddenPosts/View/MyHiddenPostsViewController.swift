@@ -23,23 +23,40 @@ final class MyHiddenPostsViewController: UIViewController {
     
     private lazy var dataSource: MyHiddenPostsDataSource = MyHiddenPostsDataSource(
         tableView: tableView) { [weak self] (tableView, indexPath, post) in
+            
             if post.isRequest {
                 guard let cell = tableView.dequeueReusableCell(
-                    withIdentifier: HiddenRentPostTableViewCell.identifier,
-                    for: indexPath) as? HiddenRentPostTableViewCell else {
-                    return HiddenRentPostTableViewCell()
+                    withIdentifier: HiddenRequestPostTableViewCell.identifier,
+                    for: indexPath) as? HiddenRequestPostTableViewCell,
+                      let self = self else {
+                    return HiddenRequestPostTableViewCell()
                 }
                 cell.configureData(post: post)
                 cell.selectionStyle = .none
+                cell.hideToggleSubject
+                    .receive(on: DispatchQueue.main)
+                    .sink { bool in
+                        print("숨기기 toggled")
+                    }
+                    .store(in: &self.cancellableBag)
+                
                 return cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(
                     withIdentifier: HiddenRentPostTableViewCell.identifier,
-                    for: indexPath) as? HiddenRentPostTableViewCell else {
+                    for: indexPath) as? HiddenRentPostTableViewCell,
+                      let self = self else {
                     return HiddenRentPostTableViewCell()
                 }
                 cell.configureData(post: post)
                 cell.selectionStyle = .none
+                cell.hideToggleSubject
+                    .receive(on: DispatchQueue.main)
+                    .sink { bool in
+                        print("숨기기 toggled")
+                    }
+                    .store(in: &self.cancellableBag)
+                
                 return cell
             }
         }
@@ -58,8 +75,14 @@ final class MyHiddenPostsViewController: UIViewController {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = 100
-        tableView.register(HiddenRentPostTableViewCell.self, forCellReuseIdentifier: RentPostTableViewCell.identifier)
-        tableView.register(HiddenRequestPostTableViewCell.self, forCellReuseIdentifier: RequestPostTableViewCell.identifier)
+        tableView.register(
+            HiddenRentPostTableViewCell.self,
+            forCellReuseIdentifier: RentPostTableViewCell.identifier
+        )
+        tableView.register(
+            HiddenRequestPostTableViewCell.self,
+            forCellReuseIdentifier: RequestPostTableViewCell.identifier
+        )
         tableView.separatorStyle = .none
         
         return tableView

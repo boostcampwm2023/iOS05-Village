@@ -37,7 +37,7 @@ final class HiddenRentPostTableViewCell: UITableViewCell {
         return label
     }()
     
-    private var postMuteButton: UIButton = {
+    private lazy var postMuteButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.titleAlignment = .center
         configuration.baseBackgroundColor = .primary500
@@ -57,11 +57,22 @@ final class HiddenRentPostTableViewCell: UITableViewCell {
         titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
         return titleAttribute
     }()
+    
     private let hideOffString: AttributedString = {
         var titleAttribute = AttributedString.init("숨김 해제")
         titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
         return titleAttribute
     }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configureUI()
+        configureConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("should not be called")
+    }
     
     @objc private func muteButtonTapped() {
         if postMuteButton.titleLabel?.text == "숨김 해제" {
@@ -75,14 +86,15 @@ final class HiddenRentPostTableViewCell: UITableViewCell {
         }
     }
     
-    
     func configureData(post: PostMuteResponseDTO) {
-//        postTitleLabel.text = post.title
-//        postPriceLabel.text = post.price?.priceText()
-//        configureImage(url: post.images.first ?? "")
+        postTitleLabel.text = post.title
+        guard let price = post.price else { return }
+        postPriceLabel.text = "\(price.priceText())원"
+        guard let url = post.postImage else { return }
+        configureImage(url: url)
     }
     
-    func configureImage(url: String) {
+    private func configureImage(url: String) {
         Task {
             do {
                 let data = try await APIProvider.shared.request(from: url)
@@ -93,21 +105,10 @@ final class HiddenRentPostTableViewCell: UITableViewCell {
         }
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureUI()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("should not be called")
-    }
-    
     private func configureUI() {
         contentView.addSubview(postImageView)
         contentView.addSubview(postTitleLabel)
         contentView.addSubview(postMuteButton)
-        
-        configureConstraints()
     }
     
     private func configureConstraints() {
