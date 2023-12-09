@@ -14,6 +14,8 @@ import { PostsBlockModule } from './posts-block/posts-block.module';
 import { UsersBlockModule } from './users-block/users-block.module';
 import { LoginModule } from './login/login.module';
 import { ChatModule } from './chat/chat.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { RedisConfigProvider } from './config/redis.config';
 
 @Module({
   imports: [
@@ -26,6 +28,9 @@ import { ChatModule } from './chat/chat.module';
     }),
     TypeOrmModule.forRootAsync({
       useClass: MysqlConfigProvider,
+    }),
+    CacheModule.registerAsync({
+      useClass: RedisConfigProvider,
     }),
     PostsBlockModule,
     UsersBlockModule,
