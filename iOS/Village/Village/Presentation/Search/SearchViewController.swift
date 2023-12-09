@@ -17,6 +17,10 @@ final class SearchViewController: UIViewController {
         
         setNavigationBarUI()
         
+        DispatchQueue.main.async {
+            self.searchController.searchBar.becomeFirstResponder()
+        }
+        
         view.backgroundColor = .systemBackground
     }
     
