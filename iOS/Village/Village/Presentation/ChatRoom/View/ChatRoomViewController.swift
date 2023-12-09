@@ -150,28 +150,6 @@ final class ChatRoomViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(false)
-
-        self.roomID.receive(on: DispatchQueue.main)
-            .sink { roomID in
-                WebSocket.shared.sendDisconnectRoom(roomID: roomID)
-            }
-            .store(in: &cancellableBag)
-    }
-    
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        
-//        DispatchQueue.main.async {
-//            if !self.viewModel.getLog().isEmpty {
-//                self.chatTableView.scrollToRow(
-//                    at: IndexPath(row: self.viewModel.getLog().count-1, section: 0), at: .bottom, animated: false
-//                )
-//            }
-//        }
-//    }
-    
     func setSocket() {
         WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
         try? WebSocket.shared.openWebSocket()
@@ -189,7 +167,6 @@ final class ChatRoomViewController: UIViewController {
                 self?.viewModel.appendLog(sender: sender, message: message)
                 guard let count = self?.viewModel.getLog().count else { return }
                 self?.addGenerateData(chat: Message(sender: sender, message: message, count: count))
-//                self?.viewModel.appendLog(newLog: message)
             }
             .store(in: &cancellableBag)
     }

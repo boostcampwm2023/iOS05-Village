@@ -87,19 +87,6 @@ final class WebSocket: NSObject {
         send(data: jsonData)
     }
     
-    func sendDisconnectRoom(roomID: Int) {
-        let disconnectRoomEvent = """
-        {
-          "event": "leave-room",
-          "data": {
-            "room_id": \(roomID)
-          }
-        }
-        """
-        guard let jsonData = disconnectRoomEvent.data(using: .utf8) else { return }
-        send(data: jsonData)
-    }
-    
     private func send(data: Data) {
         self.webSocketTask?.send(.data(data)) { error in
             if let error = error {
