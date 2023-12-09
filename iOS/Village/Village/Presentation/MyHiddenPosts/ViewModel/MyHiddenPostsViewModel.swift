@@ -11,7 +11,7 @@ import Combine
 struct HidePostInfo {
     
     let postID: Int
-    let bool: Bool
+    let isHidden: Bool
     
 }
 
@@ -67,7 +67,7 @@ final class MyHiddenPostsViewModel {
     }
     
     private func toggleHide(hideInfo: HidePostInfo) {
-        let endpoint = hideInfo.bool ?
+        let endpoint = hideInfo.isHidden ?
         APIEndPoints.hidePost(postID: hideInfo.postID) :
         APIEndPoints.unhidePost(postID: hideInfo.postID)
         

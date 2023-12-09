@@ -35,9 +35,9 @@ final class MyHiddenPostsViewController: UIViewController {
                 cell.selectionStyle = .none
                 cell.hideToggleSubject
                     .receive(on: DispatchQueue.main)
-                    .sink { [weak self] bool in
+                    .sink { [weak self] isHidden in
                         self?.hideTogglePublisher.send(HidePostInfo(
-                            postID: post.postID, bool: bool)
+                            postID: post.postID, isHidden: isHidden)
                         )
                     }
                     .store(in: &self.cancellableBag)
@@ -54,9 +54,9 @@ final class MyHiddenPostsViewController: UIViewController {
                 cell.selectionStyle = .none
                 cell.hideToggleSubject
                     .receive(on: DispatchQueue.main)
-                    .sink { [weak self] bool in
+                    .sink { [weak self] isHidden in
                         self?.hideTogglePublisher.send(HidePostInfo(
-                            postID: post.postID, bool: bool)
+                            postID: post.postID, isHidden: isHidden)
                         )
                     }
                     .store(in: &self.cancellableBag)
