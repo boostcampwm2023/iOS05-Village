@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
@@ -44,6 +44,11 @@ export class LoginService {
     }
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
+    await this.cacheManager.set(
+      user.user_hash,
+      refreshToken,
+      60 * 60 * 24 * 14,
+    );
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
@@ -53,6 +58,7 @@ export class LoginService {
       await this.fcmHandler.removeRegistrationToken(decodedToken.userId);
       const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
       await this.cacheManager.set(accessToken, 'logout', { ttl });
+      await this.cacheManager.del(decodedToken.userId);
     }
   }
   async registerUser(socialProperties: SocialProperties) {
@@ -166,13 +172,23 @@ export class LoginService {
     });
   }
 
-  async refreshToken(payload): Promise<JwtTokens> {
+  async refreshToken(refreshtoken, payload): Promise<JwtTokens> {
     const user = await this.userRepository.findOne({
       where: { user_hash: payload.userId },
     });
-    const accessToken = this.generateAccessToken(user);
-    const refreshToken = this.generateRefreshToken(user);
-    return { access_token: accessToken, refresh_token: refreshToken };
+
+    if ((await this.cacheManager.get(user.user_hash)) === refreshtoken) {
+      const accessToken = this.generateAccessToken(user);
+      const refreshToken = this.generateRefreshToken(user);
+      await this.cacheManager.set(
+        user.user_hash,
+        refreshToken,
+        60 * 60 * 24 * 2,
+      );
+      return { access_token: accessToken, refresh_token: refreshToken };
+    } else {
+      throw new HttpException('refresh token이 유효하지 않음', 403);
+    }
   }
 
   async loginAdmin(id) {
@@ -181,6 +197,7 @@ export class LoginService {
     });
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
+    await this.cacheManager.set(user.user_hash, refreshToken, 60 * 60 * 24 * 2);
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 }
