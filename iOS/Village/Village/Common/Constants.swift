@@ -27,3 +27,9 @@ enum ImageSystemName: String {
     case cameraCircleFill = "camera.circle.fill"
     
 }
+
+enum Constant {
+    
+    static let maxImageCount = 12
+    
+}
