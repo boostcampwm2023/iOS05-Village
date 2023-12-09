@@ -28,7 +28,7 @@ final class SignUpViewModel {
                 self?.nowInfo.nickname = nickname
                 self?.completeButtonEnableOutput.send(
                     self?.nowInfo != self?.previousInfo &&
-                    !nickname.isEmpty
+                    !nickname.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                 )
             }
             .store(in: &cancellableBag)
