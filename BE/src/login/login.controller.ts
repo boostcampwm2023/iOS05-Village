@@ -5,6 +5,7 @@ import {
   Headers,
   HttpException,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { LoginService, SocialProperties } from './login.service';
@@ -37,7 +38,7 @@ export class LoginController {
   }
 
   @Post('login/admin')
-  loginAdmin(@Body('user') user) {
+  loginAdmin(@Query('user') user) {
     return this.loginService.loginAdmin(user);
   }
 
