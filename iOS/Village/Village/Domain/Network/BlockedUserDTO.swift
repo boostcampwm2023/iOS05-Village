@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BlockedUserDTO: Decodable {
+struct BlockedUserDTO: Decodable, Hashable {
     
     let nickname: String
     let profileImageURL: String
