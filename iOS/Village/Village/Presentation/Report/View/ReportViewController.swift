@@ -155,7 +155,7 @@ private extension ReportViewController {
     }
     
     func configureNavigation() {
-        navigationItem.title = "사용자 신고"
+        navigationItem.title = "신고 접수"
         navigationItem.backButtonDisplayMode = .minimal
     }
     

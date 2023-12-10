@@ -150,7 +150,7 @@ final class PostDetailViewController: UIViewController {
     }
     
     private var banAction: UIAlertAction {
-        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .default) { [weak self] _ in
+        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .destructive) { [weak self] _ in
             guard let userIDSubject = self?.userID else { return }
             self?.blockUser.send(userIDSubject.output)
         }
@@ -158,7 +158,7 @@ final class PostDetailViewController: UIViewController {
     }
     
     private var reportAction: UIAlertAction {
-        lazy var action = UIAlertAction(title: "사용자 신고하기", style: .default) { [weak self] _ in
+        lazy var action = UIAlertAction(title: "신고하기", style: .destructive) { [weak self] _ in
             guard let userID = self?.userID?.output,
                   let postID = self?.postID.output else { return }
             let nextVC = ReportViewController(viewModel: ReportViewModel(
