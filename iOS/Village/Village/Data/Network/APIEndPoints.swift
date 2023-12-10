@@ -216,4 +216,12 @@ struct APIEndPoints {
         )
     }
     
+    static func hideUser(userID: String) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/block",
+            method: .POST
+        )
+    }
+    
 }
