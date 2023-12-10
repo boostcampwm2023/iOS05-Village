@@ -9,6 +9,7 @@ import { BlockPostEntity } from '../entities/blockPost.entity';
 import { ChatRoomEntity } from 'src/entities/chatRoom.entity';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
+import { ReportEntity } from '../entities/report.entity';
 
 @Injectable()
 export class MysqlConfigProvider implements TypeOrmOptionsFactory {
@@ -31,6 +32,7 @@ export class MysqlConfigProvider implements TypeOrmOptionsFactory {
         ChatRoomEntity,
         RegistrationTokenEntity,
         ChatEntity,
+        ReportEntity,
       ],
       synchronize: false,
     };
