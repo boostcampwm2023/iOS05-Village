@@ -77,7 +77,7 @@ final class ReportViewController: UIViewController {
     }()
     
     private lazy var completeAlert: UIAlertController = {
-        let alert = UIAlertController(title: "접수 완료", message: "신고가 접수되었습니다.", preferredStyle: .alert)
+        let alert = UIAlertController(title: nil, message: "신고가 접수되었습니다.", preferredStyle: .alert)
         let action = UIAlertAction(title: "완료", style: .default) { [weak self] _ in
             self?.navigationController?.popViewController(animated: true)
         }

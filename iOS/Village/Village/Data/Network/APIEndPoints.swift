@@ -245,7 +245,8 @@ struct APIEndPoints {
             baseURL: baseURL,
             path: "report",
             method: .POST,
-            bodyParameters: reportInfo
+            bodyParameters: reportInfo,
+            headers: ["Content-Type": "application/json"]
         )
     }
     
