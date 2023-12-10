@@ -44,6 +44,7 @@ final class ChatRoomTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         profileImageView.image = nil
+        messageView.text = nil
     }
     
     func configureData(message: String) {
