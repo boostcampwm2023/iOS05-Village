@@ -63,11 +63,14 @@ final class ImagePageView: UIView {
     }
     
     private func configureImageViews() {
-        for (index, url) in self.imageURL.enumerated() {
+        imageStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
+        for url in self.imageURL {
             Task {
                 do {
                     let data = try await APIProvider.shared.request(from: url)
-                    let imageView = generateImageView(data: data, index: index)
+                    let imageView = generateImageView(data: data)
                     imageStackView.addArrangedSubview(imageView)
                     imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
                     imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
@@ -78,7 +81,7 @@ final class ImagePageView: UIView {
         }
     }
     
-    private func generateImageView(data: Data, index: Int) -> UIImageView {
+    private func generateImageView(data: Data) -> UIImageView {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(data: data)
