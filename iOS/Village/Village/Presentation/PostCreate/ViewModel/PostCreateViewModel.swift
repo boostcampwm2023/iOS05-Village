@@ -37,7 +37,7 @@ final class PostCreateViewModel {
     let isRequest: Bool
     let isEdit: Bool
     let postID: Int?
-    private var images = [Data]()
+    private var images = [ImageItem]()
     var imagesCount: Int {
         images.count
     }
@@ -152,7 +152,7 @@ final class PostCreateViewModel {
                     timeSequenceWarning: timeSequenceWarn(startTimeString: post.startTime, endTimeString: post.endTime)
                 )
                 if warning.validation == true {
-                    modifyPost(post: post, images: images)
+                    modifyPost(post: post, images: images.map(\.data))
                 } else {
                     warningPublisher.send(warning)
                 }
@@ -168,8 +168,14 @@ final class PostCreateViewModel {
         input.selectedImagePublisher
             .sink { [weak self] data in
                 let imageItems = data.map { ImageItem(data: $0) }
-                self?.images += data
+                self?.images += imageItems
                 self?.imageOutput.send(imageItems)
+            }
+            .store(in: &cancellableBag)
+        
+        input.deleteImagePublisher
+            .sink { [weak self] item in
+                self?.deleteImage(item: item)
             }
             .store(in: &cancellableBag)
         
@@ -181,6 +187,10 @@ final class PostCreateViewModel {
         )
     }
     
+    func deleteImage(item: ImageItem) {
+        images.removeAll(where: {$0.id == item.id})
+    }
+    
 }
 
 extension PostCreateViewModel {
@@ -190,6 +200,7 @@ extension PostCreateViewModel {
         var postInfoInput: PassthroughSubject<PostModifyInfo, Never>
         var editSetInput: PassthroughSubject<Void, Never>
         var selectedImagePublisher: AnyPublisher<[Data], Never>
+        var deleteImagePublisher: AnyPublisher<ImageItem, Never>
         
     }
     
