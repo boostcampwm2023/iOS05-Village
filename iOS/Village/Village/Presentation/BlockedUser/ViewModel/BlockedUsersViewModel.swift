@@ -10,3 +10,15 @@ import Foundation
 final class BlockedUsersViewModel {
     
 }
+
+extension BlockedUsersViewModel {
+    
+    struct Input {
+        
+    }
+    
+    struct Output {
+        
+    }
+    
+}

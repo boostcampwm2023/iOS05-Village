@@ -111,6 +111,7 @@ final class MyHiddenPostsViewController: UIViewController {
         bindViewModel()
         setNavigationUI()
         setUI()
+        configureConstraints()
         generateData()
     }
     
@@ -142,7 +143,6 @@ private extension MyHiddenPostsViewController {
         view.addSubview(tableView)
         
         view.backgroundColor = .systemBackground
-        configureConstraints()
     }
     
     func generateData() {
