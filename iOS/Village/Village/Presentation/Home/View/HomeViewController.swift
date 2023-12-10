@@ -39,9 +39,10 @@ final class HomeViewController: UIViewController {
         return view
     }()
     
-    private lazy var containerView: UIView = {
-        let view = UIView()
+    private lazy var containerView: UIStackView = {
+        let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.distribution = .fillEqually
         
         return view
     }()
@@ -141,8 +142,8 @@ final class HomeViewController: UIViewController {
         view.addSubview(postSegmentedControl)
         view.addSubview(scrollView)
         scrollView.addSubview(containerView)
-        containerView.addSubview(rentPostTableView)
-        containerView.addSubview(requestPostTableView)
+        containerView.addArrangedSubview(rentPostTableView)
+        containerView.addArrangedSubview(requestPostTableView)
         view.addSubview(floatingButton)
         view.addSubview(menuView)
         setLayoutConstraint()
@@ -257,25 +258,12 @@ private extension HomeViewController {
         ])
         
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: scrollView.frameLayoutGuide.topAnchor),
-            containerView.bottomAnchor.constraint(equalTo: scrollView.frameLayoutGuide.bottomAnchor),
+            containerView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor),
+            containerView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, multiplier: 2),
+            containerView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             containerView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            containerView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, multiplier: 2)
-        ])
-        
-        NSLayoutConstraint.activate([
-            rentPostTableView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            rentPostTableView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            rentPostTableView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            rentPostTableView.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.5)
-        ])
-        
-        NSLayoutConstraint.activate([
-            requestPostTableView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            requestPostTableView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            requestPostTableView.leadingAnchor.constraint(equalTo: rentPostTableView.trailingAnchor),
-            requestPostTableView.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.5)
+            containerView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
         ])
     }
 
