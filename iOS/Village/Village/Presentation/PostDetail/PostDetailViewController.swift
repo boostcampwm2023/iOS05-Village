@@ -159,7 +159,11 @@ final class PostDetailViewController: UIViewController {
     
     private var reportAction: UIAlertAction {
         lazy var action = UIAlertAction(title: "사용자 신고하기", style: .default) { [weak self] _ in
-            let nextVC = ReportViewController(viewModel: ReportViewModel())
+            guard let userID = self?.userID?.output,
+                  let postID = self?.postID.output else { return }
+            let nextVC = ReportViewController(viewModel: ReportViewModel(
+                userID: userID, postID: postID
+            ))
             self?.navigationController?.pushViewController(nextVC, animated: true)
         }
         return action

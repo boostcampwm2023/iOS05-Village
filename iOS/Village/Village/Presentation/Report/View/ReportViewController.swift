@@ -6,12 +6,17 @@
 //
 
 import UIKit
+import Combine
 
 final class ReportViewController: UIViewController {
     
     typealias ViewModel = ReportViewModel
     
     private let viewModel: ViewModel
+    
+    private let reportSubject = PassthroughSubject<String, Never>()
+    
+    private var cancellableBag = Set<AnyCancellable>()
     
     private lazy var headerLabel: UILabel = {
         let label = UILabel()
@@ -40,7 +45,7 @@ final class ReportViewController: UIViewController {
     private lazy var infoLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "신고해주신 내용을 바탕으로 빌리지 팀에서 빠르게 조치하겠습니다."
+        label.text = "신고 내용이 사실과 다를 경우 이용 제재를 받을 수 있으니 주의해주세요."
         label.font = .systemFont(ofSize: 14)
         label.textColor = .darkGray
         
@@ -49,7 +54,7 @@ final class ReportViewController: UIViewController {
     
     private lazy var reportButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
-        configuration.title = "신고하기"
+        configuration.title = "신고 접수"
         configuration.baseBackgroundColor = .primary500
         configuration.titleAlignment = .center
         configuration.cornerStyle = .medium
@@ -59,6 +64,16 @@ final class ReportViewController: UIViewController {
         button.addTarget(self, action: #selector(reportButtonTapped), for: .touchUpInside)
         
         return button
+    }()
+    
+    private lazy var completeAlert: UIAlertController = {
+        let alert = UIAlertController(title: "접수 완료", message: "신고가 접수되었습니다.", preferredStyle: .alert)
+        let action = UIAlertAction(title: "신고가 접수되었습니다.", style: .default) { [weak self] action in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        alert.addAction(action)
+        
+        return alert
     }()
     
     override func viewDidLoad() {
@@ -80,7 +95,7 @@ final class ReportViewController: UIViewController {
     }
     
     @objc private func reportButtonTapped() {
-        
+        reportSubject.send(contentTextView.text)
     }
     
 }
@@ -128,7 +143,17 @@ private extension ReportViewController {
     }
     
     func bindViewModel() {
+        let output = viewModel.transform(
+            input: ReportViewModel.Input(reportButtonTapped: reportSubject.eraseToAnyPublisher())
+        )
         
+        output.completeOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                guard let alert = self?.completeAlert else { return }
+                self?.present(alert, animated: true)
+            }
+            .store(in: &cancellableBag)
     }
     
 }
