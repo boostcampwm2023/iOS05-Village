@@ -26,6 +26,7 @@ final class SearchViewController: UIViewController {
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.hidesNavigationBarDuringPresentation = false
+        searchController.automaticallyShowsCancelButton = false
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchController.searchBar)
         navigationItem.backButtonDisplayMode = .minimal
@@ -42,9 +43,10 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        self.navigationController?.pushViewController(
-            SearchResultViewController(title: self.searchTitle), animated: false
-        )
+        
+//        self.navigationController?.pushViewController(
+//            SearchResultViewController(title: self.searchTitle), animated: false
+//        )
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
