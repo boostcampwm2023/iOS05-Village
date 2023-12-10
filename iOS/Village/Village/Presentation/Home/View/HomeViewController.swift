@@ -107,10 +107,6 @@ final class HomeViewController: UIViewController {
     
     private var cancellableBag = Set<AnyCancellable>()
     
-    enum Section {
-        case main
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -202,7 +198,20 @@ final class HomeViewController: UIViewController {
         menuView.setMenuActions([presentPostRequestNC, presentPostRentNC])
     }
     
-    @objc private func searchButtonTapped() {
+}
+
+private extension HomeViewController {
+    
+    @objc func refreshPost() {
+        initializeDataSource()
+        needPostList.send(true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            self.collectionView.refreshControl?.endRefreshing()
+        }
+    }
+    
+    @objc func searchButtonTapped() {
         let nextVC = SearchViewController()
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: false)
@@ -237,35 +246,26 @@ final class HomeViewController: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+
 }
 
-private extension HomeViewController {
+extension HomeViewController: UICollectionViewDelegate {
     
-    @objc
-    private func refreshPost() {
-        initializeDataSource()
-        needPostList.send(true)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-            self.collectionView.refreshControl?.endRefreshing()
-        }
+    enum Section {
+        case main
     }
     
-    func initializeDataSource() {
+    private func initializeDataSource() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
         snapshot.appendSections([.main])
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
-    func appendData(postList: [PostListItem]) {
+    private func appendData(postList: [PostListItem]) {
         var snapshot = dataSource.snapshot()
         snapshot.appendItems(postList, toSection: .main)
         dataSource.apply(snapshot, animatingDifferences: true)
     }
-    
-}
-
-extension HomeViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
