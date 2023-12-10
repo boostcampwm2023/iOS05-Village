@@ -14,6 +14,7 @@ final class RentPostSummaryView: UIView {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 16
+        imageView.clipsToBounds = true
         
         return imageView
     }()
