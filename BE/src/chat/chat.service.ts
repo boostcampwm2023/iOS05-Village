@@ -69,12 +69,15 @@ export class ChatService {
   }
 
   async findRoomList(userId: string) {
+    const chatListInfo = { all_read: true, chat_list: [] };
+
     const subquery = this.chatRepository
       .createQueryBuilder('chat')
       .select('chat.id', 'id')
       .addSelect('chat.chat_room', 'chat_room')
       .addSelect('chat.message', 'message')
       .addSelect('chat.create_date', 'create_date')
+      .addSelect('chat.is_read', 'is_read')
       .where(
         'chat.id IN (SELECT MAX(chat.id) FROM chat GROUP BY chat.chat_room)',
       );
@@ -110,24 +113,36 @@ export class ChatService {
         'post.thumbnail as post_thumbnail',
         'chat_info.create_date as last_chat_date',
         'chat_info.message as last_chat',
+        'chat_info.is_read as all_read',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
       .orWhere('chat_room.user = :userId', { userId: userId })
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
-    return rooms.reduce((acc, cur) => {
+    chatListInfo.chat_list = rooms.reduce((acc, cur) => {
       cur.writer_profile_img =
         cur.writer_profile_img === null
           ? this.configService.get('DEFAULT_PROFILE_IMAGE')
           : cur.writer_profile_img;
+
       cur.user_profile_img =
         cur.user_profile_img === null
           ? this.configService.get('DEFAULT_PROFILE_IMAGE')
           : cur.user_profile_img;
+
+      if (!cur.all_read) {
+        chatListInfo.all_read = false;
+        cur.all_read = false;
+      } else {
+        cur.all_read = true;
+      }
+
       acc.push(cur);
       return acc;
     }, []);
+
+    return chatListInfo;
   }
 
   async findRoomById(roomId: number, userId: string) {
