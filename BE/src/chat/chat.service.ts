@@ -114,7 +114,7 @@ export class ChatService {
         'post.thumbnail as post_thumbnail',
         'chat_info.create_date as last_chat_date',
         'chat_info.message as last_chat',
-        'chat_info.is_read as allread',
+        'chat_info.is_read as all_read',
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
@@ -134,13 +134,13 @@ export class ChatService {
           : cur.user_profile_img;
 
       if (cur.sender === userId) {
-        cur.allread = true;
+        cur.all_read = true;
       } else {
-        if (cur.allread === 0) {
+        if (cur.all_read === 0) {
           chatListInfo.all_read = false;
-          cur.allread = false;
+          cur.all_read = false;
         } else {
-          cur.allread = true;
+          cur.all_read = true;
         }
       }
       delete cur.sender;
