@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BlockUserEntity } from 'src/entities/blockUser.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from 'src/entities/user.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersBlockService {
@@ -11,6 +12,7 @@ export class UsersBlockService {
     private blockUserRepository: Repository<BlockUserEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private configService: ConfigService,
   ) {}
 
   async addBlockUser(id: string, userId: string) {
@@ -51,7 +53,10 @@ export class UsersBlockService {
     const blockedUsers = res.reduce((acc, cur) => {
       const user = {
         nickname: cur.blockedUser.nickname,
-        profile_img: cur.blockedUser.profile_img,
+        profile_img:
+          cur.blockedUser.profile_img === null
+            ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+            : cur.blockedUser.profile_img,
         user_id: cur.blockedUser.user_hash,
       };
 
