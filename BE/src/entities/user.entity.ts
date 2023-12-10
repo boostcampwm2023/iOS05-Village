@@ -15,6 +15,7 @@ import { BlockPostEntity } from './blockPost.entity';
 import { RegistrationTokenEntity } from './registrationToken.entity';
 import { ChatEntity } from './chat.entity';
 import { ChatRoomEntity } from './chatRoom.entity';
+import { ReportEntity } from './report.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -29,6 +30,9 @@ export class UserEntity {
 
   @OneToMany(() => BlockPostEntity, (blockUser) => blockUser.blocker)
   blocker_post: BlockPostEntity[];
+
+  @OneToMany(() => ReportEntity, (report) => report.user_hash)
+  report: ReportEntity[];
 
   @OneToOne(
     () => RegistrationTokenEntity,
