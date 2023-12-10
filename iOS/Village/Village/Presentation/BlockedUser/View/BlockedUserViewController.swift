@@ -10,7 +10,7 @@ import Combine
 
 final class BlockedUserViewController: UIViewController {
     
-    typealias BlockedUserDataSource = UITableViewDiffableDataSource<Section, UserResponseDTO>
+    typealias BlockedUserDataSource = UITableViewDiffableDataSource<Section, BlockedUserDTO>
     
     typealias ViewModel = BlockedUsersViewModel
     typealias Input = ViewModel.Input
@@ -64,7 +64,6 @@ final class BlockedUserViewController: UIViewController {
         setNavigationUI()
         setUI()
         configureConstraints()
-        generateData()
     }
 
 }
@@ -72,7 +71,17 @@ final class BlockedUserViewController: UIViewController {
 private extension BlockedUserViewController {
     
     func bindViewModel() {
-        // viewmodel 과 바인딩 output, input 
+        let output = viewModel.transform(
+            input: BlockedUsersViewModel.Input(
+            )
+        )
+        output.blockedUsersOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] users in
+                self?.generateData(users: users)
+            }
+            .store(in: &cancellableBag)
+        
     }
     
     func setUI() {
@@ -93,12 +102,10 @@ private extension BlockedUserViewController {
         ])
     }
     
-    func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, UserResponseDTO>()
+    func generateData(users: [BlockedUserDTO]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, BlockedUserDTO>()
         snapshot.appendSections([.user])
-        
-        // viewmodel에서 user 목록 가져오기
-        
+        snapshot.appendItems(users)
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
