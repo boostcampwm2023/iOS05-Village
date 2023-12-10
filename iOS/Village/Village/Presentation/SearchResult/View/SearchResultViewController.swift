@@ -72,6 +72,8 @@ final class SearchResultViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        definesPresentationContext = true
 
         setUI()
         generateData()
