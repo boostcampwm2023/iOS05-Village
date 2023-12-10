@@ -50,6 +50,7 @@ class SearchRentTableViewCell: UITableViewCell {
                     return
                 }
                 postSummaryView.postImageView.image = image
+                postSummaryView.postImageView.backgroundColor = nil
             } catch {
                 dump(error)
             }
