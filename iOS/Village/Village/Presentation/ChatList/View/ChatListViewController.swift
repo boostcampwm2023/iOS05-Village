@@ -131,7 +131,7 @@ extension ChatListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let chat = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let chatRoomVC = ChatRoomViewController(roomID: chat.roomID, opponentNickname: chat.userNickname!)
+        let chatRoomVC = ChatRoomViewController(roomID: chat.roomID)
         chatRoomVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(chatRoomVC, animated: true)
     }

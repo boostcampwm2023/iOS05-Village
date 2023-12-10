@@ -21,7 +21,6 @@ final class ChatRoomViewController: UIViewController {
     private var cancellableBag = Set<AnyCancellable>()
     
     private let roomID: Just<Int>
-    private let opponentNickname: String
     private var writer: String?
     private var user: String?
     
@@ -133,9 +132,8 @@ final class ChatRoomViewController: UIViewController {
         return postView
     }()
     
-    init(roomID: Int, opponentNickname: String) {
+    init(roomID: Int) {
         self.roomID = Just(roomID)
-        self.opponentNickname = opponentNickname
         
         super.init(nibName: nil, bundle: nil)
     }
