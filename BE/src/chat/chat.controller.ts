@@ -49,6 +49,12 @@ export class ChatController {
     }
   }
 
+  @Get('unread')
+  @UseGuards(AuthGuard)
+  async unreadChat(@UserHash() userId: string) {
+    return await this.chatService.unreadChat(userId);
+  }
+
   @Get()
   async testPush(@Body() body) {
     await this.fcmHandler.sendPush(body.user, {
