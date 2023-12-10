@@ -279,7 +279,8 @@ private extension PostDetailViewController {
         let output = viewModel.transformPost(input: Input(
             postID: postID.eraseToAnyPublisher(),
             deleteInput: deletePostID.eraseToAnyPublisher(),
-            hideInput: hidePost.eraseToAnyPublisher()
+            hideInput: hidePost.eraseToAnyPublisher(),
+            blockUserInput: blockUser.eraseToAnyPublisher()
         ))
         
         bindPostOutput(output)
