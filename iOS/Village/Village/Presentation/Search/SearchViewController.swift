@@ -17,10 +17,6 @@ final class SearchViewController: UIViewController {
         
         setNavigationBarUI()
         
-        DispatchQueue.main.async {
-            self.searchController.searchBar.becomeFirstResponder()
-        }
-        
         view.backgroundColor = .systemBackground
     }
     
@@ -49,6 +45,12 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
         self.navigationController?.pushViewController(
             SearchResultViewController(title: self.searchTitle), animated: true
         )
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+       // searchBar 보이기
+       searchController.hidesNavigationBarDuringPresentation = false
+       navigationController?.navigationBar.layoutIfNeeded()
     }
     
 }
