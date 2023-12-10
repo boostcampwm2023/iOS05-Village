@@ -10,7 +10,7 @@ import Combine
 
 class ChatListViewController: UIViewController {
     
-    typealias ChatListDataSource = UITableViewDiffableDataSource<Section, GetChatListResponseDTO>
+    typealias ChatListDataSource = UITableViewDiffableDataSource<Section, ChatListData>
     typealias ViewModel = ChatListViewModel
     private var getChatListSubject = CurrentValueSubject<Void, Never>(())
     private var cancellableBag = Set<AnyCancellable>()
@@ -95,7 +95,8 @@ extension ChatListViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] value in
-                self?.generateData(items: value)
+                dump(value)
+                self?.generateData(items: value.chatList)
             }
             .store(in: &cancellableBag)
     }
@@ -116,8 +117,8 @@ extension ChatListViewController {
         ])
     }
     
-    private func generateData(items: [GetChatListResponseDTO]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, GetChatListResponseDTO>()
+    private func generateData(items: [ChatListData]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, ChatListData>()
         snapshot.appendSections([.chat])
         snapshot.appendItems(items)
         

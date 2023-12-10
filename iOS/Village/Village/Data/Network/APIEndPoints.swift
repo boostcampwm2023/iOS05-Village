@@ -80,7 +80,7 @@ struct APIEndPoints {
         )
     }
     
-    static func getChatList() -> EndPoint<[GetChatListResponseDTO]> {
+    static func getChatList() -> EndPoint<GetChatListResponseDTO> {
         return EndPoint(
             baseURL: baseURL,
             path: "chat/room",

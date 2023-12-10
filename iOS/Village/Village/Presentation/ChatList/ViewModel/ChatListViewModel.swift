@@ -47,7 +47,7 @@ struct ChatListRequestDTO: Codable {
 final class ChatListViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var chatList = PassthroughSubject<[GetChatListResponseDTO], NetworkError>()
+    private var chatList = PassthroughSubject<GetChatListResponseDTO, NetworkError>()
     
     private var test: [ChatListResponseDTO] = []
     
@@ -104,7 +104,7 @@ extension ChatListViewModel {
     }
     
     struct Output {
-        var chatList: AnyPublisher<[GetChatListResponseDTO], NetworkError>
+        var chatList: AnyPublisher<GetChatListResponseDTO, NetworkError>
     }
     
 }
