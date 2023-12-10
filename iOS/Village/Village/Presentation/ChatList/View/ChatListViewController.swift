@@ -140,17 +140,17 @@ extension ChatListViewController: UITableViewDelegate {
         chatRoomVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(chatRoomVC, animated: true)
     }
-    
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) 
-    -> UISwipeActionsConfiguration? {
-        let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
-            self.handleDeleteAction(forRowAt: indexPath)
-            completion(true)
-        }
-        let configuration = UISwipeActionsConfiguration(actions: [delete])
-        
-        return configuration
-    }
+    // TODO: after 15
+//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+//    -> UISwipeActionsConfiguration? {
+//        let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
+//            self.handleDeleteAction(forRowAt: indexPath)
+//            completion(true)
+//        }
+//        let configuration = UISwipeActionsConfiguration(actions: [delete])
+//        
+//        return configuration
+//    }
     
     func handleDeleteAction(forRowAt indexPath: IndexPath) {
         let alertController = UIAlertController(title: "", message: "", preferredStyle: .alert)
