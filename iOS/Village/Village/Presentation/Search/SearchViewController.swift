@@ -16,6 +16,7 @@ final class SearchViewController: UIViewController {
         super.viewDidLoad()
         
         setNavigationBarUI()
+        definesPresentationContext = true
         
         view.backgroundColor = .systemBackground
     }
