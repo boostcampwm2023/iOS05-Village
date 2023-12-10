@@ -17,6 +17,7 @@ final class SearchResultViewController: UIViewController {
     
     private var viewModel = ViewModel()
     private let togglePublisher = PassthroughSubject<Void, Never>()
+    private let scrollPublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     private let postTitle: String
@@ -38,7 +39,6 @@ final class SearchResultViewController: UIViewController {
     
     private lazy var dataSource = SearchResultDataSource(
         tableView: listTableView) { [weak self] (tableView, indexPath, post) in
-            dump(post)
             if post.isRequest {
                 guard let cell = tableView.dequeueReusableCell(
                     withIdentifier: SearchRequstTableViewCell.identifier,
@@ -67,6 +67,7 @@ final class SearchResultViewController: UIViewController {
         tableView.register(SearchRequstTableViewCell.self, forCellReuseIdentifier: SearchRequstTableViewCell.identifier)
         tableView.register(SearchRentTableViewCell.self, forCellReuseIdentifier: SearchRentTableViewCell.identifier)
         tableView.separatorStyle = .none
+        tableView.delegate = self
         
         return tableView
     }()
@@ -79,6 +80,7 @@ final class SearchResultViewController: UIViewController {
         super.viewDidLoad()
 
         setUI()
+        generateData()
         bindViewModel()
     }
 
@@ -114,7 +116,8 @@ extension SearchResultViewController {
     private func bindViewModel() {
         let input = ViewModel.Input(
             postTitle: Just(postTitle).eraseToAnyPublisher(),
-            toggleSubject: self.togglePublisher.eraseToAnyPublisher()
+            toggleSubject: self.togglePublisher.eraseToAnyPublisher(),
+            scrollEvent: self.scrollPublisher.eraseToAnyPublisher()
         )
         let output = viewModel.transform(input: input)
         
@@ -127,20 +130,37 @@ extension SearchResultViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] postList in
-                self?.generateData(list: postList)
+                self?.addGenerateData(list: postList)
             }
             .store(in: &cancellableBag)
     }
     
-    private func generateData(list: [PostListResponseDTO]) {
+    private func generateData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
         snapshot.appendSections([.list])
-        snapshot.appendItems(list)
+//        snapshot.appendItems(list)
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func addGenerateData(list: [PostListResponseDTO]) {
+        var snapshot = dataSource.snapshot()
+        snapshot.appendItems(list, toSection: .list)
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
     @objc private func segmentedControlChanged() {
+        generateData()
         togglePublisher.send()
+    }
+    
+}
+
+extension SearchResultViewController: UITableViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y > self.listTableView.contentSize.height - 1000 {
+            scrollPublisher.send()
+        }
     }
     
 }

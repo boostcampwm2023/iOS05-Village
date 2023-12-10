@@ -12,7 +12,9 @@ final class SearchResultViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     private var searchResultList = PassthroughSubject<[PostListResponseDTO], NetworkError>()
+    private var nextPageUpdateOutput = PassthroughSubject<[PostListResponseDTO], Never>()
     private var postTitle: String = ""
+    private var lastPostID: String = ""
     
     enum Filter: String {
         case request = "0"
@@ -20,6 +22,28 @@ final class SearchResultViewModel {
     }
     
     private var searchFilter = Filter.request
+    
+    private func getAddedList() {
+        print(self.lastPostID)
+        let request = PostListRequestDTO(
+            searchKeyword: self.postTitle,
+            requestFilter: self.searchFilter.rawValue,
+            page: self.lastPostID
+        )
+        let endpoint = APIEndPoints.getPosts(queryParameter: request)
+        
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint),
+                      let lastID = data.last?.postID
+                else { return }
+                searchResultList.send(data)
+                self.lastPostID = "\(lastID)"
+            } catch {
+                dump(error)
+            }
+        }
+    }
     
     func transform(input: Input) -> Output {
         input.postTitle
@@ -36,6 +60,12 @@ final class SearchResultViewModel {
             }
             .store(in: &cancellableBag)
         
+        input.scrollEvent
+            .sink { [weak self] in
+                self?.getAddedList()
+            }
+            .store(in: &cancellableBag)
+        
         return Output(searchResultList: searchResultList.eraseToAnyPublisher())
     }
     
@@ -48,8 +78,11 @@ final class SearchResultViewModel {
 
         Task {
             do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                guard let data = try await APIProvider.shared.request(with: endpoint),
+                      let lastID = data.last?.postID
+                else { return }
                 searchResultList.send(data)
+                self.lastPostID = "\(lastID)"
             } catch {
                 dump(error)
             }
@@ -63,18 +96,18 @@ extension SearchResultViewModel {
     struct Input {
         var postTitle: AnyPublisher<String, Never>
         var toggleSubject: AnyPublisher<Void, Never>
+        var scrollEvent: AnyPublisher<Void, Never>
     }
     
     struct Output {
         var searchResultList: AnyPublisher<[PostListResponseDTO], NetworkError>
     }
     
-    struct FilterInput {
-        var postTitle: AnyPublisher<String, Never>
+    struct ScrollInput {
     }
     
-    struct FilterOutput {
-        var searchResultList: AnyPublisher<[PostListResponseDTO], NetworkError>
+    struct ScrollOutput {
+        var nextPageUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
     }
     
 }
