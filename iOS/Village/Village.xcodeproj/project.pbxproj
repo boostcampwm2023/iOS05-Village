@@ -52,6 +52,9 @@
 		5975E98C2B035919007CEF13 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* Users.json */; };
 		5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */; };
 		5980D75F2B0FB6DB00A6B370 /* PostCreateRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5980D75E2B0FB6DB00A6B370 /* PostCreateRepository.swift */; };
+		59A384602B25FF6D00660B70 /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A3845F2B25FF6D00660B70 /* ReportViewController.swift */; };
+		59A384642B26093600660B70 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A384632B26093600660B70 /* ReportViewModel.swift */; };
+		59A384662B260DB000660B70 /* ReportDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A384652B260DB000660B70 /* ReportDTO.swift */; };
 		59AABDDF2B0E1AE1002F6D0E /* PostCreateTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDDE2B0E1AE1002F6D0E /* PostCreateTitleView.swift */; };
 		59AABDE12B0E1BB8002F6D0E /* PostCreatePriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE02B0E1BB8002F6D0E /* PostCreatePriceView.swift */; };
 		59AABDE32B0E272C002F6D0E /* PostCreateTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE22B0E272C002F6D0E /* PostCreateTimeView.swift */; };
@@ -186,6 +189,9 @@
 		5975E9892B035919007CEF13 /* Users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Users.json; sourceTree = "<group>"; };
 		5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+.swift"; sourceTree = "<group>"; };
 		5980D75E2B0FB6DB00A6B370 /* PostCreateRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateRepository.swift; sourceTree = "<group>"; };
+		59A3845F2B25FF6D00660B70 /* ReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
+		59A384632B26093600660B70 /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
+		59A384652B260DB000660B70 /* ReportDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDTO.swift; sourceTree = "<group>"; };
 		59AA129A2B03726C00AFC766 /* VillageTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VillageTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		59AABDDE2B0E1AE1002F6D0E /* PostCreateTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateTitleView.swift; sourceTree = "<group>"; };
 		59AABDE02B0E1BB8002F6D0E /* PostCreatePriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreatePriceView.swift; sourceTree = "<group>"; };
@@ -439,6 +445,31 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		59A3845E2B25F88300660B70 /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				59A384622B26092000660B70 /* View */,
+				59A384612B26091B00660B70 /* ViewModel */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
+		59A384612B26091B00660B70 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				59A384632B26093600660B70 /* ReportViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		59A384622B26092000660B70 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				59A3845F2B25FF6D00660B70 /* ReportViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		59AA12952B036BFC00AFC766 /* Dummy */ = {
 			isa = PBXGroup;
 			children = (
@@ -651,6 +682,7 @@
 				59457BC82B237615003F798C /* PatchUserDTO.swift */,
 				59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */,
 				596AD1F32B2593E1005860B3 /* BlockedUserDTO.swift */,
+				59A384652B260DB000660B70 /* ReportDTO.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -796,6 +828,7 @@
 		8FBE3AED2B03549300660530 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				59A3845E2B25F88300660B70 /* Report */,
 				59E6A2012B1F31FD00A2DF21 /* MyPosts */,
 				442442152B144268009D39A8 /* Login */,
 				4416D44D2B14A4260052BF33 /* SignUp */,
@@ -1127,6 +1160,7 @@
 				8F97D06C2B222EFA00A19754 /* OpponentChatTableViewCell.swift in Sources */,
 				8F8F0B8F2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift in Sources */,
 				8F95CF922B0C57460024631F /* NetworkError.swift in Sources */,
+				59A384602B25FF6D00660B70 /* ReportViewController.swift in Sources */,
 				44C1F5F32B0FF63C0047A436 /* PostResponseDTO.swift in Sources */,
 				8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */,
 				8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */,
@@ -1179,6 +1213,8 @@
 				8F8F0B8D2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift in Sources */,
 				59AADE382B22086400C3E17D /* SignUpViewModel.swift in Sources */,
 				8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */,
+				59A384642B26093600660B70 /* ReportViewModel.swift in Sources */,
+				59A384662B260DB000660B70 /* ReportDTO.swift in Sources */,
 				59E2C1642B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift in Sources */,
 				446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
