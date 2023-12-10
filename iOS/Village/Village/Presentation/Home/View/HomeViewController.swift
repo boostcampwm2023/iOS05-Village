@@ -16,8 +16,15 @@ final class HomeViewController: UIViewController {
     
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     
-    private var needPostList = CurrentValueSubject<Bool, Never>(false)
-    private var viewModel = ViewModel()
+    private let needPostList = CurrentValueSubject<Bool, Never>(false)
+    private let viewModel = ViewModel()
+    
+    private lazy var postSegmentedControl: PostSegmentedControl = {
+        let control = PostSegmentedControl()
+        control.translatesAutoresizingMaskIntoConstraints = false
+        
+        return control
+    }()
     
     private lazy var collectionViewLayout: UICollectionViewLayout = {
         let itemSize = NSCollectionLayoutSize(
@@ -128,6 +135,7 @@ final class HomeViewController: UIViewController {
         setMenuUI()
         bindFloatingButton()
         
+        view.addSubview(postSegmentedControl)
         view.addSubview(collectionView)
         view.addSubview(floatingButton)
         view.addSubview(menuView)
@@ -216,7 +224,14 @@ final class HomeViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            postSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            postSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            postSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            postSegmentedControl.heightAnchor.constraint(equalToConstant: 35)
+        ])
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: postSegmentedControl.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
