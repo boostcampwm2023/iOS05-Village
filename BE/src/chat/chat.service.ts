@@ -78,6 +78,7 @@ export class ChatService {
       .addSelect('chat.message', 'message')
       .addSelect('chat.create_date', 'create_date')
       .addSelect('chat.is_read', 'is_read')
+      .addSelect('chat.sender', 'sender')
       .where(
         'chat.id IN (SELECT MAX(chat.id) FROM chat GROUP BY chat.chat_room)',
       );
@@ -113,7 +114,8 @@ export class ChatService {
         'post.thumbnail as post_thumbnail',
         'chat_info.create_date as last_chat_date',
         'chat_info.message as last_chat',
-        'chat_info.is_read as all_read',
+        'chat_info.is_read as allread',
+        'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
       .orWhere('chat_room.user = :userId', { userId: userId })
@@ -131,13 +133,17 @@ export class ChatService {
           ? this.configService.get('DEFAULT_PROFILE_IMAGE')
           : cur.user_profile_img;
 
-      if (!cur.all_read) {
-        chatListInfo.all_read = false;
-        cur.all_read = false;
+      if (cur.sender === userId) {
+        cur.allread = true;
       } else {
-        cur.all_read = true;
+        if (cur.allread === 0) {
+          chatListInfo.all_read = false;
+          cur.allread = false;
+        } else {
+          cur.allread = true;
+        }
       }
-
+      delete cur.sender;
       acc.push(cur);
       return acc;
     }, []);
