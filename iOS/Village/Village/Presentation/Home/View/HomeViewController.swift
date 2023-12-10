@@ -10,7 +10,9 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias HomeDataSource = UICollectionViewDiffableDataSource<Section, PostListItem>
+    typealias RentPostDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias RequestPostDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
     
@@ -26,23 +28,46 @@ final class HomeViewController: UIViewController {
         return control
     }()
     
-    private lazy var collectionViewLayout: UICollectionViewLayout = {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(100.0)
-        )
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 1)
+    private lazy var rentDataSoruce = RentPostDataSource(
+        tableView: rentPostTableView,
+        cellProvider: { [weak self] (tableView, indexPath, postDTO) in
+            if let cell = tableView.dequeueReusableCell(withIdentifier: RentPostTableViewCell.identifier,
+                                                        for: indexPath) as? RentPostTableViewCell {
+                cell.configureData(post: postDTO)
+                return cell
+            }
+    })
+    
+    private lazy var requestDataSource = RequestPostDataSource(
+        tableView: requestPostTableView,
+        cellProvider: { [weak self] (tableView, indexPath, postDTO) in
+            if let cell = tableView.dequeueReusableCell(withIdentifier: RequestPostTableViewCell.identifier,
+                                                        for: indexPath) as? RequestPostTableViewCell {
+                cell.configureData(post: postDTO)
+                return cell
+            }
+    })
+    
+    private lazy var rentPostTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 100
+        tableView.register(RentPostTableViewCell.self, forCellReuseIdentifier: RentPostTableViewCell.identifier)
+        tableView.separatorStyle = .none
+        tableView.delegate = self
         
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10.0, leading: 0.0, bottom: 4.0, trailing: 0.0)
-        section.interGroupSpacing = 8.0
+        return tableView
+    }()
+    
+    private lazy var requestPostTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 100
+        tableView.register(RequestPostTableViewCell.self, forCellReuseIdentifier: RequestPostTableViewCell.identifier)
+        tableView.separatorStyle = .none
+        tableView.delegate = self
         
-        return UICollectionViewCompositionalLayout(section: section)
+        return tableView
     }()
     
     private lazy var refreshControl: UIRefreshControl = {
@@ -50,44 +75,6 @@ final class HomeViewController: UIViewController {
         control.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
         
         return control
-    }()
-    
-    private lazy var dataSource = HomeDataSource(
-        collectionView: collectionView) { [weak self] (collectionView, indexPath, post) -> HomeCollectionViewCell? in
-        guard let self = self,
-              let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.reuseIdentifier, 
-                                                            for: indexPath) as? HomeCollectionViewCell else {
-            return HomeCollectionViewCell()
-        }
-        
-        cell.configureData(post: post)
-        
-        if let imageURL = post.imageURL {
-            Task {
-                do {
-                    let data = try await APIProvider.shared.request(from: imageURL)
-                    cell.configureImage(image: UIImage(data: data))
-                } catch {
-                    dump(error)
-                }
-            }
-        } else {
-            cell.configureImage(image: nil)
-        }
-        
-        return cell
-    }
-    
-    private lazy var collectionView: UICollectionView = {
-        let view = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.delegate = self
-        view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        view.refreshControl = refreshControl
-        view.refreshControl?.tintColor = .primary500
-        
-        return view
     }()
     
     private let floatingButton: FloatingButton = {
@@ -132,7 +119,6 @@ final class HomeViewController: UIViewController {
         bindFloatingButton()
         
         view.addSubview(postSegmentedControl)
-        view.addSubview(collectionView)
         view.addSubview(floatingButton)
         view.addSubview(menuView)
         setLayoutConstraint()
