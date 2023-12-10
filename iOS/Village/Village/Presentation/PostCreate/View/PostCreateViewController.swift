@@ -187,6 +187,9 @@ final class PostCreateViewController: UIViewController {
         output.warningResult
             .receive(on: DispatchQueue.main)
             .sink { [weak self] warning in
+                if let imageWarning = warning.imageWarning {
+                    self?.imageWarn(enable: imageWarning)
+                }
                 self?.postCreateTitleView.warn(warning.titleWarning)
                 if let priceWarning = warning.priceWarning {
                     self?.postCreatePriceView.warn(priceWarning)
@@ -197,7 +200,6 @@ final class PostCreateViewController: UIViewController {
                 } else {
                     self?.postCreateEndTimeView.changeWarn(enable: warning.timeSequenceWarning)
                 }
-                self?.imageWarn(enable: warning.imageWarning)
             }
             .store(in: &cancellableBag)
     }
