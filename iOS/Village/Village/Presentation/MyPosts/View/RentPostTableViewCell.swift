@@ -49,6 +49,7 @@ class RentPostTableViewCell: UITableViewCell {
                     postSummaryView.postImageView.backgroundColor = .primary100
                     return
                 }
+                postSummaryView.postImageView.backgroundColor = nil
                 postSummaryView.postImageView.image = image
             } catch {
                 dump(error)

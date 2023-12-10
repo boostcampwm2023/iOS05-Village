@@ -632,8 +632,8 @@
 		59E6A2012B1F31FD00A2DF21 /* MyPosts */ = {
 			isa = PBXGroup;
 			children = (
-				59AADE352B20AE4D00C3E17D /* View */,
 				59E6A2052B1F373700A2DF21 /* ViewModel */,
+				59AADE352B20AE4D00C3E17D /* View */,
 			);
 			path = MyPosts;
 			sourceTree = "<group>";
