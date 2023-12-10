@@ -8,6 +8,13 @@
 import Foundation
 import Combine
 
+struct BlockUserInfo {
+    
+    let userID: String
+    let isBlocked: Bool
+    
+}
+
 final class BlockedUsersViewModel {
     
     private let blockedUsers = CurrentValueSubject<[BlockedUserDTO], Never>([])
@@ -17,6 +24,16 @@ final class BlockedUsersViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     
     func transform(input: Input) -> Output {
+        
+        input.blockedToggleInput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] userInfo in
+                self?.toggleBlock(
+                    userID: userInfo.userID,
+                    isBlocked: userInfo.isBlocked
+                )
+            }
+            .store(in: &cancellableBag)
         
         return Output(
             blockedUsersOutput: blockedUsers.eraseToAnyPublisher()
@@ -40,11 +57,26 @@ final class BlockedUsersViewModel {
         }
     }
     
+    private func toggleBlock(userID: String, isBlocked: Bool) {
+        let endpoint = isBlocked ?
+        APIEndPoints.blockUser(userID: userID) :
+        APIEndPoints.unblockUser(userID: userID)
+        
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
 }
 
 extension BlockedUsersViewModel {
     
     struct Input {
+        let blockedToggleInput: AnyPublisher<BlockUserInfo, Never>
     }
     
     struct Output {

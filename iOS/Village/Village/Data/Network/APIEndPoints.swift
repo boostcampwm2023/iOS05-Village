@@ -232,4 +232,12 @@ struct APIEndPoints {
         )
     }
     
+    static func unblockUser(userID: String) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/block/\(userID)",
+            method: .DELETE
+        )
+    }
+    
 }

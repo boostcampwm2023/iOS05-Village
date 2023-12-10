@@ -20,6 +20,8 @@ final class BlockedUserViewController: UIViewController {
     }
     
     private let viewModel: ViewModel
+    
+    private let blockedToggleSubject = PassthroughSubject<BlockUserInfo, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     private lazy var userTableView: UITableView = {
@@ -41,9 +43,19 @@ final class BlockedUserViewController: UIViewController {
                 for: indexPath) as? BlockedUserTableViewCell else {
                 return BlockedUserTableViewCell()
             }
-            
             cell.configureData(user: user)
             cell.selectionStyle = .none
+            cell.blockToggleSubject
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isBlocked in
+                    self?.blockedToggleSubject.send(
+                        BlockUserInfo(
+                            userID: user.userID,
+                            isBlocked: isBlocked)
+                        )
+                }
+                .store(in: &cancellableBag)
+            
             return cell
         }
     )
@@ -73,6 +85,7 @@ private extension BlockedUserViewController {
     func bindViewModel() {
         let output = viewModel.transform(
             input: BlockedUsersViewModel.Input(
+                blockedToggleInput: blockedToggleSubject.eraseToAnyPublisher()
             )
         )
         output.blockedUsersOutput
