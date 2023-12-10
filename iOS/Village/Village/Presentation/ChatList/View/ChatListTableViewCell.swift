@@ -9,14 +9,14 @@ import UIKit
 
 class ChatListTableViewCell: UITableViewCell {
 
-    private let chatView: UIView = {
+    private lazy var chatView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private let profileImageView: UIImageView = {
+    private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
@@ -26,7 +26,7 @@ class ChatListTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    private let nicknameLabel: UILabel = {
+    private lazy var nicknameLabel: UILabel = {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .bold)
@@ -34,7 +34,7 @@ class ChatListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let recentTimeLabel: UILabel = {
+    private lazy var recentTimeLabel: UILabel = {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 14, weight: .regular)
@@ -43,7 +43,7 @@ class ChatListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let recentChatLabel: UILabel = {
+    private lazy var recentChatLabel: UILabel = {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .regular)
@@ -51,7 +51,7 @@ class ChatListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let postImageView: UIImageView = {
+    private lazy var postImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
