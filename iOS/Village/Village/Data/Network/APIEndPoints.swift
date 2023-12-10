@@ -224,4 +224,12 @@ struct APIEndPoints {
         )
     }
     
+    static func getBlockedUsers() -> EndPoint<[BlockedUserDTO]> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/block",
+            method: .GET
+        )
+    }
+    
 }
