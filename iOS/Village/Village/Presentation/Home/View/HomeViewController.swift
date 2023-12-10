@@ -28,7 +28,7 @@ final class HomeViewController: UIViewController {
         return control
     }()
     
-    private lazy var rentDataSoruce = RentPostDataSource(
+    private lazy var rentDataSource = RentPostDataSource(
         tableView: rentPostTableView,
         cellProvider: { [weak self] (tableView, indexPath, postDTO) in
             if let cell = tableView.dequeueReusableCell(withIdentifier: RentPostTableViewCell.identifier,
