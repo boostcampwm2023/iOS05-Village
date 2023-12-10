@@ -216,7 +216,7 @@ struct APIEndPoints {
         )
     }
     
-    static func hideUser(userID: String) -> EndPoint<Void> {
+    static func blockUser(userID: String) -> EndPoint<Void> {
         return EndPoint(
             baseURL: baseURL,
             path: "users/block",
