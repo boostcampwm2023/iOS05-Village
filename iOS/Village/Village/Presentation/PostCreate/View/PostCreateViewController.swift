@@ -71,6 +71,17 @@ final class PostCreateViewController: UIViewController {
         return view
     }()
     
+    private let imageWarningLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "사진을 1장 이상 등록해야 합니다."
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .negative400
+        label.alpha = 0
+        
+        return label
+    }()
+    
     private lazy var postCreateTitleView: PostCreateTitleView = {
         let view = PostCreateTitleView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -186,6 +197,7 @@ final class PostCreateViewController: UIViewController {
                 } else {
                     self?.postCreateEndTimeView.changeWarn(enable: warning.timeSequenceWarning)
                 }
+                self?.imageWarn(enable: warning.imageWarning)
             }
             .store(in: &cancellableBag)
     }
@@ -232,6 +244,11 @@ final class PostCreateViewController: UIViewController {
                 self.imageUploadView.setImageItem(items: imageItemList)
             }
             .store(in: &cancellableBag)
+    }
+    
+    private func imageWarn(enable: Bool) {
+        let alpha: CGFloat = enable ? 1 : 0
+        imageWarningLabel.alpha = alpha
     }
     
 }
@@ -323,6 +340,7 @@ private extension PostCreateViewController {
         
         if !viewModel.isRequest {
             stackView.addArrangedSubview(imageUploadView)
+            stackView.addArrangedSubview(imageWarningLabel)
         }
         stackView.addArrangedSubview(postCreateTitleView)
         stackView.addArrangedSubview(postCreateStartTimeView)
@@ -433,7 +451,9 @@ extension PostCreateViewController: PHPickerViewControllerDelegate {
             itemProvider.loadObject(ofClass: UIImage.self) { uiimage, _ in
                 guard let image = uiimage as? UIImage,
                       let jpegData = image.jpegData(compressionQuality: 0.1) else { return }
-                
+                DispatchQueue.main.async {
+                    self.imageWarn(enable: false)
+                }
                 imageData.append(jpegData)
                 dispatchGroup.leave()
             }

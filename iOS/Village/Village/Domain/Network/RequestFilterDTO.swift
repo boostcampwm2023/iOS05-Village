@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RequestFilterDTO: Encodable{
+struct RequestFilterDTO: Encodable {
     
     let requestFilter: String
     

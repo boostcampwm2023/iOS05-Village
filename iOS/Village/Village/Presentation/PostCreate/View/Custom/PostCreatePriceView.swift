@@ -92,7 +92,7 @@ final class PostCreatePriceView: UIStackView {
     }
     
     @objc func textFieldDidChange() {
-        guard var text = priceTextField.text else { return }
+        guard let text = priceTextField.text else { return }
         priceTextField.text = Int(text.replacingOccurrences(of: ",", with: ""))?.priceText()
     }
     

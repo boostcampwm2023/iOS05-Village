@@ -10,6 +10,7 @@ import Combine
 
 struct PostWarning {
     
+    let imageWarning: Bool
     let titleWarning: Bool
     let startTimeWarning: Bool
     let endTimeWarning: Bool
@@ -17,7 +18,12 @@ struct PostWarning {
     let timeSequenceWarning: Bool
     
     var validation: Bool {
-        !(titleWarning || startTimeWarning || endTimeWarning || timeSequenceWarning || priceWarning == true)
+        !(imageWarning || 
+          titleWarning ||
+          startTimeWarning ||
+          endTimeWarning ||
+          timeSequenceWarning ||
+          priceWarning == true)
     }
     
 }
@@ -176,6 +182,7 @@ final class PostCreateViewModel {
                 guard let self = self else { return }
                 
                 let warning = PostWarning(
+                    imageWarning: imagesCount == 0,
                     titleWarning: post.title.isEmpty,
                     startTimeWarning: post.startTime.isEmpty,
                     endTimeWarning: post.endTime.isEmpty,
@@ -183,7 +190,7 @@ final class PostCreateViewModel {
                     timeSequenceWarning: timeSequenceWarn(startTimeString: post.startTime, endTimeString: post.endTime)
                 )
                 if warning.validation == true {
-                    modifyPost(post: post, images: images.filter{$0.url == nil}.map(\.data))
+                    modifyPost(post: post, images: images.filter{ $0.url == nil }.map(\.data))
                 } else {
                     warningPublisher.send(warning)
                 }
