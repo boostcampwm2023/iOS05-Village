@@ -43,7 +43,7 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.navigationController?.pushViewController(
-            SearchResultViewController(title: self.searchTitle), animated: true
+            SearchResultViewController(title: self.searchTitle), animated: false
         )
     }
     

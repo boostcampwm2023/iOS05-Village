@@ -197,7 +197,7 @@ final class HomeViewController: UIViewController {
     @objc private func searchButtonTapped() {
         let nextVC = SearchViewController()
         nextVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(nextVC, animated: true)
+        self.navigationController?.pushViewController(nextVC, animated: false)
     }
     
     private func setLayoutConstraint() {
