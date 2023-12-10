@@ -100,7 +100,7 @@ class BlockedUserTableViewCell: UITableViewCell {
         ])
     }
     
-    func configureData(user: UserResponseDTO) {
+    func configureData(user: BlockedUserDTO) {
         configureImage(url: user.profileImageURL)
         nicknameLabel.text = user.nickname
     }
