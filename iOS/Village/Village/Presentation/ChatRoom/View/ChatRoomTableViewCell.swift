@@ -27,6 +27,8 @@ final class ChatRoomTableViewCell: UITableViewCell {
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 12
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -42,6 +44,7 @@ final class ChatRoomTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         profileImageView.image = nil
+        messageView.text = nil
     }
     
     func configureData(message: String) {

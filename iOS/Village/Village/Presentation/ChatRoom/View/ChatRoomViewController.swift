@@ -123,8 +123,17 @@ final class ChatRoomViewController: UIViewController {
         return button
     }()
     
-    private lazy var postView: PostView = {
-        let postView = PostView()
+    private lazy var rentPostView: RentPostSummaryView = {
+        let postView = RentPostSummaryView()
+        postView.translatesAutoresizingMaskIntoConstraints = false
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))
+        postView.addGestureRecognizer(tapGesture)
+        
+        return postView
+    }()
+    
+    private lazy var requestPostView: RequestPostSummaryView = {
+        let postView = RequestPostSummaryView()
         postView.translatesAutoresizingMaskIntoConstraints = false
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))
         postView.addGestureRecognizer(tapGesture)
@@ -147,13 +156,6 @@ final class ChatRoomViewController: UIViewController {
         
         setSocket()
         bindViewModel()
-        DispatchQueue.main.async {
-            if !self.viewModel.getLog().isEmpty {
-                self.chatTableView.scrollToRow(
-                    at: IndexPath(row: self.viewModel.getLog().count-1, section: 0), at: .bottom, animated: false
-                )
-            }
-        }
         setNavigationUI()
         setUI()
         setUpNotification()
@@ -235,8 +237,6 @@ private extension ChatRoomViewController {
 private extension ChatRoomViewController {
     
     func setUI() {
-//        setNavigationTitle(title:)
-        view.addSubview(postView)
         view.addSubview(chatTableView)
         
         keyboardTextField.delegate = self
@@ -264,14 +264,6 @@ private extension ChatRoomViewController {
         keyboardSendButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
         NSLayoutConstraint.activate([
-            postView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            postView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            postView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            postView.heightAnchor.constraint(equalToConstant: 80)
-        ])
-        
-        NSLayoutConstraint.activate([
-            chatTableView.topAnchor.constraint(equalTo: postView.bottomAnchor),
             chatTableView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor),
             chatTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             chatTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -279,10 +271,11 @@ private extension ChatRoomViewController {
     }
     
     func setNavigationUI() {
-        let ellipsis = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(ellipsisTapped), symbolName: .ellipsis
-        )
-        navigationItem.rightBarButtonItem = ellipsis
+        // TODO: after 15
+//        let ellipsis = self.navigationItem.makeSFSymbolButton(
+//            self, action: #selector(ellipsisTapped), symbolName: .ellipsis
+//        )
+//        navigationItem.rightBarButtonItem = ellipsis
         navigationItem.backButtonDisplayMode = .minimal
     }
     
@@ -322,13 +315,6 @@ private extension ChatRoomViewController {
                         }
                     } receiveValue: { [weak self] room in
                         self?.setRoomContent(room: room)
-                        guard let isEmpty = self?.viewModel.getLog().isEmpty else { return }
-                        if !isEmpty {
-                            guard let count = self?.viewModel.getLog().count else { return }
-                            self?.chatTableView.scrollToRow(
-                                at: IndexPath(row: count-1, section: 0), at: .bottom, animated: false
-                            )
-                        }
                     }
                     .store(in: &cancellableBag)
     }
@@ -372,7 +358,36 @@ private extension ChatRoomViewController {
     }
     
     private func setPostContent(post: PostResponseDTO) {
-        postView.setContent(url: post.imageURL.first ?? "", title: post.title, price: String(post.price ?? 0))
+        if post.isRequest == true {
+            view.addSubview(self.requestPostView)
+            NSLayoutConstraint.activate([
+                requestPostView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                requestPostView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                requestPostView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                requestPostView.heightAnchor.constraint(equalToConstant: 80),
+                chatTableView.topAnchor.constraint(equalTo: requestPostView.bottomAnchor)
+                
+            ])
+            self.requestPostView.configureData(post: post)
+        } else {
+            view.addSubview(self.rentPostView)
+            NSLayoutConstraint.activate([
+                rentPostView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                rentPostView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                rentPostView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                rentPostView.heightAnchor.constraint(equalToConstant: 80),
+                chatTableView.topAnchor.constraint(equalTo: rentPostView.bottomAnchor)
+            ])
+            self.rentPostView.configureData(post: post)
+        }
+        
+        DispatchQueue.main.async {
+            if self.viewModel.getLog().count-1 > 0 {
+                self.chatTableView.scrollToRow(
+                    at: IndexPath(row: self.viewModel.getLog().count-1, section: 0), at: .bottom, animated: false
+                )
+            }
+        }
     }
     
     func generateData() {

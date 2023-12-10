@@ -72,6 +72,15 @@ class ChatListTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        profileImageView.image = nil
+        nicknameLabel.text = nil
+        recentTimeLabel.text = nil
+        recentChatLabel.text = nil
+        isReadLabel.text = nil
+        postImageView.image = nil
+    }
 
     private func configureUI() {
         self.contentView.addSubview(profileImageView)
