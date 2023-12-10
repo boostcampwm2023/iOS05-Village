@@ -10,20 +10,25 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias RentPostDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
-    typealias RequestPostDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias PostDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias PostSnapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>
     
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
     
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     
-    private let needPostList = CurrentValueSubject<Bool, Never>(false)
+    private var postType: PostType = .rent
+    private let refresh = PassthroughSubject<PostType, Never>()
+    private let pagination = PassthroughSubject<PostType, Never>()
+    
     private let viewModel = ViewModel()
     
     private lazy var postSegmentedControl: PostSegmentedControl = {
-        let control = PostSegmentedControl()
+        let control = PostSegmentedControl(items: ["대여글", "요청글"])
         control.translatesAutoresizingMaskIntoConstraints = false
+        control.selectedSegmentIndex = 0
+        control.addTarget(self, action: #selector(togglePostType), for: .valueChanged)
         
         return control
     }()
@@ -35,6 +40,7 @@ final class HomeViewController: UIViewController {
         view.isPagingEnabled = true
         view.showsHorizontalScrollIndicator = false
         view.showsVerticalScrollIndicator = false
+        view.delegate = self
         
         return view
     }()
@@ -47,7 +53,7 @@ final class HomeViewController: UIViewController {
         return view
     }()
     
-    private lazy var rentDataSource = RentPostDataSource(
+    private lazy var rentDataSource = PostDataSource(
         tableView: rentPostTableView,
         cellProvider: { [weak self] (tableView, indexPath, postDTO) in
             if let cell = tableView.dequeueReusableCell(withIdentifier: RentPostTableViewCell.identifier,
@@ -58,7 +64,7 @@ final class HomeViewController: UIViewController {
             return UITableViewCell()
     })
     
-    private lazy var requestDataSource = RequestPostDataSource(
+    private lazy var requestDataSource = PostDataSource(
         tableView: requestPostTableView,
         cellProvider: { [weak self] (tableView, indexPath, postDTO) in
             if let cell = tableView.dequeueReusableCell(withIdentifier: RequestPostTableViewCell.identifier,
@@ -119,6 +125,7 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+        generateDataSource()
         bindViewModel()
     }
     
@@ -163,19 +170,27 @@ final class HomeViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        viewModel.transform(input: Input(needPostList: needPostList.eraseToAnyPublisher()))
-            .postList
+        let input = Input(
+            refresh: refresh.eraseToAnyPublisher(),
+            pagination: pagination.eraseToAnyPublisher()
+        )
+        let output = viewModel.transform(input: input)
+        handlePostList(output: output)
+    }
+    
+    private func handlePostList(output: ViewModel.Output) {
+        output.postList
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
+            .sink { completion in
                 switch completion {
                 case .finished:
                     break
                 case .failure(let error):
                     dump(error)
                 }
-            }, receiveValue: { [weak self] list in
-                self?.appendData(postList: list)
-            })
+            } receiveValue: { [weak self] postList in
+                self?.appendPost(items: postList)
+            }
             .store(in: &cancellableBag)
     }
     
@@ -214,12 +229,18 @@ final class HomeViewController: UIViewController {
 private extension HomeViewController {
     
     @objc func refreshPost() {
-        initializeDataSource()
-        needPostList.send(true)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-            self.collectionView.refreshControl?.endRefreshing()
+        refresh.send(postType)
+    }
+    
+    @objc func togglePostType() {
+        postType = (postType == .rent) ? .request : .rent
+        switch postType {
+        case .rent:
+            scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+        case .request:
+            scrollView.setContentOffset(CGPoint(x: scrollView.frame.width, y: 0), animated: true)
         }
+        
     }
     
     @objc func searchButtonTapped() {
@@ -269,35 +290,62 @@ private extension HomeViewController {
 
 }
 
-extension HomeViewController: UICollectionViewDelegate {
+extension HomeViewController: UITableViewDelegate {
     
     enum Section {
         case main
     }
     
-    private func initializeDataSource() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
-        snapshot.appendSections([.main])
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
-    
-    private func appendData(postList: [PostListItem]) {
-        var snapshot = dataSource.snapshot()
-        snapshot.appendItems(postList, toSection: .main)
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
+    private func generateDataSource() {
+        var rentSnapshot = PostSnapshot()
+        var requestSnapshot = PostSnapshot()
         
-        let postDetailVC = PostDetailViewController(postID: post.postID)
+        rentSnapshot.appendSections([.main])
+        requestSnapshot.appendSections([.main])
+        
+        rentDataSource.apply(rentSnapshot)
+        requestDataSource.apply(requestSnapshot)
+    }
+    
+    private func appendPost(items: [PostListResponseDTO]) {
+        switch postType {
+        case .rent:
+            var snapshot = rentDataSource.snapshot()
+            snapshot.appendItems(items)
+            rentDataSource.apply(snapshot, animatingDifferences: false)
+        case .request:
+            var snapshot = requestDataSource.snapshot()
+            snapshot.appendItems(items)
+            requestDataSource.apply(snapshot, animatingDifferences: false)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        var postID: Int
+        if tableView == rentPostTableView {
+            guard let post = rentDataSource.itemIdentifier(for: indexPath) else { return }
+            postID = post.postID
+        } else {
+            guard let post = requestDataSource.itemIdentifier(for: indexPath) else { return }
+            postID = post.postID
+        }
+        
+        let postDetailVC = PostDetailViewController(postID: postID)
         postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > collectionView.contentSize.height - 1300 {
-            needPostList.send(false)
+        switch postType {
+        case .rent:
+            if scrollView.contentOffset.y > rentPostTableView.contentSize.height - 1300 {
+                pagination.send(postType)
+            }
+        case .request:
+            if scrollView.contentOffset.y > requestPostTableView.contentSize.height - 1300 {
+                pagination.send(postType)
+            }
         }
     }
     
@@ -310,11 +358,11 @@ extension HomeViewController: UICollectionViewDelegate {
 extension HomeViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let index = Int(round(scrollView.contentOffset.x / view.frame.width))
-        if index != postSegmentedControl.selectedSegmentIndex {
-            postSegmentedControl.selectedSegmentIndex = index
-            togglePostType()
-        }
+//        let index = Int(round(scrollView.contentOffset.x / view.frame.width))
+//        if index != postSegmentedControl.selectedSegmentIndex {
+//            postSegmentedControl.selectedSegmentIndex = index
+//            togglePostType()
+//        }
     }
     
 }
