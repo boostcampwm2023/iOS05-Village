@@ -21,6 +21,8 @@ class BlockedUserTableViewCell: UITableViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 18
         imageView.backgroundColor = .primary500
+        imageView.setLayer(borderWidth: 0, cornerRadius: 4)
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -89,7 +91,7 @@ class BlockedUserTableViewCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             nicknameLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
-            nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15)
+            nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 25)
         ])
         
         NSLayoutConstraint.activate([
