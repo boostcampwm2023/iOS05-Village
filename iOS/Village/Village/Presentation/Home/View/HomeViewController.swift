@@ -28,6 +28,24 @@ final class HomeViewController: UIViewController {
         return control
     }()
     
+    private lazy var scrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.bounces = false
+        view.isPagingEnabled = true
+        view.showsHorizontalScrollIndicator = false
+        view.showsVerticalScrollIndicator = false
+        
+        return view
+    }()
+    
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     private lazy var rentDataSource = RentPostDataSource(
         tableView: rentPostTableView,
         cellProvider: { [weak self] (tableView, indexPath, postDTO) in
@@ -36,6 +54,7 @@ final class HomeViewController: UIViewController {
                 cell.configureData(post: postDTO)
                 return cell
             }
+            return UITableViewCell()
     })
     
     private lazy var requestDataSource = RequestPostDataSource(
@@ -46,6 +65,7 @@ final class HomeViewController: UIViewController {
                 cell.configureData(post: postDTO)
                 return cell
             }
+            return UITableViewCell()
     })
     
     private lazy var rentPostTableView: UITableView = {
@@ -119,6 +139,10 @@ final class HomeViewController: UIViewController {
         bindFloatingButton()
         
         view.addSubview(postSegmentedControl)
+        view.addSubview(scrollView)
+        scrollView.addSubview(containerView)
+        containerView.addSubview(rentPostTableView)
+        containerView.addSubview(requestPostTableView)
         view.addSubview(floatingButton)
         view.addSubview(menuView)
         setLayoutConstraint()
@@ -226,10 +250,32 @@ private extension HomeViewController {
         ])
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: postSegmentedControl.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            scrollView.topAnchor.constraint(equalTo: postSegmentedControl.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: scrollView.frameLayoutGuide.topAnchor),
+            containerView.bottomAnchor.constraint(equalTo: scrollView.frameLayoutGuide.bottomAnchor),
+            containerView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            containerView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, multiplier: 2)
+        ])
+        
+        NSLayoutConstraint.activate([
+            rentPostTableView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            rentPostTableView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            rentPostTableView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            rentPostTableView.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.5)
+        ])
+        
+        NSLayoutConstraint.activate([
+            requestPostTableView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            requestPostTableView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            requestPostTableView.leadingAnchor.constraint(equalTo: rentPostTableView.trailingAnchor),
+            requestPostTableView.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.5)
         ])
     }
 
