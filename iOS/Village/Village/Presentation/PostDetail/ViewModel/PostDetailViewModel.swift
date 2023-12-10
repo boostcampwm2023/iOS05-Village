@@ -134,9 +134,19 @@ final class PostDetailViewModel {
     }
     
     private func blockUser(userID: String) {
+        let endpoint = APIEndPoints.blockUser(userID: userID)
         
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+                popViewControllerOutput.send()
+            } catch let error as NetworkError {
+                popViewControllerOutput.send(completion: .failure(error))
+            } catch {
+                dump(error)
+            }
+        }
     }
-
     
 }
 
