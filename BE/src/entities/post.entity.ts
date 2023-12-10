@@ -13,6 +13,7 @@ import { UserEntity } from './user.entity';
 import { PostImageEntity } from './postImage.entity';
 import { BlockPostEntity } from './blockPost.entity';
 import { ChatRoomEntity } from './chatRoom.entity';
+import { ReportEntity } from './report.entity';
 
 @Entity('post')
 export class PostEntity {
@@ -67,4 +68,7 @@ export class PostEntity {
 
   @OneToMany(() => BlockPostEntity, (post_image) => post_image.blocked_post)
   blocked_posts: BlockPostEntity[];
+
+  @OneToMany(() => ReportEntity, (report) => report.post_id)
+  report: ReportEntity[];
 }
