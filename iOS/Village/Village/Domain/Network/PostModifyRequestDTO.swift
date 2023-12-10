@@ -57,6 +57,7 @@ struct PostInfoDTO: Encodable {
     let isRequest: Bool
     let startDate: String
     let endDate: String
+    let deletedImages: [String]
     
     enum CodingKeys: String, CodingKey {
         case title
@@ -65,6 +66,7 @@ struct PostInfoDTO: Encodable {
         case isRequest = "is_request"
         case startDate = "start_date"
         case endDate = "end_date"
+        case deletedImages = "deleted_images"
     }
     
 }

@@ -11,9 +11,11 @@ struct ImageItem: Hashable {
     
     let id = UUID()
     let data: Data
+    let url: String?
     
-    init(data: Data) {
+    init(data: Data, url: String? = nil) {
         self.data = data
+        self.url = url
     }
     
 }

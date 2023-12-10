@@ -41,6 +41,7 @@ final class PostCreateViewModel {
     var imagesCount: Int {
         images.count
     }
+    private var willDeleteImageURL = [String]()
     
     private let warningPublisher = PassthroughSubject<PostWarning, Never>()
     private let endOutput = PassthroughSubject<Void, NetworkError>()
@@ -76,7 +77,8 @@ final class PostCreateViewModel {
                     price: priceToInt(price: post.price),
                     isRequest: isRequest,
                     startDate: startTimeString,
-                    endDate: endTimeString
+                    endDate: endTimeString,
+                    deletedImages: willDeleteImageURL
                 ),
                 image: images,
                 postID: postID
@@ -117,12 +119,41 @@ final class PostCreateViewModel {
                         price: data.price,
                         isRequest: data.isRequest,
                         startDate: data.startDate,
-                        endDate: data.endDate
+                        endDate: data.endDate,
+                        deletedImages: []
                     )
                 )
+                setEditImage(imageURL: data.imageURL)
             } catch {
                 dump(error)
             }
+        }
+    }
+    
+    private func setEditImage(imageURL: [String]) {
+        Task { [weak self] in
+            guard let self = self else { return }
+            do {
+                let items = try await self.getImageItems(imageURL)
+                self.images += items
+                self.imageOutput.send(items)
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
+    private func getImageItems(_ urls: [String]) async throws -> [ImageItem] {
+        return try await withThrowingTaskGroup(of: (Data, String).self, returning: [ImageItem].self) { taskGroup in
+            urls.forEach { url in
+                taskGroup.addTask { (try await APIProvider.shared.request(from: url), url) }
+            }
+            var imageData = [ImageItem]()
+            for try await (data, url) in taskGroup {
+                let item = ImageItem(data: data, url: url)
+                imageData.append(item)
+            }
+            return imageData
         }
     }
     
@@ -152,7 +183,7 @@ final class PostCreateViewModel {
                     timeSequenceWarning: timeSequenceWarn(startTimeString: post.startTime, endTimeString: post.endTime)
                 )
                 if warning.validation == true {
-                    modifyPost(post: post, images: images.map(\.data))
+                    modifyPost(post: post, images: images.filter{$0.url == nil}.map(\.data))
                 } else {
                     warningPublisher.send(warning)
                 }
@@ -188,6 +219,9 @@ final class PostCreateViewModel {
     }
     
     func deleteImage(item: ImageItem) {
+        if let url = item.url {
+            willDeleteImageURL.append(url)
+        }
         images.removeAll(where: {$0.id == item.id})
     }
     
