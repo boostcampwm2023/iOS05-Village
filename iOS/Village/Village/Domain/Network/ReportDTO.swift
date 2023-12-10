@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ReportDTO {
+struct ReportDTO: Encodable {
     
     let postID: Int
     let userID: String
