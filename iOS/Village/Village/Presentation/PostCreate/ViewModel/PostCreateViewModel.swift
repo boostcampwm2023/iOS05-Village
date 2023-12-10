@@ -18,12 +18,12 @@ struct PostWarning {
     let timeSequenceWarning: Bool
     
     var validation: Bool {
-        !(imageWarning == true ||
-          titleWarning ||
-          startTimeWarning ||
-          endTimeWarning ||
-          timeSequenceWarning ||
-          priceWarning == true)
+        !(imageWarning == true
+          || titleWarning
+          || startTimeWarning
+          || endTimeWarning
+          || timeSequenceWarning
+          || priceWarning == true)
     }
     
 }
