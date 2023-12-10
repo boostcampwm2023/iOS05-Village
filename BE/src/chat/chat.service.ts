@@ -151,6 +151,61 @@ export class ChatService {
     return chatListInfo;
   }
 
+  async unreadChat(userId: string) {
+    const subquery = this.chatRepository
+      .createQueryBuilder('chat')
+      .select('chat.id', 'id')
+      .addSelect('chat.chat_room', 'chat_room')
+      .addSelect('chat.message', 'message')
+      .addSelect('chat.create_date', 'create_date')
+      .addSelect('chat.is_read', 'is_read')
+      .addSelect('chat.sender', 'sender')
+      .where(
+        'chat.id IN (SELECT MAX(chat.id) FROM chat GROUP BY chat.chat_room)',
+      );
+
+    const rooms = await this.chatRoomRepository
+      .createQueryBuilder('chat_room')
+      .innerJoin(
+        '(' + subquery.getQuery() + ')',
+        'chat_info',
+        'chat_room.id = chat_info.chat_room',
+      )
+      .leftJoin(
+        'chat_room.writerUser',
+        'writer',
+        'chat_room.writerUser = writer.user_hash',
+      )
+      .leftJoin(
+        'chat_room.userUser',
+        'user',
+        'chat_room.userUser = user.user_hash',
+      )
+      .select([
+        'chat_room.id as room_id',
+        'chat_room.writer as writer',
+        'writer.nickname as writer_nickname',
+        'writer.profile_img as writer_profile_img',
+        'chat_room.user as user',
+        'user.nickname as user_nickname',
+        'user.profile_img as user_profile_img',
+        'chat_room.post_id as post_id',
+        'chat_info.create_date as last_chat_date',
+        'chat_info.message as last_chat',
+        'chat_info.is_read as is_read',
+        'chat_info.sender as sender',
+      ])
+      .getRawMany();
+
+    for (let room of rooms) {
+      if (room.sender !== userId && room.is_read === 0) {
+        return { all_read: false };
+      }
+    }
+
+    return { all_read: true };
+  }
+
   async findRoomById(roomId: number, userId: string) {
     await this.chatRepository
       .createQueryBuilder('chat')
