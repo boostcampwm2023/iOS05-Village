@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -32,7 +31,10 @@ export class UserEntity {
   blocker_post: BlockPostEntity[];
 
   @OneToMany(() => ReportEntity, (report) => report.user_hash)
-  report: ReportEntity[];
+  reported: ReportEntity[];
+
+  @OneToMany(() => ReportEntity, (report) => report.reporter)
+  reporting: ReportEntity[];
 
   @OneToOne(
     () => RegistrationTokenEntity,
