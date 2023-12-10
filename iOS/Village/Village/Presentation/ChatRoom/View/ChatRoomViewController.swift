@@ -21,7 +21,6 @@ final class ChatRoomViewController: UIViewController {
     private var cancellableBag = Set<AnyCancellable>()
     
     private let roomID: Just<Int>
-    private let opponentNickname: String
     private var writer: String?
     private var user: String?
     
@@ -133,9 +132,8 @@ final class ChatRoomViewController: UIViewController {
         return postView
     }()
     
-    init(roomID: Int, opponentNickname: String) {
+    init(roomID: Int) {
         self.roomID = Just(roomID)
-        self.opponentNickname = opponentNickname
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -237,7 +235,7 @@ private extension ChatRoomViewController {
 private extension ChatRoomViewController {
     
     func setUI() {
-        setNavigationTitle(title: self.opponentNickname)
+//        setNavigationTitle(title:)
         view.addSubview(postView)
         view.addSubview(chatTableView)
         
@@ -288,8 +286,22 @@ private extension ChatRoomViewController {
         navigationItem.backButtonDisplayMode = .minimal
     }
     
-    func setNavigationTitle(title: String) {
-        navigationItem.title = title
+    func setNavigationTitle(userID: String) {
+        let input = ViewModel.UserInput(userID: Just(userID).eraseToAnyPublisher())
+        let output = viewModel.transformUser(input: input)
+        
+        output.user.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] user in
+                self?.navigationItem.title = user.nickname
+            }
+            .store(in: &cancellableBag)
     }
     
     func bindViewModel() {
@@ -327,6 +339,14 @@ private extension ChatRoomViewController {
         }
         self.writer = room.writer
         self.user = room.user
+        if let writer = self.writer,
+           let user = self.user {
+            if JWTManager.shared.currentUserID == writer {
+                setNavigationTitle(userID: user)
+            } else {
+                setNavigationTitle(userID: writer)
+            }
+        }
         self.viewModel.getData(writerURL: room.writerProfileIMG, userURL: room.userProfileIMG)
         self.generateData()
         

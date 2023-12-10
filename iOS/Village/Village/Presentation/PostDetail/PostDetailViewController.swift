@@ -225,7 +225,7 @@ final class PostDetailViewController: UIViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] roomID in
-                let nextVC = ChatRoomViewController(roomID: roomID.roomID, opponentNickname: userID)
+                let nextVC = ChatRoomViewController(roomID: roomID.roomID)
                 nextVC.hidesBottomBarWhenPushed = true
                 self?.navigationController?.pushViewController(nextVC, animated: true)
             }
