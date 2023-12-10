@@ -87,6 +87,12 @@ final class SearchResultViewController: UIViewController {
         generateData()
         bindViewModel()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.navigationController?.popToRootViewController(animated: true)
+    }
 
 }
 
