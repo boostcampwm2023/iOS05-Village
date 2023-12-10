@@ -157,6 +157,14 @@ final class PostDetailViewController: UIViewController {
         return action
     }
     
+    private var reportAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "사용자 신고하기", style: .default) { [weak self] _ in
+            let nextVC = ReportViewController(viewModel: ReportViewModel())
+            self?.navigationController?.pushViewController(nextVC, animated: true)
+        }
+        return action
+    }
+    
     private let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
     
     init(postID: Int) {
@@ -192,6 +200,7 @@ final class PostDetailViewController: UIViewController {
         if postUserID != JWTManager.shared.currentUserID {
             alert.addAction(hideAction)
             alert.addAction(banAction)
+            alert.addAction(reportAction)
             alert.addAction(cancelAction)
         } else {
             alert.addAction(modifyAction)
