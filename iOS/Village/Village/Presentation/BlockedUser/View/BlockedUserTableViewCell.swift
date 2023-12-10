@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import Combine
 
-class BlockedUserTableViewCell: UITableViewCell {
+final class BlockedUserTableViewCell: UITableViewCell {
+    
+    let blockToggleSubject = PassthroughSubject<Bool, Never>()
     
     private lazy var userView: UIView = {
         let view = UIView()
@@ -21,6 +24,8 @@ class BlockedUserTableViewCell: UITableViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 18
         imageView.backgroundColor = .primary500
+        imageView.setLayer(borderWidth: 0, cornerRadius: 4)
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -33,32 +38,42 @@ class BlockedUserTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let blockTitleString: AttributedString = {
+        var titleAttribute = AttributedString.init("차단")
+        titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
+       
+        return titleAttribute
+    }()
+    
+    private let unblockTitleString: AttributedString = {
+        var titleAttribute = AttributedString.init("차단 해제")
+        titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
+       
+        return titleAttribute
+    }()
+    
     private lazy var blockedButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.titleAlignment = .center
         configuration.baseBackgroundColor = .primary500
-        var titleAttribute = AttributedString.init("차단 해제")
-        titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
-        configuration.attributedTitle = titleAttribute
+        configuration.attributedTitle = unblockTitleString
         
         let button = UIButton(configuration: configuration)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(target, action: #selector(muteButtonTapped), for: .touchUpInside)
+        button.addTarget(target, action: #selector(blockButtonTapped), for: .touchUpInside)
         
         return button
     }()
     
-    @objc private func muteButtonTapped() {
+    @objc private func blockButtonTapped() {
         if blockedButton.titleLabel?.text == "차단 해제" {
-            blockedButton.configuration?.baseBackgroundColor = .black
-            var titleAttribute = AttributedString.init("차단")
-            titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
-            blockedButton.configuration?.attributedTitle = titleAttribute
+            blockedButton.configuration?.baseBackgroundColor = .grey800
+            blockedButton.configuration?.attributedTitle = blockTitleString
+            blockToggleSubject.send(false)
         } else {
             blockedButton.configuration?.baseBackgroundColor = .primary500
-            var titleAttribute = AttributedString.init("차단 해제")
-            titleAttribute.font = .systemFont(ofSize: 12.0, weight: .bold)
-            blockedButton.configuration?.attributedTitle = titleAttribute
+            blockedButton.configuration?.attributedTitle = unblockTitleString
+            blockToggleSubject.send(true)
         }
     }
     
@@ -89,7 +104,7 @@ class BlockedUserTableViewCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             nicknameLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
-            nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15)
+            nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 25)
         ])
         
         NSLayoutConstraint.activate([
@@ -100,7 +115,7 @@ class BlockedUserTableViewCell: UITableViewCell {
         ])
     }
     
-    func configureData(user: UserResponseDTO) {
+    func configureData(user: BlockedUserDTO) {
         configureImage(url: user.profileImageURL)
         nicknameLabel.text = user.nickname
     }
