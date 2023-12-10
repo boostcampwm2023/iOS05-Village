@@ -8,13 +8,6 @@
 import UIKit
 
 class ChatListTableViewCell: UITableViewCell {
-
-    private lazy var chatView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        return view
-    }()
     
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -27,7 +20,7 @@ class ChatListTableViewCell: UITableViewCell {
     }()
     
     private lazy var nicknameLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .bold)
         
@@ -35,7 +28,7 @@ class ChatListTableViewCell: UITableViewCell {
     }()
     
     private lazy var recentTimeLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textColor = .systemGray3
@@ -44,7 +37,7 @@ class ChatListTableViewCell: UITableViewCell {
     }()
     
     private lazy var recentChatLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16, weight: .regular)
         
@@ -70,39 +63,31 @@ class ChatListTableViewCell: UITableViewCell {
     }
 
     private func configureUI() {
-        self.addSubview(chatView)
-        chatView.addSubview(profileImageView)
-        chatView.addSubview(nicknameLabel)
-        chatView.addSubview(recentTimeLabel)
-        chatView.addSubview(recentChatLabel)
-        chatView.addSubview(postImageView)
+        self.contentView.addSubview(profileImageView)
+        self.contentView.addSubview(nicknameLabel)
+        self.contentView.addSubview(recentTimeLabel)
+        self.contentView.addSubview(recentChatLabel)
+        self.contentView.addSubview(postImageView)
         
         configureConstraints()
     }
     
     private func configureConstraints() {
         NSLayoutConstraint.activate([
-            chatView.topAnchor.constraint(equalTo: self.topAnchor),
-            chatView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            chatView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            chatView.heightAnchor.constraint(equalToConstant: 80)
-        ])
-        
-        NSLayoutConstraint.activate([
-            profileImageView.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 16),
-            profileImageView.leadingAnchor.constraint(equalTo: chatView.leadingAnchor, constant: 16),
+            profileImageView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16),
+            profileImageView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16),
             profileImageView.widthAnchor.constraint(equalToConstant: 48),
             profileImageView.heightAnchor.constraint(equalToConstant: 48)
         ])
         
         NSLayoutConstraint.activate([
-            nicknameLabel.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 16),
+            nicknameLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16),
             nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20),
             nicknameLabel.widthAnchor.constraint(equalToConstant: 80)
         ])
         
         NSLayoutConstraint.activate([
-            recentTimeLabel.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 16),
+            recentTimeLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16),
             recentTimeLabel.trailingAnchor.constraint(equalTo: postImageView.leadingAnchor, constant: -10)
         ])
         
@@ -112,8 +97,8 @@ class ChatListTableViewCell: UITableViewCell {
         ])
         
         NSLayoutConstraint.activate([
-            postImageView.topAnchor.constraint(equalTo: chatView.topAnchor, constant: 10),
-            postImageView.trailingAnchor.constraint(equalTo: chatView.trailingAnchor, constant: -15),
+            postImageView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10),
+            postImageView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -15),
             postImageView.widthAnchor.constraint(equalToConstant: 60),
             postImageView.heightAnchor.constraint(equalToConstant: 60)
         ])
