@@ -18,6 +18,7 @@ final class PostDetailViewController: UIViewController {
     private var isRequest: Bool?
     private var deletePostID = PassthroughSubject<Int, Never>()
     private let hidePost = PassthroughSubject<Int, Never>()
+    private let blockUser = PassthroughSubject<Int, Never>()
     
     private let viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
@@ -149,8 +150,9 @@ final class PostDetailViewController: UIViewController {
     }
     
     private var banAction: UIAlertAction {
-        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .default) { _ in
-            // TODO: ban user
+        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .default) { [weak self] _ in
+            guard let id = self?.postID.output else { return }
+            self?.blockUser.send(id)
         }
         return action
     }
