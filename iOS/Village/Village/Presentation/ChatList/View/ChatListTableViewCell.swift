@@ -44,6 +44,17 @@ class ChatListTableViewCell: UITableViewCell {
         return label
     }()
     
+    private lazy var isReadLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 24, weight: .bold)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.layer.cornerRadius = 8
+        
+        return label
+    }()
+    
     private lazy var postImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -67,6 +78,7 @@ class ChatListTableViewCell: UITableViewCell {
         self.contentView.addSubview(nicknameLabel)
         self.contentView.addSubview(recentTimeLabel)
         self.contentView.addSubview(recentChatLabel)
+        self.contentView.addSubview(isReadLabel)
         self.contentView.addSubview(postImageView)
         
         configureConstraints()
@@ -94,6 +106,13 @@ class ChatListTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             recentChatLabel.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 10),
             recentChatLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            isReadLabel.topAnchor.constraint(equalTo: recentTimeLabel.bottomAnchor, constant: 10),
+            isReadLabel.trailingAnchor.constraint(equalTo: postImageView.leadingAnchor, constant: -10),
+            isReadLabel.widthAnchor.constraint(equalToConstant: 24),
+            isReadLabel.heightAnchor.constraint(equalToConstant: 24)
         ])
         
         NSLayoutConstraint.activate([
@@ -143,6 +162,13 @@ class ChatListTableViewCell: UITableViewCell {
         recentChatLabel.text = lastChat.count > 10 ? String(lastChat.prefix(10)) + "..." : lastChat
         await configureUserProfile(data.userProfileIMG)
         await configurePostImage(data.postThumbnail)
+        if data.allRead == true {
+            isReadLabel.text = nil
+            isReadLabel.layer.backgroundColor = nil
+        } else {
+            isReadLabel.text = "!"
+            isReadLabel.layer.backgroundColor = UIColor.negative400.cgColor
+        }
     }
     
     func configureUserProfile(_ url: String?) async {
