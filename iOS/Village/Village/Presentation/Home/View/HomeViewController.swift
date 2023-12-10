@@ -311,7 +311,10 @@ extension HomeViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let index = Int(round(scrollView.contentOffset.x / view.frame.width))
-        postSegmentedControl.setSegmentIndex(index)
+        if index != postSegmentedControl.selectedSegmentIndex {
+            postSegmentedControl.selectedSegmentIndex = index
+            togglePostType()
+        }
     }
     
 }
