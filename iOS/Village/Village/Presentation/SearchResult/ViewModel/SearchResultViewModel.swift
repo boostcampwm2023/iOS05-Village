@@ -12,7 +12,6 @@ final class SearchResultViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     private var searchResultList = PassthroughSubject<[PostListResponseDTO], NetworkError>()
-    private var nextPageUpdateOutput = PassthroughSubject<[PostListResponseDTO], Never>()
     private var postTitle: String = ""
     private var lastPostID: String = ""
     
@@ -22,28 +21,6 @@ final class SearchResultViewModel {
     }
     
     private var searchFilter = Filter.request
-    
-    private func getAddedList() {
-        print(self.lastPostID)
-        let request = PostListRequestDTO(
-            searchKeyword: self.postTitle,
-            requestFilter: self.searchFilter.rawValue,
-            page: self.lastPostID
-        )
-        let endpoint = APIEndPoints.getPosts(queryParameter: request)
-        
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint),
-                      let lastID = data.last?.postID
-                else { return }
-                searchResultList.send(data)
-                self.lastPostID = "\(lastID)"
-            } catch {
-                dump(error)
-            }
-        }
-    }
     
     func transform(input: Input) -> Output {
         input.postTitle
@@ -89,6 +66,27 @@ final class SearchResultViewModel {
         }
     }
     
+    private func getAddedList() {
+        let request = PostListRequestDTO(
+            searchKeyword: self.postTitle,
+            requestFilter: self.searchFilter.rawValue,
+            page: self.lastPostID
+        )
+        let endpoint = APIEndPoints.getPosts(queryParameter: request)
+        
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint),
+                      let lastID = data.last?.postID
+                else { return }
+                searchResultList.send(data)
+                self.lastPostID = "\(lastID)"
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
 }
 
 extension SearchResultViewModel {
@@ -101,13 +99,6 @@ extension SearchResultViewModel {
     
     struct Output {
         var searchResultList: AnyPublisher<[PostListResponseDTO], NetworkError>
-    }
-    
-    struct ScrollInput {
-    }
-    
-    struct ScrollOutput {
-        var nextPageUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
     }
     
 }
