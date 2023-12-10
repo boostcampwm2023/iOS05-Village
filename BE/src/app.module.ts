@@ -16,6 +16,9 @@ import { LoginModule } from './login/login.module';
 import { ChatModule } from './chat/chat.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RedisConfigProvider } from './config/redis.config';
+import { ReportModule } from './report/report.module';
+import { ReportController } from './no-spec/report/report.controller';
+import { ReportService } from './no-spec/report/report.service';
 
 @Module({
   imports: [
@@ -39,8 +42,9 @@ import { RedisConfigProvider } from './config/redis.config';
     UsersModule,
     LoginModule,
     ChatModule,
+    ReportModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, ReportController],
   providers: [
     AppService,
     Logger,
@@ -48,6 +52,7 @@ import { RedisConfigProvider } from './config/redis.config';
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
+    ReportService,
   ],
 })
 export class AppModule {}
