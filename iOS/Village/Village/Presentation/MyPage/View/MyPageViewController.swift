@@ -355,7 +355,7 @@ private extension MyPageViewController {
     }
     
     func hiddenPostButtonTapped() {
-        let nextVC = PostMuteViewController()
+        let nextVC = MyHiddenPostsViewController(viewModel: MyHiddenPostsViewModel())
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)
     }

@@ -31,6 +31,10 @@
 		446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CA2B0DFD4F00B74DA7 /* Int+.swift */; };
 		446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362CE2B0F042500B74DA7 /* PostInfoView.swift */; };
 		446362D12B0F050600B74DA7 /* UserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446362D02B0F050600B74DA7 /* UserInfoView.swift */; };
+		446B60F72B220D6000A361CB /* CameraButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B60F62B220D6000A361CB /* CameraButtonCell.swift */; };
+		446B60F92B220D9500A361CB /* ImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B60F82B220D9500A361CB /* ImageViewCell.swift */; };
+		446B60FB2B220DC400A361CB /* ImageUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B60FA2B220DC400A361CB /* ImageUploadView.swift */; };
+		446B61002B2433E100A361CB /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B60FF2B2433E100A361CB /* ImageItem.swift */; };
 		4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4491AA272B05D6C90016FC70 /* MenuView.swift */; };
 		44C1F5E32B0FB6460047A436 /* PostListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5E22B0FB6460047A436 /* PostListItem.swift */; };
 		44C1F5E62B0FE37C0047A436 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5E52B0FE37C0047A436 /* PostDetailViewModel.swift */; };
@@ -66,6 +70,10 @@
 		59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D8F1062B103F4800A08E02 /* PostCreateUseCase.swift */; };
 		59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E0C5FB2AFBA3FC0073D494 /* AppDelegate.swift */; };
 		59E0C6052AFBA3FE0073D494 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E0C6042AFBA3FE0073D494 /* Assets.xcassets */; };
+		59E2C1602B248A6D004428F7 /* MyHiddenPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E2C15F2B248A6D004428F7 /* MyHiddenPostsViewController.swift */; };
+		59E2C1622B248AB9004428F7 /* MyHiddenPostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E2C1612B248AB9004428F7 /* MyHiddenPostsViewModel.swift */; };
+		59E2C1642B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E2C1632B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift */; };
+		59E2C1662B24B6D9004428F7 /* RequestFilterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */; };
 		59E6A2042B1F325E00A2DF21 /* MyPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2032B1F325E00A2DF21 /* MyPostsViewController.swift */; };
 		59E6A2072B1F374B00A2DF21 /* MyPostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2062B1F374B00A2DF21 /* MyPostsViewModel.swift */; };
 		59E6A2092B1F3AC200A2DF21 /* RequstPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */; };
@@ -89,9 +97,8 @@
 		8F81E8482B248B5F00C5687C /* SearchRentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81E8472B248B5F00C5687C /* SearchRentTableViewCell.swift */; };
 		8F8F0B832B1B36DD00BE97D2 /* ChatListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B822B1B36DD00BE97D2 /* ChatListTableViewCell.swift */; };
 		8F8F0B852B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */; };
-		8F8F0B882B1D980900BE97D2 /* PostMuteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */; };
 		8F8F0B8B2B1D985A00BE97D2 /* BlockedUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8A2B1D985A00BE97D2 /* BlockedUserViewController.swift */; };
-		8F8F0B8D2B1DA91500BE97D2 /* PostMuteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8C2B1DA91500BE97D2 /* PostMuteTableViewCell.swift */; };
+		8F8F0B8D2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8C2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift */; };
 		8F8F0B8F2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */; };
 		8F8F0B912B1DB6C100BE97D2 /* PostMute.json in Resources */ = {isa = PBXBuildFile; fileRef = 8F8F0B902B1DB6C100BE97D2 /* PostMute.json */; };
 		8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */; };
@@ -156,6 +163,10 @@
 		446362CA2B0DFD4F00B74DA7 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		446362CE2B0F042500B74DA7 /* PostInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoView.swift; sourceTree = "<group>"; };
 		446362D02B0F050600B74DA7 /* UserInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoView.swift; sourceTree = "<group>"; };
+		446B60F62B220D6000A361CB /* CameraButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButtonCell.swift; sourceTree = "<group>"; };
+		446B60F82B220D9500A361CB /* ImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewCell.swift; sourceTree = "<group>"; };
+		446B60FA2B220DC400A361CB /* ImageUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadView.swift; sourceTree = "<group>"; };
+		446B60FF2B2433E100A361CB /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
 		4491AA272B05D6C90016FC70 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		44C1F5E22B0FB6460047A436 /* PostListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListItem.swift; sourceTree = "<group>"; };
 		44C1F5E52B0FE37C0047A436 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
@@ -193,6 +204,10 @@
 		59E0C6042AFBA3FE0073D494 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		59E0C6092AFBA3FE0073D494 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59E196C82B045F4900BF7C5A /* PostCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateViewController.swift; sourceTree = "<group>"; };
+		59E2C15F2B248A6D004428F7 /* MyHiddenPostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHiddenPostsViewController.swift; sourceTree = "<group>"; };
+		59E2C1612B248AB9004428F7 /* MyHiddenPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHiddenPostsViewModel.swift; sourceTree = "<group>"; };
+		59E2C1632B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenRequestPostTableViewCell.swift; sourceTree = "<group>"; };
+		59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestFilterDTO.swift; sourceTree = "<group>"; };
 		59E6A2032B1F325E00A2DF21 /* MyPostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostsViewController.swift; sourceTree = "<group>"; };
 		59E6A2062B1F374B00A2DF21 /* MyPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostsViewModel.swift; sourceTree = "<group>"; };
 		59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequstPostTableViewCell.swift; sourceTree = "<group>"; };
@@ -217,9 +232,8 @@
 		8F81E8472B248B5F00C5687C /* SearchRentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRentTableViewCell.swift; sourceTree = "<group>"; };
 		8F8F0B822B1B36DD00BE97D2 /* ChatListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListTableViewCell.swift; sourceTree = "<group>"; };
 		8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomRequestDTO.swift; sourceTree = "<group>"; };
-		8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteViewController.swift; sourceTree = "<group>"; };
 		8F8F0B8A2B1D985A00BE97D2 /* BlockedUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserViewController.swift; sourceTree = "<group>"; };
-		8F8F0B8C2B1DA91500BE97D2 /* PostMuteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteTableViewCell.swift; sourceTree = "<group>"; };
+		8F8F0B8C2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenRentPostTableViewCell.swift; sourceTree = "<group>"; };
 		8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMuteResponseDTO.swift; sourceTree = "<group>"; };
 		8F8F0B902B1DB6C100BE97D2 /* PostMute.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostMute.json; sourceTree = "<group>"; };
 		8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRoomRequestDTO.swift; sourceTree = "<group>"; };
@@ -380,6 +394,23 @@
 			path = Custom;
 			sourceTree = "<group>";
 		};
+		446B60F52B220D4300A361CB /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				446B60F62B220D6000A361CB /* CameraButtonCell.swift */,
+				446B60F82B220D9500A361CB /* ImageViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		446B60FE2B24330100A361CB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				446B60FF2B2433E100A361CB /* ImageItem.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		44C1F5E12B0FB6380047A436 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -489,11 +520,13 @@
 		59BD5DD22B0C7A0A00FEB80F /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				446B60F52B220D4300A361CB /* Cell */,
 				59AABDDE2B0E1AE1002F6D0E /* PostCreateTitleView.swift */,
 				59AABDE02B0E1BB8002F6D0E /* PostCreatePriceView.swift */,
 				59AABDE42B0E2D47002F6D0E /* PostCreateDetailView.swift */,
 				59AABDE22B0E272C002F6D0E /* PostCreateTimeView.swift */,
 				59D4DBDD2B06889300BBA2D5 /* TimePickerView.swift */,
+				446B60FA2B220DC400A361CB /* ImageUploadView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -538,10 +571,29 @@
 		59E196C72B045EFA00BF7C5A /* PostCreate */ = {
 			isa = PBXGroup;
 			children = (
+				446B60FE2B24330100A361CB /* Model */,
 				59BD5DD12B0C786600FEB80F /* ViewModel */,
 				59BD5DD02B0C785900FEB80F /* View */,
 			);
 			path = PostCreate;
+			sourceTree = "<group>";
+		};
+		59E2C15C2B248A42004428F7 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8F8F0B8C2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift */,
+				59E2C1632B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift */,
+				59E2C15F2B248A6D004428F7 /* MyHiddenPostsViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		59E2C15D2B248A48004428F7 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				59E2C1612B248AB9004428F7 /* MyHiddenPostsViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		59E6A2012B1F31FD00A2DF21 /* MyPosts */ = {
@@ -595,6 +647,7 @@
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
 				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
 				59457BC82B237615003F798C /* PatchUserDTO.swift */,
+				59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -663,13 +716,13 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		8F8F0B862B1D905C00BE97D2 /* PostMute */ = {
+		8F8F0B862B1D905C00BE97D2 /* MyHiddenPosts */ = {
 			isa = PBXGroup;
 			children = (
-				8F8F0B872B1D980900BE97D2 /* PostMuteViewController.swift */,
-				8F8F0B8C2B1DA91500BE97D2 /* PostMuteTableViewCell.swift */,
+				59E2C15D2B248A48004428F7 /* ViewModel */,
+				59E2C15C2B248A42004428F7 /* View */,
 			);
-			path = PostMute;
+			path = MyHiddenPosts;
 			sourceTree = "<group>";
 		};
 		8F8F0B892B1D983200BE97D2 /* BlockedUser */ = {
@@ -753,7 +806,7 @@
 				8FC7FE792B07A88400B91D3B /* PostDetail */,
 				8FBE3B0D2B04CB8100660530 /* Utils */,
 				59E196C72B045EFA00BF7C5A /* PostCreate */,
-				8F8F0B862B1D905C00BE97D2 /* PostMute */,
+				8F8F0B862B1D905C00BE97D2 /* MyHiddenPosts */,
 				8F8F0B892B1D983200BE97D2 /* BlockedUser */,
 			);
 			path = Presentation;
@@ -1051,13 +1104,17 @@
 				8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */,
 				4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */,
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
+				59E2C1662B24B6D9004428F7 /* RequestFilterDTO.swift in Sources */,
 				8F1E2CEE2B1F163D00179E34 /* GetRoomResponseDTO.swift in Sources */,
 				59E6A20F2B205C8500A2DF21 /* RequestPostSummaryView.swift in Sources */,
+				446B61002B2433E100A361CB /* ImageItem.swift in Sources */,
 				8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */,
 				59E6A2072B1F374B00A2DF21 /* MyPostsViewModel.swift in Sources */,
 				59BA10FA2B1CC3F700F30DB8 /* FCMManager.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
+				446B60F72B220D6000A361CB /* CameraButtonCell.swift in Sources */,
 				8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */,
+				59E2C1602B248A6D004428F7 /* MyHiddenPostsViewController.swift in Sources */,
 				4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */,
 				59457BC72B233EE5003F798C /* UIImage+Resize.swift in Sources */,
 				5980D75F2B0FB6DB00A6B370 /* PostCreateRepository.swift in Sources */,
@@ -1096,12 +1153,14 @@
 				59E6A2042B1F325E00A2DF21 /* MyPostsViewController.swift in Sources */,
 				4416D47E2B171BF30052BF33 /* LoginViewModel.swift in Sources */,
 				8F95CF942B0C60E00024631F /* HTTPMethod.swift in Sources */,
+				446B60FB2B220DC400A361CB /* ImageUploadView.swift in Sources */,
 				445D62B02B1DD6EC005DD3B1 /* AuthInterceptor.swift in Sources */,
 				8F3D79E22B14438A00370536 /* PostView.swift in Sources */,
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
 				59AABDDF2B0E1AE1002F6D0E /* PostCreateTitleView.swift in Sources */,
 				8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */,
 				444A509A2B0CE94E00454397 /* DateView.swift in Sources */,
+				59E2C1622B248AB9004428F7 /* MyHiddenPostsViewModel.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
 				8F81E8422B247A8B00C5687C /* SearchResultViewModel.swift in Sources */,
 				8F81E8402B246C0F00C5687C /* SearchResultViewController.swift in Sources */,
@@ -1114,17 +1173,18 @@
 				59110F042B1725C20009E9AC /* NotificationName+.swift in Sources */,
 				59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */,
 				8F8F0B8B2B1D985A00BE97D2 /* BlockedUserViewController.swift in Sources */,
-				8F8F0B8D2B1DA91500BE97D2 /* PostMuteTableViewCell.swift in Sources */,
+				8F8F0B8D2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift in Sources */,
 				59AADE382B22086400C3E17D /* SignUpViewModel.swift in Sources */,
 				8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */,
+				59E2C1642B248BF7004428F7 /* HiddenRequestPostTableViewCell.swift in Sources */,
 				446362CB2B0DFD4F00B74DA7 /* Int+.swift in Sources */,
 				5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */,
 				4416D44A2B148A7A0052BF33 /* AppTabBarController.swift in Sources */,
 				8FF7E61D2B10721400B6D678 /* ChatListViewModel.swift in Sources */,
-				8F8F0B882B1D980900BE97D2 /* PostMuteViewController.swift in Sources */,
 				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
 				8F3D79E02B136C6800370536 /* ChatRoomViewModel.swift in Sources */,
 				44C1F5ED2B0FE44A0047A436 /* UserResponseDTO.swift in Sources */,
+				446B60F92B220D9500A361CB /* ImageViewCell.swift in Sources */,
 				8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */,
 				8F81E8482B248B5F00C5687C /* SearchRentTableViewCell.swift in Sources */,
 				8F95CF962B0C66910024631F /* Requestable.swift in Sources */,
