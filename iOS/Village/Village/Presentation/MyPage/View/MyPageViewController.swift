@@ -128,7 +128,7 @@ final class MyPageViewController: UIViewController {
         return button
     }()
     
-    private lazy var hiddenUserButton: UIButton = {
+    private lazy var blockedUsersButton: UIButton = {
         var titleAttr = AttributedString.init("차단 관리")
         titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
         
@@ -139,7 +139,7 @@ final class MyPageViewController: UIViewController {
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(hiddenUserButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(blockedUsersButtonTapped), for: .touchUpInside)
         button.configuration = configuration
         button.contentHorizontalAlignment = .leading
         
@@ -245,7 +245,7 @@ private extension MyPageViewController {
         activityStackView.addArrangedSubview(activityLabel)
         activityStackView.addArrangedSubview(myPostButton)
         activityStackView.addArrangedSubview(hiddenPostButton)
-        activityStackView.addArrangedSubview(hiddenUserButton)
+        activityStackView.addArrangedSubview(blockedUsersButton)
         
         view.addSubview(accountStackView)
         accountStackView.addArrangedSubview(accountLabel)
@@ -360,7 +360,7 @@ private extension MyPageViewController {
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    func hiddenUserButtonTapped() {
+    func blockedUsersButtonTapped() {
         let nextVC = BlockedUserViewController()
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)
