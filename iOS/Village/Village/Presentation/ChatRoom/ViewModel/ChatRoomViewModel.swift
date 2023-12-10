@@ -26,6 +26,7 @@ final class ChatRoomViewModel {
     
     private var chatRoom = PassthroughSubject<GetRoomResponseDTO, NetworkError>()
     private var post = PassthroughSubject<PostResponseDTO, NetworkError>()
+    private var user = PassthroughSubject<UserResponseDTO, NetworkError>()
     private var writerProfileData: Data?
     private var userProfileData: Data?
     private var cancellableBag = Set<AnyCancellable>()
@@ -49,6 +50,16 @@ final class ChatRoomViewModel {
             .store(in: &cancellableBag)
         
         return PostOutput(post: post.eraseToAnyPublisher())
+    }
+    
+    func transformUser(input: UserInput) -> UserOutput {
+        input.userID
+            .sink(receiveValue: { [weak self] id in
+                self?.getUser(id: id)
+            })
+            .store(in: &cancellableBag)
+        
+        return UserOutput(user: user.eraseToAnyPublisher())
     }
     
     func getChatRoomData(id: Int) {
@@ -96,6 +107,19 @@ final class ChatRoomViewModel {
         }
     }
     
+    private func getUser(id: String) {
+        let endpoint = APIEndPoints.getUser(id: id)
+        
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                user.send(data)
+            } catch let error as NetworkError {
+                user.send(completion: .failure(error))
+            }
+        }
+    }
+    
     func getUserData() -> Data {
         guard let data = userProfileData else { return Data() }
         return data
@@ -133,6 +157,14 @@ extension ChatRoomViewModel {
     
     struct PostOutput {
         var post: AnyPublisher<PostResponseDTO, NetworkError>
+    }
+    
+    struct UserInput {
+        var userID: AnyPublisher<String, Never>
+    }
+    
+    struct UserOutput {
+        var user: AnyPublisher<UserResponseDTO, NetworkError>
     }
     
 }
