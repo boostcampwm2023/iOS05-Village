@@ -15,15 +15,19 @@ final class SearchResultViewController: UIViewController {
     
     enum Section { case list }
     
+    private let searchController = UISearchController(searchResultsController: nil)
+    
     private var viewModel = ViewModel()
+    private var titlePublisher: CurrentValueSubject<String, Never>
     private let togglePublisher = PassthroughSubject<Void, Never>()
     private let scrollPublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
-    private let postTitle: String
+    private var postTitle: String
     
     init(title: String) {
         self.postTitle = title
+        self.titlePublisher = CurrentValueSubject<String, Never>(title)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -89,12 +93,24 @@ final class SearchResultViewController: UIViewController {
 extension SearchResultViewController {
     
     private func setUI() {
-        self.navigationItem.title = "검색결과"
+        setNavigationBarUI()
         self.view.backgroundColor = .systemBackground
         self.view.addSubview(requestSegmentedControl)
         self.view.addSubview(listTableView)
         
         configureConstraints()
+    }
+    
+    private func setNavigationBarUI() {
+        searchController.searchBar.text = self.postTitle
+        searchController.searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width - 70, height: 0)
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.hidesNavigationBarDuringPresentation = false
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchController.searchBar)
+        navigationItem.backButtonDisplayMode = .minimal
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
     
     private func configureConstraints() {
@@ -115,7 +131,7 @@ extension SearchResultViewController {
     
     private func bindViewModel() {
         let input = ViewModel.Input(
-            postTitle: Just(postTitle).eraseToAnyPublisher(),
+            postTitle: self.titlePublisher.eraseToAnyPublisher(),
             toggleSubject: self.togglePublisher.eraseToAnyPublisher(),
             scrollEvent: self.scrollPublisher.eraseToAnyPublisher()
         )
@@ -161,6 +177,24 @@ extension SearchResultViewController: UITableViewDelegate {
         if scrollView.contentOffset.y > self.listTableView.contentSize.height - 1000 {
             scrollPublisher.send()
         }
+    }
+    
+}
+
+extension SearchResultViewController: UISearchResultsUpdating, UISearchBarDelegate {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        self.postTitle = searchController.searchBar.text ?? ""
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        generateData()
+        titlePublisher.send(self.postTitle)
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+       searchController.hidesNavigationBarDuringPresentation = false
+       navigationController?.navigationBar.layoutIfNeeded()
     }
     
 }
