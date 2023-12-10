@@ -14,7 +14,7 @@ final class PostDetailViewModel {
     private var user = PassthroughSubject<UserResponseDTO, NetworkError>()
     private var roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
     private let deleteOutput = PassthroughSubject<Void, NetworkError>()
-    private let hideOutput = PassthroughSubject<Void, NetworkError>()
+    private let popViewControllerOutput = PassthroughSubject<Void, NetworkError>()
     
     private var responseData: PostRoomResponseDTO?
     private var cancellableBag = Set<AnyCancellable>()
@@ -55,10 +55,16 @@ final class PostDetailViewModel {
             }
             .store(in: &cancellableBag)
         
+        input.blockUserInput
+            .sink { [weak self] userID in
+                self?.blockUser(userID: userID)
+            }
+            .store(in: &cancellableBag)
+        
         return Output(
             post: post.eraseToAnyPublisher(),
             deleteOutput: deleteOutput.eraseToAnyPublisher(),
-            hideOutput: hideOutput.eraseToAnyPublisher()
+            popViewControllerOutput: popViewControllerOutput.eraseToAnyPublisher()
         )
     }
     
@@ -118,9 +124,24 @@ final class PostDetailViewModel {
         Task {
             do {
                 try await APIProvider.shared.request(with: endpoint)
-                hideOutput.send()
+                popViewControllerOutput.send()
             } catch let error as NetworkError {
-                hideOutput.send(completion: .failure(error))
+                popViewControllerOutput.send(completion: .failure(error))
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
+    private func blockUser(userID: String) {
+        let endpoint = APIEndPoints.blockUser(userID: userID)
+        
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+                popViewControllerOutput.send()
+            } catch let error as NetworkError {
+                popViewControllerOutput.send(completion: .failure(error))
             } catch {
                 dump(error)
             }
@@ -135,12 +156,13 @@ extension PostDetailViewModel {
         var postID: AnyPublisher<Int, Never>
         var deleteInput: AnyPublisher<Int, Never>
         let hideInput: AnyPublisher<Int, Never>
+        let blockUserInput: AnyPublisher<String, Never>
     }
     
     struct Output {
         var post: AnyPublisher<PostResponseDTO, NetworkError>
         var deleteOutput: AnyPublisher<Void, NetworkError>
-        var hideOutput: AnyPublisher<Void, NetworkError>
+        var popViewControllerOutput: AnyPublisher<Void, NetworkError>
     }
     
     struct UserInput {
