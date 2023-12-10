@@ -5,7 +5,6 @@ import { LessThan, Like, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../utils/S3Handler';
-import { UserEntity } from '../entities/user.entity';
 import { PostListDto } from './dto/postList.dto';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
@@ -22,8 +21,6 @@ export class PostService {
   constructor(
     @InjectRepository(PostEntity)
     private postRepository: Repository<PostEntity>,
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
     @InjectRepository(PostImageEntity)
     private postImageRepository: Repository<PostImageEntity>,
     @InjectRepository(BlockUserEntity)
@@ -105,7 +102,7 @@ export class PostService {
         price: filteredPost.price,
         description: filteredPost.description,
         post_id: filteredPost.id,
-        user_id: filteredPost.user.user_hash,
+        user_id: filteredPost.user_hash,
         is_request: filteredPost.is_request,
         images: filteredPost.post_images.map(
           (post_image) => post_image.image_url,

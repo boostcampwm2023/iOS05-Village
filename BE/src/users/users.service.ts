@@ -20,12 +20,8 @@ import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 export class UsersService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
-    @InjectRepository(PostEntity)
-    private postRepository: Repository<PostEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    @InjectRepository(PostImageEntity)
-    private postImageRepository: Repository<PostImageEntity>,
     @InjectRepository(BlockUserEntity)
     private blockUserRepository: Repository<BlockUserEntity>,
     @InjectRepository(BlockPostEntity)
@@ -76,21 +72,10 @@ export class UsersService {
   }
 
   async deleteCascadingUser(userId, userHash) {
-    const postsByUser = await this.postRepository.find({
-      where: { user_hash: userHash },
-    });
-    for (const postByUser of postsByUser) {
-      await this.deleteCascadingPost(postByUser.id);
-    }
     await this.blockPostRepository.softDelete({ blocker: userHash });
     await this.blockUserRepository.softDelete({ blocker: userHash });
+    await this.blockUserRepository.softDelete({ blocked_user: userHash });
     await this.userRepository.softDelete({ id: userId });
-  }
-
-  async deleteCascadingPost(postId: number) {
-    await this.postImageRepository.softDelete({ post_id: postId });
-    await this.blockPostRepository.softDelete({ blocked_post: postId });
-    await this.postRepository.softDelete({ id: postId });
   }
 
   async checkAuth(id, userId) {
