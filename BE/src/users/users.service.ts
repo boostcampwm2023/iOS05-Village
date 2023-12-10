@@ -20,12 +20,8 @@ import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 export class UsersService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
-    @InjectRepository(PostEntity)
-    private postRepository: Repository<PostEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    @InjectRepository(PostImageEntity)
-    private postImageRepository: Repository<PostImageEntity>,
     @InjectRepository(BlockUserEntity)
     private blockUserRepository: Repository<BlockUserEntity>,
     @InjectRepository(BlockPostEntity)
