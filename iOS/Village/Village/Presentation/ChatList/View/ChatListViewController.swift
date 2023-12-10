@@ -56,8 +56,13 @@ class ChatListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        bindViewModel()
-        setUI()
+        self.bindViewModel()
+        self.setUI()
+        
+        Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { [weak self] _ in
+            self?.bindViewModel()
+            self?.setUI()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -95,7 +100,6 @@ extension ChatListViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] value in
-                dump(value)
                 self?.generateData(items: value.chatList)
             }
             .store(in: &cancellableBag)
