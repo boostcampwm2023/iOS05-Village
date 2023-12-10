@@ -7,7 +7,10 @@
 
 import UIKit
 
-class SearchViewController: UIViewController {
+final class SearchViewController: UIViewController {
+    
+    private let searchController = UISearchController(searchResultsController: nil)
+    private var searchTitle: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,19 +21,36 @@ class SearchViewController: UIViewController {
     }
     
     private func setNavigationBarUI() {
-        let arrowLeft = self.navigationItem.makeSFSymbolButton(
-            self, action: #selector(backButtonTapped), symbolName: .arrowLeft
-        )
-        let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: view.frame.width - 70, height: 0))
-        searchBar.placeholder = "검색어를 입력해주세요."
+        searchController.searchBar.placeholder = "검색어를 입력해주세요."
+        searchController.searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width - 70, height: 0)
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.hidesNavigationBarDuringPresentation = false
         
-        navigationItem.leftBarButtonItem = arrowLeft
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchBar)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchController.searchBar)
         navigationItem.backButtonDisplayMode = .minimal
-    }
-    
-    @objc private func backButtonTapped() {
-        self.dismiss(animated: true)
+        navigationItem.hidesSearchBarWhenScrolling = false
+
     }
 
+}
+
+extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        self.searchTitle = searchController.searchBar.text ?? ""
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.navigationController?.pushViewController(
+            SearchResultViewController(title: self.searchTitle), animated: false
+        )
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+       // searchBar 보이기
+       searchController.hidesNavigationBarDuringPresentation = false
+       navigationController?.navigationBar.layoutIfNeeded()
+    }
+    
 }
