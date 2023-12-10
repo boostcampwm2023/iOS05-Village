@@ -58,7 +58,7 @@ final class PostDetailViewModel {
         return Output(
             post: post.eraseToAnyPublisher(),
             deleteOutput: deleteOutput.eraseToAnyPublisher(),
-            hideOutput: hideOutput.eraseToAnyPublisher()
+            popViewControllerOutput: hideOutput.eraseToAnyPublisher()
         )
     }
     
@@ -140,7 +140,7 @@ extension PostDetailViewModel {
     struct Output {
         var post: AnyPublisher<PostResponseDTO, NetworkError>
         var deleteOutput: AnyPublisher<Void, NetworkError>
-        var hideOutput: AnyPublisher<Void, NetworkError>
+        var popViewControllerOutput: AnyPublisher<Void, NetworkError>
     }
     
     struct UserInput {

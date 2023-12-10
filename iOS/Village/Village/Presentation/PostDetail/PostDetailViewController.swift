@@ -332,7 +332,7 @@ private extension PostDetailViewController {
             })
             .store(in: &cancellableBag)
         
-        output.hideOutput
+        output.popViewControllerOutput
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
