@@ -8,48 +8,10 @@
 import Foundation
 import Combine
 
-struct ChatListResponseDTO: Hashable, Codable {
-
-    let user: String
-    let userProfile: String?
-    let recentTime: String
-    let recentChat: String
-    let postImage: String?
-
-    enum CodingKeys: String, CodingKey {
-        case user
-        case userProfile = "user_profile"
-        case recentTime = "recent_time"
-        case recentChat = "recent_chat"
-        case postImage = "post_image"
-    }
-    
-    init(dto: ChatListResponseDTO) {
-        self.user = dto.user
-        self.userProfile = dto.userProfile
-        self.recentTime = dto.recentTime
-        self.recentChat = dto.recentChat
-        self.postImage = dto.postImage
-    }
-    
-}
-
-struct ChatListRequestDTO: Codable {
-    
-    let page: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case page
-    }
-    
-}
-
 final class ChatListViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var chatList = PassthroughSubject<GetChatListResponseDTO, NetworkError>()
-    
-    private var test: [ChatListResponseDTO] = []
+    private let chatList = PassthroughSubject<GetChatListResponseDTO, NetworkError>()
     
     func transform(input: Input) -> Output {
         input.getChatListSubject
@@ -86,25 +48,17 @@ final class ChatListViewModel {
             }
         }
     }
-    
-    func updateTest(list: [ChatListResponseDTO]) {
-        test = list
-    }
-    
-    func getTest() -> [ChatListResponseDTO] {
-        return test
-    }
 
 }
 
 extension ChatListViewModel {
     
     struct Input {
-        var getChatListSubject: AnyPublisher<Void, Never>
+        let getChatListSubject: AnyPublisher<Void, Never>
     }
     
     struct Output {
-        var chatList: AnyPublisher<GetChatListResponseDTO, NetworkError>
+        let chatList: AnyPublisher<GetChatListResponseDTO, NetworkError>
     }
     
 }

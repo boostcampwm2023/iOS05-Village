@@ -108,8 +108,8 @@ class ChatListTableViewCell: UITableViewCell {
         ])
         
         NSLayoutConstraint.activate([
-            isReadLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -26),
-            isReadLabel.leadingAnchor.constraint(equalTo: recentChatLabel.trailingAnchor, constant: 4),
+            isReadLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20),
+            isReadLabel.leadingAnchor.constraint(equalTo: recentTimeLabel.trailingAnchor, constant: 6),
             isReadLabel.widthAnchor.constraint(equalToConstant: 8),
             isReadLabel.heightAnchor.constraint(equalToConstant: 8)
         ])
@@ -162,7 +162,7 @@ class ChatListTableViewCell: UITableViewCell {
             if minuteInterval >= 60 * 24 {
                 dateFormatter.dateFormat = "yy.MM.dd"
                 let formattedDate = dateFormatter.string(from: date)
-                let formattedCurrentDate = dateFormatter.string(from: currentData)
+                
                 if let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: currentData),
                    formattedDate == dateFormatter.string(from: yesterday) {
                     recentTimeLabel.text = "어제"
