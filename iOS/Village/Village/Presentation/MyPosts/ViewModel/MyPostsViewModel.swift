@@ -14,8 +14,8 @@ final class MyPostsViewModel {
     
     private var requestFilter: String = "0"
     
-    private var nextPageUpdateOutput = PassthroughSubject<[PostListResponseDTO], Never>()
-    private var toggleOutput = PassthroughSubject<[PostListResponseDTO], Never>()
+    private let nextPageUpdateOutput = PassthroughSubject<[PostListResponseDTO], Never>()
+    private let toggleOutput = PassthroughSubject<[PostListResponseDTO], Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -91,15 +91,15 @@ final class MyPostsViewModel {
     
     struct Input {
         
-        var nextPageUpdateSubject: AnyPublisher<Void, Never>
-        var toggleSubject: AnyPublisher<Void, Never>
+        let nextPageUpdateSubject: AnyPublisher<Void, Never>
+        let toggleSubject: AnyPublisher<Void, Never>
         
     }
     
     struct Output {
         
-        var nextPageUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
-        var toggleUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
+        let nextPageUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
+        let toggleUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
         
     }
     
