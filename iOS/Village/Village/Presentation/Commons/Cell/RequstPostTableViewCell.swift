@@ -26,6 +26,12 @@ final class RequestPostTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        postSummaryView.postPeriodLabel.text = nil
+        postSummaryView.postTitleLabel.text = nil
+    }
+    
     func configureData(post: PostListResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         

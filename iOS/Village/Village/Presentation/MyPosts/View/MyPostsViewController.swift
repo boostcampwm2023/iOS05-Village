@@ -32,6 +32,7 @@ final class MyPostsViewController: UIViewController {
                 }
                 cell.configureData(post: post)
                 cell.selectionStyle = .none
+                
                 return cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(
@@ -68,7 +69,7 @@ final class MyPostsViewController: UIViewController {
     }()
     
     private let paginationPublisher = PassthroughSubject<Void, Never>()
-    private let togglePublisher = PassthroughSubject<Void, Never>()
+    private let refreshPublisher = PassthroughSubject<Bool, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(viewModel: ViewModel) {
@@ -90,7 +91,7 @@ final class MyPostsViewController: UIViewController {
     }
     
     @objc private func segmentedControlChanged() {
-        togglePublisher.send()
+        refreshPublisher.send(requestSegmentedControl.selectedSegmentIndex == 1)
     }
     
 }
@@ -100,7 +101,7 @@ private extension MyPostsViewController {
     func bindViewModel() {
         let output = viewModel.transform(input: MyPostsViewModel.Input(
             nextPageUpdateSubject: paginationPublisher.eraseToAnyPublisher(),
-            toggleSubject: togglePublisher.eraseToAnyPublisher()
+            refreshSubject: refreshPublisher.eraseToAnyPublisher()
         ))
         
         output.nextPageUpdateOutput
@@ -113,7 +114,7 @@ private extension MyPostsViewController {
             }
             .store(in: &cancellableBag)
         
-        output.toggleUpdateOutput
+        output.refreshOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] posts in
                 if posts.isEmpty {
@@ -204,6 +205,12 @@ extension MyPostsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPost = viewModel.posts[indexPath.row]
         let nextVC = PostDetailViewController(postID: selectedPost.postID)
+        nextVC.refreshPreviousViewController
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refreshPublisher.send(self?.requestSegmentedControl.selectedSegmentIndex == 1)
+            }
+            .store(in: &cancellableBag)
         nextVC.hidesBottomBarWhenPushed = true
         nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
