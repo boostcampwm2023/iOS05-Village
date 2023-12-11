@@ -10,12 +10,12 @@ import Combine
 
 final class MyPostsViewModel {
     
-    var posts: [PostListResponseDTO] = []
+    var posts: [PostResponseDTO] = []
     
     private var requestFilter: String = "0"
     
-    private let nextPageUpdateOutput = PassthroughSubject<[PostListResponseDTO], Never>()
-    private let refreshOutput = PassthroughSubject<[PostListResponseDTO], Never>()
+    private let nextPageUpdateOutput = PassthroughSubject<[PostResponseDTO], Never>()
+    private let refreshOutput = PassthroughSubject<[PostResponseDTO], Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -96,8 +96,8 @@ final class MyPostsViewModel {
     
     struct Output {
         
-        let nextPageUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
-        let refreshOutput: AnyPublisher<[PostListResponseDTO], Never>
+        let nextPageUpdateOutput: AnyPublisher<[PostResponseDTO], Never>
+        let refreshOutput: AnyPublisher<[PostResponseDTO], Never>
         
     }
     

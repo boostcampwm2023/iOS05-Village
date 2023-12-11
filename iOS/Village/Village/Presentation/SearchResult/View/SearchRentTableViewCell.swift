@@ -26,7 +26,7 @@ class SearchRentTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureData(post: PostListResponseDTO) {
+    func configureData(post: PostResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         postSummaryView.setPrice(price: post.price)
         configureImageView(imageURL: post.images.first)
