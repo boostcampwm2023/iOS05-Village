@@ -12,6 +12,7 @@ import { LoginService, SocialProperties } from './login.service';
 import { AppleLoginDto } from './dto/appleLogin.dto';
 import { AuthGuard } from '../common/guard/auth.guard';
 
+
 @Controller()
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
