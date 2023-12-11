@@ -32,6 +32,7 @@ final class MyPostsViewController: UIViewController {
                 }
                 cell.configureData(post: post)
                 cell.selectionStyle = .none
+                
                 return cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(
@@ -68,7 +69,7 @@ final class MyPostsViewController: UIViewController {
     }()
     
     private let paginationPublisher = PassthroughSubject<Void, Never>()
-    private let togglePublisher = PassthroughSubject<Void, Never>()
+    private let togglePublisher = PassthroughSubject<Bool, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(viewModel: ViewModel) {
@@ -90,7 +91,7 @@ final class MyPostsViewController: UIViewController {
     }
     
     @objc private func segmentedControlChanged() {
-        togglePublisher.send()
+        togglePublisher.send(requestSegmentedControl.selectedSegmentIndex == 1)
     }
     
 }
@@ -204,6 +205,12 @@ extension MyPostsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPost = viewModel.posts[indexPath.row]
         let nextVC = PostDetailViewController(postID: selectedPost.postID)
+        nextVC.refreshPreviousViewController
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.togglePublisher.send(self?.requestSegmentedControl.selectedSegmentIndex == 1)
+            }
+            .store(in: &cancellableBag)
         nextVC.hidesBottomBarWhenPushed = true
         nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
