@@ -10,11 +10,14 @@ import Combine
 
 final class HomeViewModel {
     
-    typealias PostList = [PostListResponseDTO]
+    typealias Post = PostResponseDTO
     
     private var cancellableBag = Set<AnyCancellable>()
     
-    private let postList = PassthroughSubject<PostList, Error>()
+    private let postList = PassthroughSubject<[Post], Error>()
+    private let createdPost = PassthroughSubject<Void, Never>()
+    private let deletedPost = PassthroughSubject<Int, Never>()
+    private let editedPost = PassthroughSubject<Post, Never>()
     
     private var lastRentPostID: String?
     private var lastRequestPostID: String?
@@ -24,8 +27,15 @@ final class HomeViewModel {
         handlePagination(input: input)
         
         return Output(
-            postList: postList.eraseToAnyPublisher()
+            postList: postList.eraseToAnyPublisher(),
+            createdPost: createdPost.eraseToAnyPublisher(),
+            deletedPost: deletedPost.eraseToAnyPublisher(),
+            editedPost: editedPost.eraseToAnyPublisher()
         )
+    }
+    
+    init() {
+        addObserver()
     }
     
     private func handleRefresh(input: Input) {
@@ -43,6 +53,52 @@ final class HomeViewModel {
                 self.pagination(type: type)
             }
             .store(in: &cancellableBag)
+    }
+    
+    private func addObserver() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePostEdited(notification:)),
+                                               name: .postEdited,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePostCreated),
+                                               name: .postCreated,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePostDeleted(notification:)),
+                                               name: .postDeleted,
+                                               object: nil)
+    }
+    
+}
+
+@objc
+private extension HomeViewModel {
+    
+    func handlePostEdited(notification: Notification) {
+        guard let postID = notification.userInfo?["postID"] as? Int else { return }
+        
+        let endpoint = APIEndPoints.getPost(id: postID)
+        
+        Task {
+            do {
+                guard let post = try await APIProvider.shared.request(with: endpoint) else { return }
+                editedPost.send(post)
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
+    func handlePostCreated() {
+        createdPost.send()
+    }
+    
+    func handlePostDeleted(notification: Notification) {
+        guard let postID = notification.userInfo?["postID"] as? Int else { return }
+        
+        deletedPost.send(postID)
     }
     
 }
@@ -97,7 +153,7 @@ private extension HomeViewModel {
         }
     }
     
-    func getList(type: PostType) async throws -> PostList {
+    func getList(type: PostType) async throws -> [Post] {
         let filter: String
         let lastPostID: String?
         
@@ -127,7 +183,10 @@ extension HomeViewModel {
     }
     
     struct Output {
-        let postList: AnyPublisher<[PostListResponseDTO], Error>
+        let postList: AnyPublisher<[Post], Error>
+        let createdPost: AnyPublisher<Void, Never>
+        let deletedPost: AnyPublisher<Int, Never>
+        let editedPost: AnyPublisher<Post, Never>
     }
     
 }

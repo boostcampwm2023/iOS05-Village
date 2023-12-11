@@ -249,7 +249,7 @@ final class PostDetailViewController: UIViewController {
     }
     
     private func setPostContent(post: PostResponseDTO) {
-        if post.imageURL.isEmpty {
+        if post.images.isEmpty {
             imagePageView.isHidden = true
         }
         if post.price == nil {
@@ -258,7 +258,7 @@ final class PostDetailViewController: UIViewController {
         postInfoView.setContent(title: post.title,
                                 startDate: post.startDate, endDate: post.endDate,
                                 description: post.description)
-        imagePageView.setImageURL(post.imageURL)
+        imagePageView.setImageURL(post.images)
         priceLabel.setPrice(price: post.price)
     }
     
