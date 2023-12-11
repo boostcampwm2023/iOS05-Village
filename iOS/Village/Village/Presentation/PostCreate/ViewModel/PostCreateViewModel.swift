@@ -94,6 +94,11 @@ final class PostCreateViewModel {
         Task {
             do {
                 try await APIProvider.shared.request(with: modifyEndPoint)
+                if let id = postID {
+                    NotificationCenter.default.post(name: .postEdited, object: nil, userInfo: ["postID": id])
+                } else {
+                    NotificationCenter.default.post(name: .postCreated, object: nil)
+                }
                 endOutput.send()
             } catch let error as NetworkError {
                 self.endOutput.send(completion: .failure(error))
@@ -129,7 +134,7 @@ final class PostCreateViewModel {
                         deletedImages: []
                     )
                 )
-                setEditImage(imageURL: data.imageURL)
+                setEditImage(imageURL: data.images)
             } catch {
                 dump(error)
             }
