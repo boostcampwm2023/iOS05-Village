@@ -118,6 +118,7 @@ final class HomeViewController: UIViewController {
         
         setupUI()
         generateDataSource()
+        addObserver()
         bindViewModel()
     }
     
@@ -125,20 +126,6 @@ final class HomeViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         floatingButton.isActive = false
-    }
-    
-    private func setupUI() {
-        setNavigationUI()
-        setMenuUI()
-        bindFloatingButton()
-        
-        view.addSubview(postSegmentedControl)
-        view.addSubview(containerView)
-        containerView.addSubview(rentPostTableView)
-        containerView.addSubview(requestPostTableView)
-        view.addSubview(floatingButton)
-        view.addSubview(menuView)
-        setLayoutConstraint()
     }
     
     private func bindFloatingButton() {
@@ -184,13 +171,43 @@ final class HomeViewController: UIViewController {
             .store(in: &cancellableBag)
     }
     
+    private func addObserver() {
+        NotificationCenter.default.addObserver(self, 
+                                               selector: #selector(handlePostEdited(notification:)),
+                                               name: .postEdited,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePostCreated),
+                                               name: .postCreated,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               
+                                               selector: #selector(handlePostDeleted(notification:)),
+                                               name: .postCreated,
+                                               object: nil)
+    }
+    
 }
 
 @objc
 private extension HomeViewController {
     
     func handlePostEdited(notification: Notification) {
+        guard let item = notification.userInfo?["post"] as? PostListResponseDTO else { return }
         
+        reconfigurePost(item: item)
+    }
+    
+    func handlePostCreated() {
+        resetDataSource()
+        refresh.send(postType)
+    }
+    
+    func handlePostDeleted(notification: Notification) {
+        guard let item = notification.userInfo?["post"] as? PostListResponseDTO else { return }
+        
+        deletePost(item: item)
     }
     
     func refreshPost() {
