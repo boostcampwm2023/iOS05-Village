@@ -19,14 +19,13 @@ final class HomeViewModel {
     private var lastRentPostID: String?
     private var lastRequestPostID: String?
     
-    private var isRentEnd = false
-    private var isRequestEnd = false
-    
     func transform(input: Input) -> Output {
         handleRefresh(input: input)
         handlePagination(input: input)
         
-        return Output(postList: postList.eraseToAnyPublisher())
+        return Output(
+            postList: postList.eraseToAnyPublisher()
+        )
     }
     
     private func handleRefresh(input: Input) {
@@ -41,10 +40,7 @@ final class HomeViewModel {
         input.pagination
             .sink { [weak self] type in
                 guard let self = self else { return }
-                
-                if (type == .rent && !self.isRentEnd) || (type == .request && !self.isRequestEnd) {
-                    self.pagination(type: type)
-                }
+                self.pagination(type: type)
             }
             .store(in: &cancellableBag)
     }
@@ -55,16 +51,22 @@ private extension HomeViewModel {
     
     func refresh(type: PostType) {
         if type == .rent {
-            isRentEnd = false
             lastRentPostID = nil
         } else {
-            isRequestEnd = false
             lastRequestPostID = nil
         }
         
         Task {
             do {
                 let data = try await getList(type: type)
+                if let lastPostID = data.last?.postID {
+                    switch type {
+                    case .rent:
+                        lastRentPostID = "\(lastPostID)"
+                    case .request:
+                        lastRequestPostID = "\(lastPostID)"
+                    }
+                }
                 postList.send(data)
             } catch {
                 postList.send(completion: .failure(error))
@@ -79,12 +81,16 @@ private extension HomeViewModel {
                 
                 guard let lastID = data.last?.postID else { return }
                 if type == .rent {
+                    if self.lastRentPostID != "\(lastID)" {
+                        self.postList.send(data)
+                    }
                     self.lastRentPostID = "\(lastID)"
                 } else {
+                    if self.lastRequestPostID != "\(lastID)" {
+                        self.postList.send(data)
+                    }
                     self.lastRequestPostID = "\(lastID)"
                 }
-                
-                self.postList.send(data)
             } catch {
                 self.postList.send(completion: .failure(error))
             }
@@ -107,14 +113,7 @@ private extension HomeViewModel {
         let endpoint = APIEndPoints.getPosts(queryParameter: PostListRequestDTO(requestFilter: filter,
                                                                                 page: lastPostID))
         
-        guard let data = try await APIProvider.shared.request(with: endpoint) else {
-            if type == .rent {
-                isRentEnd = true
-            } else {
-                isRequestEnd = true
-            }
-            return []
-        }
+        guard let data = try await APIProvider.shared.request(with: endpoint) else { return [] }
         return data
     }
     
@@ -123,12 +122,12 @@ private extension HomeViewModel {
 extension HomeViewModel {
     
     struct Input {
-        var refresh: AnyPublisher<PostType, Never>
-        var pagination: AnyPublisher<PostType, Never>
+        let refresh: AnyPublisher<PostType, Never>
+        let pagination: AnyPublisher<PostType, Never>
     }
     
     struct Output {
-        var postList: AnyPublisher<[PostListResponseDTO], Error>
+        let postList: AnyPublisher<[PostListResponseDTO], Error>
     }
     
 }

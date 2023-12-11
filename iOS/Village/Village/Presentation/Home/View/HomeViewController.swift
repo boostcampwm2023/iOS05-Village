@@ -229,7 +229,16 @@ final class HomeViewController: UIViewController {
 private extension HomeViewController {
     
     @objc func refreshPost() {
+        if postType == .rent {
+            clearRentDataSource()
+        } else {
+            clearRequestDataSource()
+        }
         refresh.send(postType)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.scrollView.refreshControl?.endRefreshing()
+        }
     }
     
     @objc func togglePostType() {
@@ -294,6 +303,20 @@ extension HomeViewController: UITableViewDelegate {
     
     enum Section {
         case main
+    }
+    
+    private func clearRentDataSource() {
+        var rentSnapshot = rentDataSource.snapshot()
+        rentSnapshot.deleteAllItems()
+        rentSnapshot.appendSections([.main])
+        rentDataSource.apply(rentSnapshot)
+    }
+    
+    private func clearRequestDataSource() {
+        var requestSnapshot = requestDataSource.snapshot()
+        requestSnapshot.deleteAllItems()
+        requestSnapshot.appendSections([.main])
+        requestDataSource.apply(requestSnapshot)
     }
     
     private func generateDataSource() {
