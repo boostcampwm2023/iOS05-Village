@@ -331,9 +331,12 @@ private extension PostDetailViewController {
                     break
                 case .failure(_):
                     self.setUserContent(user: nil)
+                    self.chatButton.isEnabled = false
+                    self.chatButton.backgroundColor = .userChatMessage
                 }
             } receiveValue: { [weak self] user in
                 self?.setUserContent(user: user)
+                self?.chatButton.backgroundColor = .primary500
             }
             .store(in: &cancellableBag)
     }    
