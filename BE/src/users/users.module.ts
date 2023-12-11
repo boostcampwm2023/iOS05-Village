@@ -4,8 +4,6 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { S3Handler } from 'src/common/S3Handler';
 import { UserEntity } from '../entities/user.entity';
-import { PostEntity } from '../entities/post.entity';
-import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { AuthGuard } from 'src/common/guard/auth.guard';

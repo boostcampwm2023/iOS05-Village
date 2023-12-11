@@ -40,8 +40,7 @@ export class UsersService {
     userEntity.OAuth_domain = createUserDto.OAuth_domain;
     userEntity.profile_img = imageLocation;
     userEntity.user_hash = hashMaker(createUserDto.nickname).slice(0, 8);
-    const res = await this.userRepository.save(userEntity);
-    return res;
+    return await this.userRepository.save(userEntity);
   }
 
   async findUserById(userId: string) {
@@ -134,8 +133,7 @@ export class UsersService {
   }
 
   async uploadImages(file: Express.Multer.File) {
-    const fileLocation = await this.s3Handler.uploadFile(file);
-    return fileLocation;
+    return await this.s3Handler.uploadFile(file);
   }
 
   async registerToken(userId, registrationToken) {

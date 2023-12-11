@@ -10,7 +10,7 @@ import {
 import { ChatService } from './chat.service';
 import { AuthGuard } from '../common/guard/auth.guard';
 import { UserHash } from '../common/decorator/auth.decorator';
-import { CreateRoomDto } from './createRoom.dto';
+import { CreateRoomDto } from './dto/createRoom.dto';
 import { FcmHandler } from '../common/fcmHandler';
 
 @Controller('chat')
