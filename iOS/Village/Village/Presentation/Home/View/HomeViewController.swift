@@ -190,7 +190,71 @@ final class HomeViewController: UIViewController {
             .store(in: &cancellableBag)
     }
     
-    private func setNavigationUI() {
+}
+
+@objc
+private extension HomeViewController {
+    
+    func handlePostEdited(notification: Notification) {
+        
+    }
+    
+    func refreshPost() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            
+            if postType == .rent {
+                resetRentDataSource()
+                rentPostTableView.refreshControl?.endRefreshing()
+            } else {
+                resetRequestDataSource()
+                requestPostTableView.refreshControl?.endRefreshing()
+            }
+            refresh.send(postType)
+        }
+    }
+    
+    func togglePostType() {
+        postType = (postType == .rent) ? .request : .rent
+        
+        switch postType {
+        case .rent:
+            containerViewLeadingConstraint.constant = 0
+        case .request:
+            containerViewLeadingConstraint.constant = -view.frame.width
+        }
+        
+        if requestDataSource.snapshot().numberOfItems == 0 {
+            refresh.send(postType)
+        }
+        
+    }
+    
+    func searchButtonTapped() {
+        let nextVC = SearchViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: false)
+    }
+    
+}
+
+private extension HomeViewController {
+    
+    func setupUI() {
+        setNavigationUI()
+        setMenuUI()
+        bindFloatingButton()
+        
+        view.addSubview(postSegmentedControl)
+        view.addSubview(containerView)
+        containerView.addSubview(rentPostTableView)
+        containerView.addSubview(requestPostTableView)
+        view.addSubview(floatingButton)
+        view.addSubview(menuView)
+        setLayoutConstraint()
+    }
+    
+    func setNavigationUI() {
         let titleLabel = UILabel()
         titleLabel.setTitle("홈")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
@@ -201,7 +265,7 @@ final class HomeViewController: UIViewController {
         self.navigationItem.rightBarButtonItems = [search]
     }
     
-    private func setMenuUI() {
+    func setMenuUI() {
         let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
         let presentPostRequestNC = UIAction(title: "대여 요청하기") { [weak self] _ in
             let requestViewModel = PostCreateViewModel(useCase: useCase, isRequest: true, isEdit: false, postID: nil)
@@ -220,48 +284,7 @@ final class HomeViewController: UIViewController {
         menuView.setMenuActions([presentPostRequestNC, presentPostRentNC])
     }
     
-}
-
-private extension HomeViewController {
-    
-    @objc func refreshPost() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            
-            if postType == .rent {
-                resetRentDataSource()
-                rentPostTableView.refreshControl?.endRefreshing()
-            } else {
-                resetRequestDataSource()
-                requestPostTableView.refreshControl?.endRefreshing()
-            }
-            refresh.send(postType)
-        }
-    }
-    
-    @objc func togglePostType() {
-        postType = (postType == .rent) ? .request : .rent
-        
-        switch postType {
-        case .rent:
-            containerViewLeadingConstraint.constant = 0
-        case .request:
-            containerViewLeadingConstraint.constant = -view.frame.width
-        }
-        
-        if requestDataSource.snapshot().numberOfItems == 0 {
-            refresh.send(postType)
-        }
-        
-    }
-    
-    @objc func searchButtonTapped() {
-        let nextVC = SearchViewController()
-        nextVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(nextVC, animated: false)
-    }
-    
-    private func setLayoutConstraint() {
+    func setLayoutConstraint() {
         NSLayoutConstraint.activate([
             floatingButton.widthAnchor.constraint(equalToConstant: 65),
             floatingButton.heightAnchor.constraint(equalToConstant: 65),
