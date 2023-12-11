@@ -246,8 +246,12 @@ final class PostDetailViewController: UIViewController {
         priceLabel.setPrice(price: post.price)
     }
     
-    private func setUserContent(user: UserResponseDTO) {
-        userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+    private func setUserContent(user: UserResponseDTO?) {
+        if let user = user {
+            userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+        } else {
+            userInfoView.setContent(imageURL: nil, nickname: "(알 수 없음)")
+        }
     }
 
 }
@@ -325,8 +329,8 @@ private extension PostDetailViewController {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let error):
-                    dump(error)
+                case .failure(_):
+                    self.setUserContent(user: nil)
                 }
             } receiveValue: { [weak self] user in
                 self?.setUserContent(user: user)
