@@ -229,10 +229,10 @@ private extension HomeViewController {
             guard let self = self else { return }
             
             if postType == .rent {
-                clearRentDataSource()
+                resetRentDataSource()
                 rentPostTableView.refreshControl?.endRefreshing()
             } else {
-                clearRequestDataSource()
+                resetRequestDataSource()
                 requestPostTableView.refreshControl?.endRefreshing()
             }
             refresh.send(postType)
@@ -313,18 +313,16 @@ extension HomeViewController: UITableViewDelegate {
         case main
     }
     
-    private func clearRentDataSource() {
-        var rentSnapshot = rentDataSource.snapshot()
-        rentSnapshot.deleteAllItems()
+    private func resetRentDataSource() {
+        var rentSnapshot = PostSnapshot()
         rentSnapshot.appendSections([.main])
-        rentDataSource.apply(rentSnapshot, animatingDifferences: true)
+        rentDataSource.apply(rentSnapshot, animatingDifferences: false)
     }
     
-    private func clearRequestDataSource() {
-        var requestSnapshot = requestDataSource.snapshot()
-        requestSnapshot.deleteAllItems()
+    private func resetRequestDataSource() {
+        var requestSnapshot = PostSnapshot()
         requestSnapshot.appendSections([.main])
-        requestDataSource.apply(requestSnapshot, animatingDifferences: true)
+        requestDataSource.apply(requestSnapshot, animatingDifferences: false)
     }
     
     private func generateDataSource() {
@@ -334,8 +332,8 @@ extension HomeViewController: UITableViewDelegate {
         rentSnapshot.appendSections([.main])
         requestSnapshot.appendSections([.main])
         
-        rentDataSource.apply(rentSnapshot)
-        requestDataSource.apply(requestSnapshot)
+        rentDataSource.apply(rentSnapshot, animatingDifferences: false)
+        requestDataSource.apply(requestSnapshot, animatingDifferences: false)
     }
     
     private func appendPost(items: [PostListResponseDTO]) {
