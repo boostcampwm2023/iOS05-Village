@@ -175,8 +175,8 @@ final class PostDetailViewController: UIViewController {
     
     private let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
     
-    init(postID: Int) {
-        self.viewModel = ViewModel(postID: postID)
+    init(viewModel: ViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         
         bindingViewModel()

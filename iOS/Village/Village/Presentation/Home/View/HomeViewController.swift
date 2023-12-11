@@ -398,7 +398,7 @@ extension HomeViewController: UITableViewDelegate {
             postID = post.postID
         }
         
-        let postDetailVC = PostDetailViewController(postID: postID)
+        let postDetailVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: postID))
         postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)

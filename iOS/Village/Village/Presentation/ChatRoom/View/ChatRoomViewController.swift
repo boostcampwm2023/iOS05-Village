@@ -223,7 +223,7 @@ private extension ChatRoomViewController {
         if viewControllers.count > 1 {
             guard let postID = self.postID else { return }
             postID.sink(receiveValue: { value in
-                let nextVC = PostDetailViewController(postID: value)
+                let nextVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: value))
                 nextVC.hidesBottomBarWhenPushed = true
                 
                 self.navigationController?.pushViewController(nextVC, animated: true)
