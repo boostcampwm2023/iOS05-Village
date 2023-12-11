@@ -90,12 +90,12 @@ export class ChatService {
         'chat_info',
         'chat_room.id = chat_info.chat_room',
       )
-      .leftJoin(
+      .innerJoin(
         'chat_room.writerUser',
         'writer',
         'chat_room.writerUser = writer.user_hash',
       )
-      .leftJoin(
+      .innerJoin(
         'chat_room.userUser',
         'user',
         'chat_room.userUser = user.user_hash',
@@ -171,12 +171,12 @@ export class ChatService {
         'chat_info',
         'chat_room.id = chat_info.chat_room',
       )
-      .leftJoin(
+      .innerJoin(
         'chat_room.writerUser',
         'writer',
         'chat_room.writerUser = writer.user_hash',
       )
-      .leftJoin(
+      .innerJoin(
         'chat_room.userUser',
         'user',
         'chat_room.userUser = user.user_hash',
