@@ -38,7 +38,6 @@
 		446B61062B2602A200A361CB /* PostSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B61052B2602A200A361CB /* PostSegmentedControl.swift */; };
 		446B610B2B26439D00A361CB /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B610A2B26439D00A361CB /* Post.swift */; };
 		4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4491AA272B05D6C90016FC70 /* MenuView.swift */; };
-		44C1F5E32B0FB6460047A436 /* PostListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5E22B0FB6460047A436 /* PostListItem.swift */; };
 		44C1F5E62B0FE37C0047A436 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5E52B0FE37C0047A436 /* PostDetailViewModel.swift */; };
 		44C1F5ED2B0FE44A0047A436 /* UserResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */; };
 		44C1F5F32B0FF63C0047A436 /* PostResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */; };
@@ -88,7 +87,6 @@
 		59E6A20F2B205C8500A2DF21 /* RequestPostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A20E2B205C8500A2DF21 /* RequestPostSummaryView.swift */; };
 		8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */; };
 		8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */; };
-		8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */; };
 		8F1E2CEE2B1F163D00179E34 /* GetRoomResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */; };
 		8F3D79DD2B135D1500370536 /* ChatRoom.json in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D79DC2B135D1500370536 /* ChatRoom.json */; };
 		8F3D79E02B136C6800370536 /* ChatRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */; };
@@ -121,7 +119,6 @@
 		8FBB3BB92B26B431001876F5 /* GetAllReadResponseDTO .swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */; };
 		8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */; };
 		8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */; };
-		8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
@@ -177,7 +174,6 @@
 		446B61052B2602A200A361CB /* PostSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSegmentedControl.swift; sourceTree = "<group>"; };
 		446B610A2B26439D00A361CB /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		4491AA272B05D6C90016FC70 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
-		44C1F5E22B0FB6460047A436 /* PostListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListItem.swift; sourceTree = "<group>"; };
 		44C1F5E52B0FE37C0047A436 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
 		44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResponseDTO.swift; sourceTree = "<group>"; };
 		44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostResponseDTO.swift; sourceTree = "<group>"; };
@@ -229,7 +225,6 @@
 		59E6A20E2B205C8500A2DF21 /* RequestPostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestPostSummaryView.swift; sourceTree = "<group>"; };
 		8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndPoints.swift; sourceTree = "<group>"; };
 		8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListRequestDTO.swift; sourceTree = "<group>"; };
-		8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListResponseDTO.swift; sourceTree = "<group>"; };
 		8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRoomResponseDTO.swift; sourceTree = "<group>"; };
 		8F3D79DC2B135D1500370536 /* ChatRoom.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatRoom.json; sourceTree = "<group>"; };
 		8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewModel.swift; sourceTree = "<group>"; };
@@ -263,7 +258,6 @@
 		8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GetAllReadResponseDTO .swift"; sourceTree = "<group>"; };
 		8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserTableViewCell.swift; sourceTree = "<group>"; };
 		8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatListResponseDTO.swift; sourceTree = "<group>"; };
-		8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
@@ -301,6 +295,8 @@
 			isa = PBXGroup;
 			children = (
 				446B610A2B26439D00A361CB /* Post.swift */,
+				59110F032B1725C20009E9AC /* NotificationName+.swift */,
+				446362CA2B0DFD4F00B74DA7 /* Int+.swift */,
 				440FCC2C2B04EB940011B637 /* Constants.swift */,
 				4416D47A2B15EBCC0052BF33 /* Encodable+.swift */,
 			);
@@ -433,14 +429,6 @@
 				59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */,
 			);
 			path = Cell;
-			sourceTree = "<group>";
-		};
-		44C1F5E12B0FB6380047A436 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				44C1F5E22B0FB6460047A436 /* PostListItem.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		44C1F5E42B0FE3670047A436 /* ViewModel */ = {
@@ -683,7 +671,6 @@
 				4416D4792B15E7E70052BF33 /* Protocol */,
 				4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */,
 				8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */,
-				8F1B53372B0E03AE006D8982 /* PostListResponseDTO.swift */,
 				59D8F1042B103A7200A08E02 /* PostModifyRequestDTO.swift */,
 				44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */,
 				44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */,
@@ -877,7 +864,6 @@
 		8FBE3B062B04763200660530 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				44C1F5E12B0FB6380047A436 /* Model */,
 				444A50952B0C905C00454397 /* Custom */,
 				8FC7FE722B05CE3000B91D3B /* ViewModel */,
 				8FC7FE712B05CE2300B91D3B /* View */,
@@ -900,12 +886,10 @@
 				8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */,
 				59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */,
 				444A50932B0C8D1900454397 /* UIView+Divider.swift */,
-				446362CA2B0DFD4F00B74DA7 /* Int+.swift */,
 				5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */,
 				59BD5DC82B0C760500FEB80F /* UIStackView+.swift */,
 				8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */,
 				59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */,
-				59110F032B1725C20009E9AC /* NotificationName+.swift */,
 				59457BC62B233EE5003F798C /* UIImage+Resize.swift */,
 			);
 			path = Extensions;
@@ -914,7 +898,6 @@
 		8FC7FE712B05CE2300B91D3B /* View */ = {
 			isa = PBXGroup;
 			children = (
-				8FBE3B092B0478D400660530 /* HomeCollectionViewCell.swift */,
 				8FBE3B0B2B048B1300660530 /* HomeViewController.swift */,
 			);
 			path = View;
@@ -1166,7 +1149,6 @@
 				59BA10FA2B1CC3F700F30DB8 /* FCMManager.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
 				446B60F72B220D6000A361CB /* CameraButtonCell.swift in Sources */,
-				8F1B53382B0E03AE006D8982 /* PostListResponseDTO.swift in Sources */,
 				59E2C1602B248A6D004428F7 /* MyHiddenPostsViewController.swift in Sources */,
 				4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */,
 				59457BC72B233EE5003F798C /* UIImage+Resize.swift in Sources */,
@@ -1185,10 +1167,8 @@
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				4416D4762B15E25A0052BF33 /* MultipartFormData.swift in Sources */,
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
-				44C1F5E32B0FB6460047A436 /* PostListItem.swift in Sources */,
 				4416D47B2B15EBCC0052BF33 /* Encodable+.swift in Sources */,
 				446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */,
-				8FBE3B0A2B0478D400660530 /* HomeCollectionViewCell.swift in Sources */,
 				59AABDE52B0E2D47002F6D0E /* PostCreateDetailView.swift in Sources */,
 				4461F39D2B1786DA00723C55 /* JWTManager.swift in Sources */,
 				59457BC92B237615003F798C /* PatchUserDTO.swift in Sources */,

@@ -10,7 +10,7 @@ import Combine
 
 final class SearchResultViewController: UIViewController {
     
-    typealias SearchResultDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias SearchResultDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
     typealias ViewModel = SearchResultViewModel
     
     enum Section { case list }
@@ -154,12 +154,12 @@ extension SearchResultViewController {
     }
     
     private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
         snapshot.appendSections([.list])
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    private func addGenerateData(list: [PostListResponseDTO]) {
+    private func addGenerateData(list: [PostResponseDTO]) {
         var snapshot = dataSource.snapshot()
         snapshot.appendItems(list, toSection: .list)
         dataSource.apply(snapshot, animatingDifferences: false)
@@ -184,7 +184,7 @@ extension SearchResultViewController: UITableViewDelegate {
     func tableView(_ collectionView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let postDetailVC = PostDetailViewController(postID: post.postID)
+        let postDetailVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: post.postID))
         postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
     }

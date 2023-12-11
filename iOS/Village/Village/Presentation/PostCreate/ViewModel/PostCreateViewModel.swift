@@ -48,6 +48,7 @@ final class PostCreateViewModel {
         images.count
     }
     private var willDeleteImageURL = [String]()
+    private var isLoading: Bool = false
     
     private let warningPublisher = PassthroughSubject<PostWarning, Never>()
     private let endOutput = PassthroughSubject<Void, NetworkError>()
@@ -94,12 +95,18 @@ final class PostCreateViewModel {
         Task {
             do {
                 try await APIProvider.shared.request(with: modifyEndPoint)
+                if let id = postID {
+                    NotificationCenter.default.post(name: .postEdited, object: nil, userInfo: ["postID": id])
+                } else {
+                    NotificationCenter.default.post(name: .postCreated, object: nil)
+                }
                 endOutput.send()
             } catch let error as NetworkError {
                 self.endOutput.send(completion: .failure(error))
             } catch {
                 dump("Unknown Error")
             }
+            isLoading = false
         }
     }
     
@@ -129,7 +136,7 @@ final class PostCreateViewModel {
                         deletedImages: []
                     )
                 )
-                setEditImage(imageURL: data.imageURL)
+                setEditImage(imageURL: data.images)
             } catch {
                 dump(error)
             }
@@ -163,8 +170,7 @@ final class PostCreateViewModel {
         }
     }
     
-    func timeSequenceWarn(startTimeString: String, endTimeString: String) -> Bool {
-        
+    private func timeSequenceWarn(startTimeString: String, endTimeString: String) -> Bool {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy.MM.dd HH:mm"
         if startTimeString.isEmpty || endTimeString.isEmpty {
@@ -172,28 +178,14 @@ final class PostCreateViewModel {
         }
         guard let startTime = dateFormatter.date(from: startTimeString),
               let endTime = dateFormatter.date(from: endTimeString) else { return false }
+        
         return startTime.timeIntervalSince1970 - endTime.timeIntervalSince1970 >= 0
     }
     
     func transform(input: Input) -> Output {
-        
         input.postInfoInput
             .sink { [weak self] post in
-                guard let self = self else { return }
-                
-                let warning = PostWarning(
-                    imageWarning: self.isRequest ? nil : imagesCount == 0,
-                    titleWarning: post.title.isEmpty,
-                    startTimeWarning: post.startTime.isEmpty,
-                    endTimeWarning: post.endTime.isEmpty,
-                    priceWarning: self.isRequest ? nil : post.price?.isEmpty,
-                    timeSequenceWarning: timeSequenceWarn(startTimeString: post.startTime, endTimeString: post.endTime)
-                )
-                if warning.validation == true {
-                    modifyPost(post: post, images: images.filter { $0.url == nil }.map(\.data))
-                } else {
-                    warningPublisher.send(warning)
-                }
+                self?.setPost(post: post)
             }
             .store(in: &cancellableBag)
         
@@ -225,7 +217,26 @@ final class PostCreateViewModel {
         )
     }
     
-    func deleteImage(item: ImageItem) {
+    private func setPost(post: PostModifyInfo) {
+        guard isLoading == false else { return }
+        isLoading = true
+        let warning = PostWarning(
+            imageWarning: self.isRequest ? nil : imagesCount == 0,
+            titleWarning: post.title.isEmpty,
+            startTimeWarning: post.startTime.isEmpty,
+            endTimeWarning: post.endTime.isEmpty,
+            priceWarning: self.isRequest ? nil : post.price?.isEmpty,
+            timeSequenceWarning: timeSequenceWarn(startTimeString: post.startTime, endTimeString: post.endTime)
+        )
+        if warning.validation == true {
+            modifyPost(post: post, images: images.filter { $0.url == nil }.map(\.data))
+        } else {
+            warningPublisher.send(warning)
+            isLoading = false
+        }
+    }
+    
+    private func deleteImage(item: ImageItem) {
         if let url = item.url {
             willDeleteImageURL.append(url)
         }

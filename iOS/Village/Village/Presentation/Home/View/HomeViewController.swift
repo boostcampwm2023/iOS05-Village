@@ -10,16 +10,14 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias PostDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
-    typealias PostSnapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>
+    typealias PostDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
+    typealias PostSnapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>
     
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
     
-    private let reuseIdentifier = HomeCollectionViewCell.identifier
-    
     private var postType: PostType = .rent
-    private let refresh = PassthroughSubject<PostType, Never>()
+    private let refresh = CurrentValueSubject<PostType, Never>(.rent)
     private let pagination = PassthroughSubject<PostType, Never>()
     private var paginationFlag: Bool = true
     
@@ -121,30 +119,10 @@ final class HomeViewController: UIViewController {
         bindViewModel()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        refreshPost()
-    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         floatingButton.isActive = false
-    }
-    
-    private func setupUI() {
-        setNavigationUI()
-        setMenuUI()
-        bindFloatingButton()
-        
-        view.addSubview(postSegmentedControl)
-        view.addSubview(containerView)
-        containerView.addSubview(rentPostTableView)
-        containerView.addSubview(requestPostTableView)
-        view.addSubview(floatingButton)
-        view.addSubview(menuView)
-        setLayoutConstraint()
     }
     
     private func bindFloatingButton() {
@@ -167,6 +145,9 @@ final class HomeViewController: UIViewController {
         )
         let output = viewModel.transform(input: input)
         handlePostList(output: output)
+        handleCreatedPost(output: output)
+        handleDeletedPost(output: output)
+        handleEditedPost(output: output)
     }
     
     private func handlePostList(output: ViewModel.Output) {
@@ -190,7 +171,90 @@ final class HomeViewController: UIViewController {
             .store(in: &cancellableBag)
     }
     
-    private func setNavigationUI() {
+    private func handleCreatedPost(output: ViewModel.Output) {
+        output.createdPost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refreshPost()
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func handleDeletedPost(output: ViewModel.Output) {
+        output.deletedPost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] postID in
+                self?.deletePost(id: postID)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func handleEditedPost(output: ViewModel.Output) {
+        output.editedPost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] post in
+                self?.replacePost(item: post)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+}
+
+@objc
+private extension HomeViewController {
+    
+    func refreshPost() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            
+            let tableView = (postType == .rent) ? rentPostTableView : requestPostTableView
+            resetDataSource()
+            tableView.refreshControl?.endRefreshing()
+            refresh.send(postType)
+        }
+    }
+    
+    func togglePostType() {
+        postType = (postType == .rent) ? .request : .rent
+        
+        switch postType {
+        case .rent:
+            containerViewLeadingConstraint.constant = 0
+        case .request:
+            containerViewLeadingConstraint.constant = -view.frame.width
+        }
+        
+        if requestDataSource.snapshot().numberOfItems == 0 {
+            refresh.send(postType)
+        }
+        
+    }
+    
+    func searchButtonTapped() {
+        let nextVC = SearchResultViewController()
+        nextVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(nextVC, animated: false)
+    }
+    
+}
+
+private extension HomeViewController {
+    
+    func setupUI() {
+        setNavigationUI()
+        setMenuUI()
+        bindFloatingButton()
+        
+        view.addSubview(postSegmentedControl)
+        view.addSubview(containerView)
+        containerView.addSubview(rentPostTableView)
+        containerView.addSubview(requestPostTableView)
+        view.addSubview(floatingButton)
+        view.addSubview(menuView)
+        setLayoutConstraint()
+    }
+    
+    func setNavigationUI() {
         let titleLabel = UILabel()
         titleLabel.setTitle("홈")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
@@ -201,7 +265,7 @@ final class HomeViewController: UIViewController {
         self.navigationItem.rightBarButtonItems = [search]
     }
     
-    private func setMenuUI() {
+    func setMenuUI() {
         let useCase = PostCreateUseCase(postCreateRepository: PostCreateRepository())
         let presentPostRequestNC = UIAction(title: "대여 요청하기") { [weak self] _ in
             let requestViewModel = PostCreateViewModel(useCase: useCase, isRequest: true, isEdit: false, postID: nil)
@@ -220,48 +284,7 @@ final class HomeViewController: UIViewController {
         menuView.setMenuActions([presentPostRequestNC, presentPostRentNC])
     }
     
-}
-
-private extension HomeViewController {
-    
-    @objc func refreshPost() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            
-            if postType == .rent {
-                clearRentDataSource()
-                rentPostTableView.refreshControl?.endRefreshing()
-            } else {
-                clearRequestDataSource()
-                requestPostTableView.refreshControl?.endRefreshing()
-            }
-            refresh.send(postType)
-        }
-    }
-    
-    @objc func togglePostType() {
-        postType = (postType == .rent) ? .request : .rent
-        
-        switch postType {
-        case .rent:
-            containerViewLeadingConstraint.constant = 0
-        case .request:
-            containerViewLeadingConstraint.constant = -view.frame.width
-        }
-        
-        if requestDataSource.snapshot().numberOfItems == 0 {
-            refresh.send(postType)
-        }
-        
-    }
-    
-    @objc func searchButtonTapped() {
-        let nextVC = SearchResultViewController()
-        nextVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(nextVC, animated: false)
-    }
-    
-    private func setLayoutConstraint() {
+    func setLayoutConstraint() {
         NSLayoutConstraint.activate([
             floatingButton.widthAnchor.constraint(equalToConstant: 65),
             floatingButton.heightAnchor.constraint(equalToConstant: 65),
@@ -313,20 +336,6 @@ extension HomeViewController: UITableViewDelegate {
         case main
     }
     
-    private func clearRentDataSource() {
-        var rentSnapshot = rentDataSource.snapshot()
-        rentSnapshot.deleteAllItems()
-        rentSnapshot.appendSections([.main])
-        rentDataSource.apply(rentSnapshot, animatingDifferences: true)
-    }
-    
-    private func clearRequestDataSource() {
-        var requestSnapshot = requestDataSource.snapshot()
-        requestSnapshot.deleteAllItems()
-        requestSnapshot.appendSections([.main])
-        requestDataSource.apply(requestSnapshot, animatingDifferences: true)
-    }
-    
     private func generateDataSource() {
         var rentSnapshot = PostSnapshot()
         var requestSnapshot = PostSnapshot()
@@ -334,11 +343,39 @@ extension HomeViewController: UITableViewDelegate {
         rentSnapshot.appendSections([.main])
         requestSnapshot.appendSections([.main])
         
-        rentDataSource.apply(rentSnapshot)
-        requestDataSource.apply(requestSnapshot)
+        rentDataSource.apply(rentSnapshot, animatingDifferences: false)
+        requestDataSource.apply(requestSnapshot, animatingDifferences: false)
     }
     
-    private func appendPost(items: [PostListResponseDTO]) {
+    private func resetDataSource() {
+        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
+        var snapshot = PostSnapshot()
+        snapshot.appendSections([.main])
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func replacePost(item: PostResponseDTO) {
+        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
+        var snapshot = dataSource.snapshot()
+        guard let index = snapshot.indexOfItem(item) else { return }
+        snapshot.deleteItems([item])
+        if snapshot.numberOfItems == 0 {
+            snapshot.appendItems([item])
+        } else {
+            snapshot.insertItems([item], beforeItem: snapshot.itemIdentifiers[index])
+        }
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func deletePost(id: Int) {
+        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
+        var snapshot = dataSource.snapshot()
+        guard let deleteItem = snapshot.itemIdentifiers.first(where: {$0.postID == id}) else { return }
+        snapshot.deleteItems([deleteItem])
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func appendPost(items: [PostResponseDTO]) {
         switch postType {
         case .rent:
             var snapshot = rentDataSource.snapshot()
@@ -361,7 +398,7 @@ extension HomeViewController: UITableViewDelegate {
             postID = post.postID
         }
         
-        let postDetailVC = PostDetailViewController(postID: postID)
+        let postDetailVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: postID))
         postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)

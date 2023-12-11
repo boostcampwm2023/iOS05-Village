@@ -32,7 +32,7 @@ final class RequestPostTableViewCell: UITableViewCell {
         postSummaryView.postTitleLabel.text = nil
     }
     
-    func configureData(post: PostListResponseDTO) {
+    func configureData(post: PostResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         
         let dateFormatter = DateFormatter()

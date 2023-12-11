@@ -10,7 +10,7 @@ import Combine
 
 final class MyPostsViewController: UIViewController {
     
-    typealias MyPostsDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias MyPostsDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
     
     typealias ViewModel = MyPostsViewModel
     typealias Input = ViewModel.Input
@@ -125,7 +125,7 @@ private extension MyPostsViewController {
             .store(in: &cancellableBag)
     }
     
-    func addNextPage(posts: [PostListResponseDTO]) {
+    func addNextPage(posts: [PostResponseDTO]) {
         var snapshot = dataSource.snapshot()
         snapshot.appendItems(posts)
         dataSource.apply(snapshot)
@@ -140,13 +140,13 @@ private extension MyPostsViewController {
     }
     
     func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
         snapshot.appendSections([.posts])
         snapshot.appendItems(viewModel.posts)
         dataSource.apply(snapshot)
     }
     
-    func toggleData(posts: [PostListResponseDTO]) {
+    func toggleData(posts: [PostResponseDTO]) {
         var snapshot = dataSource.snapshot()
         snapshot.deleteAllItems()
         snapshot.appendSections([.posts])
@@ -204,7 +204,7 @@ extension MyPostsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPost = viewModel.posts[indexPath.row]
-        let nextVC = PostDetailViewController(postID: selectedPost.postID)
+        let nextVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: selectedPost.postID))
         nextVC.refreshPreviousViewController
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
