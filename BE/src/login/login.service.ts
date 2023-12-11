@@ -1,14 +1,14 @@
-import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { hashMaker } from '../utils/hashMaker';
+import { hashMaker } from '../common/hashMaker';
 import { AppleLoginDto } from './dto/appleLogin.dto';
 import * as jwt from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
-import { FcmHandler } from '../utils/fcmHandler';
+import { FcmHandler } from '../common/fcmHandler';
 import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 
 export interface SocialProperties {
@@ -24,7 +24,6 @@ export interface JwtTokens {
 @Injectable()
 export class LoginService {
   private jwksClient: jwksClient.JwksClient;
-  private readonly logger = new Logger('ChatsGateway');
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
@@ -87,13 +86,12 @@ export class LoginService {
   async verifyUserRegistration(
     socialProperties: SocialProperties,
   ): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({
+    return await this.userRepository.findOne({
       where: {
         OAuth_domain: socialProperties.OAuthDomain,
         social_id: socialProperties.socialId,
       },
     });
-    return user;
   }
 
   generateAccessToken(user: UserEntity): string {
@@ -119,12 +117,7 @@ export class LoginService {
     const identityTokenParts = identityToken.split('.');
     const identityTokenPayload = identityTokenParts[1];
 
-    const payloadClaims = Buffer.from(
-      identityTokenPayload,
-      'base64',
-    ).toString();
-
-    return payloadClaims;
+    return Buffer.from(identityTokenPayload, 'base64').toString();
   }
 
   async getApplePublicKey(kid: string) {
@@ -133,9 +126,7 @@ export class LoginService {
     });
 
     const key = await client.getSigningKey(kid);
-    const signingKey = key.getPublicKey();
-
-    return signingKey;
+    return key.getPublicKey();
   }
 
   async appleOAuth(body: AppleLoginDto): Promise<SocialProperties> {

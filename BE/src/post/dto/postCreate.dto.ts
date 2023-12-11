@@ -1,5 +1,5 @@
 import { IsBoolean, IsString, MaxLength } from 'class-validator';
-import { IsPriceCorrect } from '../../utils/price.decorator';
+import { IsPriceCorrect } from '../../common/decorator/price.decorator';
 
 export class PostCreateDto {
   @IsString()

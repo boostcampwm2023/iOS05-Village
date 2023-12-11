@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateReportDto } from './createReport.dto';
+import { CreateReportDto } from './dto/createReport.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReportEntity } from '../entities/report.entity';

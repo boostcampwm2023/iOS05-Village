@@ -4,7 +4,7 @@ import { PostEntity } from '../entities/post.entity';
 import { LessThan, Like, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
-import { S3Handler } from '../utils/S3Handler';
+import { S3Handler } from '../common/S3Handler';
 import { PostListDto } from './dto/postList.dto';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
@@ -136,28 +136,6 @@ export class PostService {
       end_date: post.end_date,
       post_id: post.id,
     };
-  }
-
-  async changeImages(postId: number, images: string[]) {
-    try {
-      await this.postImageRepository.delete({ post_id: postId });
-      for (const img of images) {
-        await this.postImageRepository.save({
-          post_id: postId,
-          image_url: img,
-        });
-      }
-    } catch {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
-  }
-
-  async changeExceptImages(postId: number, updatePostDto: UpdatePostDto) {
-    try {
-      await this.postRepository.update({ id: postId }, updatePostDto);
-    } catch (e) {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
   }
 
   async checkAuth(postId, userId) {

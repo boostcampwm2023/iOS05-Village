@@ -8,7 +8,7 @@ export function IsPriceCorrect(
   property: string,
   validationOptions?: ValidationOptions,
 ) {
-  return (object: Object, propertyName: string) => {
+  return (object, propertyName: string) => {
     registerDecorator({
       name: 'IsPriceCorrect',
       target: object.constructor,

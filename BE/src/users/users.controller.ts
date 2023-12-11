@@ -11,19 +11,16 @@ import {
   HttpException,
   UseGuards,
   Body,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  Header,
   Headers,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './createUser.dto';
+import { CreateUserDto } from './dto/createUser.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { MultiPartBody } from 'src/utils/multiPartBody.decorator';
-import { UpdateUsersDto } from './usersUpdate.dto';
-import { AuthGuard } from 'src/utils/auth.guard';
-import { UserHash } from '../utils/auth.decorator';
-import { FileSizeValidator } from '../utils/files.validator';
+import { MultiPartBody } from 'src/common/decorator/multiPartBody.decorator';
+import { UpdateUsersDto } from './dto/usersUpdate.dto';
+import { AuthGuard } from 'src/common/guard/auth.guard';
+import { UserHash } from '../common/decorator/auth.decorator';
+import { FileSizeValidator } from '../common/files.validator';
 
 @Controller('users')
 @UseGuards(AuthGuard)
