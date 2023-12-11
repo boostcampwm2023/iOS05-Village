@@ -32,7 +32,7 @@ final class RentPostTableViewCell: UITableViewCell {
         postSummaryView.postPriceLabel.text = nil
     }
     
-    func configureData(post: PostListResponseDTO) {
+    func configureData(post: PostResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         postSummaryView.setPrice(price: post.price)
         configureImageView(imageURL: post.images.first)
