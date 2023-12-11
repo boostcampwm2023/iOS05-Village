@@ -95,9 +95,9 @@ final class PostCreateViewModel {
             do {
                 try await APIProvider.shared.request(with: modifyEndPoint)
                 if let id = postID {
-                    NotificationCenter.default.post(name: .postEdited, object: nil, userInfo: ["postID": id])
+                    PostNotificationPublisher.shared.publishPostEdited(postID: id)
                 } else {
-                    NotificationCenter.default.post(name: .postCreated, object: nil)
+                    PostNotificationPublisher.shared.publishPostCreated(isRequest: isRequest)
                 }
                 endOutput.send()
             } catch let error as NetworkError {

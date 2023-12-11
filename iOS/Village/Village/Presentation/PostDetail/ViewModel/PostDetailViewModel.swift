@@ -111,7 +111,7 @@ final class PostDetailViewModel {
         Task {
             do {
                 try await APIProvider.shared.request(with: endpoint)
-                NotificationCenter.default.post(name: .postDeleted, object: nil, userInfo: ["postID": postID])
+                PostNotificationPublisher.shared.publishPostDeleted(postID: postID)
                 deleteOutput.send()
             } catch let error as NetworkError {
                 deleteOutput.send(completion: .failure(error))
@@ -125,6 +125,7 @@ final class PostDetailViewModel {
         Task {
             do {
                 try await APIProvider.shared.request(with: endpoint)
+                PostNotificationPublisher.shared.publishPostDeleted(postID: postID)
                 popViewControllerOutput.send()
             } catch let error as NetworkError {
                 popViewControllerOutput.send(completion: .failure(error))
