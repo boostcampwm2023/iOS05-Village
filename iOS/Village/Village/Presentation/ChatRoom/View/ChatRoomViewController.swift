@@ -162,6 +162,12 @@ final class ChatRoomViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        WebSocket.shared.closeWebSocket()
+    }
+    
     func setSocket() {
         WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
         try? WebSocket.shared.openWebSocket()

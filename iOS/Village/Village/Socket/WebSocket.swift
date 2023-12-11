@@ -47,7 +47,9 @@ final class WebSocket: NSObject {
     
     var url: URL?
     
-    private var webSocketTask: URLSessionWebSocketTask?
+    private var webSocketTask: URLSessionWebSocketTask? {
+        didSet { oldValue?.cancel(with: .goingAway, reason: nil)}
+    }
     private var timer: Timer?
     
     private override init() {}
@@ -68,6 +70,11 @@ final class WebSocket: NSObject {
         self.startPing()
         
         self.receiveEvent()
+    }
+    
+    func closeWebSocket() {
+        self.webSocketTask = nil
+        self.timer?.invalidate()
     }
     
     func sendJoinRoom(roomID: Int) {
