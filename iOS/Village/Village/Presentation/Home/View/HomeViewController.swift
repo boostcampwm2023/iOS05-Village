@@ -214,13 +214,9 @@ private extension HomeViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             
-            if postType == .rent {
-                resetRentDataSource()
-                rentPostTableView.refreshControl?.endRefreshing()
-            } else {
-                resetRequestDataSource()
-                requestPostTableView.refreshControl?.endRefreshing()
-            }
+            let tableView = (postType == .rent) ? rentPostTableView : requestPostTableView
+            resetDataSource()
+            tableView.refreshControl?.endRefreshing()
             refresh.send(postType)
         }
     }
@@ -347,18 +343,6 @@ extension HomeViewController: UITableViewDelegate {
         case main
     }
     
-    private func resetRentDataSource() {
-        var rentSnapshot = PostSnapshot()
-        rentSnapshot.appendSections([.main])
-        rentDataSource.apply(rentSnapshot, animatingDifferences: false)
-    }
-    
-    private func resetRequestDataSource() {
-        var requestSnapshot = PostSnapshot()
-        requestSnapshot.appendSections([.main])
-        requestDataSource.apply(requestSnapshot, animatingDifferences: false)
-    }
-    
     private func generateDataSource() {
         var rentSnapshot = PostSnapshot()
         var requestSnapshot = PostSnapshot()
@@ -368,6 +352,27 @@ extension HomeViewController: UITableViewDelegate {
         
         rentDataSource.apply(rentSnapshot, animatingDifferences: false)
         requestDataSource.apply(requestSnapshot, animatingDifferences: false)
+    }
+    
+    private func resetDataSource() {
+        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
+        var snapshot = PostSnapshot()
+        snapshot.appendSections([.main])
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func reconfigurePost(item: PostListResponseDTO) {
+        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
+        var snapshot = dataSource.snapshot()
+        snapshot.reconfigureItems([item])
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func deletePost(item: PostListResponseDTO) {
+        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
+        var snapshot = dataSource.snapshot()
+        snapshot.deleteItems([item])
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
     
     private func appendPost(items: [PostListResponseDTO]) {
