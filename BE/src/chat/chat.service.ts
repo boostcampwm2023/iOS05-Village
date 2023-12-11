@@ -9,6 +9,7 @@ import { FcmHandler, PushMessage } from '../utils/fcmHandler';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'jsonwebtoken';
+import { PostEntity } from '../entities/post.entity';
 
 export interface ChatRoom {
   room_id: number;
@@ -26,6 +27,8 @@ export class ChatService {
     private chatRepository: Repository<ChatEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(PostEntity)
+    private postRepository: Repository<PostEntity>,
     private fcmHandler: FcmHandler,
     private configService: ConfigService,
   ) {}
@@ -45,6 +48,9 @@ export class ChatService {
     userId: string,
     writerId: string,
   ): Promise<ChatRoom> {
+    if (userId === writerId) {
+      throw new HttpException('자신과는 채팅할 수 없습니다.', 400);
+    }
     const isExist = await this.chatRoomRepository.findOne({
       where: { post_id: postId, user: userId, writer: writerId },
     });
@@ -56,16 +62,18 @@ export class ChatService {
     chatRoom.writer = writerId;
     chatRoom.user = userId;
 
-    try {
-      const roomId = (await this.chatRoomRepository.save(chatRoom)).id;
-      return { room_id: roomId };
-    } catch (e) {
-      if (e.errno === 1452) {
-        return null;
-      } else {
-        throw new HttpException('서버 오류', 500);
-      }
-    }
+    const roomId = (await this.chatRoomRepository.save(chatRoom)).id;
+    return { room_id: roomId };
+  }
+
+  async isUserPostExist(postId: number, writerId: string) {
+    const isUserExist = await this.userRepository.exist({
+      where: { user_hash: writerId },
+    });
+    const isPostExist = await this.postRepository.exist({
+      where: { id: postId },
+    });
+    return isPostExist && isUserExist;
   }
 
   async findRoomList(userId: string) {
@@ -197,7 +205,7 @@ export class ChatService {
       ])
       .getRawMany();
 
-    for (let room of rooms) {
+    for (const room of rooms) {
       if (room.sender !== userId && room.is_read === 0) {
         return { all_read: false };
       }

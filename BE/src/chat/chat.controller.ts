@@ -1,11 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Param,
-  UseGuards,
   HttpException,
+  Param,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { AuthGuard } from '../utils/auth.guard';
@@ -36,17 +36,14 @@ export class ChatController {
   @Post('room')
   @UseGuards(AuthGuard)
   async roomCreate(@Body() body: CreateRoomDto, @UserHash() userId: string) {
-    const room = await this.chatService.createRoom(
+    const isUserPostExist = await this.chatService.isUserPostExist(
       body.post_id,
-      userId,
       body.writer,
     );
-
-    if (room === null) {
-      throw new HttpException('해당 post 는 없습니다', 404);
-    } else {
-      return room;
+    if (!isUserPostExist) {
+      throw new HttpException('해당 게시글 또는 유저가 없습니다', 404);
     }
+    return await this.chatService.createRoom(body.post_id, userId, body.writer);
   }
 
   @Get('unread')
