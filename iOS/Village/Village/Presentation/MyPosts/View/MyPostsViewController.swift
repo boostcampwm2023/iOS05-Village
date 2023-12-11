@@ -204,7 +204,7 @@ extension MyPostsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPost = viewModel.posts[indexPath.row]
-        let nextVC = PostDetailViewController(postID: selectedPost.postID)
+        let nextVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: selectedPost.postID))
         nextVC.refreshPreviousViewController
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in

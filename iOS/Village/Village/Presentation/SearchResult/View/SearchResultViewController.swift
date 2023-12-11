@@ -184,7 +184,7 @@ extension SearchResultViewController: UITableViewDelegate {
     func tableView(_ collectionView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let postDetailVC = PostDetailViewController(postID: post.postID)
+        let postDetailVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: post.postID))
         postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
     }
