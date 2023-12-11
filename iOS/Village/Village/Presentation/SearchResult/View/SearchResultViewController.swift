@@ -24,6 +24,7 @@ final class SearchResultViewController: UIViewController {
     private var cancellableBag = Set<AnyCancellable>()
     
     private var postTitle: String = ""
+    private var paginationFlag: Bool = true
     
     private lazy var requestSegmentedControl: UISegmentedControl = {
         let control = UISegmentedControl(items: ["대여", "요청"])
@@ -146,6 +147,7 @@ extension SearchResultViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] postList in
+                self?.paginationFlag = false
                 self?.addGenerateData(list: postList)
             }
             .store(in: &cancellableBag)
@@ -173,7 +175,8 @@ extension SearchResultViewController {
 extension SearchResultViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > self.listTableView.contentSize.height - 1000 {
+        if scrollView.contentOffset.y > self.listTableView.contentSize.height - 1000
+        && paginationFlag {
             scrollPublisher.send()
         }
     }

@@ -78,11 +78,14 @@ final class SearchResultViewModel {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint),
                       let lastID = data.last?.postID
-                else { return }
+                else {
+                    searchResultList.send([])
+                    return
+                }
                 searchResultList.send(data)
                 self.lastPostID = "\(lastID)"
             } catch {
-                dump(error)
+                searchResultList.send(completion: .failure(NetworkError.urlRequestError))
             }
         }
     }
