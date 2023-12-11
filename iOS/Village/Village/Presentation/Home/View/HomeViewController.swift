@@ -19,7 +19,7 @@ final class HomeViewController: UIViewController {
     private let reuseIdentifier = HomeCollectionViewCell.identifier
     
     private var postType: PostType = .rent
-    private let refresh = PassthroughSubject<PostType, Never>()
+    private let refresh = CurrentValueSubject<PostType, Never>(.rent)
     private let pagination = PassthroughSubject<PostType, Never>()
     private var paginationFlag: Bool = true
     
@@ -119,12 +119,6 @@ final class HomeViewController: UIViewController {
         setupUI()
         generateDataSource()
         bindViewModel()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        refreshPost()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
