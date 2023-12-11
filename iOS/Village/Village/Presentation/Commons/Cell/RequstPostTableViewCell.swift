@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RequestPostTableViewCell: UITableViewCell {
+final class RequestPostTableViewCell: UITableViewCell {
 
     private let postSummaryView: RequestPostSummaryView = {
         let view = RequestPostSummaryView()

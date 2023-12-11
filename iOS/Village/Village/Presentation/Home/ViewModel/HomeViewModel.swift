@@ -10,48 +10,111 @@ import Combine
 
 final class HomeViewModel {
     
+    typealias PostList = [PostListResponseDTO]
+    
     private var cancellableBag = Set<AnyCancellable>()
     
-    private var postList = PassthroughSubject<[PostListItem], Error>()
-    private var lastPostID: String?
-    private var isLoading = false
-    private let lock = NSLock()
+    private let postList = PassthroughSubject<PostList, Error>()
+    
+    private var lastRentPostID: String?
+    private var lastRequestPostID: String?
     
     func transform(input: Input) -> Output {
-        input.needPostList
-            .sink(receiveValue: { [weak self] isRefresh in
-                guard let self = self,
-                      isLoading == false else { return }
-                self.getPosts(isRefresh: isRefresh)
-            })
-            .store(in: &cancellableBag)
+        handleRefresh(input: input)
+        handlePagination(input: input)
         
-        return Output(postList: postList.eraseToAnyPublisher())
+        return Output(
+            postList: postList.eraseToAnyPublisher()
+        )
     }
     
-    private func getPosts(isRefresh: Bool) {
-        lock.withLock {
-            if isRefresh { lastPostID = nil }
-            
-            let postRequestDTO = (lastPostID == nil) ? nil : PostListRequestDTO(page: lastPostID)
-            let endpoint = APIEndPoints.getPosts(queryParameter: postRequestDTO)
-            
-            Task {
-                do {
-                    isLoading = true
-                    guard let items = try await APIProvider.shared.request(with: endpoint),
-                          let lastID = items.last?.postID else {
-                        isLoading = false
-                        return
+    private func handleRefresh(input: Input) {
+        input.refresh
+            .sink { [weak self] type in
+                self?.refresh(type: type)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func handlePagination(input: Input) {
+        input.pagination
+            .sink { [weak self] type in
+                guard let self = self else { return }
+                self.pagination(type: type)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+}
+
+private extension HomeViewModel {
+    
+    func refresh(type: PostType) {
+        if type == .rent {
+            lastRentPostID = nil
+        } else {
+            lastRequestPostID = nil
+        }
+        
+        Task {
+            do {
+                let data = try await getList(type: type)
+                if let lastPostID = data.last?.postID {
+                    switch type {
+                    case .rent:
+                        lastRentPostID = "\(lastPostID)"
+                    case .request:
+                        lastRequestPostID = "\(lastPostID)"
                     }
-                    lastPostID = "\(lastID)"
-                    postList.send(items.map { PostListItem(dto: $0) })
-                } catch {
-                    postList.send(completion: .failure(error))
                 }
-                isLoading = false
+                postList.send(data)
+            } catch {
+                postList.send(completion: .failure(error))
             }
         }
+    }
+    
+    func pagination(type: PostType) {
+        Task {
+            do {
+                let data = try await self.getList(type: type)
+                
+                guard let lastID = data.last?.postID else { return }
+                if type == .rent {
+                    if self.lastRentPostID != "\(lastID)" {
+                        self.postList.send(data)
+                    }
+                    self.lastRentPostID = "\(lastID)"
+                } else {
+                    if self.lastRequestPostID != "\(lastID)" {
+                        self.postList.send(data)
+                    }
+                    self.lastRequestPostID = "\(lastID)"
+                }
+            } catch {
+                self.postList.send(completion: .failure(error))
+            }
+        }
+    }
+    
+    func getList(type: PostType) async throws -> PostList {
+        let filter: String
+        let lastPostID: String?
+        
+        switch type {
+        case .rent:
+            filter = "0"
+            lastPostID = lastRentPostID
+        case .request:
+            filter = "1"
+            lastPostID = lastRequestPostID
+        }
+        
+        let endpoint = APIEndPoints.getPosts(queryParameter: PostListRequestDTO(requestFilter: filter,
+                                                                                page: lastPostID))
+        
+        guard let data = try await APIProvider.shared.request(with: endpoint) else { return [] }
+        return data
     }
     
 }
@@ -59,11 +122,12 @@ final class HomeViewModel {
 extension HomeViewModel {
     
     struct Input {
-        var needPostList: AnyPublisher<Bool, Never>
+        let refresh: AnyPublisher<PostType, Never>
+        let pagination: AnyPublisher<PostType, Never>
     }
     
     struct Output {
-        var postList: AnyPublisher<[PostListItem], Error>
+        let postList: AnyPublisher<[PostListResponseDTO], Error>
     }
     
 }
