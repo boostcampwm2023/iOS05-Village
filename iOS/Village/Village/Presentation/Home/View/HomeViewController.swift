@@ -16,8 +16,6 @@ final class HomeViewController: UIViewController {
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
     
-    private let reuseIdentifier = HomeCollectionViewCell.identifier
-    
     private var postType: PostType = .rent
     private let refresh = CurrentValueSubject<PostType, Never>(.rent)
     private let pagination = PassthroughSubject<PostType, Never>()
