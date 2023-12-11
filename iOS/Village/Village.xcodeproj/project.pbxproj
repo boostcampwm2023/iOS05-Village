@@ -299,6 +299,8 @@
 			isa = PBXGroup;
 			children = (
 				446B610A2B26439D00A361CB /* Post.swift */,
+				59110F032B1725C20009E9AC /* NotificationName+.swift */,
+				446362CA2B0DFD4F00B74DA7 /* Int+.swift */,
 				440FCC2C2B04EB940011B637 /* Constants.swift */,
 				4416D47A2B15EBCC0052BF33 /* Encodable+.swift */,
 			);
@@ -897,12 +899,10 @@
 				8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */,
 				59D4DBE12B068C6400BBA2D5 /* UIView+Layer.swift */,
 				444A50932B0C8D1900454397 /* UIView+Divider.swift */,
-				446362CA2B0DFD4F00B74DA7 /* Int+.swift */,
 				5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */,
 				59BD5DC82B0C760500FEB80F /* UIStackView+.swift */,
 				8F3D79E52B1469DF00370536 /* UICollectionViewCell+Identifier.swift */,
 				59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */,
-				59110F032B1725C20009E9AC /* NotificationName+.swift */,
 				59457BC62B233EE5003F798C /* UIImage+Resize.swift */,
 			);
 			path = Extensions;
