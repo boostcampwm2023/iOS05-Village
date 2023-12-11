@@ -298,6 +298,17 @@ private extension PostDetailViewController {
     }
     
     private func bindOutput(_ output: ViewModel.Output) {
+        handlePost(output: output)
+        handleUser(output: output)
+        handleRoomID(output: output)
+        handleMore(output: output)
+        handleModify(output: output)
+        handleReport(output: output)
+        handleDelete(output: output)
+        handlePopViewControllerOutput(output: output)
+    }
+    
+    private func handlePost(output: ViewModel.Output) {
         output.post.receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -317,7 +328,9 @@ private extension PostDetailViewController {
                 }
             })
             .store(in: &cancellableBag)
-        
+    }    
+    
+    private func handleUser(output: ViewModel.Output) {
         output.user.receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -330,7 +343,9 @@ private extension PostDetailViewController {
                 self?.setUserContent(user: user)
             }
             .store(in: &cancellableBag)
-        
+    }    
+    
+    private func handleRoomID(output: ViewModel.Output) {
         output.roomID.receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -343,27 +358,17 @@ private extension PostDetailViewController {
                 self?.pushChatRoomViewController(roomID: roomID)
             }
             .store(in: &cancellableBag)
-        
+    }    
+    
+    private func handleMore(output: ViewModel.Output) {
         output.moreOutput.receive(on: DispatchQueue.main)
             .sink { [weak self] userID in
                 self?.moreBarButtonAction(userID: userID)
             }
             .store(in: &cancellableBag)
-        
-        output.reportOuput.receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    dump(error)
-                }
-            } receiveValue: { [weak self] value in
-                self?.report(postID: value.postID, userID: value.userID)
-            }
-            .store(in: &cancellableBag)
-
-        
+    }    
+    
+    private func handleModify(output: ViewModel.Output) {
         output.modifyOutput.receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -376,7 +381,24 @@ private extension PostDetailViewController {
                 self?.modify(post: post)
             })
             .store(in: &cancellableBag)
-
+    }    
+    
+    private func handleReport(output: ViewModel.Output) {
+        output.reportOutput.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] value in
+                self?.report(postID: value.postID, userID: value.userID)
+            }
+            .store(in: &cancellableBag)
+    }    
+    
+    private func handleDelete(output: ViewModel.Output) {
         output.deleteOutput.receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -390,7 +412,9 @@ private extension PostDetailViewController {
                 self?.navigationController?.popViewController(animated: true)
             })
             .store(in: &cancellableBag)
-        
+    }   
+    
+    private func handlePopViewControllerOutput(output: ViewModel.Output) {
         output.popViewControllerOutput.receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -404,8 +428,9 @@ private extension PostDetailViewController {
                 self?.navigationController?.popViewController(animated: true)
             })
             .store(in: &cancellableBag)
-    
     }
+    
+    
     
     func setLayoutConstraints(isRequest: Bool) {
         NSLayoutConstraint.activate([

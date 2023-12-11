@@ -77,7 +77,7 @@ final class PostDetailViewModel {
             user: user.eraseToAnyPublisher(),
             moreOutput: moreOutput.eraseToAnyPublisher(),
             roomID: roomID.eraseToAnyPublisher(),
-            reportOuput: reportOutput.eraseToAnyPublisher(),
+            reportOutput: reportOutput.eraseToAnyPublisher(),
             modifyOutput: modifyOutput.eraseToAnyPublisher(),
             deleteOutput: deleteOutput.eraseToAnyPublisher(),
             popViewControllerOutput: popViewControllerOutput.eraseToAnyPublisher()
@@ -190,7 +190,7 @@ extension PostDetailViewModel {
         let user: AnyPublisher<UserResponseDTO, NetworkError>
         let moreOutput: AnyPublisher<(String), Never>
         let roomID: AnyPublisher<PostRoomResponseDTO, NetworkError>
-        let reportOuput: AnyPublisher<(postID:Int, userID:String), Error>
+        let reportOutput: AnyPublisher<(postID:Int, userID:String), Error>
         let modifyOutput: AnyPublisher<PostResponseDTO, NetworkError>
         let deleteOutput: AnyPublisher<Void, NetworkError>
         let popViewControllerOutput: AnyPublisher<Void, NetworkError>
