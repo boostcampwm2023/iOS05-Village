@@ -233,7 +233,7 @@ private extension HomeViewController {
     }
     
     func searchButtonTapped() {
-        let nextVC = SearchViewController()
+        let nextVC = SearchResultViewController()
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: false)
     }
