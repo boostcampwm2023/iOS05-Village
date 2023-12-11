@@ -11,7 +11,6 @@ import {
 import { LoginService, SocialProperties } from './login.service';
 import { AppleLoginDto } from './dto/appleLogin.dto';
 import { AuthGuard } from '../utils/auth.guard';
-import { UserHash } from '../utils/auth.decorator';
 
 @Controller()
 export class LoginController {
