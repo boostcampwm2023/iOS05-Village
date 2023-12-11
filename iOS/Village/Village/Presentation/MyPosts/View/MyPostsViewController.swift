@@ -69,7 +69,7 @@ final class MyPostsViewController: UIViewController {
     }()
     
     private let paginationPublisher = PassthroughSubject<Void, Never>()
-    private let togglePublisher = PassthroughSubject<Bool, Never>()
+    private let refreshPublisher = PassthroughSubject<Bool, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(viewModel: ViewModel) {
@@ -91,7 +91,7 @@ final class MyPostsViewController: UIViewController {
     }
     
     @objc private func segmentedControlChanged() {
-        togglePublisher.send(requestSegmentedControl.selectedSegmentIndex == 1)
+        refreshPublisher.send(requestSegmentedControl.selectedSegmentIndex == 1)
     }
     
 }
@@ -101,7 +101,7 @@ private extension MyPostsViewController {
     func bindViewModel() {
         let output = viewModel.transform(input: MyPostsViewModel.Input(
             nextPageUpdateSubject: paginationPublisher.eraseToAnyPublisher(),
-            toggleSubject: togglePublisher.eraseToAnyPublisher()
+            refreshSubject: refreshPublisher.eraseToAnyPublisher()
         ))
         
         output.nextPageUpdateOutput
@@ -114,7 +114,7 @@ private extension MyPostsViewController {
             }
             .store(in: &cancellableBag)
         
-        output.toggleUpdateOutput
+        output.refreshOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] posts in
                 if posts.isEmpty {
@@ -208,7 +208,7 @@ extension MyPostsViewController: UITableViewDelegate {
         nextVC.refreshPreviousViewController
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.togglePublisher.send(self?.requestSegmentedControl.selectedSegmentIndex == 1)
+                self?.refreshPublisher.send(self?.requestSegmentedControl.selectedSegmentIndex == 1)
             }
             .store(in: &cancellableBag)
         nextVC.hidesBottomBarWhenPushed = true

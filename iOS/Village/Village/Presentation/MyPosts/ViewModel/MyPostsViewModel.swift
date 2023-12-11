@@ -15,7 +15,7 @@ final class MyPostsViewModel {
     private var requestFilter: String = "0"
     
     private let nextPageUpdateOutput = PassthroughSubject<[PostListResponseDTO], Never>()
-    private let toggleOutput = PassthroughSubject<[PostListResponseDTO], Never>()
+    private let refreshOutput = PassthroughSubject<[PostListResponseDTO], Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -36,7 +36,7 @@ final class MyPostsViewModel {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
                 posts = data
-                toggleOutput.send(data)
+                refreshOutput.send(data)
             } catch {
                 dump(error)
             }
@@ -74,7 +74,7 @@ final class MyPostsViewModel {
             }
             .store(in: &cancellableBag)
         
-        input.toggleSubject
+        input.refreshSubject
             .sink { [weak self] isRequest in
                 self?.requestFilter = isRequest ? "1" : "0"
                 self?.updateInitPosts()
@@ -83,21 +83,21 @@ final class MyPostsViewModel {
         
         return Output(
             nextPageUpdateOutput: nextPageUpdateOutput.eraseToAnyPublisher(),
-            toggleUpdateOutput: toggleOutput.eraseToAnyPublisher()
+            refreshOutput: refreshOutput.eraseToAnyPublisher()
         )
     }
     
     struct Input {
         
         let nextPageUpdateSubject: AnyPublisher<Void, Never>
-        let toggleSubject: AnyPublisher<Bool, Never>
+        let refreshSubject: AnyPublisher<Bool, Never>
         
     }
     
     struct Output {
         
         let nextPageUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
-        let toggleUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
+        let refreshOutput: AnyPublisher<[PostListResponseDTO], Never>
         
     }
     
