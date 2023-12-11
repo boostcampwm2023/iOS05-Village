@@ -10,11 +10,14 @@ import Combine
 
 final class HomeViewModel {
     
-    typealias PostList = [PostListResponseDTO]
+    typealias Post = PostResponseDTO
     
     private var cancellableBag = Set<AnyCancellable>()
     
-    private let postList = PassthroughSubject<PostList, Error>()
+    private let postList = PassthroughSubject<[Post], Error>()
+    private let createdPost = PassthroughSubject<Void, Never>()
+    private let deletedPost = PassthroughSubject<Int, Never>()
+    private let editedPost = PassthroughSubject<Post, Never>()
     
     private var lastRentPostID: String?
     private var lastRequestPostID: String?
@@ -24,7 +27,10 @@ final class HomeViewModel {
         handlePagination(input: input)
         
         return Output(
-            postList: postList.eraseToAnyPublisher()
+            postList: postList.eraseToAnyPublisher(),
+            createdPost: createdPost.eraseToAnyPublisher(),
+            deletedPost: deletedPost.eraseToAnyPublisher(),
+            editedPost: editedPost.eraseToAnyPublisher()
         )
     }
     
@@ -127,7 +133,10 @@ extension HomeViewModel {
     }
     
     struct Output {
-        let postList: AnyPublisher<[PostListResponseDTO], Error>
+        let postList: AnyPublisher<[Post], Error>
+        let createdPost: AnyPublisher<Void, Never>
+        let deletedPost: AnyPublisher<Int, Never>
+        let editedPost: AnyPublisher<Post, Never>
     }
     
 }
