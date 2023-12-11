@@ -126,6 +126,7 @@ final class PostDetailViewController: UIViewController {
                 .sink { [weak self] in
                     guard let id = self?.postID.output else { return }
                     self?.viewModel.getPost(id: id)
+                    self?.refreshPreviousViewController.send()
                 }
                 .store(in: &editVC.cancellableBag)
             let editNC = UINavigationController(rootViewController: editVC)
