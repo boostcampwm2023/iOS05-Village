@@ -48,6 +48,7 @@ final class PostCreateViewModel {
         images.count
     }
     private var willDeleteImageURL = [String]()
+    private var isLoading: Bool = false
     
     private let warningPublisher = PassthroughSubject<PostWarning, Never>()
     private let endOutput = PassthroughSubject<Void, NetworkError>()
@@ -105,6 +106,7 @@ final class PostCreateViewModel {
             } catch {
                 dump("Unknown Error")
             }
+            isLoading = false
         }
     }
     
@@ -186,6 +188,8 @@ final class PostCreateViewModel {
             .sink { [weak self] post in
                 guard let self = self else { return }
                 
+                guard isLoading == false else { return }
+                isLoading = true
                 let warning = PostWarning(
                     imageWarning: self.isRequest ? nil : imagesCount == 0,
                     titleWarning: post.title.isEmpty,
@@ -198,6 +202,7 @@ final class PostCreateViewModel {
                     modifyPost(post: post, images: images.filter { $0.url == nil }.map(\.data))
                 } else {
                     warningPublisher.send(warning)
+                    isLoading = false
                 }
             }
             .store(in: &cancellableBag)
