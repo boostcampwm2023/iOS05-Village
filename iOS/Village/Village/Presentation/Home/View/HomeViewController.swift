@@ -235,7 +235,6 @@ private extension HomeViewController {
     
     func togglePostType() {
         postType = (postType == .rent) ? .request : .rent
-        
     }
     
     func searchButtonTapped() {
