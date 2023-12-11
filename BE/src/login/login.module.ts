@@ -5,8 +5,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtConfig } from '../config/jwt.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
-import { AuthGuard } from 'src/utils/auth.guard';
-import { FcmHandler } from '../utils/fcmHandler';
+import { AuthGuard } from 'src/common/guard/auth.guard';
+import { FcmHandler } from '../common/fcmHandler';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 
 @Module({

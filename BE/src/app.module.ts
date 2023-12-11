@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { WinstonModule } from 'nest-winston';
 import * as process from 'process';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { winstonTransportsOption } from './config/winston.config';
 import { MysqlConfigProvider } from './config/mysql.config';
 import { PostModule } from './post/post.module';
@@ -44,7 +43,6 @@ import { ReportModule } from './report/report.module';
   ],
   controllers: [AppController],
   providers: [
-    AppService,
     Logger,
     {
       provide: APP_PIPE,

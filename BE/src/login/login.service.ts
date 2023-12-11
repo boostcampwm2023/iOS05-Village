@@ -4,11 +4,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { hashMaker } from '../utils/hashMaker';
+import { hashMaker } from '../common/hashMaker';
 import { AppleLoginDto } from './dto/appleLogin.dto';
 import * as jwt from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
-import { FcmHandler } from '../utils/fcmHandler';
+import { FcmHandler } from '../common/fcmHandler';
 import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 
 export interface SocialProperties {

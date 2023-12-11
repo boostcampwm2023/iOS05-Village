@@ -5,7 +5,7 @@ import { ChatRoomEntity } from '../entities/chatRoom.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
 import { ChatDto } from './dto/chat.dto';
 import { UserEntity } from 'src/entities/user.entity';
-import { FcmHandler, PushMessage } from '../utils/fcmHandler';
+import { FcmHandler, PushMessage } from '../common/fcmHandler';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'jsonwebtoken';

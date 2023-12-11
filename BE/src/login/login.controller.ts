@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { LoginService, SocialProperties } from './login.service';
 import { AppleLoginDto } from './dto/appleLogin.dto';
-import { AuthGuard } from '../utils/auth.guard';
+import { AuthGuard } from '../common/guard/auth.guard';
 
 @Controller()
 export class LoginController {

@@ -7,8 +7,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersBlockService } from './users-block.service';
-import { AuthGuard } from 'src/utils/auth.guard';
-import { UserHash } from 'src/utils/auth.decorator';
+import { AuthGuard } from 'src/common/guard/auth.guard';
+import { UserHash } from 'src/common/decorator/auth.decorator';
 
 @Controller('users/block')
 @UseGuards(AuthGuard)

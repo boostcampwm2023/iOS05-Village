@@ -4,16 +4,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UpdateUsersDto } from './usersUpdate.dto';
-import { S3Handler } from '../utils/S3Handler';
-import { hashMaker } from 'src/utils/hashMaker';
+import { S3Handler } from '../common/S3Handler';
+import { hashMaker } from 'src/common/hashMaker';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
-import { FcmHandler } from 'src/utils/fcmHandler';
+import { FcmHandler } from 'src/common/fcmHandler';
 import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
-import { GreenEyeHandler } from '../utils/greenEyeHandler';
+import { GreenEyeHandler } from '../common/greenEyeHandler';
 
 @Injectable()
 export class UsersService {
@@ -30,7 +30,7 @@ export class UsersService {
     private s3Handler: S3Handler,
     private configService: ConfigService,
     private fcmHandler: FcmHandler,
-    private ocrHandler: GreenEyeHandler,
+    private greenEyeHandler: GreenEyeHandler,
   ) {}
 
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
@@ -119,7 +119,7 @@ export class UsersService {
 
   async changeImages(userId: string, file: Express.Multer.File) {
     const fileLocation = await this.s3Handler.uploadFile(file);
-    const isHarmful = await this.ocrHandler.isHarmful(fileLocation);
+    const isHarmful = await this.greenEyeHandler.isHarmful(fileLocation);
     // if (isHarmful) {
     //   throw new HttpException('이미지가 유해합니다.', 400);
     // }
