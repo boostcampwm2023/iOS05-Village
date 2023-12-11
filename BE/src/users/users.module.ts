@@ -11,6 +11,7 @@ import { BlockPostEntity } from '../entities/blockPost.entity';
 import { AuthGuard } from 'src/utils/auth.guard';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { FcmHandler } from 'src/utils/fcmHandler';
+import { GreenEyeHandler } from '../utils/greenEyeHandler';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { FcmHandler } from 'src/utils/fcmHandler';
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService, S3Handler, AuthGuard, FcmHandler],
+  providers: [UsersService, S3Handler, AuthGuard, FcmHandler, GreenEyeHandler],
 })
 export class UsersModule {}
