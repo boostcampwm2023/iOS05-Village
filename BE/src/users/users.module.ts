@@ -16,9 +16,7 @@ import { GreenEyeHandler } from '../common/greenEyeHandler';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      PostEntity,
       UserEntity,
-      PostImageEntity,
       BlockUserEntity,
       BlockPostEntity,
       RegistrationTokenEntity,

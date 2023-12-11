@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { CreateReportDto } from './createReport.dto';
+import { CreateReportDto } from './dto/createReport.dto';
 import { ReportService } from './report.service';
 import { AuthGuard } from '../common/guard/auth.guard';
 import { UserHash } from '../common/decorator/auth.decorator';

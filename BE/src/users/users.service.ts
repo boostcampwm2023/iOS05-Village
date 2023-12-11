@@ -1,9 +1,9 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './createUser.dto';
+import { CreateUserDto } from './dto/createUser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { UpdateUsersDto } from './usersUpdate.dto';
+import { UpdateUsersDto } from './dto/usersUpdate.dto';
 import { S3Handler } from '../common/S3Handler';
 import { hashMaker } from 'src/common/hashMaker';
 import { BlockUserEntity } from '../entities/blockUser.entity';
