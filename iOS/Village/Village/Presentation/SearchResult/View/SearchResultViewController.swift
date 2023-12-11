@@ -83,8 +83,10 @@ final class SearchResultViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.requestSegmentedControl.isHidden = true
-        self.listTableView.isHidden = true
+        if postTitle == "" {
+            self.requestSegmentedControl.isHidden = true
+            self.listTableView.isHidden = true
+        }
     }
 
 }
