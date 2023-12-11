@@ -16,7 +16,12 @@ final class HomeViewController: UIViewController {
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
     
-    private var postType: PostType = .rent
+    private var postType: PostType = .rent {
+        didSet {
+            postSegmentedControl.selectedSegmentIndex = (postType == .rent) ? 0 : 1
+            setContainerViewPosition()
+        }
+    }
     private let refresh = CurrentValueSubject<PostType, Never>(.rent)
     private let pagination = PassthroughSubject<PostType, Never>()
     private var paginationFlag: Bool = true
@@ -174,7 +179,8 @@ final class HomeViewController: UIViewController {
     private func handleCreatedPost(output: ViewModel.Output) {
         output.createdPost
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] postType in
+                self?.postType = postType
                 self?.refreshPost()
             }
             .store(in: &cancellableBag)
@@ -214,9 +220,7 @@ private extension HomeViewController {
         }
     }
     
-    func togglePostType() {
-        postType = (postType == .rent) ? .request : .rent
-        
+    func setContainerViewPosition() {
         switch postType {
         case .rent:
             containerViewLeadingConstraint.constant = 0
@@ -227,6 +231,10 @@ private extension HomeViewController {
         if requestDataSource.snapshot().numberOfItems == 0 {
             refresh.send(postType)
         }
+    }
+    
+    func togglePostType() {
+        postType = (postType == .rent) ? .request : .rent
         
     }
     
