@@ -25,14 +25,14 @@ final class PostDetailViewController: UIViewController {
     private let viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
     
-    private let scrollView: UIScrollView = {
+    private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         
         return scrollView
     }()
     
-    private var scrollViewContainerView: UIStackView = {
+    private lazy var scrollViewContainerView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
@@ -41,14 +41,14 @@ final class PostDetailViewController: UIViewController {
         return stackView
     }()
     
-    private var imagePageView: ImagePageView = {
+    private lazy var imagePageView: ImagePageView = {
         let imagePageView = ImagePageView()
         imagePageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imagePageView
     }()
     
-    private var postContentView: UIStackView = {
+    private lazy var postContentView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
@@ -59,21 +59,21 @@ final class PostDetailViewController: UIViewController {
         return stackView
     }()
     
-    private var userInfoView: UserInfoView = {
+    private lazy var userInfoView: UserInfoView = {
         let view = UserInfoView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private var postInfoView: PostInfoView = {
+    private lazy var postInfoView: PostInfoView = {
         let view = PostInfoView()
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
     
-    private var footerView: UIView = {
+    private lazy var footerView: UIView = {
         let view = UIView()
         let divider = UIView.divider(.horizontal)
         view.addSubview(divider)
@@ -86,7 +86,7 @@ final class PostDetailViewController: UIViewController {
         return view
     }()
     
-    private var priceLabel: PriceLabel = {
+    private lazy var priceLabel: PriceLabel = {
         let priceLabel = PriceLabel()
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
@@ -94,7 +94,7 @@ final class PostDetailViewController: UIViewController {
         return priceLabel
     }()
     
-    private var chatButton: UIButton = {
+    private lazy var chatButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .primary500
