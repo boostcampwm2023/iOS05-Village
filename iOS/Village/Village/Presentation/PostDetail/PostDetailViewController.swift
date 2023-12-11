@@ -150,9 +150,21 @@ final class PostDetailViewController: UIViewController {
     }
     
     private var banAction: UIAlertAction {
-        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .default) { [weak self] _ in
+        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .destructive) { [weak self] _ in
             guard let userIDSubject = self?.userID else { return }
             self?.blockUser.send(userIDSubject.output)
+        }
+        return action
+    }
+    
+    private var reportAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "신고하기", style: .destructive) { [weak self] _ in
+            guard let userID = self?.userID?.output,
+                  let postID = self?.postID.output else { return }
+            let nextVC = ReportViewController(viewModel: ReportViewModel(
+                userID: userID, postID: postID
+            ))
+            self?.navigationController?.pushViewController(nextVC, animated: true)
         }
         return action
     }
@@ -192,6 +204,7 @@ final class PostDetailViewController: UIViewController {
         if postUserID != JWTManager.shared.currentUserID {
             alert.addAction(hideAction)
             alert.addAction(banAction)
+            alert.addAction(reportAction)
             alert.addAction(cancelAction)
         } else {
             alert.addAction(modifyAction)

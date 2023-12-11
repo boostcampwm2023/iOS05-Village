@@ -18,6 +18,7 @@ final class MyPostsViewController: UIViewController {
     enum Section {
         case posts
     }
+    private var paginationFlag: Bool = true
     
     private let viewModel: ViewModel
     
@@ -105,6 +106,9 @@ private extension MyPostsViewController {
         output.nextPageUpdateOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] posts in
+                if posts.isEmpty {
+                    self?.paginationFlag = false
+                }
                 self?.addNextPage(posts: posts)
             }
             .store(in: &cancellableBag)
@@ -112,6 +116,9 @@ private extension MyPostsViewController {
         output.toggleUpdateOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] posts in
+                if posts.isEmpty {
+                    self?.paginationFlag = false
+                }
                 self?.toggleData(posts: posts)
             }
             .store(in: &cancellableBag)
@@ -188,7 +195,8 @@ private extension MyPostsViewController {
 extension MyPostsViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > self.tableView.contentSize.height - 1000 {
+        if scrollView.contentOffset.y > self.tableView.contentSize.height - 1000
+        && paginationFlag {
             paginationPublisher.send()
         }
     }

@@ -14,6 +14,7 @@ final class RentPostSummaryView: UIView {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 16
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -51,6 +52,36 @@ final class RentPostSummaryView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setUI()
+    }
+    
+    func configureData(post: PostResponseDTO) {
+        postTitleLabel.text = post.title
+        setPrice(price: post.price)
+        configureImageView(imageURL: post.imageURL.first)
+    }
+    
+    private func configureImageView(imageURL: String?) {
+        guard let imageURL = imageURL else {
+            postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?
+                .withTintColor(.primary500, renderingMode: .alwaysOriginal)
+            postImageView.backgroundColor = .primary100
+            return
+        }
+        
+        Task {
+            do {
+                let data = try await APIProvider.shared.request(from: imageURL)
+                guard let image = UIImage(data: data) else {
+                    postImageView.image = UIImage(systemName: ImageSystemName.photo.rawValue)?
+                        .withTintColor(.primary500, renderingMode: .alwaysOriginal)
+                    postImageView.backgroundColor = .primary100
+                    return
+                }
+                postImageView.image = image
+            } catch {
+                dump(error)
+            }
+        }
     }
     
     private func setUI() {

@@ -240,4 +240,14 @@ struct APIEndPoints {
         )
     }
     
+    static func reportUser(reportInfo: ReportDTO) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "report",
+            method: .POST,
+            bodyParameters: reportInfo,
+            headers: ["Content-Type": "application/json"]
+        )
+    }
+    
 }

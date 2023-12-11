@@ -18,18 +18,12 @@ final class SearchResultViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     
     private var viewModel = ViewModel()
-    private var titlePublisher: CurrentValueSubject<String, Never>
+    private var titlePublisher = CurrentValueSubject<String, Never>("")
     private let togglePublisher = PassthroughSubject<Void, Never>()
     private let scrollPublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
-    private var postTitle: String
-    
-    init(title: String) {
-        self.postTitle = title
-        self.titlePublisher = CurrentValueSubject<String, Never>(title)
-        super.init(nibName: nil, bundle: nil)
-    }
+    private var postTitle: String = ""
     
     private lazy var requestSegmentedControl: UISegmentedControl = {
         let control = UISegmentedControl(items: ["대여", "요청"])
@@ -76,22 +70,21 @@ final class SearchResultViewController: UIViewController {
         return tableView
     }()
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        definesPresentationContext = true
 
         setUI()
         generateData()
         bindViewModel()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        self.navigationController?.popToRootViewController(animated: true)
+        self.requestSegmentedControl.isHidden = true
+        self.listTableView.isHidden = true
     }
 
 }
@@ -113,6 +106,7 @@ extension SearchResultViewController {
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.hidesNavigationBarDuringPresentation = false
+        searchController.automaticallyShowsCancelButton = false
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchController.searchBar)
         navigationItem.backButtonDisplayMode = .minimal
@@ -160,7 +154,6 @@ extension SearchResultViewController {
     private func generateData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
         snapshot.appendSections([.list])
-//        snapshot.appendItems(list)
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
@@ -185,6 +178,14 @@ extension SearchResultViewController: UITableViewDelegate {
         }
     }
     
+    func tableView(_ collectionView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
+        
+        let postDetailVC = PostDetailViewController(postID: post.postID)
+        postDetailVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(postDetailVC, animated: true)
+    }
+    
 }
 
 extension SearchResultViewController: UISearchResultsUpdating, UISearchBarDelegate {
@@ -196,6 +197,8 @@ extension SearchResultViewController: UISearchResultsUpdating, UISearchBarDelega
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         generateData()
         titlePublisher.send(self.postTitle)
+        self.requestSegmentedControl.isHidden = false
+        self.listTableView.isHidden = false
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
