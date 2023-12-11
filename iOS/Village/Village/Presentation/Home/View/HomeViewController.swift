@@ -21,6 +21,7 @@ final class HomeViewController: UIViewController {
     private var postType: PostType = .rent
     private let refresh = PassthroughSubject<PostType, Never>()
     private let pagination = PassthroughSubject<PostType, Never>()
+    private var paginationFlag: Bool = true
     
     private let viewModel = ViewModel()
     
@@ -33,24 +34,22 @@ final class HomeViewController: UIViewController {
         return control
     }()
     
-    private lazy var scrollView: UIScrollView = {
-        let view = UIScrollView()
+    private lazy var containerView: UIView = {
+        let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.bounces = false
-        view.isPagingEnabled = true
-        view.showsHorizontalScrollIndicator = false
-        view.showsVerticalScrollIndicator = false
-        view.delegate = self
         
         return view
     }()
     
-    private lazy var containerView: UIStackView = {
-        let view = UIStackView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.distribution = .fillEqually
+    private lazy var containerViewLeadingConstraint: NSLayoutConstraint = {
+        containerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0)
+    }()
+    
+    private lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
         
-        return view
+        return control
     }()
     
     private lazy var rentDataSource = PostDataSource(
@@ -81,6 +80,7 @@ final class HomeViewController: UIViewController {
         tableView.rowHeight = 100
         tableView.register(RentPostTableViewCell.self, forCellReuseIdentifier: RentPostTableViewCell.identifier)
         tableView.separatorStyle = .none
+        tableView.refreshControl = refreshControl
         tableView.delegate = self
         
         return tableView
@@ -92,16 +92,10 @@ final class HomeViewController: UIViewController {
         tableView.rowHeight = 100
         tableView.register(RequestPostTableViewCell.self, forCellReuseIdentifier: RequestPostTableViewCell.identifier)
         tableView.separatorStyle = .none
+        tableView.refreshControl = refreshControl
         tableView.delegate = self
         
         return tableView
-    }()
-    
-    private lazy var refreshControl: UIRefreshControl = {
-        let control = UIRefreshControl()
-        control.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
-        
-        return control
     }()
     
     private let floatingButton: FloatingButton = {
@@ -147,10 +141,9 @@ final class HomeViewController: UIViewController {
         bindFloatingButton()
         
         view.addSubview(postSegmentedControl)
-        view.addSubview(scrollView)
-        scrollView.addSubview(containerView)
-        containerView.addArrangedSubview(rentPostTableView)
-        containerView.addArrangedSubview(requestPostTableView)
+        view.addSubview(containerView)
+        containerView.addSubview(rentPostTableView)
+        containerView.addSubview(requestPostTableView)
         view.addSubview(floatingButton)
         view.addSubview(menuView)
         setLayoutConstraint()
@@ -189,6 +182,11 @@ final class HomeViewController: UIViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] postList in
+                if postList.isEmpty {
+                    self?.paginationFlag = false
+                } else {
+                    self?.paginationFlag = true
+                }
                 self?.appendPost(items: postList)
             }
             .store(in: &cancellableBag)
@@ -229,25 +227,32 @@ final class HomeViewController: UIViewController {
 private extension HomeViewController {
     
     @objc func refreshPost() {
-        if postType == .rent {
-            clearRentDataSource()
-        } else {
-            clearRequestDataSource()
-        }
-        refresh.send(postType)
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.scrollView.refreshControl?.endRefreshing()
+            guard let self = self else { return }
+            
+            if postType == .rent {
+                clearRentDataSource()
+                rentPostTableView.refreshControl?.endRefreshing()
+            } else {
+                clearRequestDataSource()
+                requestPostTableView.refreshControl?.endRefreshing()
+            }
+            refresh.send(postType)
         }
     }
     
     @objc func togglePostType() {
         postType = (postType == .rent) ? .request : .rent
+        
         switch postType {
         case .rent:
-            scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+            containerViewLeadingConstraint.constant = 0
         case .request:
-            scrollView.setContentOffset(CGPoint(x: scrollView.frame.width, y: 0), animated: true)
+            containerViewLeadingConstraint.constant = -view.frame.width
+        }
+        
+        if requestDataSource.snapshot().numberOfItems == 0 {
+            refresh.send(postType)
         }
         
     }
@@ -281,19 +286,24 @@ private extension HomeViewController {
         ])
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: postSegmentedControl.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            containerViewLeadingConstraint,
+            containerView.topAnchor.constraint(equalTo: postSegmentedControl.bottomAnchor),
+            containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            containerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 2)
         ])
         
         NSLayoutConstraint.activate([
-            containerView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor),
-            containerView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, multiplier: 2),
-            containerView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+            rentPostTableView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            rentPostTableView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            rentPostTableView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            rentPostTableView.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.5)
+        ])
+        
+        NSLayoutConstraint.activate([
+            requestPostTableView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            requestPostTableView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            requestPostTableView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            requestPostTableView.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.5)
         ])
     }
 
@@ -309,14 +319,14 @@ extension HomeViewController: UITableViewDelegate {
         var rentSnapshot = rentDataSource.snapshot()
         rentSnapshot.deleteAllItems()
         rentSnapshot.appendSections([.main])
-        rentDataSource.apply(rentSnapshot)
+        rentDataSource.apply(rentSnapshot, animatingDifferences: false)
     }
     
     private func clearRequestDataSource() {
         var requestSnapshot = requestDataSource.snapshot()
         requestSnapshot.deleteAllItems()
         requestSnapshot.appendSections([.main])
-        requestDataSource.apply(requestSnapshot)
+        requestDataSource.apply(requestSnapshot, animatingDifferences: false)
     }
     
     private func generateDataSource() {
@@ -362,11 +372,11 @@ extension HomeViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         switch postType {
         case .rent:
-            if scrollView.contentOffset.y > rentPostTableView.contentSize.height - 1300 {
+            if paginationFlag && scrollView.contentOffset.y > rentPostTableView.contentSize.height - 1300 {
                 pagination.send(postType)
             }
         case .request:
-            if scrollView.contentOffset.y > requestPostTableView.contentSize.height - 1300 {
+            if paginationFlag && scrollView.contentOffset.y > requestPostTableView.contentSize.height - 1300 {
                 pagination.send(postType)
             }
         }
@@ -374,18 +384,6 @@ extension HomeViewController: UITableViewDelegate {
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         floatingButton.isActive = false
-    }
-    
-}
-
-extension HomeViewController: UIScrollViewDelegate {
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        let index = Int(round(scrollView.contentOffset.x / view.frame.width))
-//        if index != postSegmentedControl.selectedSegmentIndex {
-//            postSegmentedControl.selectedSegmentIndex = index
-//            togglePostType()
-//        }
     }
     
 }
