@@ -11,9 +11,6 @@ import {
   HttpException,
   UseGuards,
   Body,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  Header,
   Headers,
 } from '@nestjs/common';
 import { UsersService } from './users.service';

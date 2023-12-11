@@ -12,7 +12,6 @@ import {
 import { UserEntity } from './user.entity';
 import { PostImageEntity } from './postImage.entity';
 import { BlockPostEntity } from './blockPost.entity';
-import { ChatRoomEntity } from './chatRoom.entity';
 import { ReportEntity } from './report.entity';
 
 @Entity('post')

@@ -6,8 +6,6 @@ import { Repository } from 'typeorm';
 import { UpdateUsersDto } from './usersUpdate.dto';
 import { S3Handler } from '../utils/S3Handler';
 import { hashMaker } from 'src/utils/hashMaker';
-import { PostEntity } from '../entities/post.entity';
-import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
@@ -16,12 +14,10 @@ import * as jwt from 'jsonwebtoken';
 import { FcmHandler } from 'src/utils/fcmHandler';
 import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 import { GreenEyeHandler } from '../utils/greenEyeHandler';
-import { log } from 'winston';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     @InjectRepository(BlockUserEntity)
@@ -30,6 +26,7 @@ export class UsersService {
     private blockPostRepository: Repository<BlockPostEntity>,
     @InjectRepository(RegistrationTokenEntity)
     private registrationTokenRepository: Repository<RegistrationTokenEntity>,
+    @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
     private s3Handler: S3Handler,
     private configService: ConfigService,
     private fcmHandler: FcmHandler,
