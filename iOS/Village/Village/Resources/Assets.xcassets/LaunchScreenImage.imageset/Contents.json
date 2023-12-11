@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "launchScreenImage.jpeg",
+      "filename" : "KakaoTalk_Photo_2023-11-27-10-19-56-1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "launchScreenImage 1.jpeg",
+      "filename" : "KakaoTalk_Photo_2023-11-27-10-19-56-1@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "launchScreenImage 2.jpeg",
+      "filename" : "KakaoTalk_Photo_2023-11-27-10-19-56-1@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
