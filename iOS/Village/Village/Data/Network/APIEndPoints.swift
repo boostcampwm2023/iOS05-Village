@@ -44,6 +44,14 @@ struct APIEndPoints {
         )
     }
     
+    static func getAllRead() -> EndPoint<GetAllReadResponseDTO> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat/unread",
+            method: .GET
+        )
+    }
+    
     static func modifyPost(with requestDTO: PostModifyRequestDTO) -> EndPoint<Void> {
         
         var path = "posts"
