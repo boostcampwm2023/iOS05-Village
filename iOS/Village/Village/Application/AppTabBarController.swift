@@ -43,8 +43,6 @@ final class AppTabBarController: UITabBarController {
         }
     }
     
-    
-    
     // TODO: shadow 
     private func setup() {
         view.backgroundColor = .systemBackground
