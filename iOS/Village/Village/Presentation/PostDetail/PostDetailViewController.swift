@@ -179,9 +179,9 @@ final class PostDetailViewController: UIViewController {
         self.viewModel = ViewModel(postID: postID)
         super.init(nibName: nil, bundle: nil)
         
+        bindingViewModel()
         configureUI()
         configureNavigationItem()
-        bindingViewModel()
     }
     
     required init?(coder: NSCoder) {
@@ -192,14 +192,6 @@ final class PostDetailViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        guard let postDTO = viewModel.postDTO else { return }
-        setPostContent(post: postDTO)
-        viewModel.postDTO = postDTO
-
     }
     
     @objc
@@ -295,10 +287,6 @@ private extension PostDetailViewController {
         )
         let output = viewModel.transformPost(input: input)
         
-        bindOutput(output)
-    }
-    
-    private func bindOutput(_ output: ViewModel.Output) {
         handlePost(output: output)
         handleUser(output: output)
         handleRoomID(output: output)

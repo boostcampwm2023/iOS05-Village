@@ -12,20 +12,17 @@ final class PostDetailViewModel {
     
     private let postID: Int
     private var userID: String = ""
-    private var isRequest: Bool = true
     
-    private var post = PassthroughSubject<PostResponseDTO, NetworkError>()
-    private var user = PassthroughSubject<UserResponseDTO, NetworkError>()
-    private var roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
-    private var moreOutput = PassthroughSubject<(String), Never>()
-    private var modifyOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
-    private var reportOutput = PassthroughSubject<(postID: Int, userID: String), Error>()
+    private let post = PassthroughSubject<PostResponseDTO, NetworkError>()
+    private let user = PassthroughSubject<UserResponseDTO, NetworkError>()
+    private let roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
+    private let moreOutput = PassthroughSubject<String, Never>()
+    private let modifyOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
+    private let reportOutput = PassthroughSubject<(postID: Int, userID: String), Never>()
     private let deleteOutput = PassthroughSubject<Void, NetworkError>()
     private let popViewControllerOutput = PassthroughSubject<Void, NetworkError>()
     
-    private var responseData: PostRoomResponseDTO?
     private var cancellableBag = Set<AnyCancellable>()
-    var postDTO: PostResponseDTO?
     
     init(postID: Int) {
         self.postID = postID
@@ -47,7 +44,7 @@ final class PostDetailViewModel {
         
         input.modifyInput.sink { [weak self] _ in
             guard let self = self else { return }
-            self.getPost(id: self.postID)
+            self.updatePost(id: self.postID)
         }
         .store(in: &cancellableBag)
         
@@ -92,11 +89,23 @@ final class PostDetailViewModel {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
                 post.send(data)
-                self.postDTO = data
                 self.userID = data.userID
                 self.getUser(id: self.userID)
             } catch let error as NetworkError {
                 post.send(completion: .failure(error))
+            }
+        }
+    }
+    
+    func updatePost(id: Int) {
+        let endpoint = APIEndPoints.getPost(id: id)
+        
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                modifyOutput.send(data)
+            } catch let error as NetworkError {
+                modifyOutput.send(completion: .failure(error))
             }
         }
     }
@@ -189,9 +198,9 @@ extension PostDetailViewModel {
     struct Output {
         let post: AnyPublisher<PostResponseDTO, NetworkError>
         let user: AnyPublisher<UserResponseDTO, NetworkError>
-        let moreOutput: AnyPublisher<(String), Never>
+        let moreOutput: AnyPublisher<String, Never>
         let roomID: AnyPublisher<PostRoomResponseDTO, NetworkError>
-        let reportOutput: AnyPublisher<(postID: Int, userID: String), Error>
+        let reportOutput: AnyPublisher<(postID: Int, userID: String), Never>
         let modifyOutput: AnyPublisher<PostResponseDTO, NetworkError>
         let deleteOutput: AnyPublisher<Void, NetworkError>
         let popViewControllerOutput: AnyPublisher<Void, NetworkError>
