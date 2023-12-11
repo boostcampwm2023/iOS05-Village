@@ -203,6 +203,9 @@ export class ChatService {
         'chat_info.is_read as is_read',
         'chat_info.sender as sender',
       ])
+      .where('chat_room.writer = :userId', { userId: userId })
+      .orWhere('chat_room.user = :userId', { userId: userId })
+      .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
     for (const room of rooms) {
