@@ -19,7 +19,7 @@ final class PostDetailViewModel {
     private var roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
     private var moreOutput = PassthroughSubject<(String), Never>()
     private var modifyOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
-    private var reportOutput = PassthroughSubject<(postID:Int, userID:String), Error>()
+    private var reportOutput = PassthroughSubject<(postID: Int, userID: String), Error>()
     private let deleteOutput = PassthroughSubject<Void, NetworkError>()
     private let popViewControllerOutput = PassthroughSubject<Void, NetworkError>()
     
@@ -84,7 +84,8 @@ final class PostDetailViewModel {
         )
     }
     
-    private func getPost(id: Int) {
+    // TODO: Private 해주세요
+    func getPost(id: Int) {
         let endpoint = APIEndPoints.getPost(id: id)
         
         Task {
@@ -190,7 +191,7 @@ extension PostDetailViewModel {
         let user: AnyPublisher<UserResponseDTO, NetworkError>
         let moreOutput: AnyPublisher<(String), Never>
         let roomID: AnyPublisher<PostRoomResponseDTO, NetworkError>
-        let reportOutput: AnyPublisher<(postID:Int, userID:String), Error>
+        let reportOutput: AnyPublisher<(postID: Int, userID: String), Error>
         let modifyOutput: AnyPublisher<PostResponseDTO, NetworkError>
         let deleteOutput: AnyPublisher<Void, NetworkError>
         let popViewControllerOutput: AnyPublisher<Void, NetworkError>

@@ -128,7 +128,8 @@ final class PostDetailViewController: UIViewController {
         editVC.editButtonTappedSubject
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-//                self?.viewModel.getPost(id: postID)
+                // TODO: getpost 인자 빼기
+                self?.viewModel.getPost(id: post.postID)
                 self?.refreshPreviousViewController.send()
             }
             .store(in: &editVC.cancellableBag)
@@ -429,8 +430,6 @@ private extension PostDetailViewController {
             })
             .store(in: &cancellableBag)
     }
-    
-    
     
     func setLayoutConstraints(isRequest: Bool) {
         NSLayoutConstraint.activate([
