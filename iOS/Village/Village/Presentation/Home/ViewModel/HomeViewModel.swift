@@ -34,6 +34,10 @@ final class HomeViewModel {
         )
     }
     
+    init() {
+        addObserver()
+    }
+    
     private func handleRefresh(input: Input) {
         input.refresh
             .sink { [weak self] type in
@@ -49,6 +53,52 @@ final class HomeViewModel {
                 self.pagination(type: type)
             }
             .store(in: &cancellableBag)
+    }
+    
+    private func addObserver() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePostEdited(notification:)),
+                                               name: .postEdited,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePostCreated),
+                                               name: .postCreated,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handlePostDeleted(notification:)),
+                                               name: .postDeleted,
+                                               object: nil)
+    }
+    
+}
+
+@objc
+private extension HomeViewModel {
+    
+    func handlePostEdited(notification: Notification) {
+        guard let postID = notification.userInfo?["postID"] as? Int else { return }
+        
+        let endpoint = APIEndPoints.getPost(id: postID)
+        
+        Task {
+            do {
+                guard let post = try await APIProvider.shared.request(with: endpoint) else { return }
+                editedPost.send(post)
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
+    func handlePostCreated() {
+        createdPost.send()
+    }
+    
+    func handlePostDeleted(notification: Notification) {
+        guard let postID = notification.userInfo?["postID"] as? Int else { return }
+        
+        deletedPost.send(postID)
     }
     
 }
@@ -103,7 +153,7 @@ private extension HomeViewModel {
         }
     }
     
-    func getList(type: PostType) async throws -> PostList {
+    func getList(type: PostType) async throws -> [Post] {
         let filter: String
         let lastPostID: String?
         
