@@ -76,8 +76,6 @@ final class SearchResultViewController: UIViewController {
         definesPresentationContext = true
 
         setUI()
-        generateData()
-        bindViewModel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -133,7 +131,7 @@ extension SearchResultViewController {
     
     private func bindViewModel() {
         let input = ViewModel.Input(
-            postTitle: self.titlePublisher.eraseToAnyPublisher(),
+            postTitle: Just(self.postTitle).eraseToAnyPublisher(),
             toggleSubject: self.togglePublisher.eraseToAnyPublisher(),
             scrollEvent: self.scrollPublisher.eraseToAnyPublisher()
         )
@@ -198,6 +196,7 @@ extension SearchResultViewController: UISearchResultsUpdating, UISearchBarDelega
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         generateData()
+        bindViewModel()
         titlePublisher.send(self.postTitle)
         self.requestSegmentedControl.isHidden = false
         self.listTableView.isHidden = false
