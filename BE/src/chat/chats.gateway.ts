@@ -101,7 +101,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.users.set(client.userId, client);
     const roomId = message['room_id'];
     client.roomId = roomId;
-    console.log(client.roomId);
+
     if (this.rooms.has(roomId)) {
       this.rooms.get(roomId).add(client);
 
