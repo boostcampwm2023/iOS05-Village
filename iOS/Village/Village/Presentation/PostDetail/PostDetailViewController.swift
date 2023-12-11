@@ -20,6 +20,8 @@ final class PostDetailViewController: UIViewController {
     private let hidePost = PassthroughSubject<Int, Never>()
     private let blockUser = PassthroughSubject<String, Never>()
     
+    let refreshPreviousViewController = PassthroughSubject<Void, Never>()
+    
     private let viewModel = ViewModel()
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -124,6 +126,7 @@ final class PostDetailViewController: UIViewController {
                 .sink { [weak self] in
                     guard let id = self?.postID.output else { return }
                     self?.viewModel.getPost(id: id)
+                    self?.refreshPreviousViewController.send()
                 }
                 .store(in: &editVC.cancellableBag)
             let editNC = UINavigationController(rootViewController: editVC)
@@ -342,6 +345,7 @@ private extension PostDetailViewController {
                     dump(error)
                 }
             }, receiveValue: { [weak self] in
+                self?.refreshPreviousViewController.send()
                 self?.navigationController?.popViewController(animated: true)
             })
             .store(in: &cancellableBag)
@@ -356,10 +360,11 @@ private extension PostDetailViewController {
                     dump(error)
                 }
             }, receiveValue: { [weak self] in
+                self?.refreshPreviousViewController.send()
                 self?.navigationController?.popViewController(animated: true)
             })
             .store(in: &cancellableBag)
-        
+    
     }
     
     private func bindUserOutput(_ output: ViewModel.UserOutput) {

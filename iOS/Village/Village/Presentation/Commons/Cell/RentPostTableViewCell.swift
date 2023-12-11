@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RentPostTableViewCell: UITableViewCell {
+final class RentPostTableViewCell: UITableViewCell {
 
     private let postSummaryView: RentPostSummaryView = {
         let view = RentPostSummaryView()
@@ -24,6 +24,12 @@ class RentPostTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        postSummaryView.postImageView.image = nil
+        postSummaryView.postTitleLabel.text = nil
+        postSummaryView.postPriceLabel.text = nil
     }
     
     func configureData(post: PostListResponseDTO) {

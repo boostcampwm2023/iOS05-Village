@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RequestPostTableViewCell: UITableViewCell {
+final class RequestPostTableViewCell: UITableViewCell {
 
     private let postSummaryView: RequestPostSummaryView = {
         let view = RequestPostSummaryView()
@@ -24,6 +24,12 @@ class RequestPostTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        postSummaryView.postPeriodLabel.text = nil
+        postSummaryView.postTitleLabel.text = nil
     }
     
     func configureData(post: PostListResponseDTO) {
