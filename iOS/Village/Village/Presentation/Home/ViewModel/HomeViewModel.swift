@@ -15,7 +15,7 @@ final class HomeViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     
     private let postList = PassthroughSubject<[Post], Error>()
-    private let createdPost = PassthroughSubject<Void, Never>()
+    private let createdPost = PassthroughSubject<PostType, Never>()
     private let deletedPost = PassthroughSubject<Int, Never>()
     private let editedPost = PassthroughSubject<Post, Never>()
     
@@ -62,7 +62,7 @@ final class HomeViewModel {
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handlePostCreated),
+                                               selector: #selector(handlePostCreated(notification:)),
                                                name: .postCreated,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
@@ -91,8 +91,10 @@ private extension HomeViewModel {
         }
     }
     
-    func handlePostCreated() {
-        createdPost.send()
+    func handlePostCreated(notification: Notification) {
+        guard let postType = notification.userInfo?["type"] as? PostType else { return }
+        
+        createdPost.send(postType)
     }
     
     func handlePostDeleted(notification: Notification) {
@@ -184,7 +186,7 @@ extension HomeViewModel {
     
     struct Output {
         let postList: AnyPublisher<[Post], Error>
-        let createdPost: AnyPublisher<Void, Never>
+        let createdPost: AnyPublisher<PostType, Never>
         let deletedPost: AnyPublisher<Int, Never>
         let editedPost: AnyPublisher<Post, Never>
     }
