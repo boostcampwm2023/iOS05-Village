@@ -161,14 +161,15 @@ final class PostDetailViewController: UIViewController {
     private var reportAction: UIAlertAction {
         lazy var action = UIAlertAction(title: "신고하기", style: .destructive) { [weak self] _ in
             self?.reportPublisher.send()
-//            guard let userID = self?.userID?.output,
-//                  let postID = self?.postID.output else { return }
-//            let nextVC = ReportViewController(viewModel: ReportViewModel(
-//                userID: userID, postID: postID
-//            ))
-//            self?.navigationController?.pushViewController(nextVC, animated: true)
         }
         return action
+    }
+    
+    private func report(postID: Int, userID: String) {
+        let nextVC = ReportViewController(viewModel: ReportViewModel(
+            userID: userID, postID: postID
+        ))
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     private let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
@@ -201,7 +202,7 @@ final class PostDetailViewController: UIViewController {
     }
     
     @objc
-    private func moreBarButtonTapped(userID: String) {
+    private func moreBarButtonTapped() {
         morePublisher.send()
     }
     
@@ -223,7 +224,6 @@ final class PostDetailViewController: UIViewController {
     
     @objc
     private func chatButtonTapped() {
-//        let roomID = viewModel.createChatRoom()
         let viewControllers = self.navigationController?.viewControllers ?? []
         if viewControllers.count > 2 {
             self.navigationController?.popViewController(animated: true)
@@ -237,23 +237,6 @@ final class PostDetailViewController: UIViewController {
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
-            
-//    private func pushChatRoomViewController(output: PostDetailViewModel.RoomIDOutput) {
-//        output.roomID.receive(on: DispatchQueue.main)
-//            .sink { completion in
-//                switch completion {
-//                case .finished:
-//                    break
-//                case .failure(let error):
-//                    dump(error)
-//                }
-//            } receiveValue: { [weak self] roomID in
-//                let nextVC = ChatRoomViewController(roomID: roomID.roomID)
-//                nextVC.hidesBottomBarWhenPushed = true
-//                self?.navigationController?.pushViewController(nextVC, animated: true)
-//            }
-//            .store(in: &cancellableBag)
-//    }
     
     private func setPostContent(post: PostResponseDTO) {
         if post.images.isEmpty {
@@ -361,6 +344,26 @@ private extension PostDetailViewController {
             }
             .store(in: &cancellableBag)
         
+        output.moreOutput.receive(on: DispatchQueue.main)
+            .sink { [weak self] userID in
+                self?.moreBarButtonAction(userID: userID)
+            }
+            .store(in: &cancellableBag)
+        
+        output.reportOuput.receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] value in
+                self?.report(postID: value.postID, userID: value.userID)
+            }
+            .store(in: &cancellableBag)
+
+        
         output.modifyOutput.receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -374,7 +377,6 @@ private extension PostDetailViewController {
             })
             .store(in: &cancellableBag)
 
-        
         output.deleteOutput.receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {

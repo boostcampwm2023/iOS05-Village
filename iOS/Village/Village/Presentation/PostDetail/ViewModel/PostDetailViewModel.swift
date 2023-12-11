@@ -12,13 +12,14 @@ final class PostDetailViewModel {
     
     private let postID: Int
     private var userID: String = ""
-    private var isRequest = CurrentValueSubject<Bool, Never>(true)
+    private var isRequest: Bool = true
     
     private var post = PassthroughSubject<PostResponseDTO, NetworkError>()
     private var user = PassthroughSubject<UserResponseDTO, NetworkError>()
     private var roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
+    private var moreOutput = PassthroughSubject<(String), Never>()
     private var modifyOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
-    private var reportOutput = PassthroughSubject<(Int, String), Error>()
+    private var reportOutput = PassthroughSubject<(postID:Int, userID:String), Error>()
     private let deleteOutput = PassthroughSubject<Void, NetworkError>()
     private let popViewControllerOutput = PassthroughSubject<Void, NetworkError>()
     
@@ -33,48 +34,48 @@ final class PostDetailViewModel {
     }
     
     func transformPost(input: Input) -> Output {
-        input.makeRoomID
-            .sink { [weak self] _ in
-                self?.createChatRoom()
-            }
-            .store(in: &cancellableBag)
+        input.makeRoomID.sink { [weak self] _ in
+            self?.createChatRoom()
+        }
+        .store(in: &cancellableBag)
         
-        input.modifyInput
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-                self.getPost(id: self.postID)
-            }
-            .store(in: &cancellableBag)
+        input.moreInput.sink { [weak self] _ in
+            guard let self = self else { return }
+            self.moreOutput.send(self.userID)
+        }
+        .store(in: &cancellableBag)
         
-        input.reportInput
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-                self.reportOutput.send((self.postID, self.userID))
-            }
-            .store(in: &cancellableBag)
+        input.modifyInput.sink { [weak self] _ in
+            guard let self = self else { return }
+            self.getPost(id: self.postID)
+        }
+        .store(in: &cancellableBag)
         
-        input.deleteInput
-            .sink { [weak self] _ in
-                self?.deletePost()
-            }
-            .store(in: &cancellableBag)
+        input.reportInput.sink { [weak self] _ in
+            guard let self = self else { return }
+            self.reportOutput.send((self.postID, self.userID))
+        }
+        .store(in: &cancellableBag)
         
-        input.hideInput
-            .sink { [weak self] _ in
-                self?.hidePost()
-            }
-            .store(in: &cancellableBag)
+        input.deleteInput.sink { [weak self] _ in
+            self?.deletePost()
+        }
+        .store(in: &cancellableBag)
         
-        input.blockUserInput
-            .sink { [weak self] _ in
-                self?.blockUser()
-            }
-            .store(in: &cancellableBag)
+        input.hideInput.sink { [weak self] _ in
+            self?.hidePost()
+        }
+        .store(in: &cancellableBag)
+        
+        input.blockUserInput.sink { [weak self] _ in
+            self?.blockUser()
+        }
+        .store(in: &cancellableBag)
         
         return Output(
             post: post.eraseToAnyPublisher(),
             user: user.eraseToAnyPublisher(),
-            isRequest: isRequest.eraseToAnyPublisher(),
+            moreOutput: moreOutput.eraseToAnyPublisher(),
             roomID: roomID.eraseToAnyPublisher(),
             reportOuput: reportOutput.eraseToAnyPublisher(),
             modifyOutput: modifyOutput.eraseToAnyPublisher(),
@@ -187,9 +188,9 @@ extension PostDetailViewModel {
     struct Output {
         let post: AnyPublisher<PostResponseDTO, NetworkError>
         let user: AnyPublisher<UserResponseDTO, NetworkError>
-        let isRequest: AnyPublisher<Bool, Never>
+        let moreOutput: AnyPublisher<(String), Never>
         let roomID: AnyPublisher<PostRoomResponseDTO, NetworkError>
-        let reportOuput: AnyPublisher<(Int, String), Error>
+        let reportOuput: AnyPublisher<(postID:Int, userID:String), Error>
         let modifyOutput: AnyPublisher<PostResponseDTO, NetworkError>
         let deleteOutput: AnyPublisher<Void, NetworkError>
         let popViewControllerOutput: AnyPublisher<Void, NetworkError>
