@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PostResponseDTO: Decodable, Hashable {
+struct PostResponseDTO: Decodable {
     
     let title: String
     let description: String
@@ -29,6 +29,18 @@ struct PostResponseDTO: Decodable, Hashable {
         case isRequest = "is_request"
         case startDate = "start_date"
         case endDate = "end_date"
+    }
+    
+}
+
+extension PostResponseDTO: Hashable {
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(postID)
+    }
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.postID == rhs.postID
     }
     
 }
