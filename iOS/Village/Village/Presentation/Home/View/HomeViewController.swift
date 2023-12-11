@@ -10,8 +10,8 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias PostDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
-    typealias PostSnapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>
+    typealias PostDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
+    typealias PostSnapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>
     
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
@@ -118,7 +118,6 @@ final class HomeViewController: UIViewController {
         
         setupUI()
         generateDataSource()
-        addObserver()
         bindViewModel()
     }
     
@@ -148,6 +147,9 @@ final class HomeViewController: UIViewController {
         )
         let output = viewModel.transform(input: input)
         handlePostList(output: output)
+        handleCreatedPost(output: output)
+        handleDeletedPost(output: output)
+        handleEditedPost(output: output)
     }
     
     private func handlePostList(output: ViewModel.Output) {
@@ -171,44 +173,37 @@ final class HomeViewController: UIViewController {
             .store(in: &cancellableBag)
     }
     
-    private func addObserver() {
-        NotificationCenter.default.addObserver(self, 
-                                               selector: #selector(handlePostEdited(notification:)),
-                                               name: .postEdited,
-                                               object: nil)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handlePostCreated),
-                                               name: .postCreated,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               
-                                               selector: #selector(handlePostDeleted(notification:)),
-                                               name: .postCreated,
-                                               object: nil)
+    private func handleCreatedPost(output: ViewModel.Output) {
+        output.createdPost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refreshPost()
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func handleDeletedPost(output: ViewModel.Output) {
+        output.deletedPost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] postID in
+                self?.deletePost(id: postID)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func handleEditedPost(output: ViewModel.Output) {
+        output.editedPost
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] post in
+                self?.replacePost(item: post)
+            }
+            .store(in: &cancellableBag)
     }
     
 }
 
 @objc
 private extension HomeViewController {
-    
-    func handlePostEdited(notification: Notification) {
-        guard let item = notification.userInfo?["post"] as? PostListResponseDTO else { return }
-        
-        reconfigurePost(item: item)
-    }
-    
-    func handlePostCreated() {
-        resetDataSource()
-        refresh.send(postType)
-    }
-    
-    func handlePostDeleted(notification: Notification) {
-        guard let item = notification.userInfo?["post"] as? PostListResponseDTO else { return }
-        
-        deletePost(item: item)
-    }
     
     func refreshPost() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
@@ -361,21 +356,28 @@ extension HomeViewController: UITableViewDelegate {
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    private func reconfigurePost(item: PostListResponseDTO) {
+    private func replacePost(item: PostResponseDTO) {
         let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
         var snapshot = dataSource.snapshot()
-        snapshot.reconfigureItems([item])
-        dataSource.apply(snapshot, animatingDifferences: false)
-    }
-    
-    private func deletePost(item: PostListResponseDTO) {
-        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
-        var snapshot = dataSource.snapshot()
+        guard let index = snapshot.indexOfItem(item) else { return }
         snapshot.deleteItems([item])
+        if snapshot.numberOfItems == 0 {
+            snapshot.appendItems([item])
+        } else {
+            snapshot.insertItems([item], beforeItem: snapshot.itemIdentifiers[index])
+        }
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    private func appendPost(items: [PostListResponseDTO]) {
+    private func deletePost(id: Int) {
+        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
+        var snapshot = dataSource.snapshot()
+        guard let deleteItem = snapshot.itemIdentifiers.first(where: {$0.postID == id}) else { return }
+        snapshot.deleteItems([deleteItem])
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func appendPost(items: [PostResponseDTO]) {
         switch postType {
         case .rent:
             var snapshot = rentDataSource.snapshot()
