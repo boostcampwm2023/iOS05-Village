@@ -116,6 +116,7 @@
 		8F95CF9A2B0C7C440024631F /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF992B0C7C440024631F /* EndPoint.swift */; };
 		8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF9B2B0C81640024631F /* APIProvider.swift */; };
 		8F97D06C2B222EFA00A19754 /* OpponentChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */; };
+		8FBB3BB92B26B431001876F5 /* GetAllReadResponseDTO .swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */; };
 		8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */; };
 		8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
@@ -254,6 +255,7 @@
 		8F95CF992B0C7C440024631F /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
 		8F95CF9B2B0C81640024631F /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
 		8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentChatTableViewCell.swift; sourceTree = "<group>"; };
+		8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GetAllReadResponseDTO .swift"; sourceTree = "<group>"; };
 		8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserTableViewCell.swift; sourceTree = "<group>"; };
 		8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatListResponseDTO.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -678,6 +680,7 @@
 				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
 				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
+				8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */,
 				59457BC82B237615003F798C /* PatchUserDTO.swift */,
 				59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */,
 				596AD1F32B2593E1005860B3 /* BlockedUserDTO.swift */,
@@ -1159,6 +1162,7 @@
 				59A384602B25FF6D00660B70 /* ReportViewController.swift in Sources */,
 				44C1F5F32B0FF63C0047A436 /* PostResponseDTO.swift in Sources */,
 				8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */,
+				8FBB3BB92B26B431001876F5 /* GetAllReadResponseDTO .swift in Sources */,
 				8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				4416D4762B15E25A0052BF33 /* MultipartFormData.swift in Sources */,
