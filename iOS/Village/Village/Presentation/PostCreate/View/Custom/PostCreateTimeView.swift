@@ -37,6 +37,7 @@ final class PostCreateTimeView: UIStackView {
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.datePickerMode = .date
         datePicker.minimumDate = Date()
+        datePicker.maximumDate = Date() + 60 * 60 * 24 * 365 * 10
         
         return datePicker
     }()
