@@ -174,12 +174,12 @@ export class ChatService {
       .innerJoin(
         'chat_room.writerUser',
         'writer',
-        'chat_room.writerUser = writer.user_hash and writer.delete_date is null',
+        'chat_room.writerUser = writer.user_hash',
       )
       .innerJoin(
         'chat_room.userUser',
         'user',
-        'chat_room.userUser = user.user_hash and user.delete_date is null',
+        'chat_room.userUser = user.user_hash',
       )
       .select([
         'chat_room.id as room_id',
