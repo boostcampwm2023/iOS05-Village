@@ -45,13 +45,6 @@ final class HomeViewController: UIViewController {
         containerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0)
     }()
     
-    private lazy var refreshControl: UIRefreshControl = {
-        let control = UIRefreshControl()
-        control.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
-        
-        return control
-    }()
-    
     private lazy var rentDataSource = PostDataSource(
         tableView: rentPostTableView,
         cellProvider: { [weak self] (tableView, indexPath, postDTO) in
@@ -76,11 +69,14 @@ final class HomeViewController: UIViewController {
     
     private lazy var rentPostTableView: UITableView = {
         let tableView = UITableView()
+        let refreshControl = UIRefreshControl()
+        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = 100
         tableView.register(RentPostTableViewCell.self, forCellReuseIdentifier: RentPostTableViewCell.identifier)
         tableView.separatorStyle = .none
         tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
         tableView.delegate = self
         
         return tableView
@@ -88,11 +84,13 @@ final class HomeViewController: UIViewController {
     
     private lazy var requestPostTableView: UITableView = {
         let tableView = UITableView()
+        let refreshControl = UIRefreshControl()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = 100
         tableView.register(RequestPostTableViewCell.self, forCellReuseIdentifier: RequestPostTableViewCell.identifier)
         tableView.separatorStyle = .none
         tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshPost), for: .valueChanged)
         tableView.delegate = self
         
         return tableView
@@ -319,14 +317,14 @@ extension HomeViewController: UITableViewDelegate {
         var rentSnapshot = rentDataSource.snapshot()
         rentSnapshot.deleteAllItems()
         rentSnapshot.appendSections([.main])
-        rentDataSource.apply(rentSnapshot, animatingDifferences: false)
+        rentDataSource.apply(rentSnapshot, animatingDifferences: true)
     }
     
     private func clearRequestDataSource() {
         var requestSnapshot = requestDataSource.snapshot()
         requestSnapshot.deleteAllItems()
         requestSnapshot.appendSections([.main])
-        requestDataSource.apply(requestSnapshot, animatingDifferences: false)
+        requestDataSource.apply(requestSnapshot, animatingDifferences: true)
     }
     
     private func generateDataSource() {
