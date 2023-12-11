@@ -26,6 +26,12 @@ final class RentPostTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        postSummaryView.postImageView.image = nil
+        postSummaryView.postTitleLabel.text = nil
+        postSummaryView.postPriceLabel.text = nil
+    }
+    
     func configureData(post: PostListResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         postSummaryView.setPrice(price: post.price)
