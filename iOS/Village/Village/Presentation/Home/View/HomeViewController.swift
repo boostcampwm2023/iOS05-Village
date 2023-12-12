@@ -15,6 +15,7 @@ final class HomeViewController: UIViewController {
     
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
+    typealias Output = ViewModel.Output
     
     private var postType: PostType = .rent {
         didSet {
@@ -114,6 +115,24 @@ final class HomeViewController: UIViewController {
         return menu
     }()
     
+    private var currentTableView: UITableView {
+        switch postType {
+        case .rent:
+            rentPostTableView
+        case .request:
+            requestPostTableView
+        }
+    }
+    
+    private var currentDataSource: PostDataSource {
+        switch postType {
+        case .rent:
+            rentDataSource
+        case .request:
+            requestDataSource
+        }
+    }
+    
     private var cancellableBag = Set<AnyCancellable>()
     
     override func viewDidLoad() {
@@ -153,9 +172,10 @@ final class HomeViewController: UIViewController {
         handleCreatedPost(output: output)
         handleDeletedPost(output: output)
         handleEditedPost(output: output)
+        handleHiddenChanged(output: output)
     }
     
-    private func handlePostList(output: ViewModel.Output) {
+    private func handlePostList(output: Output) {
         output.postList
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -176,7 +196,7 @@ final class HomeViewController: UIViewController {
             .store(in: &cancellableBag)
     }
     
-    private func handleCreatedPost(output: ViewModel.Output) {
+    private func handleCreatedPost(output: Output) {
         output.createdPost
             .receive(on: DispatchQueue.main)
             .sink { [weak self] postType in
@@ -186,7 +206,7 @@ final class HomeViewController: UIViewController {
             .store(in: &cancellableBag)
     }
     
-    private func handleDeletedPost(output: ViewModel.Output) {
+    private func handleDeletedPost(output: Output) {
         output.deletedPost
             .receive(on: DispatchQueue.main)
             .sink { [weak self] postID in
@@ -195,11 +215,22 @@ final class HomeViewController: UIViewController {
             .store(in: &cancellableBag)
     }
     
-    private func handleEditedPost(output: ViewModel.Output) {
+    private func handleEditedPost(output: Output) {
         output.editedPost
             .receive(on: DispatchQueue.main)
             .sink { [weak self] post in
                 self?.replacePost(item: post)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func handleHiddenChanged(output: Output) {
+        output.hiddenChanged
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.postType = .rent
+                self?.generateDataSource()
+                self?.refresh.send(.rent)
             }
             .store(in: &cancellableBag)
     }
@@ -213,9 +244,8 @@ private extension HomeViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             
-            let tableView = (postType == .rent) ? rentPostTableView : requestPostTableView
             resetDataSource()
-            tableView.refreshControl?.endRefreshing()
+            currentTableView.refreshControl?.endRefreshing()
             refresh.send(postType)
         }
     }
@@ -228,7 +258,7 @@ private extension HomeViewController {
             containerViewLeadingConstraint.constant = -view.frame.width
         }
         
-        if requestDataSource.snapshot().numberOfItems == 0 {
+        if currentDataSource.snapshot().numberOfItems == 0 {
             refresh.send(postType)
         }
     }
@@ -355,15 +385,14 @@ extension HomeViewController: UITableViewDelegate {
     }
     
     private func resetDataSource() {
-        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
-        var snapshot = PostSnapshot()
+        var snapshot = currentDataSource.snapshot()
+        snapshot.deleteAllItems()
         snapshot.appendSections([.main])
-        dataSource.apply(snapshot, animatingDifferences: false)
+        currentDataSource.apply(snapshot, animatingDifferences: false)
     }
     
     private func replacePost(item: PostResponseDTO) {
-        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
-        var snapshot = dataSource.snapshot()
+        var snapshot = currentDataSource.snapshot()
         guard let index = snapshot.indexOfItem(item) else { return }
         snapshot.deleteItems([item])
         if snapshot.numberOfItems == 0 {
@@ -371,39 +400,24 @@ extension HomeViewController: UITableViewDelegate {
         } else {
             snapshot.insertItems([item], beforeItem: snapshot.itemIdentifiers[index])
         }
-        dataSource.apply(snapshot, animatingDifferences: false)
+        currentDataSource.apply(snapshot, animatingDifferences: false)
     }
     
     private func deletePost(id: Int) {
-        let dataSource = (postType == .rent) ? rentDataSource : requestDataSource
-        var snapshot = dataSource.snapshot()
+        var snapshot = currentDataSource.snapshot()
         guard let deleteItem = snapshot.itemIdentifiers.first(where: {$0.postID == id}) else { return }
         snapshot.deleteItems([deleteItem])
-        dataSource.apply(snapshot, animatingDifferences: false)
+        currentDataSource.apply(snapshot, animatingDifferences: false)
     }
     
     private func appendPost(items: [PostResponseDTO]) {
-        switch postType {
-        case .rent:
-            var snapshot = rentDataSource.snapshot()
-            snapshot.appendItems(items)
-            rentDataSource.apply(snapshot, animatingDifferences: false)
-        case .request:
-            var snapshot = requestDataSource.snapshot()
-            snapshot.appendItems(items)
-            requestDataSource.apply(snapshot, animatingDifferences: false)
-        }
+        var snapshot = currentDataSource.snapshot()
+        snapshot.appendItems(items)
+        currentDataSource.apply(snapshot, animatingDifferences: false)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var postID: Int
-        if tableView == rentPostTableView {
-            guard let post = rentDataSource.itemIdentifier(for: indexPath) else { return }
-            postID = post.postID
-        } else {
-            guard let post = requestDataSource.itemIdentifier(for: indexPath) else { return }
-            postID = post.postID
-        }
+        guard let postID = currentDataSource.itemIdentifier(for: indexPath)?.postID else { return }
         
         let postDetailVC = PostDetailViewController(postID: postID)
         postDetailVC.hidesBottomBarWhenPushed = true
@@ -412,15 +426,8 @@ extension HomeViewController: UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        switch postType {
-        case .rent:
-            if paginationFlag && scrollView.contentOffset.y > rentPostTableView.contentSize.height - 1300 {
-                pagination.send(postType)
-            }
-        case .request:
-            if paginationFlag && scrollView.contentOffset.y > requestPostTableView.contentSize.height - 1300 {
-                pagination.send(postType)
-            }
+        if paginationFlag && scrollView.contentOffset.y > currentTableView.contentSize.height - 1300 {
+            pagination.send(postType)
         }
     }
     
