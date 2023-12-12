@@ -8,9 +8,9 @@
 import UIKit
 import Combine
 
-class HiddenRequestPostTableViewCell: UITableViewCell {
+final class HiddenRequestPostTableViewCell: UITableViewCell {
     
-    let hideToggleSubject = PassthroughSubject<Bool, Never>()
+    var hideToggleSubject = PassthroughSubject<Bool, Never>()
     
     private let postTitleLabel: UILabel = {
         let label = UILabel()
@@ -67,6 +67,25 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
         }
     }
     
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configureUI()
+        configureConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("should not be called")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        postTitleLabel.text = nil
+        postPeriodLabel.text = nil
+        postMuteButton.configuration?.baseBackgroundColor = .primary500
+        postMuteButton.configuration?.attributedTitle = hideOffString
+        hideToggleSubject = PassthroughSubject<Bool, Never>()
+    }
+    
     func configureData(post: PostMuteResponseDTO) {
         postTitleLabel.text = post.title
         let dateFormatter = DateFormatter()
@@ -77,16 +96,6 @@ class HiddenRequestPostTableViewCell: UITableViewCell {
         let startDateString = dateFormatter.string(from: startDate)
         let endDateString = dateFormatter.string(from: endDate)
         postPeriodLabel.text = startDateString + " ~ " + endDateString
-    }
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureUI()
-        configureConstraints()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("should not be called")
     }
     
     private func configureUI() {
