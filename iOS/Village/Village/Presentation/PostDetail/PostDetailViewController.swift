@@ -265,6 +265,8 @@ private extension PostDetailViewController {
         postContentView.addArrangedSubview(postInfoView)
         footerView.addSubview(priceLabel)
         footerView.addSubview(chatButton)
+        
+        setLayoutConstraints()
     }
     
     func configureNavigationItem() {
@@ -308,7 +310,7 @@ private extension PostDetailViewController {
                 }
             }, receiveValue: { [weak self] post in
                 self?.setPostContent(post: post)
-                self?.setLayoutConstraints(isRequest: post.isRequest)
+                self?.setIsRequestConstraints(isRequest: post.isRequest)
                 
                 if post.userID == JWTManager.shared.currentUserID {
                     self?.chatButton.isEnabled = false
@@ -419,7 +421,7 @@ private extension PostDetailViewController {
             .store(in: &cancellableBag)
     }
     
-    func setLayoutConstraints(isRequest: Bool) {
+    func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -445,6 +447,10 @@ private extension PostDetailViewController {
             footerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
+        chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor).isActive = true
+    }
+    
+    func setIsRequestConstraints(isRequest: Bool) {
         if isRequest {
             NSLayoutConstraint.activate([
                 chatButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
@@ -461,8 +467,6 @@ private extension PostDetailViewController {
                 priceLabel.centerYAnchor.constraint(equalTo: chatButton.centerYAnchor)
             ])
         }
-        
-        chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor).isActive = true
     }
     
 }
