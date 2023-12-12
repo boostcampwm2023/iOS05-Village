@@ -10,7 +10,7 @@ import Combine
 
 final class HiddenRentPostTableViewCell: UITableViewCell {
     
-    let hideToggleSubject = PassthroughSubject<Bool, Never>()
+    var hideToggleSubject = PassthroughSubject<Bool, Never>()
     
     private let postImageView: UIImageView = {
         let imageView = UIImageView()
@@ -72,6 +72,16 @@ final class HiddenRentPostTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("should not be called")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        postTitleLabel.text = nil
+        postPriceLabel.text = nil
+        postImageView.image = nil
+        postMuteButton.configuration?.baseBackgroundColor = .primary500
+        postMuteButton.configuration?.attributedTitle = hideOffString
+        hideToggleSubject = PassthroughSubject<Bool, Never>()
     }
     
     @objc private func muteButtonTapped() {
