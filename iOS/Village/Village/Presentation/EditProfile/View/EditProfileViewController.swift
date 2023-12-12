@@ -1,5 +1,5 @@
 //
-//  SignUpViewController.swift
+//  EditProfileViewController.swift
 //  Village
 //
 //  Created by 정상윤 on 11/27/23.
@@ -9,9 +9,9 @@ import UIKit
 import PhotosUI
 import Combine
 
-final class SignUpViewController: UIViewController {
+final class EditProfileViewController: UIViewController {
     
-    typealias ViewModel = SignUpViewModel
+    typealias ViewModel = EditProfileViewModel
     
     private let viewModel: ViewModel
     
@@ -71,7 +71,7 @@ final class SignUpViewController: UIViewController {
     
 }
 
-private extension SignUpViewController {
+private extension EditProfileViewController {
     
     func configureUI() {
         view.backgroundColor = .systemBackground
@@ -145,7 +145,7 @@ private extension SignUpViewController {
 }
 
 @objc
-extension SignUpViewController {
+extension EditProfileViewController {
     
     func completeButtonTapped() {
         completeButtonSubject.send()
@@ -166,7 +166,7 @@ extension SignUpViewController {
         
     }
 }
-extension SignUpViewController: PHPickerViewControllerDelegate {
+extension EditProfileViewController: PHPickerViewControllerDelegate {
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)

@@ -335,7 +335,7 @@ private extension MyPageViewController {
     
     func profileEditButtonTapped() {
         guard let postInfo = viewModel.profileInfoSubject.value else { return }
-        let nextVC = SignUpViewController(viewModel: SignUpViewModel(
+        let nextVC = EditProfileViewController(viewModel: EditProfileViewModel(
             profileInfo: postInfo
         ))
         nextVC.hidesBottomBarWhenPushed = true

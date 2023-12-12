@@ -24,6 +24,23 @@ final class AppTabBarController: UITabBarController {
         setup()
         setViewControllers()
         configureTabBarItems()
+        
+        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
+            let endpoint = APIEndPoints.getAllRead()
+
+            Task {
+                do {
+                    guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                    if data.allRead == true {
+                        self?.tabBar.items?[1].badgeValue = nil
+                    } else {
+                        self?.tabBar.items?[1].badgeValue = "!"
+                    }
+                } catch {
+                    dump(error)
+                }
+            }
+        }
     }
     
     // TODO: shadow 

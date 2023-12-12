@@ -162,6 +162,12 @@ final class ChatRoomViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        WebSocket.shared.closeWebSocket()
+    }
+    
     func setSocket() {
         WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
         try? WebSocket.shared.openWebSocket()
@@ -217,7 +223,7 @@ private extension ChatRoomViewController {
         if viewControllers.count > 1 {
             guard let postID = self.postID else { return }
             postID.sink(receiveValue: { value in
-                let nextVC = PostDetailViewController(postID: value)
+                let nextVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: value))
                 nextVC.hidesBottomBarWhenPushed = true
                 
                 self.navigationController?.pushViewController(nextVC, animated: true)

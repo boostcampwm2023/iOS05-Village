@@ -11,7 +11,7 @@ import Combine
 final class SearchResultViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var searchResultList = PassthroughSubject<[PostListResponseDTO], NetworkError>()
+    private var searchResultList = PassthroughSubject<[PostResponseDTO], NetworkError>()
     private var postTitle: String = ""
     private var lastPostID: String = ""
     
@@ -78,11 +78,14 @@ final class SearchResultViewModel {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint),
                       let lastID = data.last?.postID
-                else { return }
+                else {
+                    searchResultList.send([])
+                    return
+                }
                 searchResultList.send(data)
                 self.lastPostID = "\(lastID)"
             } catch {
-                dump(error)
+                searchResultList.send(completion: .failure(NetworkError.urlRequestError))
             }
         }
     }
@@ -98,7 +101,7 @@ extension SearchResultViewModel {
     }
     
     struct Output {
-        var searchResultList: AnyPublisher<[PostListResponseDTO], NetworkError>
+        var searchResultList: AnyPublisher<[PostResponseDTO], NetworkError>
     }
     
 }

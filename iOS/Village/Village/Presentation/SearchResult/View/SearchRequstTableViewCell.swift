@@ -26,7 +26,7 @@ class SearchRequstTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureData(post: PostListResponseDTO) {
+    func configureData(post: PostResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         
         let dateFormatter = DateFormatter()

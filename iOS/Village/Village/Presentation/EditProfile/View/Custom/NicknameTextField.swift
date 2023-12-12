@@ -86,14 +86,31 @@ private extension NicknameTextField {
 
 extension NicknameTextField: UITextFieldDelegate {
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        if !string.isEmpty {
+            do {
+                let regex = try NSRegularExpression(pattern: "^[0-9ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z_]+$")
+                let range = NSRange(location: 0, length: string.utf16.count)
+                guard regex.firstMatch(in: string, range: range) != nil else { return false }
+            } catch {
+                return false
+            }
+        }
         guard let text = textField.text else { return false }
         
         if text.count + string.count > 10 {
             return false
         }
         
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
         return true
     }
     

@@ -11,7 +11,7 @@ struct APIEndPoints {
     
     static let baseURL = "https://www.village-api.shop/"
     
-    static func getPosts() -> EndPoint<[PostListResponseDTO]> {
+    static func getPosts() -> EndPoint<[PostResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
@@ -19,7 +19,7 @@ struct APIEndPoints {
         )
     }
     
-    static func getPosts(queryParameter: PostListRequestDTO? = nil) -> EndPoint<[PostListResponseDTO]> {
+    static func getPosts(queryParameter: PostListRequestDTO? = nil) -> EndPoint<[PostResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
@@ -40,6 +40,14 @@ struct APIEndPoints {
         return EndPoint(
             baseURL: baseURL,
             path: "users/\(id)",
+            method: .GET
+        )
+    }
+    
+    static func getAllRead() -> EndPoint<GetAllReadResponseDTO> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat/unread",
             method: .GET
         )
     }

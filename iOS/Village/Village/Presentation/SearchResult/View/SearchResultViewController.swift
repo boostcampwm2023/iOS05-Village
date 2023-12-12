@@ -10,7 +10,7 @@ import Combine
 
 final class SearchResultViewController: UIViewController {
     
-    typealias SearchResultDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias SearchResultDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
     typealias ViewModel = SearchResultViewModel
     
     enum Section { case list }
@@ -24,6 +24,7 @@ final class SearchResultViewController: UIViewController {
     private var cancellableBag = Set<AnyCancellable>()
     
     private var postTitle: String = ""
+    private var paginationFlag: Bool = true
     
     private lazy var requestSegmentedControl: UISegmentedControl = {
         let control = UISegmentedControl(items: ["대여", "요청"])
@@ -76,15 +77,15 @@ final class SearchResultViewController: UIViewController {
         definesPresentationContext = true
 
         setUI()
-        generateData()
-        bindViewModel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.requestSegmentedControl.isHidden = true
-        self.listTableView.isHidden = true
+        if postTitle.isEmpty {
+            self.requestSegmentedControl.isHidden = true
+            self.listTableView.isHidden = true
+        }
     }
 
 }
@@ -131,7 +132,7 @@ extension SearchResultViewController {
     
     private func bindViewModel() {
         let input = ViewModel.Input(
-            postTitle: self.titlePublisher.eraseToAnyPublisher(),
+            postTitle: Just(self.postTitle).eraseToAnyPublisher(),
             toggleSubject: self.togglePublisher.eraseToAnyPublisher(),
             scrollEvent: self.scrollPublisher.eraseToAnyPublisher()
         )
@@ -146,18 +147,19 @@ extension SearchResultViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] postList in
+                self?.paginationFlag = false
                 self?.addGenerateData(list: postList)
             }
             .store(in: &cancellableBag)
     }
     
     private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
         snapshot.appendSections([.list])
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    private func addGenerateData(list: [PostListResponseDTO]) {
+    private func addGenerateData(list: [PostResponseDTO]) {
         var snapshot = dataSource.snapshot()
         snapshot.appendItems(list, toSection: .list)
         dataSource.apply(snapshot, animatingDifferences: false)
@@ -173,7 +175,8 @@ extension SearchResultViewController {
 extension SearchResultViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > self.listTableView.contentSize.height - 1000 {
+        if scrollView.contentOffset.y > self.listTableView.contentSize.height - 1000
+        && paginationFlag {
             scrollPublisher.send()
         }
     }
@@ -181,7 +184,7 @@ extension SearchResultViewController: UITableViewDelegate {
     func tableView(_ collectionView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let postDetailVC = PostDetailViewController(postID: post.postID)
+        let postDetailVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: post.postID))
         postDetailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(postDetailVC, animated: true)
     }
@@ -196,6 +199,7 @@ extension SearchResultViewController: UISearchResultsUpdating, UISearchBarDelega
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         generateData()
+        bindViewModel()
         titlePublisher.send(self.postTitle)
         self.requestSegmentedControl.isHidden = false
         self.listTableView.isHidden = false

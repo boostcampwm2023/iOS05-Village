@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RequestPostTableViewCell: UITableViewCell {
+final class RequestPostTableViewCell: UITableViewCell {
 
     private let postSummaryView: RequestPostSummaryView = {
         let view = RequestPostSummaryView()
@@ -26,7 +26,13 @@ class RequestPostTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureData(post: PostListResponseDTO) {
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        postSummaryView.postPeriodLabel.text = nil
+        postSummaryView.postTitleLabel.text = nil
+    }
+    
+    func configureData(post: PostResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         
         let dateFormatter = DateFormatter()
