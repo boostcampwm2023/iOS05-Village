@@ -49,6 +49,10 @@ final class MyHiddenPostsViewModel {
         getMyHiddenPosts()
     }
     
+    deinit {
+        PostNotificationPublisher.shared.publishPostHiddenChanged()
+    }
+    
     private func getMyHiddenPosts() {        
         let endpoint = APIEndPoints.getHiddenPosts(
             requestFilter: RequestFilterDTO(
@@ -78,7 +82,6 @@ final class MyHiddenPostsViewModel {
                 dump(error)
             }
         }
-        
     }
     
 }

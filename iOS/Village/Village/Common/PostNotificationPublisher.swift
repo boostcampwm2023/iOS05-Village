@@ -32,4 +32,8 @@ final class PostNotificationPublisher {
         NotificationCenter.default.post(name: .postDeleted, object: nil, userInfo: info)
     }
     
+    func publishPostHiddenChanged() {
+        NotificationCenter.default.post(name: .postHiddenChanged, object: nil)
+    }
+    
 }
