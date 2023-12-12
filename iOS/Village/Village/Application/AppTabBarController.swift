@@ -19,34 +19,36 @@ final class AppTabBarController: UITabBarController {
         rootViewController: MyPageViewController(viewModel: MyPageViewModel())
     )
     
-    private lazy var timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
-        let endpoint = APIEndPoints.getAllRead()
-
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                if data.allRead == true {
-                    self?.tabBar.items?[1].badgeValue = nil
-                } else {
-                    self?.tabBar.items?[1].badgeValue = "!"
-                }
-            } catch {
-                dump(error)
-            }
-        }
-    }
+    private var timer: Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
         setViewControllers()
         configureTabBarItems()
+        
+        self.timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
+            let endpoint = APIEndPoints.getAllRead()
+
+            Task {
+                do {
+                    guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                    if data.allRead == true {
+                        self?.tabBar.items?[1].badgeValue = nil
+                    } else {
+                        self?.tabBar.items?[1].badgeValue = "!"
+                    }
+                } catch {
+                    dump(error)
+                }
+            }
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        timer.invalidate()
+        timer?.invalidate()
     }
     
     // TODO: shadow 
