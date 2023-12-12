@@ -16,5 +16,6 @@ extension Notification.Name {
     static let postEdited = Notification.Name("PostEdited")
     static let postDeleted = Notification.Name("PostDeleted")
     static let postCreated = Notification.Name("PostCreated")
+    static let postHiddenChanged = Notification.Name("PostHiddenChanged")
   
 }
