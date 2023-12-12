@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "villageLaunchScreen.png",
+      "filename" : "LogoLabel.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "villageLaunchScreen@2x.png",
+      "filename" : "LogoLabel@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "villageLaunchScreen@3x.png",
+      "filename" : "LogoLabel@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
