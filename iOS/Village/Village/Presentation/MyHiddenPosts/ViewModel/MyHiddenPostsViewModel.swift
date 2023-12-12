@@ -50,7 +50,7 @@ final class MyHiddenPostsViewModel {
     }
     
     deinit {
-        PostNotificationPublisher.shared.publishPostHiddenChanged()
+        PostNotificationPublisher.shared.publishPostRefreshAll()
     }
     
     private func getMyHiddenPosts() {        

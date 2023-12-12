@@ -73,7 +73,7 @@ final class HomeViewModel {
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleHiddenChanged),
-                                               name: .postHiddenChanged,
+                                               name: .postRefreshAll,
                                                object: nil)
     }
     

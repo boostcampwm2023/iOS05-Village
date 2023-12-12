@@ -173,6 +173,7 @@ final class PostDetailViewModel {
         Task {
             do {
                 try await APIProvider.shared.request(with: endpoint)
+                PostNotificationPublisher.shared.publishPostRefreshAll()
                 popViewControllerOutput.send()
             } catch let error as NetworkError {
                 popViewControllerOutput.send(completion: .failure(error))
