@@ -9,7 +9,7 @@ import Foundation
 
 protocol Interceptor {
     func adapt(request: URLRequest) -> URLRequest?
-    func retry(request: URLRequest, error: Error, attempt: Int) async -> RetryResult
+    func retry(request: URLRequest, error: NetworkError, attempt: Int) async -> RetryResult
 }
 
 enum RetryResult {
@@ -36,21 +36,25 @@ struct AuthInterceptor: Interceptor {
         return urlRequest
     }
     
-    func retry(request: URLRequest, error: Error, attempt: Int) async -> RetryResult {
+    func retry(request: URLRequest, error: NetworkError, attempt: Int) async -> RetryResult {
         if attempt > maxAttempt {
             return .doNotRetry
         }
-        if let networkError = error as? NetworkError,
-           case .serverError(let serverError) = networkError, case .forbidden = serverError {
+        
+        switch error {
+        case .serverError(.forbidden):
             do {
                 try await refreshToken()
                 return .retry
             } catch let error {
                 return .doNotRetryWithError(error)
             }
-        } else {
+        case .serverError(.unauthorized):
+            NotificationCenter.default.post(name: .shouldLogin, object: nil)
+        default:
             return .retry
         }
+        return .doNotRetry
     }
     
 }
