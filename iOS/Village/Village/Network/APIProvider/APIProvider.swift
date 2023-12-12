@@ -54,7 +54,7 @@ final class APIProvider: Provider {
             do {
                 try self.checkStatusCode(response)
                 return data
-            } catch let error {
+            } catch let error as NetworkError {
                 switch await interceptor?.retry(request: request, error: error, attempt: attempt) {
                 case .doNotRetry:
                     throw error
