@@ -329,7 +329,7 @@ private extension PostDetailViewController {
                 switch completion {
                 case .finished:
                     break
-                case .failure(_):
+                case .failure(_:):
                     self.setUserContent(user: nil)
                     self.chatButton.isEnabled = false
                     self.chatButton.backgroundColor = .userChatMessage
