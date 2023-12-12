@@ -53,16 +53,18 @@ class ChatListViewController: UIViewController {
         }
     )
     
-    private lazy var timer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { [weak self] _ in
-        self?.bindViewModel()
-        self?.setUI()
-    }
+    private var timer: Timer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.bindViewModel()
         self.setUI()
+        
+        self.timer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { [weak self] _ in
+            self?.bindViewModel()
+            self?.setUI()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,7 +76,7 @@ class ChatListViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        timer.invalidate()
+        timer?.invalidate()
     }
     
 }
