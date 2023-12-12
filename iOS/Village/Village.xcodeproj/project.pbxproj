@@ -36,7 +36,8 @@
 		446B60FB2B220DC400A361CB /* ImageUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B60FA2B220DC400A361CB /* ImageUploadView.swift */; };
 		446B61002B2433E100A361CB /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B60FF2B2433E100A361CB /* ImageItem.swift */; };
 		446B61062B2602A200A361CB /* PostSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B61052B2602A200A361CB /* PostSegmentedControl.swift */; };
-		446B610B2B26439D00A361CB /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B610A2B26439D00A361CB /* Post.swift */; };
+		446B610B2B26439D00A361CB /* PostType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B610A2B26439D00A361CB /* PostType.swift */; };
+		446B61142B275C2900A361CB /* PostNotificationPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446B61132B275C2900A361CB /* PostNotificationPublisher.swift */; };
 		4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4491AA272B05D6C90016FC70 /* MenuView.swift */; };
 		44C1F5E62B0FE37C0047A436 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5E52B0FE37C0047A436 /* PostDetailViewModel.swift */; };
 		44C1F5ED2B0FE44A0047A436 /* UserResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */; };
@@ -172,7 +173,8 @@
 		446B60FA2B220DC400A361CB /* ImageUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadView.swift; sourceTree = "<group>"; };
 		446B60FF2B2433E100A361CB /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
 		446B61052B2602A200A361CB /* PostSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSegmentedControl.swift; sourceTree = "<group>"; };
-		446B610A2B26439D00A361CB /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		446B610A2B26439D00A361CB /* PostType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostType.swift; sourceTree = "<group>"; };
+		446B61132B275C2900A361CB /* PostNotificationPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNotificationPublisher.swift; sourceTree = "<group>"; };
 		4491AA272B05D6C90016FC70 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		44C1F5E52B0FE37C0047A436 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
 		44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResponseDTO.swift; sourceTree = "<group>"; };
@@ -294,7 +296,8 @@
 		440FCC2B2B04EB830011B637 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				446B610A2B26439D00A361CB /* Post.swift */,
+				446B610A2B26439D00A361CB /* PostType.swift */,
+				446B61132B275C2900A361CB /* PostNotificationPublisher.swift */,
 				59110F032B1725C20009E9AC /* NotificationName+.swift */,
 				446362CA2B0DFD4F00B74DA7 /* Int+.swift */,
 				440FCC2C2B04EB940011B637 /* Constants.swift */,
@@ -1179,6 +1182,7 @@
 				444A50902B0C60F900454397 /* ImagePageView.swift in Sources */,
 				59110EFB2B15F3D60009E9AC /* ChatRoomTableViewCell.swift in Sources */,
 				444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */,
+				446B61142B275C2900A361CB /* PostNotificationPublisher.swift in Sources */,
 				8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
 				446362C92B0DF9E800B74DA7 /* PriceLabel.swift in Sources */,
@@ -1219,7 +1223,7 @@
 				4416D44A2B148A7A0052BF33 /* AppTabBarController.swift in Sources */,
 				8FF7E61D2B10721400B6D678 /* ChatListViewModel.swift in Sources */,
 				8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */,
-				446B610B2B26439D00A361CB /* Post.swift in Sources */,
+				446B610B2B26439D00A361CB /* PostType.swift in Sources */,
 				8F3D79E02B136C6800370536 /* ChatRoomViewModel.swift in Sources */,
 				44C1F5ED2B0FE44A0047A436 /* UserResponseDTO.swift in Sources */,
 				446B60F92B220D9500A361CB /* ImageViewCell.swift in Sources */,
