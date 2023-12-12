@@ -250,7 +250,7 @@ final class PostDetailViewController: UIViewController {
         if let user = user {
             userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
         } else {
-            userInfoView.setContent(imageURL: nil, nickname: "(알 수 없음)")
+            userInfoView.setContent(imageURL: nil, nickname: "(탈퇴한 회원)")
         }
     }
 
