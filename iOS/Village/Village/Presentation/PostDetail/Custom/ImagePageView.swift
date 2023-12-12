@@ -29,6 +29,8 @@ final class ImagePageView: UIView {
         let pageControl = UIPageControl()
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         pageControl.hidesForSinglePage = true
+        pageControl.currentPageIndicatorTintColor = .primary500
+        pageControl.pageIndicatorTintColor = .secondaryLabel
         pageControl.backgroundStyle = .minimal
         return pageControl
     }()
