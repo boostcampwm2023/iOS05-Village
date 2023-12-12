@@ -246,8 +246,12 @@ final class PostDetailViewController: UIViewController {
         priceLabel.setPrice(price: post.price)
     }
     
-    private func setUserContent(user: UserResponseDTO) {
-        userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+    private func setUserContent(user: UserResponseDTO?) {
+        if let user = user {
+            userInfoView.setContent(imageURL: user.profileImageURL, nickname: user.nickname)
+        } else {
+            userInfoView.setContent(imageURL: nil, nickname: "(탈퇴한 회원)")
+        }
     }
 
 }
@@ -325,11 +329,14 @@ private extension PostDetailViewController {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let error):
-                    dump(error)
+                case .failure(_:):
+                    self.setUserContent(user: nil)
+                    self.chatButton.isEnabled = false
+                    self.chatButton.backgroundColor = .userChatMessage
                 }
             } receiveValue: { [weak self] user in
                 self?.setUserContent(user: user)
+                self?.chatButton.backgroundColor = .primary500
             }
             .store(in: &cancellableBag)
     }    
