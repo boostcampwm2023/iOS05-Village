@@ -18,6 +18,7 @@ final class HomeViewModel {
     private let createdPost = PassthroughSubject<PostType, Never>()
     private let deletedPost = PassthroughSubject<Int, Never>()
     private let editedPost = PassthroughSubject<Post, Never>()
+    private let hiddenChanged = PassthroughSubject<Void, Never>()
     
     private var lastRentPostID: String?
     private var lastRequestPostID: String?
@@ -30,7 +31,8 @@ final class HomeViewModel {
             postList: postList.eraseToAnyPublisher(),
             createdPost: createdPost.eraseToAnyPublisher(),
             deletedPost: deletedPost.eraseToAnyPublisher(),
-            editedPost: editedPost.eraseToAnyPublisher()
+            editedPost: editedPost.eraseToAnyPublisher(),
+            hiddenChanged: hiddenChanged.eraseToAnyPublisher()
         )
     }
     
@@ -69,6 +71,10 @@ final class HomeViewModel {
                                                selector: #selector(handlePostDeleted(notification:)),
                                                name: .postDeleted,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleHiddenChanged),
+                                               name: .postHiddenChanged,
+                                               object: nil)
     }
     
 }
@@ -101,6 +107,10 @@ private extension HomeViewModel {
         guard let postID = notification.userInfo?["postID"] as? Int else { return }
         
         deletedPost.send(postID)
+    }
+    
+    func handleHiddenChanged() {
+        hiddenChanged.send()
     }
     
 }
@@ -189,6 +199,7 @@ extension HomeViewModel {
         let createdPost: AnyPublisher<PostType, Never>
         let deletedPost: AnyPublisher<Int, Never>
         let editedPost: AnyPublisher<Post, Never>
+        let hiddenChanged: AnyPublisher<Void, Never>
     }
     
 }
