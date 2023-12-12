@@ -16,8 +16,10 @@ final class MyPageViewController: UIViewController {
     private let viewModel: ViewModel
     private var cancellableBag: Set<AnyCancellable> = []
     
-    private var logoutSubject = PassthroughSubject<Void, Never>()
-    private var deleteAccountSubject = PassthroughSubject<Void, Never>()
+    private let logoutSubject = PassthroughSubject<Void, Never>()
+    private let deleteAccountSubject = PassthroughSubject<Void, Never>()
+    private let editProfileSubject = PassthroughSubject<Void, Never>()
+    private let refreshSubject = PassthroughSubject<Void, Never>()
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -218,6 +220,12 @@ final class MyPageViewController: UIViewController {
         setConstraints()
         bindViewModel()
         view.backgroundColor = .systemBackground
+        refreshSubject.send()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshSubject.send()
     }
     
 }
@@ -284,7 +292,9 @@ private extension MyPageViewController {
     func bindViewModel() {
         let output = viewModel.transform(input: Input(
             logoutSubject: logoutSubject.eraseToAnyPublisher(),
-            deleteAccountSubject: deleteAccountSubject.eraseToAnyPublisher()
+            deleteAccountSubject: deleteAccountSubject.eraseToAnyPublisher(),
+            editProfileSubject: editProfileSubject.eraseToAnyPublisher(),
+            refreshInputSubject: refreshSubject.eraseToAnyPublisher()
         ))
         
         output.logoutSucceed
@@ -318,12 +328,30 @@ private extension MyPageViewController {
         output.profileInfoOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profileInfo in
-                guard let data = profileInfo?.profileImage,
+                guard let data = profileInfo.profileImage,
                       let image = UIImage(data: data) else { return }
                 self?.profileImageView.image = image
-                self?.nicknameLabel.text = profileInfo?.nickname
+                self?.nicknameLabel.text = profileInfo.nickname
                 guard let userID = JWTManager.shared.currentUserID else { return }
                 self?.hashIDLabel.text = "#" + userID
+            }
+            .store(in: &cancellableBag)
+        
+        output.editProfileOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] profileInfo in
+                guard let self = self else { return }
+                let nextVC = EditProfileViewController(viewModel: EditProfileViewModel(
+                    profileInfo: profileInfo
+                ))
+                nextVC.hidesBottomBarWhenPushed = true
+                nextVC.updateSuccessSubject
+                    .receive(on: DispatchQueue.main)
+                    .sink { [weak self] in
+                        self?.refreshSubject.send()
+                    }
+                    .store(in: &self.cancellableBag)
+                self.navigationController?.pushViewController(nextVC, animated: true)
             }
             .store(in: &cancellableBag)
     }
@@ -334,18 +362,7 @@ private extension MyPageViewController {
 private extension MyPageViewController {
     
     func profileEditButtonTapped() {
-        guard let postInfo = viewModel.profileInfoSubject.value else { return }
-        let nextVC = EditProfileViewController(viewModel: EditProfileViewModel(
-            profileInfo: postInfo
-        ))
-        nextVC.hidesBottomBarWhenPushed = true
-        nextVC.updateSuccessSubject
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.viewModel.getUserInfo()
-            }
-            .store(in: &cancellableBag)
-        self.navigationController?.pushViewController(nextVC, animated: true)
+        editProfileSubject.send()
     }
     
     func myPostsButtonTapped() {

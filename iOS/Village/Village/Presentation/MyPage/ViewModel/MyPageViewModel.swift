@@ -18,16 +18,13 @@ struct ProfileInfo: Equatable {
 final class MyPageViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var logoutSucceed = PassthroughSubject<Void, Error>()
-    private var deleteAccountSucceed = PassthroughSubject<Void, Error>()
+    private let logoutSucceed = PassthroughSubject<Void, Error>()
+    private let deleteAccountSucceed = PassthroughSubject<Void, Error>()
+    private let profileInfoSubject = PassthroughSubject<ProfileInfo, Never>()
+    private let editProfileInfoSubject = PassthroughSubject<ProfileInfo, Never>()
+    private let refreshInput = PassthroughSubject<Void, Never>()
     
-    var profileInfoSubject = CurrentValueSubject<ProfileInfo?, Never>(nil)
-    
-    init() {
-        getUserInfo()
-    }
-    
-    func getUserInfo() {
+    private func getUserInfo() {
         guard let userID = JWTManager.shared.currentUserID else { return }
         let endpoint = APIEndPoints.getUser(id: userID)
         
@@ -60,10 +57,23 @@ final class MyPageViewModel {
             })
             .store(in: &cancellableBag)
         
+        input.editProfileSubject
+            .sink { [weak self] _ in
+                self?.editProfile()
+            }
+            .store(in: &cancellableBag)
+        
+        input.refreshInputSubject
+            .sink { [weak self] _ in
+                self?.getUserInfo()
+            }
+            .store(in: &cancellableBag)
+        
         return Output(
             logoutSucceed: logoutSucceed.eraseToAnyPublisher(),
             deleteAccountSucceed: deleteAccountSucceed.eraseToAnyPublisher(),
-            profileInfoOutput: profileInfoSubject.eraseToAnyPublisher()
+            profileInfoOutput: profileInfoSubject.eraseToAnyPublisher(),
+            editProfileOutput: editProfileInfoSubject.eraseToAnyPublisher()
         )
     }
     
@@ -96,19 +106,42 @@ final class MyPageViewModel {
         }
     }
     
+    private func editProfile() {
+        guard let userID = JWTManager.shared.currentUserID else { return }
+        
+        let endpoint = APIEndPoints.getUser(id: userID)
+        Task {
+            do {
+                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                let userImageData = try await APIProvider.shared.request(from: data.profileImageURL)
+                editProfileInfoSubject.send(
+                    ProfileInfo(
+                        nickname: data.nickname,
+                        profileImage: userImageData
+                    )
+                )
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
 }
 
 extension MyPageViewModel {
     
     struct Input {
-        var logoutSubject: AnyPublisher<Void, Never>
-        var deleteAccountSubject: AnyPublisher<Void, Never>
+        let logoutSubject: AnyPublisher<Void, Never>
+        let deleteAccountSubject: AnyPublisher<Void, Never>
+        let editProfileSubject: AnyPublisher<Void, Never>
+        let refreshInputSubject: AnyPublisher<Void, Never>
     }
     
     struct Output {
-        var logoutSucceed: AnyPublisher<Void, Error>
-        var deleteAccountSucceed: AnyPublisher<Void, Error>
-        var profileInfoOutput: AnyPublisher<ProfileInfo?, Never>
+        let logoutSucceed: AnyPublisher<Void, Error>
+        let deleteAccountSucceed: AnyPublisher<Void, Error>
+        let profileInfoOutput: AnyPublisher<ProfileInfo, Never>
+        let editProfileOutput: AnyPublisher<ProfileInfo, Never>
     }
     
 }
