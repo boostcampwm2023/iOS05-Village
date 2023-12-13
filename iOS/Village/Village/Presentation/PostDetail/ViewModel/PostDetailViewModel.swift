@@ -15,6 +15,7 @@ final class PostDetailViewModel {
     
     private let post = PassthroughSubject<PostResponseDTO, NetworkError>()
     private let user = PassthroughSubject<UserResponseDTO, NetworkError>()
+    private let imageData = PassthroughSubject<[Data], NetworkError>()
     private let roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
     private let moreOutput = PassthroughSubject<String, Never>()
     private let modifyOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
@@ -72,6 +73,7 @@ final class PostDetailViewModel {
         return Output(
             post: post.eraseToAnyPublisher(),
             user: user.eraseToAnyPublisher(),
+            imageData: imageData.eraseToAnyPublisher(),
             moreOutput: moreOutput.eraseToAnyPublisher(),
             roomID: roomID.eraseToAnyPublisher(),
             reportOutput: reportOutput.eraseToAnyPublisher(),
@@ -81,7 +83,10 @@ final class PostDetailViewModel {
         )
     }
     
-    // TODO: Private 해주세요
+}
+
+private extension PostDetailViewModel {
+    
     func getPost(id: Int) {
         let endpoint = APIEndPoints.getPost(id: id)
         
@@ -110,7 +115,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func getUser(id: String) {
+    func getUser(id: String) {
         let endpoint = APIEndPoints.getUser(id: id)
         
         Task {
@@ -123,7 +128,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func createChatRoom() {
+    func createChatRoom() {
         let request = PostRoomRequestDTO(writer: self.userID, postID: self.postID)
         let endpoint = APIEndPoints.postCreateChatRoom(with: request)
         Task {
@@ -137,7 +142,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func deletePost() {
+    func deletePost() {
         let endpoint = APIEndPoints.deletePost(with: self.postID)
         
         Task {
@@ -151,7 +156,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func hidePost() {
+    func hidePost() {
         let endpoint = APIEndPoints.hidePost(postID: self.postID)
         
         Task {
@@ -167,7 +172,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func blockUser() {
+    func blockUser() {
         let endpoint = APIEndPoints.blockUser(userID: self.userID)
         
         Task {
@@ -200,6 +205,7 @@ extension PostDetailViewModel {
     struct Output {
         let post: AnyPublisher<PostResponseDTO, NetworkError>
         let user: AnyPublisher<UserResponseDTO, NetworkError>
+        let imageData: AnyPublisher<[Data], NetworkError>
         let moreOutput: AnyPublisher<String, Never>
         let roomID: AnyPublisher<PostRoomResponseDTO, NetworkError>
         let reportOutput: AnyPublisher<(postID: Int, userID: String), Never>
