@@ -49,10 +49,10 @@ export class PostService {
     const blockedUsersId: string[] = (
       await this.blockUserRepository.find({
         where: { blocker: userId },
-        relations: ['blockedUser'],
-        withDeleted: true,
+        // relations: ['blockedUser'],
+        // withDeleted: true,
       })
-    ).map((blockedUser) => blockedUser.blockedUser.user_hash);
+    ).map((blockedUser) => blockedUser.blocked_user);
 
     const blockedPostsId: number[] = (
       await this.blockPostRepository.find({
