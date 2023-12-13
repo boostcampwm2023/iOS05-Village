@@ -99,23 +99,22 @@ final class ImagePageView: UIView {
     }
     
     private func setLayoutConstraints() {
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: self.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-        ])
+        setFullLayoutConstraint(child: scrollView, parent: self)
         
         NSLayoutConstraint.activate([
-            pageControl.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            pageControl.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor),
+            pageControl.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
         
+        setFullLayoutConstraint(child: imageStackView, parent: scrollView)
+    }
+    
+    private func setFullLayoutConstraint(child: UIView, parent: UIView) {
         NSLayoutConstraint.activate([
-            imageStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            imageStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            imageStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            imageStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+            child.topAnchor.constraint(equalTo: parent.topAnchor),
+            child.leadingAnchor.constraint(equalTo: parent.leadingAnchor),
+            child.trailingAnchor.constraint(equalTo: parent.trailingAnchor),
+            child.bottomAnchor.constraint(equalTo: parent.bottomAnchor)
         ])
     }
 
