@@ -259,8 +259,8 @@ private extension ChatRoomViewController {
     func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            keyboardStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            keyboardStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             keyBoardStackViewBottomConstraint
         ])
         
@@ -275,10 +275,10 @@ private extension ChatRoomViewController {
         ])
         
         NSLayoutConstraint.activate([
-            chatTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
+            chatTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
             chatTableView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor),
-            chatTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            chatTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            chatTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            chatTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
     }
     
@@ -373,8 +373,8 @@ private extension ChatRoomViewController {
         if post.isRequest == true {
             view.addSubview(self.requestPostView)
             NSLayoutConstraint.activate([
-                requestPostView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                requestPostView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                requestPostView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                requestPostView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
                 requestPostView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
                 requestPostView.heightAnchor.constraint(equalToConstant: 80),
                 chatTableView.topAnchor.constraint(equalTo: requestPostView.bottomAnchor)
@@ -384,8 +384,8 @@ private extension ChatRoomViewController {
         } else {
             view.addSubview(self.rentPostView)
             NSLayoutConstraint.activate([
-                rentPostView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                rentPostView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                rentPostView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                rentPostView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
                 rentPostView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
                 rentPostView.heightAnchor.constraint(equalToConstant: 80),
                 chatTableView.topAnchor.constraint(equalTo: rentPostView.bottomAnchor)
@@ -443,7 +443,7 @@ private extension ChatRoomViewController {
         keyBoardStackViewBottomConstraint = keyboardStackView
             .bottomAnchor
             .constraint(
-                equalTo: view.bottomAnchor,
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                 constant: -keyboardFrame.height
             )
         keyBoardStackViewBottomConstraint.isActive = true
