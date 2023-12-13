@@ -124,6 +124,7 @@ final class BlockedUserTableViewCell: UITableViewCell {
     func configureData(user: BlockedUserDTO) {
         guard let nickname = user.nickname, let imageURL = user.profileImageURL else {
             nicknameLabel.text = "(탈퇴한 회원)"
+            profileImageView.backgroundColor = .black
             return
         }
         configureImage(url: imageURL)
