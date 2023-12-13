@@ -18,7 +18,7 @@ final class SearchResultViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     
     private var viewModel = ViewModel()
-    private var titlePublisher = CurrentValueSubject<String, Never>("")
+    private var titlePublisher = PassthroughSubject<String, Never>()
     private let togglePublisher = PassthroughSubject<Void, Never>()
     private let scrollPublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
@@ -77,6 +77,8 @@ final class SearchResultViewController: UIViewController {
         definesPresentationContext = true
 
         setUI()
+        generateData()
+        bindViewModel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -133,7 +135,7 @@ extension SearchResultViewController {
     
     private func bindViewModel() {
         let input = ViewModel.Input(
-            postTitle: Just(self.postTitle).eraseToAnyPublisher(),
+            postTitle: self.titlePublisher.eraseToAnyPublisher(),
             toggleSubject: self.togglePublisher.eraseToAnyPublisher(),
             scrollEvent: self.scrollPublisher.eraseToAnyPublisher()
         )
@@ -148,7 +150,11 @@ extension SearchResultViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] postList in
-                self?.paginationFlag = false
+                if postList.isEmpty {
+                    self?.paginationFlag = false
+                } else {
+                    self?.paginationFlag = true
+                }
                 self?.addGenerateData(list: postList)
             }
             .store(in: &cancellableBag)
@@ -199,8 +205,6 @@ extension SearchResultViewController: UISearchResultsUpdating, UISearchBarDelega
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        generateData()
-        bindViewModel()
         titlePublisher.send(self.postTitle)
         self.requestSegmentedControl.isHidden = false
         self.listTableView.isHidden = false
