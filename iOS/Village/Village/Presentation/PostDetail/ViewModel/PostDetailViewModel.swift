@@ -83,10 +83,6 @@ final class PostDetailViewModel {
         )
     }
     
-}
-
-private extension PostDetailViewModel {
-    
     func getPost(id: Int) {
         let endpoint = APIEndPoints.getPost(id: id)
         
@@ -102,6 +98,10 @@ private extension PostDetailViewModel {
             }
         }
     }
+    
+}
+
+private extension PostDetailViewModel {
     
     func updatePost(id: Int) {
         let endpoint = APIEndPoints.getPost(id: id)
