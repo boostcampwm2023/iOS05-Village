@@ -44,6 +44,10 @@ final class BlockedUsersViewModel {
         getMyBlockedUsers()
     }
     
+    deinit {
+        PostNotificationPublisher.shared.publishPostRefreshAll()
+    }
+    
     private func getMyBlockedUsers() {
         let endpoint = APIEndPoints.getBlockedUsers()
         
