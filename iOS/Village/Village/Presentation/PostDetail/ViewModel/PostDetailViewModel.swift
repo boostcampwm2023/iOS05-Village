@@ -15,7 +15,7 @@ final class PostDetailViewModel {
     
     private let post = PassthroughSubject<PostResponseDTO, NetworkError>()
     private let user = PassthroughSubject<UserResponseDTO, NetworkError>()
-    private let imageData = PassthroughSubject<[Data], NetworkError>()
+    private let imageData = PassthroughSubject<[Data], Error>()
     private let roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
     private let moreOutput = PassthroughSubject<String, Never>()
     private let modifyOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
@@ -96,6 +96,7 @@ private extension PostDetailViewModel {
                 post.send(data)
                 self.userID = data.userID
                 self.getUser(id: self.userID)
+                self.getImageData(images: data.images)
             } catch let error as NetworkError {
                 post.send(completion: .failure(error))
             }
@@ -125,6 +126,30 @@ private extension PostDetailViewModel {
             } catch let error as NetworkError {
                 user.send(completion: .failure(error))
             }
+        }
+    }
+    
+    func getImageData(images: [String]) {
+        Task {
+            do {
+                let data = try await getData(urls: images)
+                imageData.send(data)
+            } catch {
+                imageData.send(completion: .failure(error))
+            }
+        }
+    }
+    
+    func getData(urls: [String]) async throws -> [Data] {
+        return try await withThrowingTaskGroup(of: Data.self, returning: [Data].self) { taskGroup in
+            urls.forEach { url in
+                taskGroup.addTask { try await APIProvider.shared.request(from: url) }
+            }
+            var imageData = [Data]()
+            for try await data in taskGroup {
+                imageData.append(data)
+            }
+            return imageData
         }
     }
     
@@ -205,7 +230,7 @@ extension PostDetailViewModel {
     struct Output {
         let post: AnyPublisher<PostResponseDTO, NetworkError>
         let user: AnyPublisher<UserResponseDTO, NetworkError>
-        let imageData: AnyPublisher<[Data], NetworkError>
+        let imageData: AnyPublisher<[Data], Error>
         let moreOutput: AnyPublisher<String, Never>
         let roomID: AnyPublisher<PostRoomResponseDTO, NetworkError>
         let reportOutput: AnyPublisher<(postID: Int, userID: String), Never>
