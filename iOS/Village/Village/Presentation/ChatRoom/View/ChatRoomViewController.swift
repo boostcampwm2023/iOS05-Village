@@ -244,6 +244,7 @@ private extension ChatRoomViewController {
     
     func setUI() {
         view.addSubview(chatTableView)
+        self.chatTableView.isHidden = true
         
         keyboardTextField.delegate = self
         
@@ -258,21 +259,23 @@ private extension ChatRoomViewController {
     func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            keyboardStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            keyboardStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             keyBoardStackViewBottomConstraint
         ])
         
 //        keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
         NSLayoutConstraint.activate([
-            keyboardTextField.heightAnchor.constraint(equalToConstant: 40),
-            keyboardTextField.leadingAnchor.constraint(equalTo: keyboardStackView.leadingAnchor, constant: 20)
+            keyboardTextField.heightAnchor.constraint(equalToConstant: 40)
         ])
         
-        keyboardSendButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        NSLayoutConstraint.activate([
+            keyboardSendButton.widthAnchor.constraint(equalToConstant: 40)
+        ])
         
         NSLayoutConstraint.activate([
+            chatTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
             chatTableView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor),
             chatTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             chatTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
@@ -395,6 +398,7 @@ private extension ChatRoomViewController {
                 self.chatTableView.scrollToRow(
                     at: IndexPath(row: self.viewModel.getLog().count-1, section: 0), at: .bottom, animated: false
                 )
+                self.chatTableView.isHidden = false
             }
         }
     }
@@ -439,7 +443,7 @@ private extension ChatRoomViewController {
         keyBoardStackViewBottomConstraint = keyboardStackView
             .bottomAnchor
             .constraint(
-                equalTo: view.bottomAnchor,
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                 constant: -keyboardFrame.height
             )
         keyBoardStackViewBottomConstraint.isActive = true
