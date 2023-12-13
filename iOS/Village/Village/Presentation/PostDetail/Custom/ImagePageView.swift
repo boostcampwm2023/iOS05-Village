@@ -9,8 +9,6 @@ import UIKit
 
 final class ImagePageView: UIView {
     
-    private var imageURL = [String]()
-    
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -60,29 +58,20 @@ final class ImagePageView: UIView {
         setLayoutConstraints()
     }
     
-    func setImageURL(_ url: [String]) {
-        self.imageURL = url
-        
-        configurePageControl()
-        configureImageViews()
+    func setContent(_ data: [Data]) {
+        configureImageViews(imageData: data)
+        configurePageControl(count: data.count)
     }
     
-    private func configureImageViews() {
+    private func configureImageViews(imageData: [Data]) {
         imageStackView.arrangedSubviews.forEach {
             $0.removeFromSuperview()
         }
-        for url in self.imageURL {
-            Task {
-                do {
-                    let data = try await APIProvider.shared.request(from: url)
-                    let imageView = generateImageView(data: data)
-                    imageStackView.addArrangedSubview(imageView)
-                    imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
-                    imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-                } catch let error {
-                    dump(error)
-                }
-            }
+        for data in imageData {
+            let imageView = generateImageView(data: data)
+            imageStackView.addArrangedSubview(imageView)
+            imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+            imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         }
     }
     
@@ -91,11 +80,31 @@ final class ImagePageView: UIView {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(data: data)
         imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, 
+                                                              action: #selector(presentImageDetailView(sender:))))
+        
         return imageView
     }
     
-    private func configurePageControl() {
-        pageControl.numberOfPages = imageURL.count
+    @objc
+    private func presentImageDetailView(sender: UITapGestureRecognizer) {
+        guard let imageView = sender.view as? UIImageView,
+              let data = imageView.image?.jpegData(compressionQuality: 1.0) else { return }
+        
+        let imageDetailView: ImageDetailView = {
+            let view = ImageDetailView(imageData: data)
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.alpha = 0
+            
+            return view
+        }()
+        addSubview(imageDetailView)
+        setFullLayoutConstraint(child: imageDetailView, parent: self)
+    }
+    
+    private func configurePageControl(count: Int) {
+        pageControl.numberOfPages = count
     }
     
     private func setLayoutConstraints() {

@@ -242,7 +242,6 @@ final class PostDetailViewController: UIViewController {
                                 startDate: post.startDate, 
                                 endDate: post.endDate,
                                 description: post.description)
-        imagePageView.setImageURL(post.images)
         priceLabel.setPrice(price: post.price)
     }
     
@@ -295,6 +294,7 @@ private extension PostDetailViewController {
         
         handlePost(output: output)
         handleUser(output: output)
+        handleImageData(output: output)
         handleRoomID(output: output)
         handleMore(output: output)
         handleModify(output: output)
@@ -341,7 +341,23 @@ private extension PostDetailViewController {
                 self?.chatButton.backgroundColor = .primary500
             }
             .store(in: &cancellableBag)
-    }    
+    }
+    
+    private func handleImageData(output: ViewModel.Output) {
+        output.imageData
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: { [weak self] imageData in
+                self?.imagePageView.setContent(imageData)
+            }
+            .store(in: &cancellableBag)
+    }
     
     private func handleRoomID(output: ViewModel.Output) {
         output.roomID.receive(on: DispatchQueue.main)
