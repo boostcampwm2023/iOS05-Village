@@ -266,7 +266,7 @@ final class PostDetailViewController: UIViewController {
         imagePageView.presentFullImage
             .sink { [weak self] imageData in
                 self?.imageDetailView.setImage(data: imageData)
-                UIView.animate(withDuration: 0.1, animations: {
+                UIView.animate(withDuration: 0.2, animations: {
                     self?.imageDetailView.alpha = 1
                 })
             }

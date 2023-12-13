@@ -46,7 +46,7 @@ final class ImageDetailView: UIView {
     
     @objc
     private func dismissAction() {
-        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
             self?.alpha = 0
         })
     }
