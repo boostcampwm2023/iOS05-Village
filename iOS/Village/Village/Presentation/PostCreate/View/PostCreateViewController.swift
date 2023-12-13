@@ -268,13 +268,17 @@ private extension PostCreateViewController {
         dateFormatter.dateFormat = ""
         guard var priceText = postCreatePriceView.priceTextField.text else { return }
         priceText = priceText.replacingOccurrences(of: ",", with: "")
+        var detailText = postCreateDetailView.detailTextView.text ?? ""
+        if detailText == "설명을 입력하세요." {
+            detailText = ""
+        }
         postInfoPublisher.send(
             PostModifyInfo(
                 title: postCreateTitleView.titleTextField.text ?? "",
                 startTime: postCreateStartTimeView.timeString,
                 endTime: postCreateEndTimeView.timeString,
                 price: priceText,
-                detail: postCreateDetailView.detailTextView.text ?? ""
+                detail: detailText
             )
         )
     }
