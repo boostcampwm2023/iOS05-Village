@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchRentTableViewCell: UITableViewCell {
+final class SearchRentTableViewCell: UITableViewCell {
 
     private let postSummaryView: RentPostSummaryView = {
         let view = RentPostSummaryView()
