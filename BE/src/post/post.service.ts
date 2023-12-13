@@ -50,6 +50,7 @@ export class PostService {
       await this.blockUserRepository.find({
         where: { blocker: userId },
         relations: ['blockedUser'],
+        withDeleted: true,
       })
     ).map((blockedUser) => blockedUser.blockedUser.user_hash);
 

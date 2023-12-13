@@ -73,7 +73,6 @@ export class UsersService {
   async deleteCascadingUser(userId, userHash) {
     await this.blockPostRepository.softDelete({ blocker: userHash });
     await this.blockUserRepository.softDelete({ blocker: userHash });
-    await this.blockUserRepository.softDelete({ blocked_user: userHash });
     await this.userRepository.softDelete({ id: userId });
   }
 
