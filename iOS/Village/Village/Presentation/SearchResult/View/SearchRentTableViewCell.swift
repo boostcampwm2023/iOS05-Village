@@ -26,6 +26,14 @@ class SearchRentTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        postSummaryView.postImageView.image = nil
+        postSummaryView.postTitleLabel.text = nil
+        postSummaryView.postPriceLabel.text = nil
+        postSummaryView.postAccessoryView.image = nil
+    }
+    
     func configureData(post: PostResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         postSummaryView.setPrice(price: post.price)

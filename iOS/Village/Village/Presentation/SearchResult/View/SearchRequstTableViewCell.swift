@@ -26,6 +26,13 @@ class SearchRequstTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        postSummaryView.postPeriodLabel.text = nil
+        postSummaryView.postTitleLabel.text = nil
+        postSummaryView.postAccessoryView.image = nil
+    }
+    
     func configureData(post: PostResponseDTO) {
         postSummaryView.postTitleLabel.text = post.title
         
