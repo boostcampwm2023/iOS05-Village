@@ -119,6 +119,7 @@
 		8F95CF9A2B0C7C440024631F /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF992B0C7C440024631F /* EndPoint.swift */; };
 		8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF9B2B0C81640024631F /* APIProvider.swift */; };
 		8F97D06C2B222EFA00A19754 /* OpponentChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */; };
+		8F9939552B29E1BD009FF9F8 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9939542B29E1BD009FF9F8 /* ImageCache.swift */; };
 		8FBB3BB92B26B431001876F5 /* GetAllReadResponseDTO .swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */; };
 		8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */; };
 		8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */; };
@@ -261,6 +262,7 @@
 		8F95CF992B0C7C440024631F /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
 		8F95CF9B2B0C81640024631F /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
 		8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentChatTableViewCell.swift; sourceTree = "<group>"; };
+		8F9939542B29E1BD009FF9F8 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GetAllReadResponseDTO .swift"; sourceTree = "<group>"; };
 		8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserTableViewCell.swift; sourceTree = "<group>"; };
 		8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatListResponseDTO.swift; sourceTree = "<group>"; };
@@ -602,6 +604,7 @@
 				59110F022B1714BE0009E9AC /* Village.entitlements */,
 				8F1B53332B0E037C006D8982 /* Domain */,
 				5975E98D2B03591E007CEF13 /* Data */,
+				8F9939532B29E1AD009FF9F8 /* Cache */,
 				8FC7FE762B06767600B91D3B /* Network */,
 				8FBE3AEC2B03547E00660530 /* Application */,
 				440FCC2B2B04EB830011B637 /* Common */,
@@ -807,6 +810,14 @@
 				445D62AF2B1DD6EC005DD3B1 /* AuthInterceptor.swift */,
 			);
 			path = APIProvider;
+			sourceTree = "<group>";
+		};
+		8F9939532B29E1AD009FF9F8 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				8F9939542B29E1BD009FF9F8 /* ImageCache.swift */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 		8FBB65C72B20584500C6A133 /* ViewModel */ = {
@@ -1205,6 +1216,7 @@
 				59E0C5FC2AFBA3FC0073D494 /* AppDelegate.swift in Sources */,
 				59AABDDF2B0E1AE1002F6D0E /* PostCreateTitleView.swift in Sources */,
 				8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */,
+				8F9939552B29E1BD009FF9F8 /* ImageCache.swift in Sources */,
 				444A509A2B0CE94E00454397 /* DateView.swift in Sources */,
 				59E2C1622B248AB9004428F7 /* MyHiddenPostsViewModel.swift in Sources */,
 				59D4DBDE2B06889300BBA2D5 /* TimePickerView.swift in Sources */,
