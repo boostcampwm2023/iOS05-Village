@@ -13,8 +13,8 @@ final class PostCreateViewController: UIViewController {
     
     typealias ViewModel = PostCreateViewModel
     
-    private let viewModel: PostCreateViewModel
-    var editButtonTappedSubject = PassthroughSubject<Void, Never>()
+    private let viewModel: ViewModel
+    let editButtonTappedSubject = PassthroughSubject<Void, Never>()
     private let editSetSubject = PassthroughSubject<Void, Never>()
     private let postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
     private let selectedImagePublisher = PassthroughSubject<[Data], Never>()
@@ -156,7 +156,7 @@ final class PostCreateViewController: UIViewController {
         }
     }
     
-    init(viewModel: PostCreateViewModel) {
+    init(viewModel: ViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -165,7 +165,7 @@ final class PostCreateViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var cancellableBag: Set<AnyCancellable> = []
+    private var cancellableBag: Set<AnyCancellable> = []
     
     private func bind() {
         let input = ViewModel.Input(
@@ -268,13 +268,17 @@ private extension PostCreateViewController {
         dateFormatter.dateFormat = ""
         guard var priceText = postCreatePriceView.priceTextField.text else { return }
         priceText = priceText.replacingOccurrences(of: ",", with: "")
+        var detailText = postCreateDetailView.detailTextView.text ?? ""
+        if detailText == "설명을 입력하세요." {
+            detailText = ""
+        }
         postInfoPublisher.send(
             PostModifyInfo(
                 title: postCreateTitleView.titleTextField.text ?? "",
                 startTime: postCreateStartTimeView.timeString,
                 endTime: postCreateEndTimeView.timeString,
                 price: priceText,
-                detail: postCreateDetailView.detailTextView.text ?? ""
+                detail: detailText
             )
         )
     }
