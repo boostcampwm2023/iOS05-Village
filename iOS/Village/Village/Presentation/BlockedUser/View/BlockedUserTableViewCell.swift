@@ -87,6 +87,13 @@ final class BlockedUserTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        profileImageView.image = nil
+        nicknameLabel.text = nil
+        blockedButton.configuration?.baseBackgroundColor = .primary500
+        blockedButton.configuration?.attributedTitle = unblockTitleString
+    }
+    
     private func setUI() {
         self.contentView.addSubview(profileImageView)
         self.contentView.addSubview(nicknameLabel)
