@@ -15,6 +15,7 @@ final class PostDetailViewModel {
     
     private let post = PassthroughSubject<PostResponseDTO, NetworkError>()
     private let user = PassthroughSubject<UserResponseDTO, NetworkError>()
+    private let imageData = PassthroughSubject<[Data], Error>()
     private let roomID = PassthroughSubject<PostRoomResponseDTO, NetworkError>()
     private let moreOutput = PassthroughSubject<String, Never>()
     private let modifyOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
@@ -72,6 +73,7 @@ final class PostDetailViewModel {
         return Output(
             post: post.eraseToAnyPublisher(),
             user: user.eraseToAnyPublisher(),
+            imageData: imageData.eraseToAnyPublisher(),
             moreOutput: moreOutput.eraseToAnyPublisher(),
             roomID: roomID.eraseToAnyPublisher(),
             reportOutput: reportOutput.eraseToAnyPublisher(),
@@ -81,7 +83,6 @@ final class PostDetailViewModel {
         )
     }
     
-    // TODO: Private 해주세요
     func getPost(id: Int) {
         let endpoint = APIEndPoints.getPost(id: id)
         
@@ -91,11 +92,16 @@ final class PostDetailViewModel {
                 post.send(data)
                 self.userID = data.userID
                 self.getUser(id: self.userID)
+                self.getImageData(images: data.images)
             } catch let error as NetworkError {
                 post.send(completion: .failure(error))
             }
         }
     }
+    
+}
+
+private extension PostDetailViewModel {
     
     func updatePost(id: Int) {
         let endpoint = APIEndPoints.getPost(id: id)
@@ -110,7 +116,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func getUser(id: String) {
+    func getUser(id: String) {
         let endpoint = APIEndPoints.getUser(id: id)
         
         Task {
@@ -123,7 +129,31 @@ final class PostDetailViewModel {
         }
     }
     
-    private func createChatRoom() {
+    func getImageData(images: [String]) {
+        Task {
+            do {
+                let data = try await getData(urls: images)
+                imageData.send(data)
+            } catch {
+                imageData.send(completion: .failure(error))
+            }
+        }
+    }
+    
+    func getData(urls: [String]) async throws -> [Data] {
+        return try await withThrowingTaskGroup(of: Data.self, returning: [Data].self) { taskGroup in
+            urls.forEach { url in
+                taskGroup.addTask { try await APIProvider.shared.request(from: url) }
+            }
+            var imageData = [Data]()
+            for try await data in taskGroup {
+                imageData.append(data)
+            }
+            return imageData
+        }
+    }
+    
+    func createChatRoom() {
         let request = PostRoomRequestDTO(writer: self.userID, postID: self.postID)
         let endpoint = APIEndPoints.postCreateChatRoom(with: request)
         Task {
@@ -137,7 +167,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func deletePost() {
+    func deletePost() {
         let endpoint = APIEndPoints.deletePost(with: self.postID)
         
         Task {
@@ -151,7 +181,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func hidePost() {
+    func hidePost() {
         let endpoint = APIEndPoints.hidePost(postID: self.postID)
         
         Task {
@@ -167,7 +197,7 @@ final class PostDetailViewModel {
         }
     }
     
-    private func blockUser() {
+    func blockUser() {
         let endpoint = APIEndPoints.blockUser(userID: self.userID)
         
         Task {
@@ -200,6 +230,7 @@ extension PostDetailViewModel {
     struct Output {
         let post: AnyPublisher<PostResponseDTO, NetworkError>
         let user: AnyPublisher<UserResponseDTO, NetworkError>
+        let imageData: AnyPublisher<[Data], Error>
         let moreOutput: AnyPublisher<String, Never>
         let roomID: AnyPublisher<PostRoomResponseDTO, NetworkError>
         let reportOutput: AnyPublisher<(postID: Int, userID: String), Never>

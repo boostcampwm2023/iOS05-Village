@@ -42,6 +42,7 @@
 		44C1F5E62B0FE37C0047A436 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5E52B0FE37C0047A436 /* PostDetailViewModel.swift */; };
 		44C1F5ED2B0FE44A0047A436 /* UserResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */; };
 		44C1F5F32B0FF63C0047A436 /* PostResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */; };
+		44FC33692B2986E900FF4D65 /* ImageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44FC33682B2986E900FF4D65 /* ImageDetailView.swift */; };
 		59110EFB2B15F3D60009E9AC /* ChatRoomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110EFA2B15F3D60009E9AC /* ChatRoomTableViewCell.swift */; };
 		59110EFD2B15F5340009E9AC /* UITableViewCell+Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */; };
 		59110F042B1725C20009E9AC /* NotificationName+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110F032B1725C20009E9AC /* NotificationName+.swift */; };
@@ -180,6 +181,7 @@
 		44C1F5E52B0FE37C0047A436 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
 		44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResponseDTO.swift; sourceTree = "<group>"; };
 		44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostResponseDTO.swift; sourceTree = "<group>"; };
+		44FC33682B2986E900FF4D65 /* ImageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailView.swift; sourceTree = "<group>"; };
 		59110EFA2B15F3D60009E9AC /* ChatRoomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomTableViewCell.swift; sourceTree = "<group>"; };
 		59110EFC2B15F5340009E9AC /* UITableViewCell+Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+Identifier.swift"; sourceTree = "<group>"; };
 		59110F022B1714BE0009E9AC /* Village.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Village.entitlements; sourceTree = "<group>"; };
@@ -401,6 +403,7 @@
 			isa = PBXGroup;
 			children = (
 				444A508F2B0C60F900454397 /* ImagePageView.swift */,
+				44FC33682B2986E900FF4D65 /* ImageDetailView.swift */,
 				444A50972B0CE25200454397 /* DurationView.swift */,
 				444A50992B0CE94E00454397 /* DateView.swift */,
 				446362C82B0DF9E800B74DA7 /* PriceLabel.swift */,
@@ -1218,6 +1221,7 @@
 				8F8F0B8B2B1D985A00BE97D2 /* BlockedUserViewController.swift in Sources */,
 				8F8F0B8D2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift in Sources */,
 				59AADE382B22086400C3E17D /* EditProfileViewModel.swift in Sources */,
+				44FC33692B2986E900FF4D65 /* ImageDetailView.swift in Sources */,
 				8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */,
 				59A384642B26093600660B70 /* ReportViewModel.swift in Sources */,
 				59A384662B260DB000660B70 /* ReportDTO.swift in Sources */,
