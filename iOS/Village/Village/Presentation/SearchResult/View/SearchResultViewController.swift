@@ -106,7 +106,6 @@ extension SearchResultViewController {
     private func setNavigationBarUI() {
         searchController.searchBar.text = self.postTitle
         searchController.searchBar.placeholder = "검색어를 입력해주세요."
-        searchController.searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width - 70, height: 0)
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.hidesNavigationBarDuringPresentation = false
@@ -119,17 +118,17 @@ extension SearchResultViewController {
     
     private func configureConstraints() {
         NSLayoutConstraint.activate([
-            requestSegmentedControl.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10),
-            requestSegmentedControl.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
-            requestSegmentedControl.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 10),
+            requestSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            requestSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            requestSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             requestSegmentedControl.heightAnchor.constraint(equalToConstant: 35)
         ])
         
         NSLayoutConstraint.activate([
-            listTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            listTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            listTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            listTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             listTableView.topAnchor.constraint(equalTo: requestSegmentedControl.bottomAnchor, constant: 5),
-            listTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 5)
+            listTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5)
         ])
     }
     

@@ -95,8 +95,8 @@ private extension EditProfileViewController {
         ])
         
         NSLayoutConstraint.activate([
-            nicknameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            nicknameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            nicknameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            nicknameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             nicknameTextField.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 20)
         ])
     }

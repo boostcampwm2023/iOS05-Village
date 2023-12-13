@@ -21,6 +21,13 @@ final class MyPageViewController: UIViewController {
     private let editProfileSubject = PassthroughSubject<Void, Never>()
     private let refreshSubject = PassthroughSubject<Void, Never>()
     
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return scrollView
+    }()
+    
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -86,6 +93,15 @@ final class MyPageViewController: UIViewController {
     }()
     
     private let profileStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.spacing = 15
+        
+        return stackView
+    }()
+    
+    private let profileInfoStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -240,53 +256,82 @@ private extension MyPageViewController {
     }
     
     func setUI() {
-        view.addSubview(profileImageView)
+        view.addSubview(scrollView)
         
-        view.addSubview(profileStackView)
-        profileStackView.addArrangedSubview(nicknameLabel)
-        profileStackView.setCustomSpacing(2, after: nicknameLabel)
-        profileStackView.addArrangedSubview(hashIDLabel)
-        profileStackView.setCustomSpacing(6, after: hashIDLabel)
-        profileStackView.addArrangedSubview(profileEditButton)
+        scrollView.addSubview(profileStackView)
+        profileStackView.addArrangedSubview(profileImageView)
+        profileStackView.addArrangedSubview(profileInfoStackView)
         
-        view.addSubview(activityStackView)
+        profileInfoStackView.addArrangedSubview(nicknameLabel)
+        profileInfoStackView.setCustomSpacing(2, after: nicknameLabel)
+        profileInfoStackView.addArrangedSubview(hashIDLabel)
+        profileInfoStackView.setCustomSpacing(6, after: hashIDLabel)
+        profileInfoStackView.addArrangedSubview(profileEditButton)
+        
+        scrollView.addSubview(activityStackView)
         activityStackView.addArrangedSubview(activityLabel)
         activityStackView.addArrangedSubview(myPostButton)
         activityStackView.addArrangedSubview(hiddenPostButton)
         activityStackView.addArrangedSubview(blockedUsersButton)
         
-        view.addSubview(accountStackView)
+        scrollView.addSubview(accountStackView)
         accountStackView.addArrangedSubview(accountLabel)
         accountStackView.addArrangedSubview(logoutButton)
         accountStackView.addArrangedSubview(deleteAccountButton)
     }
     
     func setConstraints() {
-                
         NSLayoutConstraint.activate([
-            profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 6),
-            profileImageView.widthAnchor.constraint(equalToConstant: 96),
-            profileImageView.heightAnchor.constraint(equalToConstant: 96)
+            scrollView.leadingAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            scrollView.topAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            scrollView.bottomAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            scrollView.trailingAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
         ])
         
         NSLayoutConstraint.activate([
-            profileStackView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15),
-            profileStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0)
+            profileStackView.leadingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            profileStackView.topAnchor
+                .constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 6),
+            profileStackView.trailingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
         ])
         
         NSLayoutConstraint.activate([
-            activityStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            activityStackView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 35),
-            activityStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            profileImageView.widthAnchor
+                .constraint(equalToConstant: 96),
+            profileImageView.heightAnchor
+                .constraint(equalToConstant: 96)
         ])
         
         NSLayoutConstraint.activate([
-            accountStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            accountStackView.topAnchor.constraint(equalTo: activityStackView.bottomAnchor, constant: 40),
-            accountStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            activityStackView.leadingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            activityStackView.topAnchor
+                .constraint(equalTo: profileStackView.bottomAnchor, constant: 35),
+            activityStackView.trailingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
         ])
-
+        
+        NSLayoutConstraint.activate([
+            accountStackView.leadingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            accountStackView.topAnchor
+                .constraint(equalTo: activityStackView.bottomAnchor, constant: 40),
+            accountStackView.trailingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
+        ])
+        
+        NSLayoutConstraint.activate([
+            scrollView.contentLayoutGuide.topAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            scrollView.contentLayoutGuide.bottomAnchor
+                .constraint(equalTo: accountStackView.bottomAnchor, constant: 10)
+        ])
     }
     
     func bindViewModel() {
@@ -296,7 +341,13 @@ private extension MyPageViewController {
             editProfileSubject: editProfileSubject.eraseToAnyPublisher(),
             refreshInputSubject: refreshSubject.eraseToAnyPublisher()
         ))
-        
+        handleLogout(output: output)
+        handleDeleteAccount(output: output)
+        handelProfileInfo(output: output)
+        handleEditProfile(output: output)
+    }
+    
+    func handleLogout(output: ViewModel.Output) {
         output.logoutSucceed
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -310,7 +361,9 @@ private extension MyPageViewController {
                 NotificationCenter.default.post(Notification(name: .shouldLogin))
             }
             .store(in: &cancellableBag)
-        
+    }
+    
+    func handleDeleteAccount(output: ViewModel.Output) {
         output.deleteAccountSucceed
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -325,6 +378,9 @@ private extension MyPageViewController {
             }
             .store(in: &cancellableBag)
         
+    }
+    
+    func handelProfileInfo(output: ViewModel.Output) {
         output.profileInfoOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profileInfo in
@@ -336,7 +392,9 @@ private extension MyPageViewController {
                 self?.hashIDLabel.text = "#" + userID
             }
             .store(in: &cancellableBag)
-        
+    }
+    
+    func handleEditProfile(output: ViewModel.Output) {
         output.editProfileOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profileInfo in
