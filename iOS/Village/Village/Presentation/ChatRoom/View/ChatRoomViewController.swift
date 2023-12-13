@@ -259,7 +259,7 @@ private extension ChatRoomViewController {
     func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            keyboardStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             keyboardStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             keyBoardStackViewBottomConstraint
         ])
@@ -267,11 +267,12 @@ private extension ChatRoomViewController {
 //        keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
         NSLayoutConstraint.activate([
-            keyboardTextField.heightAnchor.constraint(equalToConstant: 40),
-            keyboardTextField.leadingAnchor.constraint(equalTo: keyboardStackView.leadingAnchor, constant: 20)
+            keyboardTextField.heightAnchor.constraint(equalToConstant: 40)
         ])
         
-        keyboardSendButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        NSLayoutConstraint.activate([
+            keyboardSendButton.widthAnchor.constraint(equalToConstant: 40)
+        ])
         
         NSLayoutConstraint.activate([
             chatTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
