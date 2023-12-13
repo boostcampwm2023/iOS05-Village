@@ -205,6 +205,12 @@ extension SearchResultViewController: UISearchResultsUpdating, UISearchBarDelega
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if !self.postTitle.isEmpty {
+            var snapshot = dataSource.snapshot()
+            snapshot.deleteAllItems()
+            snapshot.appendSections([.list])
+            dataSource.apply(snapshot)
+        }
         titlePublisher.send(self.postTitle)
         self.requestSegmentedControl.isHidden = false
         self.listTableView.isHidden = false
