@@ -256,7 +256,6 @@ private extension MyPageViewController {
     }
     
     func setUI() {
-        
         view.addSubview(scrollView)
         
         scrollView.addSubview(profileStackView)
@@ -333,7 +332,6 @@ private extension MyPageViewController {
             scrollView.contentLayoutGuide.bottomAnchor
                 .constraint(equalTo: accountStackView.bottomAnchor, constant: 10)
         ])
-
     }
     
     func bindViewModel() {
@@ -343,7 +341,13 @@ private extension MyPageViewController {
             editProfileSubject: editProfileSubject.eraseToAnyPublisher(),
             refreshInputSubject: refreshSubject.eraseToAnyPublisher()
         ))
-        
+        handleLogout(output: output)
+        handleDeleteAccount(output: output)
+        handelProfileInfo(output: output)
+        handleEditProfile(output: output)
+    }
+    
+    func handleLogout(output: ViewModel.Output) {
         output.logoutSucceed
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -357,7 +361,9 @@ private extension MyPageViewController {
                 NotificationCenter.default.post(Notification(name: .shouldLogin))
             }
             .store(in: &cancellableBag)
-        
+    }
+    
+    func handleDeleteAccount(output: ViewModel.Output) {
         output.deleteAccountSucceed
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -372,6 +378,9 @@ private extension MyPageViewController {
             }
             .store(in: &cancellableBag)
         
+    }
+    
+    func handelProfileInfo(output: ViewModel.Output) {
         output.profileInfoOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profileInfo in
@@ -383,7 +392,9 @@ private extension MyPageViewController {
                 self?.hashIDLabel.text = "#" + userID
             }
             .store(in: &cancellableBag)
-        
+    }
+    
+    func handleEditProfile(output: ViewModel.Output) {
         output.editProfileOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] profileInfo in
