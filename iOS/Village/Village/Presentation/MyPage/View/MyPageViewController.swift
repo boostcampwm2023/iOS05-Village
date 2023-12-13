@@ -21,6 +21,13 @@ final class MyPageViewController: UIViewController {
     private let editProfileSubject = PassthroughSubject<Void, Never>()
     private let refreshSubject = PassthroughSubject<Void, Never>()
     
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return scrollView
+    }()
+    
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -250,7 +257,9 @@ private extension MyPageViewController {
     
     func setUI() {
         
-        view.addSubview(profileStackView)
+        view.addSubview(scrollView)
+        
+        scrollView.addSubview(profileStackView)
         profileStackView.addArrangedSubview(profileImageView)
         profileStackView.addArrangedSubview(profileInfoStackView)
         
@@ -260,13 +269,13 @@ private extension MyPageViewController {
         profileInfoStackView.setCustomSpacing(6, after: hashIDLabel)
         profileInfoStackView.addArrangedSubview(profileEditButton)
         
-        view.addSubview(activityStackView)
+        scrollView.addSubview(activityStackView)
         activityStackView.addArrangedSubview(activityLabel)
         activityStackView.addArrangedSubview(myPostButton)
         activityStackView.addArrangedSubview(hiddenPostButton)
         activityStackView.addArrangedSubview(blockedUsersButton)
         
-        view.addSubview(accountStackView)
+        scrollView.addSubview(accountStackView)
         accountStackView.addArrangedSubview(accountLabel)
         accountStackView.addArrangedSubview(logoutButton)
         accountStackView.addArrangedSubview(deleteAccountButton)
@@ -274,25 +283,55 @@ private extension MyPageViewController {
     
     func setConstraints() {
         NSLayoutConstraint.activate([
-            profileStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            profileStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 6)
+            scrollView.leadingAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            scrollView.topAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            scrollView.bottomAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            scrollView.trailingAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
         ])
         
         NSLayoutConstraint.activate([
-            profileImageView.widthAnchor.constraint(equalToConstant: 96),
-            profileImageView.heightAnchor.constraint(equalToConstant: 96)
+            profileStackView.leadingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            profileStackView.topAnchor
+                .constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 6),
+            profileStackView.trailingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
         ])
         
         NSLayoutConstraint.activate([
-            activityStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            activityStackView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 35),
-            activityStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            profileImageView.widthAnchor
+                .constraint(equalToConstant: 96),
+            profileImageView.heightAnchor
+                .constraint(equalToConstant: 96)
         ])
         
         NSLayoutConstraint.activate([
-            accountStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            accountStackView.topAnchor.constraint(equalTo: activityStackView.bottomAnchor, constant: 40),
-            accountStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            activityStackView.leadingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            activityStackView.topAnchor
+                .constraint(equalTo: profileStackView.bottomAnchor, constant: 35),
+            activityStackView.trailingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
+        ])
+        
+        NSLayoutConstraint.activate([
+            accountStackView.leadingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            accountStackView.topAnchor
+                .constraint(equalTo: activityStackView.bottomAnchor, constant: 40),
+            accountStackView.trailingAnchor
+                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
+        ])
+        
+        NSLayoutConstraint.activate([
+            scrollView.contentLayoutGuide.topAnchor
+                .constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            scrollView.contentLayoutGuide.bottomAnchor
+                .constraint(equalTo: accountStackView.bottomAnchor, constant: 10)
         ])
 
     }
