@@ -25,7 +25,6 @@ final class HomeViewController: UIViewController {
     }
     private let refresh = CurrentValueSubject<PostType, Never>(.rent)
     private let pagination = PassthroughSubject<PostType, Never>()
-    private var paginationFlag: Bool = true
     
     private let viewModel = ViewModel()
     
@@ -52,8 +51,12 @@ final class HomeViewController: UIViewController {
     private lazy var rentDataSource = PostDataSource(
         tableView: rentPostTableView,
         cellProvider: { [weak self] (tableView, indexPath, postDTO) in
-            if let cell = tableView.dequeueReusableCell(withIdentifier: RentPostTableViewCell.identifier,
+            if let self = self,
+               let cell = tableView.dequeueReusableCell(withIdentifier: RentPostTableViewCell.identifier,
                                                         for: indexPath) as? RentPostTableViewCell {
+                if shouldPaginate(indexPath: indexPath) {
+                    pagination.send(postType)
+                }
                 cell.configureData(post: postDTO)
                 return cell
             }
@@ -63,9 +66,14 @@ final class HomeViewController: UIViewController {
     private lazy var requestDataSource = PostDataSource(
         tableView: requestPostTableView,
         cellProvider: { [weak self] (tableView, indexPath, postDTO) in
-            if let cell = tableView.dequeueReusableCell(withIdentifier: RequestPostTableViewCell.identifier,
+            if let self = self,
+               let cell = tableView.dequeueReusableCell(withIdentifier: RequestPostTableViewCell.identifier,
                                                         for: indexPath) as? RequestPostTableViewCell {
+                if shouldPaginate(indexPath: indexPath) {
+                    pagination.send(postType)
+                }
                 cell.configureData(post: postDTO)
+                
                 return cell
             }
             return UITableViewCell()
@@ -186,11 +194,6 @@ final class HomeViewController: UIViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] postList in
-                if postList.isEmpty {
-                    self?.paginationFlag = false
-                } else {
-                    self?.paginationFlag = true
-                }
                 self?.appendPost(items: postList)
             }
             .store(in: &cancellableBag)
@@ -425,10 +428,8 @@ extension HomeViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if paginationFlag && scrollView.contentOffset.y > currentTableView.contentSize.height - 1300 {
-            pagination.send(postType)
-        }
+    func shouldPaginate(indexPath: IndexPath) -> Bool {
+        indexPath.row == currentDataSource.snapshot().numberOfItems - 5
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

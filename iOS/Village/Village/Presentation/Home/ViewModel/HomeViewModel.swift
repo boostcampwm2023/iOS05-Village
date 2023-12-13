@@ -20,6 +20,9 @@ final class HomeViewModel {
     private let editedPost = PassthroughSubject<Post, Never>()
     private let hiddenChanged = PassthroughSubject<Void, Never>()
     
+    private var isRentLastPage = false
+    private var isRequestLastPage = false
+    
     private var lastRentPostID: String?
     private var lastRequestPostID: String?
     
@@ -52,7 +55,9 @@ final class HomeViewModel {
         input.pagination
             .sink { [weak self] type in
                 guard let self = self else { return }
-                self.pagination(type: type)
+                if (type == .rent && !isRentLastPage) || (type == .request && !isRequestLastPage) {
+                    self.pagination(type: type)
+                }
             }
             .store(in: &cancellableBag)
     }
@@ -119,8 +124,10 @@ private extension HomeViewModel {
     
     func refresh(type: PostType) {
         if type == .rent {
+            isRentLastPage = false
             lastRentPostID = nil
         } else {
+            isRequestLastPage = false
             lastRequestPostID = nil
         }
         
@@ -181,7 +188,14 @@ private extension HomeViewModel {
         let endpoint = APIEndPoints.getPosts(queryParameter: PostListRequestDTO(requestFilter: filter,
                                                                                 page: lastPostID))
         
-        guard let data = try await APIProvider.shared.request(with: endpoint) else { return [] }
+        guard let data = try await APIProvider.shared.request(with: endpoint) else {
+            if type == .rent {
+                isRentLastPage = true
+            } else {
+                isRequestLastPage = true
+            }
+            return []
+        }
         return data
     }
     
