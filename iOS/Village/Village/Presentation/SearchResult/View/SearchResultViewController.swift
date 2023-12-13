@@ -18,7 +18,7 @@ final class SearchResultViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     
     private var viewModel = ViewModel()
-    private var titlePublisher = CurrentValueSubject<String, Never>("")
+    private var titlePublisher = PassthroughSubject<String, Never>()
     private let togglePublisher = PassthroughSubject<Void, Never>()
     private let scrollPublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
@@ -77,6 +77,8 @@ final class SearchResultViewController: UIViewController {
         definesPresentationContext = true
 
         setUI()
+        generateData()
+        bindViewModel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -103,6 +105,7 @@ extension SearchResultViewController {
     
     private func setNavigationBarUI() {
         searchController.searchBar.text = self.postTitle
+        searchController.searchBar.placeholder = "검색어를 입력해주세요."
         searchController.searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width - 70, height: 0)
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
@@ -132,7 +135,7 @@ extension SearchResultViewController {
     
     private func bindViewModel() {
         let input = ViewModel.Input(
-            postTitle: Just(self.postTitle).eraseToAnyPublisher(),
+            postTitle: self.titlePublisher.eraseToAnyPublisher(),
             toggleSubject: self.togglePublisher.eraseToAnyPublisher(),
             scrollEvent: self.scrollPublisher.eraseToAnyPublisher()
         )
@@ -147,7 +150,11 @@ extension SearchResultViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] postList in
-                self?.paginationFlag = false
+                if postList.isEmpty {
+                    self?.paginationFlag = false
+                } else {
+                    self?.paginationFlag = true
+                }
                 self?.addGenerateData(list: postList)
             }
             .store(in: &cancellableBag)
@@ -198,8 +205,12 @@ extension SearchResultViewController: UISearchResultsUpdating, UISearchBarDelega
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        generateData()
-        bindViewModel()
+        if !self.postTitle.isEmpty {
+            var snapshot = dataSource.snapshot()
+            snapshot.deleteAllItems()
+            snapshot.appendSections([.list])
+            dataSource.apply(snapshot)
+        }
         titlePublisher.send(self.postTitle)
         self.requestSegmentedControl.isHidden = false
         self.listTableView.isHidden = false

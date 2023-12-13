@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchRequstTableViewCell: UITableViewCell {
+final class SearchRequstTableViewCell: UITableViewCell {
 
     private let postSummaryView: RequestPostSummaryView = {
         let view = RequestPostSummaryView()
@@ -24,6 +24,13 @@ class SearchRequstTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        postSummaryView.postPeriodLabel.text = nil
+        postSummaryView.postTitleLabel.text = nil
+        postSummaryView.postAccessoryView.image = nil
     }
     
     func configureData(post: PostResponseDTO) {

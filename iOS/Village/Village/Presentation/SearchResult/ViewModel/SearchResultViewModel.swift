@@ -11,7 +11,7 @@ import Combine
 final class SearchResultViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private var searchResultList = PassthroughSubject<[PostResponseDTO], NetworkError>()
+    private let searchResultList = PassthroughSubject<[PostResponseDTO], NetworkError>()
     private var postTitle: String = ""
     private var lastPostID: String = ""
     
@@ -95,13 +95,13 @@ final class SearchResultViewModel {
 extension SearchResultViewModel {
     
     struct Input {
-        var postTitle: AnyPublisher<String, Never>
-        var toggleSubject: AnyPublisher<Void, Never>
-        var scrollEvent: AnyPublisher<Void, Never>
+        let postTitle: AnyPublisher<String, Never>
+        let toggleSubject: AnyPublisher<Void, Never>
+        let scrollEvent: AnyPublisher<Void, Never>
     }
     
     struct Output {
-        var searchResultList: AnyPublisher<[PostResponseDTO], NetworkError>
+        let searchResultList: AnyPublisher<[PostResponseDTO], NetworkError>
     }
     
 }
