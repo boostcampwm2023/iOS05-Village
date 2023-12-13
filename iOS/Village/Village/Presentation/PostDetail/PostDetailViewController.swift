@@ -49,6 +49,14 @@ final class PostDetailViewController: UIViewController {
         return imagePageView
     }()
     
+    private lazy var imageDetailView: ImageDetailView = {
+        let view = ImageDetailView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0
+        
+        return view
+    }()
+    
     private lazy var postContentView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -180,6 +188,7 @@ final class PostDetailViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         bindingViewModel()
+        bindImagePageView()
         configureUI()
         configureNavigationItem()
     }
@@ -252,6 +261,17 @@ final class PostDetailViewController: UIViewController {
             userInfoView.setContent(imageURL: nil, nickname: "(탈퇴한 회원)")
         }
     }
+    
+    private func bindImagePageView() {
+        imagePageView.presentFullImage
+            .sink { [weak self] imageData in
+                self?.imageDetailView.setImage(data: imageData)
+                UIView.animate(withDuration: 0.1, animations: {
+                    self?.imageDetailView.alpha = 1
+                })
+            }
+            .store(in: &cancellableBag)
+    }
 
 }
 
@@ -260,6 +280,7 @@ private extension PostDetailViewController {
     func configureUI() {
         view.addSubview(scrollView)
         view.addSubview(footerView)
+        view.addSubview(imageDetailView)
         scrollView.addSubview(scrollViewContainerView)
         scrollViewContainerView.addArrangedSubview(imagePageView)
         scrollViewContainerView.addArrangedSubview(postContentView)
@@ -468,6 +489,13 @@ private extension PostDetailViewController {
             footerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             footerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             footerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            imageDetailView.topAnchor.constraint(equalTo: view.topAnchor),
+            imageDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            imageDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            imageDetailView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         chatButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor).isActive = true
