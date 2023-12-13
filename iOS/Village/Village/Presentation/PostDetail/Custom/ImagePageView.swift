@@ -16,12 +16,14 @@ final class ImagePageView: UIView {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.isPagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
+        
         return scrollView
     }()
     
     private var imageStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        
         return stackView
     }()
     
@@ -32,6 +34,7 @@ final class ImagePageView: UIView {
         pageControl.currentPageIndicatorTintColor = .primary500
         pageControl.pageIndicatorTintColor = .secondaryLabel
         pageControl.backgroundStyle = .minimal
+        
         return pageControl
     }()
     
