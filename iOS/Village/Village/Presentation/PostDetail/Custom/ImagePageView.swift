@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import Combine
 
 final class ImagePageView: UIView {
+    
+    var presentFullImage = PassthroughSubject<Data, Never>()
     
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -82,25 +85,17 @@ final class ImagePageView: UIView {
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, 
-                                                              action: #selector(presentImageDetailView(sender:))))
+                                                              action: #selector(showFullImage(sender:))))
         
         return imageView
     }
     
     @objc
-    private func presentImageDetailView(sender: UITapGestureRecognizer) {
+    private func showFullImage(sender: UITapGestureRecognizer) {
         guard let imageView = sender.view as? UIImageView,
-              let data = imageView.image?.jpegData(compressionQuality: 1.0) else { return }
+              let data = imageView.image?.pngData() else { return }
         
-        let imageDetailView: ImageDetailView = {
-            let view = ImageDetailView(imageData: data)
-            view.translatesAutoresizingMaskIntoConstraints = false
-            view.alpha = 0
-            
-            return view
-        }()
-        addSubview(imageDetailView)
-        setFullLayoutConstraint(child: imageDetailView, parent: self)
+        presentFullImage.send(data)
     }
     
     private func configurePageControl(count: Int) {
@@ -115,7 +110,12 @@ final class ImagePageView: UIView {
             pageControl.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
         
-        setFullLayoutConstraint(child: imageStackView, parent: scrollView)
+        NSLayoutConstraint.activate([
+            imageStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            imageStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            imageStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            imageStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+        ])
     }
     
     private func setFullLayoutConstraint(child: UIView, parent: UIView) {
