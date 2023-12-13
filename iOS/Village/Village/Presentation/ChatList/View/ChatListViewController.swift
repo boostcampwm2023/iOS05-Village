@@ -122,10 +122,10 @@ extension ChatListViewController {
     
     private func configureConstraints() {
         NSLayoutConstraint.activate([
-            chatListTableView.topAnchor.constraint(equalTo: view.topAnchor),
-            chatListTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            chatListTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            chatListTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            chatListTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            chatListTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            chatListTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            chatListTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
