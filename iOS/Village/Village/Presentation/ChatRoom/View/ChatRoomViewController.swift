@@ -244,6 +244,7 @@ private extension ChatRoomViewController {
     
     func setUI() {
         view.addSubview(chatTableView)
+        self.chatTableView.isHidden = true
         
         keyboardTextField.delegate = self
         
@@ -273,6 +274,7 @@ private extension ChatRoomViewController {
         keyboardSendButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
         NSLayoutConstraint.activate([
+            chatTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
             chatTableView.bottomAnchor.constraint(equalTo: keyboardStackView.topAnchor),
             chatTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             chatTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -395,6 +397,7 @@ private extension ChatRoomViewController {
                 self.chatTableView.scrollToRow(
                     at: IndexPath(row: self.viewModel.getLog().count-1, section: 0), at: .bottom, animated: false
                 )
+                self.chatTableView.isHidden = false
             }
         }
     }
