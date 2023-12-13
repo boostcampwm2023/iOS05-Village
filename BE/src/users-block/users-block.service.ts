@@ -5,6 +5,12 @@ import { Repository } from 'typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 
+interface BlockedUser {
+  user_id: string;
+  nickname?: string;
+  profile_img?: string;
+}
+
 @Injectable()
 export class UsersBlockService {
   constructor(
@@ -52,15 +58,19 @@ export class UsersBlockService {
     });
 
     const blockedUsers = res.reduce((acc, cur) => {
-      const user = {
-        nickname: cur.blockedUser.nickname,
-        profile_img:
+      const user: BlockedUser = {
+        user_id: cur.blocked_user,
+      };
+      if (cur.blockedUser === null) {
+        user.nickname = null;
+        user.profile_img = null;
+      } else {
+        user.nickname = cur.blockedUser.nickname;
+        user.profile_img =
           cur.blockedUser.profile_img === null
             ? this.configService.get('DEFAULT_PROFILE_IMAGE')
-            : cur.blockedUser.profile_img,
-        user_id: cur.blockedUser.user_hash,
-      };
-
+            : cur.blockedUser.profile_img;
+      }
       acc.push(user);
       return acc;
     }, []);
