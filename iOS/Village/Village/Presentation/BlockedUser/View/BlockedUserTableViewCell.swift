@@ -80,6 +80,7 @@ final class BlockedUserTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
+        configureConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -90,8 +91,6 @@ final class BlockedUserTableViewCell: UITableViewCell {
         self.contentView.addSubview(profileImageView)
         self.contentView.addSubview(nicknameLabel)
         self.contentView.addSubview(blockedButton)
-        
-        configureConstraints()
     }
     
     private func configureConstraints() {
@@ -124,7 +123,7 @@ final class BlockedUserTableViewCell: UITableViewCell {
         nicknameLabel.text = nickname
     }
     
-    func configureImage(url: String) {
+    private func configureImage(url: String) {
         Task {
             do {
                 let data = try await APIProvider.shared.request(from: url)
