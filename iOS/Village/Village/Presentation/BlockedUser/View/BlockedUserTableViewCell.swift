@@ -116,8 +116,12 @@ final class BlockedUserTableViewCell: UITableViewCell {
     }
     
     func configureData(user: BlockedUserDTO) {
-        configureImage(url: user.profileImageURL)
-        nicknameLabel.text = user.nickname
+        guard let nickname = user.nickname, let imageURL = user.profileImageURL else {
+            nicknameLabel.text = "(탈퇴한 회원)"
+            return
+        }
+        configureImage(url: imageURL)
+        nicknameLabel.text = nickname
     }
     
     func configureImage(url: String) {
