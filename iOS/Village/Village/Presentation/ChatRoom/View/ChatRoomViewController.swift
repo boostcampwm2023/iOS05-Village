@@ -93,15 +93,15 @@ final class ChatRoomViewController: UIViewController {
         equalTo: view.safeAreaLayoutGuide.bottomAnchor, 
         constant: -20
     )
-    
-    private lazy var keyboardMoreButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: ImageSystemName.plus.rawValue), for: .normal)
-        button.tintColor = .primary500
-        
-        return button
-    }()
+    // TODO: 사진전송버튼 기능구현
+//    private lazy var keyboardMoreButton: UIButton = {
+//        let button = UIButton()
+//        button.translatesAutoresizingMaskIntoConstraints = false
+//        button.setImage(UIImage(systemName: ImageSystemName.plus.rawValue), for: .normal)
+//        button.tintColor = .primary500
+//        
+//        return button
+//    }()
     
     private lazy var keyboardTextField: UITextField = {
         let textField = UITextField()
@@ -247,7 +247,7 @@ private extension ChatRoomViewController {
         
         keyboardTextField.delegate = self
         
-        keyboardStackView.addArrangedSubview(keyboardMoreButton)
+//        keyboardStackView.addArrangedSubview(keyboardMoreButton)
         keyboardStackView.addArrangedSubview(keyboardTextField)
         keyboardStackView.addArrangedSubview(keyboardSendButton)
         view.addSubview(keyboardStackView)
@@ -263,9 +263,12 @@ private extension ChatRoomViewController {
             keyBoardStackViewBottomConstraint
         ])
         
-        keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+//        keyboardMoreButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
-        keyboardTextField.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        NSLayoutConstraint.activate([
+            keyboardTextField.heightAnchor.constraint(equalToConstant: 40),
+            keyboardTextField.leadingAnchor.constraint(equalTo: keyboardStackView.leadingAnchor, constant: 20)
+        ])
         
         keyboardSendButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         
