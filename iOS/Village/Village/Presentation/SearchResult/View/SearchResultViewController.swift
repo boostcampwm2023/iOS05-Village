@@ -103,6 +103,7 @@ extension SearchResultViewController {
     
     private func setNavigationBarUI() {
         searchController.searchBar.text = self.postTitle
+        searchController.searchBar.placeholder = "검색어를 입력해주세요."
         searchController.searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width - 70, height: 0)
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
