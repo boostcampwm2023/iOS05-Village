@@ -13,7 +13,7 @@ final class ImageDetailView: UIView {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.contentMode = .scaleAspectFit
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .black
         
         return view
     }()
@@ -22,15 +22,14 @@ final class ImageDetailView: UIView {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: ImageSystemName.xmark.rawValue), for: .normal)
-        button.tintColor = .label
+        button.tintColor = .white
         button.addTarget(self, action: #selector(dismissAction), for: .touchUpInside)
         
         return button
     }()
     
-    init(imageData: Data) {
-        super.init(frame: .zero)
-        imageView.image = UIImage(data: imageData)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         addSubview(imageView)
         addSubview(dismissButton)
@@ -41,12 +40,15 @@ final class ImageDetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setImage(data: Data) {
+        imageView.image = UIImage(data: data)
+    }
+    
     @objc
     private func dismissAction() {
-        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
             self?.alpha = 0
         })
-        removeFromSuperview()
     }
     
     private func setLayoutConstraints() {
