@@ -88,6 +88,15 @@ final class MyPageViewController: UIViewController {
     private let profileStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.spacing = 15
+        
+        return stackView
+    }()
+    
+    private let profileInfoStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .leading
         
@@ -240,14 +249,16 @@ private extension MyPageViewController {
     }
     
     func setUI() {
-        view.addSubview(profileImageView)
         
         view.addSubview(profileStackView)
-        profileStackView.addArrangedSubview(nicknameLabel)
-        profileStackView.setCustomSpacing(2, after: nicknameLabel)
-        profileStackView.addArrangedSubview(hashIDLabel)
-        profileStackView.setCustomSpacing(6, after: hashIDLabel)
-        profileStackView.addArrangedSubview(profileEditButton)
+        profileStackView.addArrangedSubview(profileImageView)
+        profileStackView.addArrangedSubview(profileInfoStackView)
+        
+        profileInfoStackView.addArrangedSubview(nicknameLabel)
+        profileInfoStackView.setCustomSpacing(2, after: nicknameLabel)
+        profileInfoStackView.addArrangedSubview(hashIDLabel)
+        profileInfoStackView.setCustomSpacing(6, after: hashIDLabel)
+        profileInfoStackView.addArrangedSubview(profileEditButton)
         
         view.addSubview(activityStackView)
         activityStackView.addArrangedSubview(activityLabel)
@@ -262,17 +273,14 @@ private extension MyPageViewController {
     }
     
     func setConstraints() {
-                
         NSLayoutConstraint.activate([
-            profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 6),
-            profileImageView.widthAnchor.constraint(equalToConstant: 96),
-            profileImageView.heightAnchor.constraint(equalToConstant: 96)
+            profileStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            profileStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 6)
         ])
         
         NSLayoutConstraint.activate([
-            profileStackView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15),
-            profileStackView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0)
+            profileImageView.widthAnchor.constraint(equalToConstant: 96),
+            profileImageView.heightAnchor.constraint(equalToConstant: 96)
         ])
         
         NSLayoutConstraint.activate([
