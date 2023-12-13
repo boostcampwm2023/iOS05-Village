@@ -6,22 +6,25 @@
 //
 
 import UIKit
+import Combine
 
 final class ImagePageView: UIView {
     
-    private var imageURL = [String]()
+    var presentFullImage = PassthroughSubject<Data, Never>()
     
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.isPagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
+        
         return scrollView
     }()
     
     private var imageStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        
         return stackView
     }()
     
@@ -32,6 +35,7 @@ final class ImagePageView: UIView {
         pageControl.currentPageIndicatorTintColor = .primary500
         pageControl.pageIndicatorTintColor = .secondaryLabel
         pageControl.backgroundStyle = .minimal
+        
         return pageControl
     }()
     
@@ -57,29 +61,20 @@ final class ImagePageView: UIView {
         setLayoutConstraints()
     }
     
-    func setImageURL(_ url: [String]) {
-        self.imageURL = url
-        
-        configurePageControl()
-        configureImageViews()
+    func setContent(_ data: [Data]) {
+        configureImageViews(imageData: data)
+        configurePageControl(count: data.count)
     }
     
-    private func configureImageViews() {
+    private func configureImageViews(imageData: [Data]) {
         imageStackView.arrangedSubviews.forEach {
             $0.removeFromSuperview()
         }
-        for url in self.imageURL {
-            Task {
-                do {
-                    let data = try await APIProvider.shared.request(from: url)
-                    let imageView = generateImageView(data: data)
-                    imageStackView.addArrangedSubview(imageView)
-                    imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
-                    imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-                } catch let error {
-                    dump(error)
-                }
-            }
+        for data in imageData {
+            let imageView = generateImageView(data: data)
+            imageStackView.addArrangedSubview(imageView)
+            imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+            imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         }
     }
     
@@ -88,31 +83,47 @@ final class ImagePageView: UIView {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(data: data)
         imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, 
+                                                              action: #selector(showFullImage(sender:))))
+        
         return imageView
     }
     
-    private func configurePageControl() {
-        pageControl.numberOfPages = imageURL.count
+    @objc
+    private func showFullImage(sender: UITapGestureRecognizer) {
+        guard let imageView = sender.view as? UIImageView,
+              let data = imageView.image?.pngData() else { return }
+        
+        presentFullImage.send(data)
+    }
+    
+    private func configurePageControl(count: Int) {
+        pageControl.numberOfPages = count
     }
     
     private func setLayoutConstraints() {
+        setFullLayoutConstraint(child: scrollView, parent: self)
+        
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: self.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor),
+            pageControl.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            pageControl.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            pageControl.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+            imageStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            imageStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            imageStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            imageStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
         ])
-        
+    }
+    
+    private func setFullLayoutConstraint(child: UIView, parent: UIView) {
         NSLayoutConstraint.activate([
-            imageStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            imageStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            imageStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            imageStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+            child.topAnchor.constraint(equalTo: parent.topAnchor),
+            child.leadingAnchor.constraint(equalTo: parent.leadingAnchor),
+            child.trailingAnchor.constraint(equalTo: parent.trailingAnchor),
+            child.bottomAnchor.constraint(equalTo: parent.bottomAnchor)
         ])
     }
 
