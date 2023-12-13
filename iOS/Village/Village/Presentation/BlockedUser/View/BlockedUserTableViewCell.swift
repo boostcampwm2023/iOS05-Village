@@ -80,18 +80,24 @@ final class BlockedUserTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
+        configureConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        profileImageView.image = nil
+        nicknameLabel.text = nil
+        blockedButton.configuration?.baseBackgroundColor = .primary500
+        blockedButton.configuration?.attributedTitle = unblockTitleString
+    }
+    
     private func setUI() {
         self.contentView.addSubview(profileImageView)
         self.contentView.addSubview(nicknameLabel)
         self.contentView.addSubview(blockedButton)
-        
-        configureConstraints()
     }
     
     private func configureConstraints() {
@@ -116,11 +122,16 @@ final class BlockedUserTableViewCell: UITableViewCell {
     }
     
     func configureData(user: BlockedUserDTO) {
-        configureImage(url: user.profileImageURL)
-        nicknameLabel.text = user.nickname
+        guard let nickname = user.nickname, let imageURL = user.profileImageURL else {
+            nicknameLabel.text = "(탈퇴한 회원)"
+            profileImageView.backgroundColor = .black
+            return
+        }
+        configureImage(url: imageURL)
+        nicknameLabel.text = nickname
     }
     
-    func configureImage(url: String) {
+    private func configureImage(url: String) {
         Task {
             do {
                 let data = try await APIProvider.shared.request(from: url)

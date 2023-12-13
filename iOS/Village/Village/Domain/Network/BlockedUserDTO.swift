@@ -9,8 +9,8 @@ import Foundation
 
 struct BlockedUserDTO: Decodable, Hashable {
     
-    let nickname: String
-    let profileImageURL: String
+    let nickname: String?
+    let profileImageURL: String?
     let userID: String
     
     enum CodingKeys: String, CodingKey {
