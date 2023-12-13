@@ -27,7 +27,7 @@ final class PostDetailViewModel {
     init(postID: Int) {
         self.postID = postID
         
-        self.getPost(id: self.postID)
+        self.getPost()
     }
     
     func transformPost(input: Input) -> Output {
@@ -69,6 +69,12 @@ final class PostDetailViewModel {
         }
         .store(in: &cancellableBag)
         
+        input.refreshInput
+            .sink { [weak self] _ in
+                self?.getPost()
+            }
+            .store(in: &cancellableBag)
+        
         return Output(
             post: post.eraseToAnyPublisher(),
             user: user.eraseToAnyPublisher(),
@@ -81,9 +87,8 @@ final class PostDetailViewModel {
         )
     }
     
-    // TODO: Private 해주세요
-    func getPost(id: Int) {
-        let endpoint = APIEndPoints.getPost(id: id)
+    func getPost() {
+        let endpoint = APIEndPoints.getPost(id: postID)
         
         Task {
             do {
@@ -195,6 +200,7 @@ extension PostDetailViewModel {
         let deleteInput: AnyPublisher<Void, Never>
         let hideInput: AnyPublisher<Void, Never>
         let blockUserInput: AnyPublisher<Void, Never>
+        let refreshInput: AnyPublisher<Void, Never>
     }
     
     struct Output {

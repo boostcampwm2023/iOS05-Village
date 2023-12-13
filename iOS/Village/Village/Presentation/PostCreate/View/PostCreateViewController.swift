@@ -165,7 +165,7 @@ final class PostCreateViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var cancellableBag: Set<AnyCancellable> = []
+    private var cancellableBag: Set<AnyCancellable> = []
     
     private func bind() {
         let input = ViewModel.Input(

@@ -20,6 +20,7 @@ final class PostDetailViewController: UIViewController {
     private var deletePostID = PassthroughSubject<Void, Never>()
     private let hidePost = PassthroughSubject<Void, Never>()
     private let blockUser = PassthroughSubject<Void, Never>()
+    private let refreshPublisher = PassthroughSubject<Void, Never>()
     
     let refreshPreviousViewController = PassthroughSubject<Void, Never>()
     
@@ -128,11 +129,10 @@ final class PostDetailViewController: UIViewController {
         editVC.editButtonTappedSubject
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                // TODO: getpost 인자 빼기
-                self?.viewModel.getPost(id: post.postID)
+                self?.refreshPublisher.send()
                 self?.refreshPreviousViewController.send()
             }
-            .store(in: &editVC.cancellableBag)
+            .store(in: &cancellableBag)
         let editNC = UINavigationController(rootViewController: editVC)
         editNC.modalPresentationStyle = .fullScreen
         self.present(editNC, animated: true)
@@ -289,7 +289,8 @@ private extension PostDetailViewController {
             reportInput: reportPublisher.eraseToAnyPublisher(),
             deleteInput: deletePostID.eraseToAnyPublisher(),
             hideInput: hidePost.eraseToAnyPublisher(),
-            blockUserInput: blockUser.eraseToAnyPublisher()
+            blockUserInput: blockUser.eraseToAnyPublisher(), 
+            refreshInput: refreshPublisher.eraseToAnyPublisher()
         )
         let output = viewModel.transformPost(input: input)
         
