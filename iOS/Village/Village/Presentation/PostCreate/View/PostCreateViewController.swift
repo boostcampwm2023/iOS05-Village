@@ -13,8 +13,8 @@ final class PostCreateViewController: UIViewController {
     
     typealias ViewModel = PostCreateViewModel
     
-    private let viewModel: PostCreateViewModel
-    var editButtonTappedSubject = PassthroughSubject<Void, Never>()
+    private let viewModel: ViewModel
+    let editButtonTappedSubject = PassthroughSubject<Void, Never>()
     private let editSetSubject = PassthroughSubject<Void, Never>()
     private let postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
     private let selectedImagePublisher = PassthroughSubject<[Data], Never>()
@@ -156,7 +156,7 @@ final class PostCreateViewController: UIViewController {
         }
     }
     
-    init(viewModel: PostCreateViewModel) {
+    init(viewModel: ViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
