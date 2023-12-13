@@ -67,7 +67,4 @@ export class PostEntity {
 
   @OneToMany(() => BlockPostEntity, (post_image) => post_image.blocked_post)
   blocked_posts: BlockPostEntity[];
-
-  @OneToMany(() => ReportEntity, (report) => report.post_id)
-  report: ReportEntity[];
 }

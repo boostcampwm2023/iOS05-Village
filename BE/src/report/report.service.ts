@@ -17,7 +17,7 @@ export class ReportService {
     private userRepository: Repository<UserEntity>,
   ) {}
   async createReport(body: CreateReportDto, userId: string) {
-    const isAllExist = await this.isExist(body.post_id, body.user_id);
+    const isAllExist = await this.isExist(body.user_id);
     if (body.user_id === userId) {
       throw new HttpException('자신의 게시글은 신고 할 수 없습니다.', 400);
     }
@@ -31,13 +31,10 @@ export class ReportService {
     reportEntity.reporter = userId;
     await this.reportRepository.save(reportEntity);
   }
-  async isExist(postId, userId) {
-    const isPostExist: boolean = await this.postRepository.exist({
-      where: { id: postId },
-    });
+  async isExist(userId) {
     const isUserExist: boolean = await this.userRepository.exist({
       where: { user_hash: userId },
     });
-    return !!(isPostExist && isUserExist);
+    return !!isUserExist;
   }
 }
