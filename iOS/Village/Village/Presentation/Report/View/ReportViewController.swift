@@ -106,6 +106,7 @@ final class ReportViewController: UIViewController {
     
     @objc private func reportButtonTapped() {
         reportSubject.send(contentTextView.text)
+        reportButton.isUserInteractionEnabled = false
     }
     
 }
