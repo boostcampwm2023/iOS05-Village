@@ -30,12 +30,6 @@ export class UserEntity {
   @OneToMany(() => BlockPostEntity, (blockUser) => blockUser.blocker)
   blocker_post: BlockPostEntity[];
 
-  @OneToMany(() => ReportEntity, (report) => report.user_hash)
-  reported: ReportEntity[];
-
-  @OneToMany(() => ReportEntity, (report) => report.reporter)
-  reporting: ReportEntity[];
-
   @OneToOne(
     () => RegistrationTokenEntity,
     (registrationToken) => registrationToken.user_hash,
