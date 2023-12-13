@@ -18,6 +18,7 @@ export class UsersBlockService {
   async addBlockUser(id: string, userId: string) {
     const isExistUser = await this.userRepository.findOne({
       where: { user_hash: id },
+      withDeleted: true,
     });
 
     if (!isExistUser) {
