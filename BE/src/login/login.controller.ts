@@ -33,7 +33,7 @@ export class LoginController {
       const payload = this.loginService.validateToken(refreshToken, 'refresh');
       return await this.loginService.refreshToken(refreshToken, payload);
     } catch (e) {
-      throw new HttpException('refresh token이 유효하지 않음', 403);
+      throw new HttpException('refresh token이 유효하지 않음', 401);
     }
   }
 
