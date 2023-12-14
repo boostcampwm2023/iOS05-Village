@@ -17,7 +17,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         addObservers()
         
         window = UIWindow(windowScene: windowScene)
-        autoLogin()
         window?.makeKeyAndVisible()
     }
     
@@ -41,31 +40,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                                object: nil)
     }
     
-    private func autoLogin() {
-        guard let accessToken = JWTManager.shared.get()?.accessToken else {
-            window?.rootViewController = LoginViewController()
-            return
-        }
-        let endpoint = APIEndPoints.tokenExpire(accessToken: accessToken)
-        Task {
-            do {
-                try await APIProvider.shared.request(with: endpoint)
-                
-                window?.rootViewController = AppTabBarController()
-            } catch {
-                window?.rootViewController = LoginViewController()
-            }
-        }
-    }
-    
     @objc
     private func rootViewControllerToTabBarController() {
-        window?.rootViewController = AppTabBarController()
+        DispatchQueue.main.async { [weak self] in
+            self?.window?.rootViewController = AppTabBarController()
+        }
     }
     
     @objc
     private func rootViewControllerToLoginViewController() {
-        window?.rootViewController = LoginViewController()
+        DispatchQueue.main.async { [weak self] in
+            self?.window?.rootViewController = LoginViewController()
+        }
     }
 
 }

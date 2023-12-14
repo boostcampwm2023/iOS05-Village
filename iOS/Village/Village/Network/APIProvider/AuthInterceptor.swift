@@ -47,9 +47,7 @@ struct AuthInterceptor: Interceptor {
                 try await refreshToken()
                 return .retry
             } catch let error {
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: .shouldLogin, object: nil)
-                }
+                NotificationCenter.default.post(name: .shouldLogin, object: nil)
                 return .doNotRetryWithError(error)
             }
         default:

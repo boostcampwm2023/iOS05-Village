@@ -332,7 +332,6 @@ private extension MyPageViewController {
     
     func handleLogout(output: ViewModel.Output) {
         output.logoutSucceed
-            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -348,7 +347,6 @@ private extension MyPageViewController {
     
     func handleDeleteAccount(output: ViewModel.Output) {
         output.deleteAccountSucceed
-            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
