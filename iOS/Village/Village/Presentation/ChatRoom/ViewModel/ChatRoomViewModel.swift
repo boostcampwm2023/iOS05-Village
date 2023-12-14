@@ -25,6 +25,7 @@ struct Message: Hashable, Codable {
 final class ChatRoomViewModel {
     
     private let roomIDOutput = PassthroughSubject<Int, Never>()
+    private let joinOutput = PassthroughSubject<Int, Never>()
     private let postIDOutput = PassthroughSubject<Int, Never>()
     private let postOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
     private let userOutput = PassthroughSubject<UserResponseDTO, NetworkError>()
@@ -43,12 +44,16 @@ final class ChatRoomViewModel {
     
     init(roomID: Int) {
         self.roomID = roomID
-        roomIDOutput.send(roomID)
-        
-        self.getChatRoomData()
     }
     
     func transform(input: Input) -> Output {
+        input.roomIDInput.sink { [weak self] _ in
+            guard let self = self else { return }
+            self.roomIDOutput.send(self.roomID)
+            self.getChatRoomData()
+        }
+        .store(in: &cancellableBag)
+        
         input.postInput.sink { [weak self] _ in
             self?.getPostData()
         }
@@ -61,7 +66,7 @@ final class ChatRoomViewModel {
         
         input.joinInput.sink { [weak self] _ in
             guard let self = self else { return }
-            self.roomIDOutput.send(self.roomID)
+            self.joinOutput.send(self.roomID)
         }
         .store(in: &cancellableBag)
         
@@ -84,6 +89,7 @@ final class ChatRoomViewModel {
         .store(in: &cancellableBag)
         
         return Output(
+            joinOutput: joinOutput.eraseToAnyPublisher(),
             roomIDOutput: roomIDOutput.eraseToAnyPublisher(),
             postIDOutput: postIDOutput.eraseToAnyPublisher(),
             postOutput: postOutput.eraseToAnyPublisher(),
@@ -207,6 +213,7 @@ final class ChatRoomViewModel {
 extension ChatRoomViewModel {
     
     struct Input {
+        let roomIDInput: AnyPublisher<Void, Never>
         let postInput: AnyPublisher<Void, Never>
         let userInput: AnyPublisher<Void, Never>
         let joinInput: AnyPublisher<Void, Never>
@@ -217,6 +224,7 @@ extension ChatRoomViewModel {
     }
     
     struct Output {
+        let joinOutput: AnyPublisher<Int, Never>
         let roomIDOutput: AnyPublisher<Int, Never>
         let postIDOutput: AnyPublisher<Int, Never>
         let postOutput: AnyPublisher<PostResponseDTO, NetworkError>
