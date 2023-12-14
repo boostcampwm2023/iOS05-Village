@@ -1,4 +1,4 @@
-import { HttpException, Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
@@ -24,6 +24,7 @@ export interface JwtTokens {
 @Injectable()
 export class LoginService {
   private jwksClient: jwksClient.JwksClient;
+  private readonly logger = new Logger('Login');
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
@@ -48,6 +49,7 @@ export class LoginService {
       refreshToken,
       this.configService.get('JWT_REFRESH_EXPIRES_IN'),
     );
+    this.logger.log(`${user.user_hash} login`);
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
@@ -58,6 +60,7 @@ export class LoginService {
       const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
       await this.cacheManager.set(accessToken, 'logout', { ttl });
       await this.cacheManager.del(decodedToken.userId);
+      this.logger.log(`${decodedToken.userId} logout`);
     }
   }
   async registerUser(socialProperties: SocialProperties) {

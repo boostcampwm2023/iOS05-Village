@@ -43,12 +43,7 @@ export class UsersBlockService {
     blockUserEntity.blocker = userId;
     blockUserEntity.blocked_user = id;
     blockUserEntity.delete_date = null;
-
-    try {
-      return await this.blockUserRepository.save(blockUserEntity);
-    } catch (e) {
-      throw new HttpException('서버 오류입니다', 500);
-    }
+    return await this.blockUserRepository.save(blockUserEntity);
   }
 
   async getBlockUser(id: string) {
