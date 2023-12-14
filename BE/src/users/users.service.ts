@@ -105,14 +105,10 @@ export class UsersService {
   }
 
   async changeNickname(userId: string, nickname: string) {
-    try {
-      await this.userRepository.update(
-        { user_hash: userId },
-        { nickname: nickname },
-      );
-    } catch (e) {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
+    await this.userRepository.update(
+      { user_hash: userId },
+      { nickname: nickname },
+    );
   }
 
   async changeImages(userId: string, file: Express.Multer.File) {
@@ -121,14 +117,10 @@ export class UsersService {
     // if (isHarmful) {
     //   throw new HttpException('이미지가 유해합니다.', 400);
     // }
-    try {
-      await this.userRepository.update(
-        { user_hash: userId },
-        { profile_img: fileLocation },
-      );
-    } catch (e) {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
+    await this.userRepository.update(
+      { user_hash: userId },
+      { profile_img: fileLocation },
+    );
   }
 
   async uploadImages(file: Express.Multer.File) {
