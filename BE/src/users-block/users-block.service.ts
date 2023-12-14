@@ -1,8 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BlockUserEntity } from 'src/entities/blockUser.entity';
+import { BlockUserEntity } from '../entities/blockUser.entity';
 import { Repository } from 'typeorm';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 
 interface BlockedUser {
