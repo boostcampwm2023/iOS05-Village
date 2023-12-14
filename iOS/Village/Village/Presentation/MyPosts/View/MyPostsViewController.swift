@@ -162,31 +162,17 @@ private extension MyPostsViewController {
     func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            requestSegmentedControl.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10
-            ),
-            requestSegmentedControl.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10
-            ),
-            requestSegmentedControl.topAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10
-            ),
+            requestSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            requestSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            requestSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             requestSegmentedControl.heightAnchor.constraint(equalToConstant: 35)
         ])
         
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor
-            ),
-            tableView.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor
-            ),
-            tableView.topAnchor.constraint(
-                equalTo: requestSegmentedControl.bottomAnchor, constant: 5
-            ),
-            tableView.bottomAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5
-            )
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: requestSegmentedControl.bottomAnchor, constant: 5),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5)
         ])
         
     }

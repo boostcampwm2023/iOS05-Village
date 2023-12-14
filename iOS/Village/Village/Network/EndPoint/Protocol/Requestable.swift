@@ -24,7 +24,6 @@ extension Requestable {
         let url = try makeURL()
         var urlRequest = URLRequest(url: url)
         
-        // TODO: JSON 형식이 안 맞는 경우와 Multipart로 바로 넣어야 하는 경우를 구분해야 함. 에러 처리가 안 됨.
         do {
             if let bodyParameters = try bodyParameters?.toDictionary() {
                 urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: bodyParameters)
