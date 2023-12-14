@@ -181,7 +181,7 @@ export class LoginService {
       );
       return { access_token: accessToken, refresh_token: refreshToken };
     } else {
-      throw new HttpException('refresh token이 유효하지 않음', 403);
+      throw new HttpException('refresh token이 유효하지 않음', 401);
     }
   }
 
