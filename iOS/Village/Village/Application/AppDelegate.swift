@@ -75,7 +75,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             return
         }
         
-        navigationController.pushViewController(ChatRoomViewController(roomID: roomID), animated: true)
+        navigationController.pushViewController(ChatRoomViewController(viewModel: ChatRoomViewModel(roomID: roomID)), animated: true)
         completionHandler()
     }
     
