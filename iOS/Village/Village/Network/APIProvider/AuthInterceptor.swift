@@ -42,19 +42,19 @@ struct AuthInterceptor: Interceptor {
         }
         
         switch error {
-        case .serverError(.forbidden):
+        case .serverError(.unauthorized):
             do {
                 try await refreshToken()
                 return .retry
             } catch let error {
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .shouldLogin, object: nil)
+                }
                 return .doNotRetryWithError(error)
             }
-        case .serverError(.unauthorized):
-            NotificationCenter.default.post(name: .shouldLogin, object: nil)
         default:
             return .retry
         }
-        return .doNotRetry
     }
     
 }
@@ -62,12 +62,20 @@ struct AuthInterceptor: Interceptor {
 private extension AuthInterceptor {
     
     func refreshToken() async throws {
+        guard let refreshToken = JWTManager.shared.get()?.refreshToken else { return }
+        
         do {
-            guard let refreshToken = JWTManager.shared.get()?.refreshToken else { return }
-            let endpoint = APIEndPoints.tokenRefresh(refreshToken: refreshToken)
-            guard let newToken = try await APIProvider.shared.request(with: endpoint) else { return }
+            let request = try APIEndPoints.tokenRefresh(refreshToken: refreshToken).makeURLRequest()
+            let (data, response) = try await session.data(for: request)
             
+            guard let response = response as? HTTPURLResponse,
+                  (200..<300).contains(response.statusCode) else {
+                throw NetworkError.refreshTokenExpired
+            }
+            let newToken = try JSONDecoder().decode(AuthenticationToken.self, from: data)
             try JWTManager.shared.update(token: newToken)
+        } catch {
+            throw error
         }
     }
     
