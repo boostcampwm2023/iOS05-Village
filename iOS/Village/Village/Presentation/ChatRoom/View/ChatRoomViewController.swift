@@ -208,15 +208,15 @@ final class ChatRoomViewController: UIViewController {
 
 private extension ChatRoomViewController {
     
-    @objc private func sendbuttonTapped() {
+    @objc func sendbuttonTapped() {
         sendPublisher.send()
     }    
     
-    private func sendJoinRoom(roomID: Int) {
+    func sendJoinRoom(roomID: Int) {
         WebSocket.shared.sendJoinRoom(roomID: roomID)
     }
     
-    private func sendMessage(roomID: Int) {
+    func sendMessage(roomID: Int) {
         guard let currentUserID = JWTManager.shared.currentUserID else { return }
         if let text = self.keyboardTextField.text,
            !text.isEmpty {
@@ -238,7 +238,7 @@ private extension ChatRoomViewController {
         }
     }
     
-    @objc private func postViewTapped() {
+    @objc func postViewTapped() {
         let viewControllers = self.navigationController?.viewControllers ?? []
         if viewControllers.count > 1 {
             pushPublisher.send()
@@ -247,14 +247,14 @@ private extension ChatRoomViewController {
         }
     }
     
-    private func pushPostDetailVC(postID: Int) {
+    func pushPostDetailVC(postID: Int) {
         let nextVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: postID))
         nextVC.hidesBottomBarWhenPushed = true
         
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    @objc private func ellipsisTapped() {
+    @objc func ellipsisTapped() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         // 차단 로직 추가구현
 //        alert.addAction(blockAction)
@@ -268,7 +268,7 @@ private extension ChatRoomViewController {
 
 private extension ChatRoomViewController {
     
-    private func setUI() {
+    func setUI() {
         view.addSubview(chatTableView)
         self.chatTableView.isHidden = true
         
@@ -282,7 +282,7 @@ private extension ChatRoomViewController {
         configureConstraints()
     }
     
-    private func configureConstraints() {
+    func configureConstraints() {
         
         NSLayoutConstraint.activate([
             keyboardStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
@@ -308,7 +308,7 @@ private extension ChatRoomViewController {
         ])
     }
     
-    private func setNavigationUI() {
+    func setNavigationUI() {
         let ellipsis = self.navigationItem.makeSFSymbolButton(
             self, action: #selector(ellipsisTapped), symbolName: .ellipsis
         )
@@ -316,11 +316,11 @@ private extension ChatRoomViewController {
         navigationItem.backButtonDisplayMode = .minimal
     }
     
-    private func setNavigationTitle(user: UserResponseDTO) {
+    func setNavigationTitle(user: UserResponseDTO) {
         self.navigationItem.title = user.nickname
     }
     
-    private func bindViewModel() {
+    func bindViewModel() {
         let input = ViewModel.Input(
             postInput: postPublisher.eraseToAnyPublisher(),
             userInput: userPublisher.eraseToAnyPublisher(),
@@ -341,7 +341,7 @@ private extension ChatRoomViewController {
         handleReport(output: output)
     }
     
-    private func handlePost(output: ViewModel.Output) {
+    func handlePost(output: ViewModel.Output) {
         output.postOutput.receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -357,7 +357,7 @@ private extension ChatRoomViewController {
             .store(in: &cancellableBag)
     } 
     
-    private func handleUser(output: ViewModel.Output) {
+    func handleUser(output: ViewModel.Output) {
         output.userOutput.receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -372,7 +372,7 @@ private extension ChatRoomViewController {
             .store(in: &cancellableBag)
     }
     
-    private func handleJoin(output: ViewModel.Output) {
+    func handleJoin(output: ViewModel.Output) {
         output.roomIDOutput.receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] roomID in
                 self?.sendJoinRoom(roomID: roomID)
@@ -380,7 +380,7 @@ private extension ChatRoomViewController {
             .store(in: &cancellableBag)
     }    
     
-    private func handleSend(output: ViewModel.Output) {
+    func handleSend(output: ViewModel.Output) {
         output.roomIDOutput.receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] roomID in
                 self?.sendMessage(roomID: roomID)
@@ -388,7 +388,7 @@ private extension ChatRoomViewController {
             .store(in: &cancellableBag)
     }
     
-    private func handlePush(output: ViewModel.Output) {
+    func handlePush(output: ViewModel.Output) {
         output.postIDOutput.receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] postID in
                 self?.pushPostDetailVC(postID: postID)
@@ -396,7 +396,7 @@ private extension ChatRoomViewController {
             .store(in: &cancellableBag)
     }
     
-    private func handleBlock(output: ViewModel.Output) {
+    func handleBlock(output: ViewModel.Output) {
         output.popViewControllerOutput.receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -411,7 +411,7 @@ private extension ChatRoomViewController {
             .store(in: &cancellableBag)
     }
     
-    private func handleReport(output: ViewModel.Output) {
+    func handleReport(output: ViewModel.Output) {
         output.reportOutput.receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -426,7 +426,7 @@ private extension ChatRoomViewController {
             .store(in: &cancellableBag)
     }
     
-    private func setPostContent(post: PostResponseDTO) {
+    func setPostContent(post: PostResponseDTO) {
         if post.isRequest == true {
             view.addSubview(self.requestPostView)
             NSLayoutConstraint.activate([
