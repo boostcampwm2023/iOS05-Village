@@ -17,12 +17,23 @@ struct ProfileInfo: Equatable {
 
 final class MyPageViewModel {
     
+    private let tableViewSectionContents = [
+        [""],
+        ["내 게시글", "숨긴 게시글", "차단 관리"],
+        ["로그아웃", "회원 탈퇴"]
+    ]
+    private var profileInfo: ProfileInfo?
+    
     private var cancellableBag = Set<AnyCancellable>()
     private let logoutSucceed = PassthroughSubject<Void, Error>()
     private let deleteAccountSucceed = PassthroughSubject<Void, Error>()
     private let profileInfoSubject = PassthroughSubject<ProfileInfo, Never>()
     private let editProfileInfoSubject = PassthroughSubject<ProfileInfo, Never>()
-    private let refreshInput = PassthroughSubject<Void, Never>()
+    private let refreshOutput = PassthroughSubject<Void, Never>()
+    
+    init() {
+        self.getUserInfo()
+    }
     
     private func getUserInfo() {
         guard let userID = JWTManager.shared.currentUserID else { return }
@@ -32,10 +43,10 @@ final class MyPageViewModel {
             do {
                 guard let userData = try await APIProvider.shared.request(with: endpoint) else { return }
                 let userImageData = try await APIProvider.shared.request(from: userData.profileImageURL)
-                profileInfoSubject.send(ProfileInfo(
+                self.profileInfo = ProfileInfo(
                     nickname: userData.nickname,
                     profileImage: userImageData
-                ))
+                )
             } catch let error as NetworkError {
                 dump(error)
             } catch {
@@ -66,14 +77,15 @@ final class MyPageViewModel {
         input.refreshInputSubject
             .sink { [weak self] _ in
                 self?.getUserInfo()
+                self?.refreshOutput.send()
             }
             .store(in: &cancellableBag)
         
         return Output(
             logoutSucceed: logoutSucceed.eraseToAnyPublisher(),
             deleteAccountSucceed: deleteAccountSucceed.eraseToAnyPublisher(),
-            profileInfoOutput: profileInfoSubject.eraseToAnyPublisher(),
-            editProfileOutput: editProfileInfoSubject.eraseToAnyPublisher()
+            editProfileOutput: editProfileInfoSubject.eraseToAnyPublisher(),
+            refreshOutput: refreshOutput.eraseToAnyPublisher()
         )
     }
     
@@ -126,6 +138,18 @@ final class MyPageViewModel {
         }
     }
     
+    func getTableViewContent(section: Int, row: Int) -> String {
+        return tableViewSectionContents[section][row]
+    }
+    
+    func getTableViewContentCount(section: Int) -> Int {
+        tableViewSectionContents[section].count
+    }
+    
+    func getProfileInfo() -> ProfileInfo? {
+        return self.profileInfo
+    }
+    
 }
 
 extension MyPageViewModel {
@@ -140,8 +164,8 @@ extension MyPageViewModel {
     struct Output {
         let logoutSucceed: AnyPublisher<Void, Error>
         let deleteAccountSucceed: AnyPublisher<Void, Error>
-        let profileInfoOutput: AnyPublisher<ProfileInfo, Never>
         let editProfileOutput: AnyPublisher<ProfileInfo, Never>
+        let refreshOutput: AnyPublisher<Void, Never>
     }
     
 }
