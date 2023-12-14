@@ -1,5 +1,5 @@
 ## 🌈 프로젝트 소개
-<img src="https://github.com/boostcampwm2023/iOS05-Village/assets/128480641/b6c75e42-00b4-46f3-aa63-ccaa154fd5f9"><br>
+![KakaoTalk_Image_2023-12-15-00-33-54](https://github.com/boostcampwm2023/iOS05-Village/assets/59719500/27caf899-2834-4222-8c57-270907c8e2d7)
 
 ## 🛠️ 주요 기능
 - 필요한 물품이나 빌려주고 싶은 물품을 게시글로 등록할 수 있습니다.
