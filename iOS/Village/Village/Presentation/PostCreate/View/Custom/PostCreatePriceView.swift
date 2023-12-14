@@ -32,7 +32,7 @@ final class PostCreatePriceView: UIStackView {
     private let priceHeaderLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "하루 대여 가격"
+        label.text = "시간당 대여 가격"
         label.font = .boldSystemFont(ofSize: 16)
         
         return label
@@ -63,7 +63,7 @@ final class PostCreatePriceView: UIStackView {
     let priceWarningLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "하루 대여 가격을 설정해야 합니다."
+        label.text = "가격을 설정해야 합니다."
         label.font = .systemFont(ofSize: 14)
         label.textColor = .negative400
         label.alpha = 0
