@@ -51,10 +51,11 @@ final class AppTabBarController: UITabBarController {
         timer?.invalidate()
     }
     
-    // TODO: shadow 
     private func setup() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        tabBar.scrollEdgeAppearance = appearance
         view.backgroundColor = .systemBackground
-        tabBar.isTranslucent = false
         tabBar.backgroundColor = .systemBackground
         tabBar.tintColor = .primary500
         tabBar.unselectedItemTintColor = .primary500
