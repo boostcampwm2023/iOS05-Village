@@ -31,10 +31,6 @@ final class MyPageViewModel {
     private let editProfileInfoSubject = PassthroughSubject<ProfileInfo, Never>()
     private let refreshOutput = PassthroughSubject<Void, Never>()
     
-    init() {
-        self.getUserInfo()
-    }
-    
     private func getUserInfo() {
         guard let userID = JWTManager.shared.currentUserID else { return }
         let endpoint = APIEndPoints.getUser(id: userID)
@@ -47,6 +43,7 @@ final class MyPageViewModel {
                     nickname: userData.nickname,
                     profileImage: userImageData
                 )
+                self.refreshOutput.send()
             } catch let error as NetworkError {
                 dump(error)
             } catch {
@@ -77,7 +74,6 @@ final class MyPageViewModel {
         input.refreshInputSubject
             .sink { [weak self] _ in
                 self?.getUserInfo()
-                self?.refreshOutput.send()
             }
             .store(in: &cancellableBag)
         

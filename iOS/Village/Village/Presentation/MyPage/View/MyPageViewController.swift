@@ -51,6 +51,7 @@ final class MyPageViewController: UIViewController {
         bindViewModel()
         view.backgroundColor = .systemBackground
         refreshSubject.send()
+        tableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -216,6 +217,7 @@ extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
                     .store(in: &cancellableBag)
                 guard let profileInfo = viewModel.getProfileInfo() else { return cell }
                 cell.configureData(profileInfo: profileInfo)
+                cell.selectionStyle = .none
                 
                 return cell
             }
