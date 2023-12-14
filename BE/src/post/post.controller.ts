@@ -4,9 +4,7 @@ import {
   Get,
   HttpCode,
   HttpException,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   Patch,
   Post,
   Query,
@@ -20,11 +18,11 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdatePostDto } from './dto/postUpdate.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PostCreateDto } from './dto/postCreate.dto';
-import { MultiPartBody } from '../utils/multiPartBody.decorator';
+import { MultiPartBody } from '../common/decorator/multiPartBody.decorator';
 import { PostListDto } from './dto/postList.dto';
-import { AuthGuard } from 'src/utils/auth.guard';
-import { UserHash } from 'src/utils/auth.decorator';
-import { FilesSizeValidator } from '../utils/files.validator';
+import { AuthGuard } from 'src/common/guard/auth.guard';
+import { UserHash } from 'src/common/decorator/auth.decorator';
+import { FilesSizeValidator } from '../common/files.validator';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -34,8 +32,12 @@ export class PostController {
 
   @Get()
   async postsList(@Query() query: PostListDto, @UserHash() userId: string) {
-    const posts = await this.postService.findPosts(query, userId);
-    return posts;
+    return await this.postService.findPosts(query, userId);
+  }
+
+  @Get('/titles')
+  async postsTitlesList(@Query('searchKeyword') searchKeyword) {
+    return await this.postService.findPostsTitles(searchKeyword);
   }
 
   @Post()

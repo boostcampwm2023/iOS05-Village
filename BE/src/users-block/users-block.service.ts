@@ -1,8 +1,15 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BlockUserEntity } from 'src/entities/blockUser.entity';
+import { BlockUserEntity } from '../entities/blockUser.entity';
 import { Repository } from 'typeorm';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
+import { ConfigService } from '@nestjs/config';
+
+interface BlockedUser {
+  user_id: string;
+  nickname?: string;
+  profile_img?: string;
+}
 
 @Injectable()
 export class UsersBlockService {
@@ -11,11 +18,13 @@ export class UsersBlockService {
     private blockUserRepository: Repository<BlockUserEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private configService: ConfigService,
   ) {}
 
   async addBlockUser(id: string, userId: string) {
     const isExistUser = await this.userRepository.findOne({
       where: { user_hash: id },
+      withDeleted: true,
     });
 
     if (!isExistUser) {
@@ -34,12 +43,7 @@ export class UsersBlockService {
     blockUserEntity.blocker = userId;
     blockUserEntity.blocked_user = id;
     blockUserEntity.delete_date = null;
-
-    try {
-      return await this.blockUserRepository.save(blockUserEntity);
-    } catch (e) {
-      throw new HttpException('서버 오류입니다', 500);
-    }
+    return await this.blockUserRepository.save(blockUserEntity);
   }
 
   async getBlockUser(id: string) {
@@ -49,12 +53,19 @@ export class UsersBlockService {
     });
 
     const blockedUsers = res.reduce((acc, cur) => {
-      const user = {
-        nickname: cur.blockedUser.nickname,
-        profile_img: cur.blockedUser.profile_img,
-        user_id: cur.blockedUser.user_hash,
+      const user: BlockedUser = {
+        user_id: cur.blocked_user,
       };
-
+      if (cur.blockedUser === null) {
+        user.nickname = null;
+        user.profile_img = null;
+      } else {
+        user.nickname = cur.blockedUser.nickname;
+        user.profile_img =
+          cur.blockedUser.profile_img === null
+            ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+            : cur.blockedUser.profile_img;
+      }
       acc.push(user);
       return acc;
     }, []);

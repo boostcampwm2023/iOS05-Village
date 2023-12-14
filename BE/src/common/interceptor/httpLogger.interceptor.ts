@@ -4,7 +4,6 @@ import {
   NestInterceptor,
   Injectable,
   Logger,
-  HttpException,
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
@@ -18,21 +17,20 @@ export class HttpLoggerInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     const request: Request = context.switchToHttp().getRequest();
-    this.logger.debug(request.headers, 'request header');
-    this.logger.debug(request.body, 'request body');
+    this.logger.debug(request.body, 'HTTP');
 
     return next.handle().pipe(
       tap((data) => {
         const request = context.switchToHttp().getRequest();
         const response = context.switchToHttp().getResponse();
         this.logger.debug(
-          `${request.url} ${request.method} /${response.statusCode} ${response.statusMessage}`,
+          `<${request.userId}> ${request.method} ${request.url} ${response.statusCode} ${response.statusMessage}`,
           'HTTP',
         );
       }),
       catchError((err) => {
         this.logger.error(
-          `${request.url} ${request.method} /${err}`,
+          `<${request['userId']}> ${request.method} ${request.url}  [Error]${err}`,
           'HTTP ERROR',
         );
         return throwError(err);

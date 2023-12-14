@@ -1,35 +1,36 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './createUser.dto';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/createUser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { UpdateUsersDto } from './usersUpdate.dto';
-import { S3Handler } from '../utils/S3Handler';
-import { hashMaker } from 'src/utils/hashMaker';
-import { PostEntity } from '../entities/post.entity';
-import { PostImageEntity } from '../entities/postImage.entity';
+import { UpdateUsersDto } from './dto/usersUpdate.dto';
+import { S3Handler } from '../common/S3Handler';
+import { hashMaker } from 'src/common/hashMaker';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ConfigService } from '@nestjs/config';
+import * as jwt from 'jsonwebtoken';
+import { FcmHandler } from 'src/common/fcmHandler';
+import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
+import { GreenEyeHandler } from '../common/greenEyeHandler';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(PostEntity)
-    private postRepository: Repository<PostEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    @InjectRepository(PostImageEntity)
-    private postImageRepository: Repository<PostImageEntity>,
     @InjectRepository(BlockUserEntity)
     private blockUserRepository: Repository<BlockUserEntity>,
     @InjectRepository(BlockPostEntity)
     private blockPostRepository: Repository<BlockPostEntity>,
     @InjectRepository(RegistrationTokenEntity)
     private registrationTokenRepository: Repository<RegistrationTokenEntity>,
+    @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
     private s3Handler: S3Handler,
     private configService: ConfigService,
+    private fcmHandler: FcmHandler,
+    private greenEyeHandler: GreenEyeHandler,
   ) {}
 
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
@@ -39,8 +40,7 @@ export class UsersService {
     userEntity.OAuth_domain = createUserDto.OAuth_domain;
     userEntity.profile_img = imageLocation;
     userEntity.user_hash = hashMaker(createUserDto.nickname).slice(0, 8);
-    const res = await this.userRepository.save(userEntity);
-    return res;
+    return await this.userRepository.save(userEntity);
   }
 
   async findUserById(userId: string) {
@@ -57,28 +57,23 @@ export class UsersService {
     }
   }
 
-  async removeUser(id: string, userId) {
+  async removeUser(id: string, userId: string, accessToken: string) {
     const userPk = await this.checkAuth(id, userId);
+    const decodedToken: any = jwt.decode(accessToken);
+    if (decodedToken && decodedToken.exp) {
+      await this.fcmHandler.removeRegistrationToken(decodedToken.userId);
+      const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
+      await this.cacheManager.set(accessToken, 'logout', { ttl });
+    }
+
     await this.deleteCascadingUser(userPk, userId);
     return true;
   }
 
   async deleteCascadingUser(userId, userHash) {
-    const postsByUser = await this.postRepository.find({
-      where: { user_hash: userHash },
-    });
-    for (const postByUser of postsByUser) {
-      await this.deleteCascadingPost(postByUser.id);
-    }
     await this.blockPostRepository.softDelete({ blocker: userHash });
     await this.blockUserRepository.softDelete({ blocker: userHash });
     await this.userRepository.softDelete({ id: userId });
-  }
-
-  async deleteCascadingPost(postId: number) {
-    await this.postImageRepository.softDelete({ post_id: postId });
-    await this.blockPostRepository.softDelete({ blocked_post: postId });
-    await this.postRepository.softDelete({ id: postId });
   }
 
   async checkAuth(id, userId) {
@@ -100,54 +95,36 @@ export class UsersService {
     file: Express.Multer.File,
     userId: string,
   ) {
-    if (body === undefined) {
-      throw new HttpException('수정 할 것이 없는데 요청을 보냈습니다.', 400);
-    }
     await this.checkAuth(id, userId);
-
-    const nickname = body.nickname;
-    const isImageChanged = body.is_image_changed;
-    if (nickname) {
-      await this.changeNickname(id, nickname);
-    }
-    if (isImageChanged !== undefined) {
+    if (file !== undefined) {
       await this.changeImages(id, file);
+    }
+    if (body) {
+      await this.changeNickname(id, body.nickname);
     }
   }
 
   async changeNickname(userId: string, nickname: string) {
-    try {
-      await this.userRepository.update(
-        { user_hash: userId },
-        { nickname: nickname },
-      );
-    } catch (e) {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
+    await this.userRepository.update(
+      { user_hash: userId },
+      { nickname: nickname },
+    );
   }
 
   async changeImages(userId: string, file: Express.Multer.File) {
-    try {
-      if (file === undefined) {
-        await this.userRepository.update(
-          { user_hash: userId },
-          { profile_img: null },
-        );
-      } else {
-        const fileLocation = await this.s3Handler.uploadFile(file);
-        await this.userRepository.update(
-          { user_hash: userId },
-          { profile_img: fileLocation },
-        );
-      }
-    } catch (e) {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
+    const fileLocation = await this.s3Handler.uploadFile(file);
+    const isHarmful = await this.greenEyeHandler.isHarmful(fileLocation);
+    // if (isHarmful) {
+    //   throw new HttpException('이미지가 유해합니다.', 400);
+    // }
+    await this.userRepository.update(
+      { user_hash: userId },
+      { profile_img: fileLocation },
+    );
   }
 
   async uploadImages(file: Express.Multer.File) {
-    const fileLocation = await this.s3Handler.uploadFile(file);
-    return fileLocation;
+    return await this.s3Handler.uploadFile(file);
   }
 
   async registerToken(userId, registrationToken) {

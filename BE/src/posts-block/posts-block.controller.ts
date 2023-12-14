@@ -4,11 +4,12 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PostsBlockService } from './posts-block.service';
-import { AuthGuard } from 'src/utils/auth.guard';
-import { UserHash } from 'src/utils/auth.decorator';
+import { AuthGuard } from 'src/common/guard/auth.guard';
+import { UserHash } from 'src/common/decorator/auth.decorator';
 
 @Controller('posts/block')
 @UseGuards(AuthGuard)
@@ -23,8 +24,14 @@ export class PostsBlockController {
   }
 
   @Get()
-  async postsBlockList(@UserHash() blockerId: string) {
-    return await this.postsBlockService.findBlockedPosts(blockerId);
+  async postsBlockList(
+    @UserHash() blockerId: string,
+    @Query('requestFilter') requestFilter,
+  ) {
+    return await this.postsBlockService.findBlockedPosts(
+      blockerId,
+      parseInt(requestFilter),
+    );
   }
 
   @Delete(':id')

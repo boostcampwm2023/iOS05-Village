@@ -5,14 +5,15 @@ import {
   Headers,
   HttpException,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { LoginService, SocialProperties } from './login.service';
 import { AppleLoginDto } from './dto/appleLogin.dto';
-import { AuthGuard } from '../utils/auth.guard';
-import { UserHash } from '../utils/auth.decorator';
+import { AuthGuard } from '../common/guard/auth.guard';
 
 @Controller()
+@UseGuards(AuthGuard)
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
@@ -30,14 +31,14 @@ export class LoginController {
   async refreshToken(@Body('refresh_token') refreshToken) {
     try {
       const payload = this.loginService.validateToken(refreshToken, 'refresh');
-      return await this.loginService.refreshToken(payload);
+      return await this.loginService.refreshToken(refreshToken, payload);
     } catch (e) {
-      throw new HttpException('refresh token이 유효하지 않음', 403);
+      throw new HttpException('refresh token이 유효하지 않음', 401);
     }
   }
 
   @Post('login/admin')
-  loginAdmin(@Body('user') user) {
+  loginAdmin(@Query('user') user) {
     return this.loginService.loginAdmin(user);
   }
 
@@ -46,8 +47,9 @@ export class LoginController {
   checkAccessToken() {}
 
   @Post('logout')
-  logout(@Headers('Authorization') token, @UserHash() userId) {
+  @UseGuards(AuthGuard)
+  async logout(@Headers('Authorization') token) {
     const accessToken = token.split(' ')[1];
-    this.loginService.logout(userId, accessToken);
+    await this.loginService.logout(accessToken);
   }
 }

@@ -1,14 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { hashMaker } from '../utils/hashMaker';
+import { hashMaker } from '../common/hashMaker';
 import { AppleLoginDto } from './dto/appleLogin.dto';
 import * as jwt from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
-import { FcmHandler } from '../utils/fcmHandler';
+import { FcmHandler } from '../common/fcmHandler';
+import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 
 export interface SocialProperties {
   OAuthDomain: string;
@@ -23,13 +24,14 @@ export interface JwtTokens {
 @Injectable()
 export class LoginService {
   private jwksClient: jwksClient.JwksClient;
-  private readonly logger = new Logger('ChatsGateway');
+  private readonly logger = new Logger('Login');
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private configService: ConfigService,
     private jwtService: JwtService,
     private fcmHandler: FcmHandler,
+    @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
   ) {
     this.jwksClient = jwksClient({
       jwksUri: 'https://appleid.apple.com/auth/keys',
@@ -42,11 +44,24 @@ export class LoginService {
     }
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
+    await this.cacheManager.set(
+      user.user_hash,
+      refreshToken,
+      this.configService.get('JWT_REFRESH_EXPIRES_IN'),
+    );
+    this.logger.log(`${user.user_hash} login`);
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
-  async logout(userId, accessToken) {
-    await this.fcmHandler.removeRegistrationToken(userId);
+  async logout(accessToken) {
+    const decodedToken: any = jwt.decode(accessToken);
+    if (decodedToken && decodedToken.exp) {
+      await this.fcmHandler.removeRegistrationToken(decodedToken.userId);
+      const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
+      await this.cacheManager.set(accessToken, 'logout', { ttl });
+      await this.cacheManager.del(decodedToken.userId);
+      this.logger.log(`${decodedToken.userId} logout`);
+    }
   }
   async registerUser(socialProperties: SocialProperties) {
     const userEntity = new UserEntity();
@@ -74,13 +89,12 @@ export class LoginService {
   async verifyUserRegistration(
     socialProperties: SocialProperties,
   ): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({
+    return await this.userRepository.findOne({
       where: {
         OAuth_domain: socialProperties.OAuthDomain,
         social_id: socialProperties.socialId,
       },
     });
-    return user;
   }
 
   generateAccessToken(user: UserEntity): string {
@@ -106,12 +120,7 @@ export class LoginService {
     const identityTokenParts = identityToken.split('.');
     const identityTokenPayload = identityTokenParts[1];
 
-    const payloadClaims = Buffer.from(
-      identityTokenPayload,
-      'base64',
-    ).toString();
-
-    return payloadClaims;
+    return Buffer.from(identityTokenPayload, 'base64').toString();
   }
 
   async getApplePublicKey(kid: string) {
@@ -120,9 +129,7 @@ export class LoginService {
     });
 
     const key = await client.getSigningKey(kid);
-    const signingKey = key.getPublicKey();
-
-    return signingKey;
+    return key.getPublicKey();
   }
 
   async appleOAuth(body: AppleLoginDto): Promise<SocialProperties> {
@@ -159,13 +166,23 @@ export class LoginService {
     });
   }
 
-  async refreshToken(payload): Promise<JwtTokens> {
+  async refreshToken(refreshtoken, payload): Promise<JwtTokens> {
     const user = await this.userRepository.findOne({
       where: { user_hash: payload.userId },
     });
-    const accessToken = this.generateAccessToken(user);
-    const refreshToken = this.generateRefreshToken(user);
-    return { access_token: accessToken, refresh_token: refreshToken };
+
+    if ((await this.cacheManager.get(user.user_hash)) === refreshtoken) {
+      const accessToken = this.generateAccessToken(user);
+      const refreshToken = this.generateRefreshToken(user);
+      await this.cacheManager.set(
+        user.user_hash,
+        refreshToken,
+        this.configService.get('JWT_REFRESH_EXPIRES_IN'),
+      );
+      return { access_token: accessToken, refresh_token: refreshToken };
+    } else {
+      throw new HttpException('refresh token이 유효하지 않음', 401);
+    }
   }
 
   async loginAdmin(id) {
@@ -174,6 +191,11 @@ export class LoginService {
     });
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
+    await this.cacheManager.set(
+      user.user_hash,
+      refreshToken,
+      this.configService.get('JWT_REFRESH_EXPIRES_IN'),
+    );
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 }

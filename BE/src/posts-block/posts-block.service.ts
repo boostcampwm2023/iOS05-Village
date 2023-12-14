@@ -39,10 +39,11 @@ export class PostsBlockService {
     await this.blockPostRepository.save(blockPostEntity);
   }
 
-  async findBlockedPosts(blockerId: string) {
+  async findBlockedPosts(blockerId: string, requestFilter: number) {
     const blockLists = await this.blockPostRepository.find({
       where: {
         blocker: blockerId,
+        blockedPost: this.getRequestFilter(requestFilter),
       },
       relations: ['blockedPost'],
     });
@@ -52,8 +53,19 @@ export class PostsBlockService {
         title: blockedPost.title,
         post_image: blockedPost.thumbnail,
         post_id: blockedPost.id,
+        start_date: blockedPost.start_date,
+        end_date: blockedPost.end_date,
+        is_request: blockedPost.is_request,
+        price: blockedPost.price,
       };
     });
+  }
+
+  getRequestFilter(requestFilter: number) {
+    if (requestFilter === undefined) {
+      return undefined;
+    }
+    return { is_request: requestFilter === 1 };
   }
 
   async removeBlockPosts(blockedPostId: number, userId: string) {

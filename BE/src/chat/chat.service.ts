@@ -5,10 +5,11 @@ import { ChatRoomEntity } from '../entities/chatRoom.entity';
 import { ChatEntity } from 'src/entities/chat.entity';
 import { ChatDto } from './dto/chat.dto';
 import { UserEntity } from 'src/entities/user.entity';
-import { FcmHandler, PushMessage } from '../utils/fcmHandler';
+import { FcmHandler, PushMessage } from '../common/fcmHandler';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'jsonwebtoken';
+import { PostEntity } from '../entities/post.entity';
 
 export interface ChatRoom {
   room_id: number;
@@ -26,6 +27,8 @@ export class ChatService {
     private chatRepository: Repository<ChatEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(PostEntity)
+    private postRepository: Repository<PostEntity>,
     private fcmHandler: FcmHandler,
     private configService: ConfigService,
   ) {}
@@ -45,6 +48,9 @@ export class ChatService {
     userId: string,
     writerId: string,
   ): Promise<ChatRoom> {
+    if (userId === writerId) {
+      throw new HttpException('자신과는 채팅할 수 없습니다.', 400);
+    }
     const isExist = await this.chatRoomRepository.findOne({
       where: { post_id: postId, user: userId, writer: writerId },
     });
@@ -56,76 +62,159 @@ export class ChatService {
     chatRoom.writer = writerId;
     chatRoom.user = userId;
 
-    try {
-      const roomId = (await this.chatRoomRepository.save(chatRoom)).id;
-      return { room_id: roomId };
-    } catch (e) {
-      if (e.errno === 1452) {
-        return null;
-      } else {
-        throw new HttpException('서버 오류', 500);
-      }
-    }
+    const roomId = (await this.chatRoomRepository.save(chatRoom)).id;
+    return { room_id: roomId };
+  }
+
+  async isUserPostExist(postId: number, writerId: string) {
+    const isUserExist = await this.userRepository.exist({
+      where: { user_hash: writerId },
+    });
+    const isPostExist = await this.postRepository.exist({
+      where: { id: postId },
+    });
+    return isPostExist && isUserExist;
   }
 
   async findRoomList(userId: string) {
-    let now = new Set();
+    const chatListInfo = { all_read: true, chat_list: [] };
+
+    const subquery = this.chatRepository
+      .createQueryBuilder('chat')
+      .select('chat.id', 'id')
+      .addSelect('chat.chat_room', 'chat_room')
+      .addSelect('chat.message', 'message')
+      .addSelect('chat.create_date', 'create_date')
+      .addSelect('chat.is_read', 'is_read')
+      .addSelect('chat.sender', 'sender')
+      .where(
+        'chat.id IN (SELECT MAX(chat.id) FROM chat GROUP BY chat.chat_room)',
+      );
+
     const rooms = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
+      .innerJoin(
+        '(' + subquery.getQuery() + ')',
+        'chat_info',
+        'chat_room.id = chat_info.chat_room',
+      )
+      .innerJoin(
+        'chat_room.writerUser',
+        'writer',
+        'chat_room.writerUser = writer.user_hash',
+      )
+      .innerJoin(
+        'chat_room.userUser',
+        'user',
+        'chat_room.userUser = user.user_hash',
+      )
+      .leftJoin('chat_room.post', 'post', 'chat_room.post = post.id')
       .select([
-        'chat_room.user',
-        'chat_room.writer',
-        'chat_room.id',
-        'chat_room.post_id',
-        'chat.message',
-        'chat.create_date',
+        'chat_room.id as room_id',
+        'chat_room.writer as writer',
+        'writer.nickname as writer_nickname',
+        'writer.profile_img as writer_profile_img',
+        'chat_room.user as user',
+        'user.nickname as user_nickname',
+        'user.profile_img as user_profile_img',
+        'chat_room.post_id as post_id',
+        'post.title as post_title',
+        'post.thumbnail as post_thumbnail',
+        'chat_info.create_date as last_chat_date',
+        'chat_info.message as last_chat',
+        'chat_info.is_read as all_read',
+        'chat_info.sender as sender',
       ])
-      .where('chat_room.user = :userId', {
-        userId: userId,
-      })
-      .orWhere('chat_room.writer = :userId', {
-        userId: userId,
-      })
-      .leftJoin('chat', 'chat', 'chat_room.id = chat.chat_room')
-      .orderBy('chat.id', 'DESC')
-      .addSelect(['user.w.user_hash', 'user.w.profile_img', 'user.w.nickname'])
-      .leftJoin('user', 'user.w', 'user.w.user_hash = chat_room.writer')
-      .addSelect(['user.u.user_hash', 'user.u.profile_img', 'user.u.nickname'])
-      .leftJoin('user', 'user.u', 'user.u.user_hash = chat_room.user')
-      .addSelect(['post.thumbnail', 'post.title'])
-      .leftJoin('post', 'post', 'post.id = chat_room.post_id')
+      .where('chat_room.writer = :userId', { userId: userId })
+      .orWhere('chat_room.user = :userId', { userId: userId })
+      .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
-    const result = rooms
-      .reduce((acc, cur) => {
-        acc.push({
-          room_id: cur.chat_room_id,
-          post_id: cur.chat_room_post_id,
-          post_title: cur.post_title,
-          post_thumbnail: cur.post_thumbnail,
-          user: cur['user.w_user_hash'],
-          user_profile_img: cur['user.w_profile_img'],
-          user_nickname: cur['user.w_nickname'],
-          writer: cur['user.u_user_hash'],
-          writer_profile_img: cur['user.u_profile_img'],
-          writer_nickname: cur['user.u_nickname'],
-          last_chat: cur.chat_message,
-          last_chat_date: cur.chat_create_date,
-        });
-        return acc;
-      }, [])
-      .sort((a, b) => {
-        return b.last_chat_date - a.last_chat_date;
-      })
-      .reduce((acc, cur) => {
-        if (!now.has(cur.room_id)) {
-          acc.push(cur);
-          now.add(cur.room_id);
-        }
-        return acc;
-      }, []);
+    chatListInfo.chat_list = rooms.reduce((acc, cur) => {
+      cur.writer_profile_img =
+        cur.writer_profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : cur.writer_profile_img;
 
-    return result;
+      cur.user_profile_img =
+        cur.user_profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : cur.user_profile_img;
+
+      if (cur.sender === userId) {
+        cur.all_read = true;
+      } else {
+        if (cur.all_read === 0) {
+          chatListInfo.all_read = false;
+          cur.all_read = false;
+        } else {
+          cur.all_read = true;
+        }
+      }
+      delete cur.sender;
+      acc.push(cur);
+      return acc;
+    }, []);
+
+    return chatListInfo;
+  }
+
+  async unreadChat(userId: string) {
+    const subquery = this.chatRepository
+      .createQueryBuilder('chat')
+      .select('chat.id', 'id')
+      .addSelect('chat.chat_room', 'chat_room')
+      .addSelect('chat.message', 'message')
+      .addSelect('chat.create_date', 'create_date')
+      .addSelect('chat.is_read', 'is_read')
+      .addSelect('chat.sender', 'sender')
+      .where(
+        'chat.id IN (SELECT MAX(chat.id) FROM chat GROUP BY chat.chat_room)',
+      );
+
+    const rooms = await this.chatRoomRepository
+      .createQueryBuilder('chat_room')
+      .innerJoin(
+        '(' + subquery.getQuery() + ')',
+        'chat_info',
+        'chat_room.id = chat_info.chat_room',
+      )
+      .innerJoin(
+        'chat_room.writerUser',
+        'writer',
+        'chat_room.writerUser = writer.user_hash',
+      )
+      .innerJoin(
+        'chat_room.userUser',
+        'user',
+        'chat_room.userUser = user.user_hash',
+      )
+      .select([
+        'chat_room.id as room_id',
+        'chat_room.writer as writer',
+        'writer.nickname as writer_nickname',
+        'writer.profile_img as writer_profile_img',
+        'chat_room.user as user',
+        'user.nickname as user_nickname',
+        'user.profile_img as user_profile_img',
+        'chat_room.post_id as post_id',
+        'chat_info.create_date as last_chat_date',
+        'chat_info.message as last_chat',
+        'chat_info.is_read as is_read',
+        'chat_info.sender as sender',
+      ])
+      .where('chat_room.writer = :userId', { userId: userId })
+      .orWhere('chat_room.user = :userId', { userId: userId })
+      .orderBy('chat_info.create_date', 'DESC')
+      .getRawMany();
+
+    for (const room of rooms) {
+      if (room.sender !== userId && room.is_read === 0) {
+        return { all_read: false };
+      }
+    }
+
+    return { all_read: true };
   }
 
   async findRoomById(roomId: number, userId: string) {
@@ -142,12 +231,21 @@ export class ChatService {
       where: {
         id: roomId,
       },
-      relations: ['chats'],
+      relations: ['chats', 'userUser', 'writerUser'],
     });
 
     this.checkAuth(room, userId);
-
     return {
+      writer: room.writer,
+      writer_profile_img:
+        room.writerUser.profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : room.writerUser.profile_img,
+      user: room.user,
+      user_profile_img:
+        room.userUser.profile_img === null
+          ? this.configService.get('DEFAULT_PROFILE_IMAGE')
+          : room.userUser.profile_img,
       post_id: room.post_id,
       chat_log: room.chats,
     };
@@ -170,8 +268,12 @@ export class ChatService {
       chatRoom.writerUser.user_hash === message.sender
         ? chatRoom.userUser
         : chatRoom.writerUser;
+    const sender: UserEntity =
+      chatRoom.writerUser.user_hash !== message.sender
+        ? chatRoom.userUser
+        : chatRoom.writerUser;
     const pushMessage: PushMessage = this.fcmHandler.createChatPushMessage(
-      receiver.nickname,
+      sender.nickname,
       message.message,
       message.room_id,
     );

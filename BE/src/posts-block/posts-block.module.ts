@@ -4,7 +4,7 @@ import { PostsBlockService } from './posts-block.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { PostEntity } from '../entities/post.entity';
-import { AuthGuard } from 'src/utils/auth.guard';
+import { AuthGuard } from 'src/common/guard/auth.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([BlockPostEntity, PostEntity])],

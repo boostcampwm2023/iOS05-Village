@@ -4,7 +4,7 @@ import { setupSwagger } from './config/swagger.config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { winstonLogger } from './config/winston.config';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpLoggerInterceptor } from './utils/httpLogger.interceptor';
+import { HttpLoggerInterceptor } from './common/interceptor/httpLogger.interceptor';
 import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {

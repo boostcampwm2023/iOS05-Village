@@ -4,8 +4,7 @@ import { PostEntity } from '../entities/post.entity';
 import { LessThan, Like, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
-import { S3Handler } from '../utils/S3Handler';
-import { UserEntity } from '../entities/user.entity';
+import { S3Handler } from '../common/S3Handler';
 import { PostListDto } from './dto/postList.dto';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
@@ -22,8 +21,6 @@ export class PostService {
   constructor(
     @InjectRepository(PostEntity)
     private postRepository: Repository<PostEntity>,
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
     @InjectRepository(PostImageEntity)
     private postImageRepository: Repository<PostImageEntity>,
     @InjectRepository(BlockUserEntity)
@@ -52,9 +49,10 @@ export class PostService {
     const blockedUsersId: string[] = (
       await this.blockUserRepository.find({
         where: { blocker: userId },
-        relations: ['blockedUser'],
+        // relations: ['blockedUser'],
+        // withDeleted: true,
       })
-    ).map((blockedUser) => blockedUser.blockedUser.user_hash);
+    ).map((blockedUser) => blockedUser.blocked_user);
 
     const blockedPostsId: number[] = (
       await this.blockPostRepository.find({
@@ -105,7 +103,7 @@ export class PostService {
         price: filteredPost.price,
         description: filteredPost.description,
         post_id: filteredPost.id,
-        user_id: filteredPost.user.user_hash,
+        user_id: filteredPost.user_hash,
         is_request: filteredPost.is_request,
         images: filteredPost.post_images.map(
           (post_image) => post_image.image_url,
@@ -139,28 +137,6 @@ export class PostService {
       end_date: post.end_date,
       post_id: post.id,
     };
-  }
-
-  async changeImages(postId: number, images: string[]) {
-    try {
-      await this.postImageRepository.delete({ post_id: postId });
-      for (const img of images) {
-        await this.postImageRepository.save({
-          post_id: postId,
-          image_url: img,
-        });
-      }
-    } catch {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
-  }
-
-  async changeExceptImages(postId: number, updatePostDto: UpdatePostDto) {
-    try {
-      await this.postRepository.update({ id: postId }, updatePostDto);
-    } catch (e) {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
   }
 
   async checkAuth(postId, userId) {
@@ -223,7 +199,6 @@ export class PostService {
     post.end_date = createPostDto.end_date;
     post.user_hash = userHash;
     post.thumbnail = imageLocations.length > 0 ? imageLocations[0] : null;
-    // 이미지 추가
     const res = await this.postRepository.save(post);
     if (res.is_request === false) {
       await this.createImages(imageLocations, res.id);
@@ -248,5 +223,16 @@ export class PostService {
     await this.postImageRepository.softDelete({ post_id: postId });
     await this.blockPostRepository.softDelete({ blocked_post: postId });
     await this.postRepository.softDelete({ id: postId });
+  }
+
+  async findPostsTitles(searchKeyword: string) {
+    const posts: PostEntity[] = await this.postRepository.find({
+      where: { title: Like(`%${searchKeyword}%`) },
+      order: {
+        create_date: 'desc',
+      },
+    });
+    const titles: string[] = posts.map((post) => post.title);
+    return titles.slice(0, 5);
   }
 }

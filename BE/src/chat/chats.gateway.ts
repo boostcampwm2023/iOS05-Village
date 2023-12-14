@@ -21,6 +21,7 @@ interface ChatWebSocket extends WebSocket {
 })
 export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
+  private users = new Map<string, ChatWebSocket>();
   private rooms = new Map<number, Set<ChatWebSocket>>();
   private readonly logger = new Logger('ChatsGateway');
   constructor(private readonly chatService: ChatService) {}
@@ -39,10 +40,12 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const roomId = client.roomId;
       const room = this.rooms.get(roomId);
       room.delete(client);
+
       if (room.size === 0) {
         this.rooms.delete(roomId);
       }
     }
+
     this.logger.debug(
       `[${client.userId}] on disconnect => left rooms : ${Array.from(
         this.rooms.keys(),
@@ -91,8 +94,14 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() message: object,
     @ConnectedSocket() client: ChatWebSocket,
   ) {
+    if (this.users.has(client.userId)) {
+      // 이전에 접속한 방이 아직 남아있으면
+      this.users.get(client.userId).close();
+    }
+    this.users.set(client.userId, client);
     const roomId = message['room_id'];
     client.roomId = roomId;
+
     if (this.rooms.has(roomId)) {
       this.rooms.get(roomId).add(client);
 
@@ -108,6 +117,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
           );
       });
     } else this.rooms.set(roomId, new Set([client]));
+
     this.logger.debug(
       `[${client.userId}] join room : ${roomId}`,
       'ChatsGateway',
