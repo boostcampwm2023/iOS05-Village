@@ -51,6 +51,7 @@ final class MyPageViewController: UIViewController {
         bindViewModel()
         view.backgroundColor = .systemBackground
         refreshSubject.send()
+        tableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
