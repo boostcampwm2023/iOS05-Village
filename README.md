@@ -18,7 +18,7 @@
             </a>
         </td>
         <td style="min-width: 140px;">
-            <a href="https://github.com/jea0716">
+            <a href="https://github.com/jea0716">1
               <img src="https://github.com/jea0716.png" width="100">
               <br />
               <b>S015_박동재</b>
