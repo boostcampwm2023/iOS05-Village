@@ -7,6 +7,8 @@ disabled_rules:
 identifier_name:
     min_length: 2
 
+line_length: 130
+
 # 룰 적용 제외할 파일
 excluded:
     - Village/Application/AppDelegate.swift

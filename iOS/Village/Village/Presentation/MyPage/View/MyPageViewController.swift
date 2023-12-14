@@ -282,55 +282,38 @@ private extension MyPageViewController {
     
     func setConstraints() {
         NSLayoutConstraint.activate([
-            scrollView.leadingAnchor
-                .constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
-            scrollView.topAnchor
-                .constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            scrollView.bottomAnchor
-                .constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
-            scrollView.trailingAnchor
-                .constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
         ])
         
         NSLayoutConstraint.activate([
-            profileStackView.leadingAnchor
-                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
-            profileStackView.topAnchor
-                .constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 6),
-            profileStackView.trailingAnchor
-                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
+            profileStackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            profileStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 6),
+            profileStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
         ])
         
         NSLayoutConstraint.activate([
-            profileImageView.widthAnchor
-                .constraint(equalToConstant: 96),
-            profileImageView.heightAnchor
-                .constraint(equalToConstant: 96)
+            profileImageView.widthAnchor.constraint(equalToConstant: 96),
+            profileImageView.heightAnchor.constraint(equalToConstant: 96)
         ])
         
         NSLayoutConstraint.activate([
-            activityStackView.leadingAnchor
-                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
-            activityStackView.topAnchor
-                .constraint(equalTo: profileStackView.bottomAnchor, constant: 35),
-            activityStackView.trailingAnchor
-                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
+            activityStackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            activityStackView.topAnchor.constraint(equalTo: profileStackView.bottomAnchor, constant: 35),
+            activityStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
         ])
         
         NSLayoutConstraint.activate([
-            accountStackView.leadingAnchor
-                .constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
-            accountStackView.topAnchor
-                .constraint(equalTo: activityStackView.bottomAnchor, constant: 40),
-            accountStackView.trailingAnchor
-                .constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
+            accountStackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            accountStackView.topAnchor.constraint(equalTo: activityStackView.bottomAnchor, constant: 40),
+            accountStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16)
         ])
         
         NSLayoutConstraint.activate([
-            scrollView.contentLayoutGuide.topAnchor
-                .constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            scrollView.contentLayoutGuide.bottomAnchor
-                .constraint(equalTo: accountStackView.bottomAnchor, constant: 10)
+            scrollView.contentLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            scrollView.contentLayoutGuide.bottomAnchor.constraint(equalTo: accountStackView.bottomAnchor, constant: 10)
         ])
     }
     
