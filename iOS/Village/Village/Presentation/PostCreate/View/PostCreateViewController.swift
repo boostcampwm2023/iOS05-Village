@@ -296,30 +296,11 @@ private extension PostCreateViewController {
             return
         }
         keyboardFrame = view.convert(keyboardFrame, from: nil)
-        NSLayoutConstraint.deactivate([scrollViewBottomConstraint])
-        scrollViewBottomConstraint = scrollView
-            .bottomAnchor
-            .constraint(
-                equalTo: view.bottomAnchor,
-                constant: -keyboardFrame.height
-            )
-        NSLayoutConstraint.activate([scrollViewBottomConstraint])
+        scrollViewBottomConstraint.constant = postButtonView.bounds.height - keyboardFrame.height
     }
     
     func keyboardWillHide(_ notification: Notification) {
-        guard let userInfo = notification.userInfo as NSDictionary?,
-              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
-            return
-        }
-        keyboardFrame = view.convert(keyboardFrame, from: nil)
-        NSLayoutConstraint.deactivate([scrollViewBottomConstraint])
-        scrollViewBottomConstraint = scrollView
-            .bottomAnchor
-            .constraint(
-                equalTo: postButtonView.topAnchor,
-                constant: 0
-            )
-        NSLayoutConstraint.activate([scrollViewBottomConstraint])
+        scrollViewBottomConstraint.constant = 0
     }
     
 }

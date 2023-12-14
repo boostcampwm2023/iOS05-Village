@@ -439,30 +439,11 @@ private extension ChatRoomViewController {
             return
         }
         keyboardFrame = view.convert(keyboardFrame, from: nil)
-        keyBoardStackViewBottomConstraint.isActive = false
-        keyBoardStackViewBottomConstraint = keyboardStackView
-            .bottomAnchor
-            .constraint(
-                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                constant: -keyboardFrame.height
-            )
-        keyBoardStackViewBottomConstraint.isActive = true
+        keyBoardStackViewBottomConstraint.constant = -keyboardFrame.height
     }
     
     @objc func keyboardWillHide(_ notification: Notification) {
-        guard let userInfo = notification.userInfo as NSDictionary?,
-              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
-            return
-        }
-        keyboardFrame = view.convert(keyboardFrame, from: nil)
-        keyBoardStackViewBottomConstraint.isActive = false
-        keyBoardStackViewBottomConstraint = keyboardStackView
-            .bottomAnchor
-            .constraint(
-                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                constant: -20
-            )
-        keyBoardStackViewBottomConstraint.isActive = true
+        keyBoardStackViewBottomConstraint.constant = -20
     }
     
 }
