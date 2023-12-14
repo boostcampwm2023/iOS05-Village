@@ -18,6 +18,8 @@ final class ChatRoomViewController: UIViewController {
     }
     
     private var viewModel = ViewModel()
+    private let blockPublisher = PassthroughSubject<Void, Never>()
+    private let reportPublisher = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     private let roomID: Just<Int>
@@ -141,6 +143,30 @@ final class ChatRoomViewController: UIViewController {
         return postView
     }()
     
+    private var banAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "사용자 차단하기", style: .destructive) { [weak self] _ in
+            self?.blockPublisher.send()
+        }
+        return action
+    }
+    
+    private var reportAction: UIAlertAction {
+        lazy var action = UIAlertAction(title: "신고하기", style: .destructive) { [weak self] _ in
+            self?.reportPublisher.send()
+        }
+        return action
+    }
+    
+    private func report(postID: Int, userID: String) {
+        let nextVC = ReportViewController(viewModel: ReportViewModel(
+            userID: userID, postID: postID
+        ))
+        self.navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    private let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+    
+    
     init(roomID: Int) {
         self.roomID = Just(roomID)
         
@@ -235,7 +261,12 @@ private extension ChatRoomViewController {
     }
     
     @objc private func ellipsisTapped() {
-        // TODO: 더보기 버튼 클릭 액션
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(banAction)
+        alert.addAction(reportAction)
+        alert.addAction(cancelAction)
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
 }
@@ -283,11 +314,10 @@ private extension ChatRoomViewController {
     }
     
     func setNavigationUI() {
-        // TODO: after 15
-//        let ellipsis = self.navigationItem.makeSFSymbolButton(
-//            self, action: #selector(ellipsisTapped), symbolName: .ellipsis
-//        )
-//        navigationItem.rightBarButtonItem = ellipsis
+        let ellipsis = self.navigationItem.makeSFSymbolButton(
+            self, action: #selector(ellipsisTapped), symbolName: .ellipsis
+        )
+        navigationItem.rightBarButtonItem = ellipsis
         navigationItem.backButtonDisplayMode = .minimal
     }
     
