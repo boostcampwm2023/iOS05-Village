@@ -171,15 +171,15 @@ extension EditProfileViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
         guard let result = results.first else { return }
-        result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, _) in
-            guard let image = image as? UIImage else { return }
-            let scaleImage = image.resize(newWidth: 100, newHeight: 100)
-            DispatchQueue.main.async {
-                self?.profileImageView.setProfile(image: scaleImage)
+        result.itemProvider.getImageData(completion: { imageData in
+            guard let data = imageData,
+                  let image = UIImage(data: data)?.resize(newWidth: 100, newHeight: 100) else { return }
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.profileImageView.setProfile(image: image)
+                self?.profileImageDataSubject.send(image.pngData())
             }
-            let data = scaleImage.pngData()
-            self?.profileImageDataSubject.send(data)
-        }
+        })
     }
     
 }
