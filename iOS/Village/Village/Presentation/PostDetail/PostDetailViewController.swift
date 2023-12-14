@@ -235,7 +235,7 @@ final class PostDetailViewController: UIViewController {
     }
     
     private func pushChatRoomViewController(roomID: PostRoomResponseDTO) {
-        let nextVC = ChatRoomViewController(roomID: roomID.roomID)
+        let nextVC = ChatRoomViewController(viewModel: ChatRoomViewModel(roomID: roomID.roomID))
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
