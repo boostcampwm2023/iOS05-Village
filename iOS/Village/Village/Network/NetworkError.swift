@@ -16,26 +16,29 @@ enum NetworkError: Error {
     case serverError(ServerError)
     case emptyData
     case parsingError
+    case refreshTokenExpired
     case decodingError(Error)
     
     var errorDescription: String {
         switch self {
         case .unknownError:
-            return "Unknown Error."
+            "Unknown Error."
         case .queryParameterError:
-            return "Query Parameter toDictionary Failed"
+            "Query Parameter toDictionary Failed"
         case .componentsError:
-            return "URL Components Error."
+            "URL Components Error."
         case .urlRequestError:
-            return "URL Request Error."
+            "URL Request Error."
         case .serverError(let serverError):
-            return "Server Error: \(serverError)."
+            "Server Error: \(serverError)."
         case .emptyData:
-            return "Empty Data."
+            "Empty Data."
         case .parsingError:
-            return "Parsing Error."
+            "Parsing Error."
         case .decodingError(let error):
-            return "Decoding Error: \(error)."
+            "Decoding Error: \(error)."
+        case .refreshTokenExpired:
+            "Refresh Token Expired. Login again."
         }
     }
     
