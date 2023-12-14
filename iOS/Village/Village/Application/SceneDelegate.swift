@@ -35,21 +35,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func autoLogin() {
-            guard let accessToken = JWTManager.shared.get()?.accessToken else {
+        guard let accessToken = JWTManager.shared.get()?.accessToken else {
+            window?.rootViewController = LoginViewController()
+            return
+        }
+        let endpoint = APIEndPoints.tokenExpire(accessToken: accessToken)
+        Task {
+            do {
+                try await APIProvider.shared.request(with: endpoint)
+                
+                window?.rootViewController = AppTabBarController()
+            } catch {
                 window?.rootViewController = LoginViewController()
-                return
-            }
-            let endpoint = APIEndPoints.tokenExpire(accessToken: accessToken)
-            Task {
-                do {
-                    try await APIProvider.shared.request(with: endpoint)
-                    
-                    window?.rootViewController = AppTabBarController()
-                } catch {
-                    window?.rootViewController = LoginViewController()
-                }
             }
         }
+    }
     
     private func observeShouldLoginEvent() {
         NotificationCenter.default.addObserver(self,
