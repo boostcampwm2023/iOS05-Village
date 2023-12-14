@@ -243,6 +243,9 @@ final class PostCreateViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] imageItemList in
                 guard let self = self else { return }
+                if !imageItemList.isEmpty {
+                    imageWarn(enable: false)
+                }
                 self.imageUploadView.setImageItem(items: imageItemList)
             }
             .store(in: &cancellableBag)
@@ -454,13 +457,10 @@ extension PostCreateViewController: PHPickerViewControllerDelegate {
         var imageData = [Data]()
         itemProviders.forEach { itemProvider in
             dispatchGroup.enter()
-            itemProvider.loadObject(ofClass: UIImage.self) { uiimage, _ in
-                guard let image = uiimage as? UIImage,
-                      let jpegData = image.jpegData(compressionQuality: 0.1) else { return }
-                DispatchQueue.main.async {
-                    self.imageWarn(enable: false)
+            itemProvider.getImageData { data in
+                if let data {
+                    imageData.append(data)
                 }
-                imageData.append(jpegData)
                 dispatchGroup.leave()
             }
         }
