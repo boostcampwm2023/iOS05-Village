@@ -13,7 +13,6 @@ import { AppleLoginDto } from './dto/appleLogin.dto';
 import { AuthGuard } from '../common/guard/auth.guard';
 
 @Controller()
-@UseGuards(AuthGuard)
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
