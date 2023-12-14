@@ -28,9 +28,6 @@ final class ChatRoomViewModel {
     private let postIDOutput = PassthroughSubject<Int, Never>()
     private let postOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
     private let userOutput = PassthroughSubject<UserResponseDTO, NetworkError>()
-    private let joinOutput = PassthroughSubject<UserResponseDTO, NetworkError>()
-    private let sendOutput = PassthroughSubject<UserResponseDTO, NetworkError>()
-    private let chatRoom = PassthroughSubject<GetRoomResponseDTO, NetworkError>()
     private let reportOutput = PassthroughSubject<(postID: Int, userID: String), Never>()
     private let popViewControllerOutput = PassthroughSubject<Void, NetworkError>()
     private var cancellableBag = Set<AnyCancellable>()
@@ -91,8 +88,6 @@ final class ChatRoomViewModel {
             postIDOutput: postIDOutput.eraseToAnyPublisher(),
             postOutput: postOutput.eraseToAnyPublisher(),
             userOutput: userOutput.eraseToAnyPublisher(),
-            joinOutput: joinOutput.eraseToAnyPublisher(),
-            sendOutput: sendOutput.eraseToAnyPublisher(),
             reportOutput: reportOutput.eraseToAnyPublisher(),
             popViewControllerOutput: popViewControllerOutput.eraseToAnyPublisher())
     }
@@ -102,7 +97,6 @@ final class ChatRoomViewModel {
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                chatRoom.send(data)
                 data.chatLog.forEach { [weak self] chat in
                     self?.appendLog(sender: chat.sender, message: chat.message)
                 }
@@ -118,8 +112,8 @@ final class ChatRoomViewModel {
                     self.getPostData()
                     self.getUserData()
                 }
-            } catch let error as NetworkError {
-                chatRoom.send(completion: .failure(error))
+            } catch {
+                dump(error)
             }
         }
     }
@@ -227,8 +221,6 @@ extension ChatRoomViewModel {
         let postIDOutput: AnyPublisher<Int, Never>
         let postOutput: AnyPublisher<PostResponseDTO, NetworkError>
         let userOutput: AnyPublisher<UserResponseDTO, NetworkError>
-        let joinOutput: AnyPublisher<UserResponseDTO, NetworkError>
-        let sendOutput: AnyPublisher<UserResponseDTO, NetworkError>
         let reportOutput: AnyPublisher<(postID: Int, userID: String), Never>
         let popViewControllerOutput: AnyPublisher<Void, NetworkError>
     }
