@@ -11,7 +11,7 @@ struct APIEndPoints {
     
     static let baseURL = "https://www.village-api.shop/"
     
-    static func getPosts() -> EndPoint<[PostListResponseDTO]> {
+    static func getPosts() -> EndPoint<[PostResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
@@ -19,7 +19,7 @@ struct APIEndPoints {
         )
     }
     
-    static func getPosts(queryParameter: PostListRequestDTO? = nil) -> EndPoint<[PostListResponseDTO]> {
+    static func getPosts(queryParameter: PostListRequestDTO? = nil) -> EndPoint<[PostResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
@@ -40,6 +40,14 @@ struct APIEndPoints {
         return EndPoint(
             baseURL: baseURL,
             path: "users/\(id)",
+            method: .GET
+        )
+    }
+    
+    static func getAllRead() -> EndPoint<GetAllReadResponseDTO> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "chat/unread",
             method: .GET
         )
     }
@@ -80,7 +88,7 @@ struct APIEndPoints {
         )
     }
     
-    static func getChatList() -> EndPoint<[GetChatListResponseDTO]> {
+    static func getChatList() -> EndPoint<GetChatListResponseDTO> {
         return EndPoint(
             baseURL: baseURL,
             path: "chat/room",
@@ -173,5 +181,81 @@ struct APIEndPoints {
             method: .POST
         )
     }
-  
+    
+    static func patchUser(userInfo: PatchUserDTO) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/\(userInfo.userID)",
+            method: .PATCH,
+            bodyParameters: userInfo.httpBody,
+            headers: ["Content-Type": "multipart/form-data; boundary=\(userInfo.boundary)"]
+        )
+    }
+    
+    static func hidePost(postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/block/\(postID)",
+            method: .POST
+        )
+    }
+    
+    static func unhidePost(postID: Int) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/block/\(postID)",
+            method: .DELETE
+        )
+    }
+    
+    static func getHiddenPosts(requestFilter: RequestFilterDTO?) -> EndPoint<[PostMuteResponseDTO]> {
+        guard let filter = requestFilter else {
+            return EndPoint(
+                baseURL: baseURL,
+                path: "posts/block",
+                method: .GET
+            )
+        }
+        return EndPoint(
+            baseURL: baseURL,
+            path: "posts/block",
+            method: .GET,
+            queryParameters: filter
+        )
+    }
+    
+    static func blockUser(userID: String) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/block/\(userID)",
+            method: .POST
+        )
+    }
+    
+    static func getBlockedUsers() -> EndPoint<[BlockedUserDTO]> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/block",
+            method: .GET
+        )
+    }
+    
+    static func unblockUser(userID: String) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "users/block/\(userID)",
+            method: .DELETE
+        )
+    }
+    
+    static func reportUser(reportInfo: ReportDTO) -> EndPoint<Void> {
+        return EndPoint(
+            baseURL: baseURL,
+            path: "report",
+            method: .POST,
+            bodyParameters: reportInfo,
+            headers: ["Content-Type": "application/json"]
+        )
+    }
+    
 }

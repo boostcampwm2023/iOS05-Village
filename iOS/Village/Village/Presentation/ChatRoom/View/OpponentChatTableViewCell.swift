@@ -27,6 +27,8 @@ final class OpponentChatTableViewCell: UITableViewCell {
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 12
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -40,23 +42,18 @@ final class OpponentChatTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func hideProfile() {
-        profileImageView.isHidden = true
+    override func prepareForReuse() {
+        profileImageView.image = nil
+        messageView.text = nil
     }
     
-    func configureData(message: String, profileImageURL: String) {
+    func configureData(message: String) {
         messageView.text = message
         messageView.sizeToFit()
-        Task {
-            do {
-                let data = try await APIProvider.shared.request(from: profileImageURL)
-                
-                profileImageView.image = UIImage(data: data)
-                
-            } catch let error {
-                dump(error)
-            }
-        }
+    }
+    
+    func configureImage(image: Data) {
+        profileImageView.image = UIImage(data: image)
     }
 
 }

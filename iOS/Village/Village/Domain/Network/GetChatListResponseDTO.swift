@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GetChatListResponseDTO: Hashable, Codable {
+struct ChatListData: Hashable, Codable {
 
     let roomID: Int
     let writer: String?
@@ -21,6 +21,7 @@ struct GetChatListResponseDTO: Hashable, Codable {
     let postThumbnail: String?
     let lastChat: String?
     let lastChatDate: String?
+    let allRead: Bool
 
     enum CodingKeys: String, CodingKey {
         case roomID = "room_id"
@@ -35,6 +36,19 @@ struct GetChatListResponseDTO: Hashable, Codable {
         case postThumbnail = "post_thumbnail"
         case lastChat = "last_chat"
         case lastChatDate = "last_chat_date"
+        case allRead = "all_read"
+    }
+    
+}
+
+struct GetChatListResponseDTO: Hashable, Codable {
+    
+    let allRead: Bool
+    let chatList: [ChatListData]
+    
+    enum CodingKeys: String, CodingKey {
+        case allRead = "all_read"
+        case chatList = "chat_list"
     }
     
 }

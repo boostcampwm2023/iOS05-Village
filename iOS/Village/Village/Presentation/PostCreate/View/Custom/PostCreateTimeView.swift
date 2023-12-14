@@ -37,6 +37,7 @@ final class PostCreateTimeView: UIStackView {
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.datePickerMode = .date
         datePicker.minimumDate = Date()
+        datePicker.maximumDate = Date() + 60 * 60 * 24 * 365 * 10
         
         return datePicker
     }()
@@ -185,8 +186,7 @@ final class PostCreateTimeView: UIStackView {
     func setEdit(time: String) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        guard var timeDate = dateFormatter.date(from: time) else { return }
-        timeDate -= 540 * 60
+        guard let timeDate = dateFormatter.date(from: time) else { return }
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: timeDate)
         dateFormatter.dateFormat = "HH:mm"

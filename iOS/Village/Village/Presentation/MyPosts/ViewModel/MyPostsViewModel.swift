@@ -10,12 +10,12 @@ import Combine
 
 final class MyPostsViewModel {
     
-    var posts: [PostListResponseDTO] = []
+    var posts: [PostResponseDTO] = []
     
     private var requestFilter: String = "0"
     
-    private var nextPageUpdateOutput = PassthroughSubject<[PostListResponseDTO], Never>()
-    private var toggleOutput = PassthroughSubject<[PostListResponseDTO], Never>()
+    private let nextPageUpdateOutput = PassthroughSubject<[PostResponseDTO], Never>()
+    private let refreshOutput = PassthroughSubject<[PostResponseDTO], Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -35,10 +35,8 @@ final class MyPostsViewModel {
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                if posts.last != data.last && !data.isEmpty {
-                    posts = data
-                    toggleOutput.send(data)
-                }
+                posts = data
+                refreshOutput.send(data)
             } catch {
                 dump(error)
             }
@@ -58,7 +56,7 @@ final class MyPostsViewModel {
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                if posts.last != data.last && !data.isEmpty {
+                if posts.last != data.last {
                     posts.append(contentsOf: data)
                     nextPageUpdateOutput.send(data)
                 }
@@ -76,30 +74,30 @@ final class MyPostsViewModel {
             }
             .store(in: &cancellableBag)
         
-        input.toggleSubject
-            .sink { [weak self] in
-                self?.requestFilter = self?.requestFilter == "0" ? "1" : "0"
+        input.refreshSubject
+            .sink { [weak self] isRequest in
+                self?.requestFilter = isRequest ? "1" : "0"
                 self?.updateInitPosts()
             }
             .store(in: &cancellableBag)
         
         return Output(
             nextPageUpdateOutput: nextPageUpdateOutput.eraseToAnyPublisher(),
-            toggleUpdateOutput: toggleOutput.eraseToAnyPublisher()
+            refreshOutput: refreshOutput.eraseToAnyPublisher()
         )
     }
     
     struct Input {
         
-        var nextPageUpdateSubject: AnyPublisher<Void, Never>
-        var toggleSubject: AnyPublisher<Void, Never>
+        let nextPageUpdateSubject: AnyPublisher<Void, Never>
+        let refreshSubject: AnyPublisher<Bool, Never>
         
     }
     
     struct Output {
         
-        var nextPageUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
-        var toggleUpdateOutput: AnyPublisher<[PostListResponseDTO], Never>
+        let nextPageUpdateOutput: AnyPublisher<[PostResponseDTO], Never>
+        let refreshOutput: AnyPublisher<[PostResponseDTO], Never>
         
     }
     

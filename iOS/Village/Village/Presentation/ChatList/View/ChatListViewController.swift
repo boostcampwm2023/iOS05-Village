@@ -10,7 +10,7 @@ import Combine
 
 class ChatListViewController: UIViewController {
     
-    typealias ChatListDataSource = UITableViewDiffableDataSource<Section, GetChatListResponseDTO>
+    typealias ChatListDataSource = UITableViewDiffableDataSource<Section, ChatListData>
     typealias ViewModel = ChatListViewModel
     private var getChatListSubject = CurrentValueSubject<Void, Never>(())
     private var cancellableBag = Set<AnyCancellable>()
@@ -52,12 +52,31 @@ class ChatListViewController: UIViewController {
             return cell
         }
     )
+    
+    private var timer: Timer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.bindViewModel()
+        self.setUI()
+        
+        self.timer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { [weak self] _ in
+            self?.bindViewModel()
+            self?.setUI()
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(false)
+        
         bindViewModel()
-        setUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        timer?.invalidate()
     }
     
 }
@@ -89,7 +108,7 @@ extension ChatListViewController {
                     dump(error)
                 }
             } receiveValue: { [weak self] value in
-                self?.generateData(items: value)
+                self?.generateData(items: value.chatList)
             }
             .store(in: &cancellableBag)
     }
@@ -103,19 +122,19 @@ extension ChatListViewController {
     
     private func configureConstraints() {
         NSLayoutConstraint.activate([
-            chatListTableView.topAnchor.constraint(equalTo: view.topAnchor),
-            chatListTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            chatListTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            chatListTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            chatListTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            chatListTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            chatListTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            chatListTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
-    private func generateData(items: [GetChatListResponseDTO]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, GetChatListResponseDTO>()
+    private func generateData(items: [ChatListData]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, ChatListData>()
         snapshot.appendSections([.chat])
         snapshot.appendItems(items)
         
-        dataSource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
     
 }
@@ -125,21 +144,21 @@ extension ChatListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let chat = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let chatRoomVC = ChatRoomViewController(roomID: chat.roomID, opponentNickname: chat.userNickname!)
+        let chatRoomVC = ChatRoomViewController(viewModel: ChatRoomViewModel(roomID: chat.roomID))
         chatRoomVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(chatRoomVC, animated: true)
     }
-    
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) 
-    -> UISwipeActionsConfiguration? {
-        let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
-            self.handleDeleteAction(forRowAt: indexPath)
-            completion(true)
-        }
-        let configuration = UISwipeActionsConfiguration(actions: [delete])
-        
-        return configuration
-    }
+    // TODO: after 15
+//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+//    -> UISwipeActionsConfiguration? {
+//        let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
+//            self.handleDeleteAction(forRowAt: indexPath)
+//            completion(true)
+//        }
+//        let configuration = UISwipeActionsConfiguration(actions: [delete])
+//        
+//        return configuration
+//    }
     
     func handleDeleteAction(forRowAt indexPath: IndexPath) {
         let alertController = UIAlertController(title: "", message: "", preferredStyle: .alert)
@@ -169,7 +188,7 @@ extension ChatListViewController: UITableViewDelegate {
         cancelAction.setValue(UIColor.systemRed, forKey: "titleTextColor")
         alertController.addAction(cancelAction)
         
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: false, completion: nil)
     }
     
     func handleAlertOKAction() {

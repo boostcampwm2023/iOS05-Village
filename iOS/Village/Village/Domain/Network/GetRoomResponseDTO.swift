@@ -33,10 +33,18 @@ struct Chat: Hashable, Codable {
 
 struct GetRoomResponseDTO: Codable {
     
+    let writer: String
+    let writerProfileIMG: String
+    let user: String
+    let userProfileIMG: String
     let postID: Int
     let chatLog: [Chat]
     
     enum CodingKeys: String, CodingKey {
+        case writer
+        case writerProfileIMG = "writer_profile_img"
+        case user
+        case userProfileIMG = "user_profile_img"
         case postID = "post_id"
         case chatLog = "chat_log"
     }

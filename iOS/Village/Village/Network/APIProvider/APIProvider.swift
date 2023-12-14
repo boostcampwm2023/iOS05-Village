@@ -25,6 +25,7 @@ final class APIProvider: Provider {
         self.interceptor = interceptor
     }
     
+    @discardableResult
     func request<R: Decodable, E: Requestable&Responsable>(with endpoint: E) async throws -> R? where E.Response == R {
         guard let data = try await sendRequest(with: endpoint) else { return nil }
         
@@ -38,9 +39,14 @@ final class APIProvider: Provider {
     
     func request(from url: String) async throws -> Data {
         guard let url = URL(string: url) else { throw NetworkError.urlRequestError }
-        let (data, response) = try await session.data(from: url)
-        try self.checkStatusCode(response)
-        return data
+        if let cachedImage = ImageCache.shared.getImageData(for: url as NSURL) {
+            return Data(cachedImage)
+        } else {
+            let (data, response) = try await session.data(from: url)
+            try self.checkStatusCode(response)
+            ImageCache.shared.setImageData(data as NSData, for: url as NSURL)
+            return data
+        }
     }
     
     private func sendRequest<E: Requestable>(with endpoint: E) async throws -> Data? {
@@ -53,7 +59,7 @@ final class APIProvider: Provider {
             do {
                 try self.checkStatusCode(response)
                 return data
-            } catch let error {
+            } catch let error as NetworkError {
                 switch await interceptor?.retry(request: request, error: error, attempt: attempt) {
                 case .doNotRetry:
                     throw error

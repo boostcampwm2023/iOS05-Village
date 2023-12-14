@@ -7,13 +7,18 @@
 
 import UIKit
 import Combine
+import PhotosUI
 
 final class PostCreateViewController: UIViewController {
     
-    private let viewModel: PostCreateViewModel
-    var editButtonTappedSubject = PassthroughSubject<Void, Never>()
+    typealias ViewModel = PostCreateViewModel
+    
+    private let viewModel: ViewModel
+    let editButtonTappedSubject = PassthroughSubject<Void, Never>()
     private let editSetSubject = PassthroughSubject<Void, Never>()
     private let postInfoPublisher = PassthroughSubject<PostModifyInfo, Never>()
+    private let selectedImagePublisher = PassthroughSubject<[Data], Never>()
+    private let deleteImagePublisher = PassthroughSubject<ImageItem, Never>()
     
     private lazy var keyboardToolBar: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 35))
@@ -52,6 +57,29 @@ final class PostCreateViewController: UIViewController {
     
     private lazy var scrollViewBottomConstraint: NSLayoutConstraint = {
         return scrollView.bottomAnchor.constraint(equalTo: postButtonView.topAnchor, constant: 0)
+    }()
+    
+    private lazy var imageUploadView: ImageUploadView = {
+        let action = UIAction { [weak self] _ in
+            self?.presentPHPickerViewController()
+        }
+        let view = ImageUploadView(cameraButtonAction: action,
+                                   deleteImagePublisher: deleteImagePublisher)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        return view
+    }()
+    
+    private let imageWarningLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "사진을 1장 이상 등록해야 합니다."
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .negative400
+        label.alpha = 0
+        
+        return label
     }()
     
     private lazy var postCreateTitleView: PostCreateTitleView = {
@@ -115,7 +143,9 @@ final class PostCreateViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         
+        view.backgroundColor = .systemBackground
         configureNavigation()
         configureUI()
         configureConstraints()
@@ -124,11 +154,9 @@ final class PostCreateViewController: UIViewController {
         if viewModel.isEdit {
             editSetSubject.send()
         }
-        view.backgroundColor = .systemBackground
-        super.viewDidLoad()
     }
     
-    init(viewModel: PostCreateViewModel) {
+    init(viewModel: ViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -137,19 +165,31 @@ final class PostCreateViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var cancellableBag: Set<AnyCancellable> = []
+    private var cancellableBag: Set<AnyCancellable> = []
     
     private func bind() {
-        let input = PostCreateViewModel.Input(
+        let input = ViewModel.Input(
             postInfoInput: postInfoPublisher,
-            editSetInput: editSetSubject
+            editSetInput: editSetSubject,
+            selectedImagePublisher: selectedImagePublisher.eraseToAnyPublisher(),
+            deleteImagePublisher: deleteImagePublisher.eraseToAnyPublisher()
         )
         
         let output = viewModel.transform(input: input)
+        handleWarningResult(output)
+        handleEndResult(output)
+        handleEditInitOutput(output)
+        handleImageOutput(output)
         
+    }
+    
+    private func handleWarningResult(_ output: ViewModel.Output) {
         output.warningResult
             .receive(on: DispatchQueue.main)
             .sink { [weak self] warning in
+                if let imageWarning = warning.imageWarning {
+                    self?.imageWarn(enable: imageWarning)
+                }
                 self?.postCreateTitleView.warn(warning.titleWarning)
                 if let priceWarning = warning.priceWarning {
                     self?.postCreatePriceView.warn(priceWarning)
@@ -158,12 +198,13 @@ final class PostCreateViewController: UIViewController {
                     self?.postCreateStartTimeView.warn(warning.startTimeWarning)
                     self?.postCreateEndTimeView.warn(warning.endTimeWarning)
                 } else {
-                    self?.postCreateStartTimeView.changeWarn(enable: warning.timeSequenceWarning)
                     self?.postCreateEndTimeView.changeWarn(enable: warning.timeSequenceWarning)
                 }
             }
             .store(in: &cancellableBag)
-        
+    }
+    
+    private func handleEndResult(_ output: ViewModel.Output) {
         output.endResult
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -182,7 +223,9 @@ final class PostCreateViewController: UIViewController {
                 }
             })
             .store(in: &cancellableBag)
-        
+    }
+    
+    private func handleEditInitOutput(_ output: ViewModel.Output) {
         output.editInitOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] post in
@@ -193,6 +236,24 @@ final class PostCreateViewController: UIViewController {
                 self?.postCreateDetailView.detailTextView.text = post.description
             }
             .store(in: &cancellableBag)
+    }
+    
+    private func handleImageOutput(_ output: ViewModel.Output) {
+        output.imageOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] imageItemList in
+                guard let self = self else { return }
+                if !imageItemList.isEmpty {
+                    imageWarn(enable: false)
+                }
+                self.imageUploadView.setImageItem(items: imageItemList)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    private func imageWarn(enable: Bool) {
+        let alpha: CGFloat = enable ? 1 : 0
+        imageWarningLabel.alpha = alpha
     }
     
 }
@@ -208,13 +269,19 @@ private extension PostCreateViewController {
     func post(_ sender: UIButton) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = ""
+        guard var priceText = postCreatePriceView.priceTextField.text else { return }
+        priceText = priceText.replacingOccurrences(of: ",", with: "")
+        var detailText = postCreateDetailView.detailTextView.text ?? ""
+        if detailText == "설명을 입력하세요." {
+            detailText = ""
+        }
         postInfoPublisher.send(
             PostModifyInfo(
                 title: postCreateTitleView.titleTextField.text ?? "",
                 startTime: postCreateStartTimeView.timeString,
                 endTime: postCreateEndTimeView.timeString,
-                price: postCreatePriceView.priceTextField.text ?? "",
-                detail: postCreateDetailView.detailTextView.text ?? ""
+                price: priceText,
+                detail: detailText
             )
         )
     }
@@ -229,30 +296,11 @@ private extension PostCreateViewController {
             return
         }
         keyboardFrame = view.convert(keyboardFrame, from: nil)
-        NSLayoutConstraint.deactivate([scrollViewBottomConstraint])
-        scrollViewBottomConstraint = scrollView
-            .bottomAnchor
-            .constraint(
-                equalTo: view.bottomAnchor,
-                constant: -keyboardFrame.height
-            )
-        NSLayoutConstraint.activate([scrollViewBottomConstraint])
+        scrollViewBottomConstraint.constant = postButtonView.bounds.height - keyboardFrame.height
     }
     
     func keyboardWillHide(_ notification: Notification) {
-        guard let userInfo = notification.userInfo as NSDictionary?,
-              var keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
-            return
-        }
-        keyboardFrame = view.convert(keyboardFrame, from: nil)
-        NSLayoutConstraint.deactivate([scrollViewBottomConstraint])
-        scrollViewBottomConstraint = scrollView
-            .bottomAnchor
-            .constraint(
-                equalTo: postButtonView.topAnchor,
-                constant: 0
-            )
-        NSLayoutConstraint.activate([scrollViewBottomConstraint])
+        scrollViewBottomConstraint.constant = 0
     }
     
 }
@@ -280,6 +328,10 @@ private extension PostCreateViewController {
         scrollView.addSubview(stackView)
         postButtonView.addSubview(postButton)
         
+        if !viewModel.isRequest {
+            stackView.addArrangedSubview(imageUploadView)
+            stackView.addArrangedSubview(imageWarningLabel)
+        }
         stackView.addArrangedSubview(postCreateTitleView)
         stackView.addArrangedSubview(postCreateStartTimeView)
         stackView.addArrangedSubview(postCreateEndTimeView)
@@ -355,6 +407,54 @@ private extension PostCreateViewController {
         )
         self.navigationItem.rightBarButtonItems = [close]
         self.navigationItem.backButtonDisplayMode = .minimal
+    }
+    
+}
+
+extension PostCreateViewController: PHPickerViewControllerDelegate {
+    
+    private var configuration: PHPickerConfiguration {
+        var config = PHPickerConfiguration()
+        config.selectionLimit = Constant.maxImageCount - viewModel.imagesCount
+        config.filter = .images
+        config.selection = .ordered
+        
+        return config
+    }
+    
+    private func presentPHPickerViewController() {
+        guard configuration.selectionLimit > 0 else {
+            showImageMaximumAlert()
+            return
+        }
+        let pickerVC = PHPickerViewController(configuration: configuration)
+        pickerVC.delegate = self
+        self.present(pickerVC, animated: true)
+    }
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        let itemProviders = results.map(\.itemProvider)
+        let dispatchGroup = DispatchGroup()
+        var imageData = [Data]()
+        itemProviders.forEach { itemProvider in
+            dispatchGroup.enter()
+            itemProvider.getImageData { data in
+                if let data {
+                    imageData.append(data)
+                }
+                dispatchGroup.leave()
+            }
+        }
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            self?.selectedImagePublisher.send(imageData)
+        }
+        picker.dismiss(animated: true)
+    }
+    
+    private func showImageMaximumAlert() {
+        let alert = UIAlertController(title: "이미지는 최대 12장 첨부 가능합니다!", message: nil, preferredStyle: .alert)
+        alert.addAction(.init(title: "확인", style: .cancel))
+        self.present(alert, animated: true)
     }
     
 }

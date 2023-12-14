@@ -37,9 +37,10 @@ final class UserInfoView: UIView {
         fatalError("Should not be called")
     }
     
-    func setContent(imageURL: String, nickname: String) {
+    func setContent(imageURL: String?, nickname: String) {
         Task {
             do {
+                guard let imageURL = imageURL else { return }
                 let data = try await APIProvider.shared.request(from: imageURL)
                 profileImageView.image = UIImage(data: data)
             } catch let error {

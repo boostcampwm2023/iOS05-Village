@@ -15,7 +15,7 @@ struct PostModifyRequestDTO: Encodable, MultipartFormData {
     let boundary = UUID().uuidString
     
     var httpBody: Data {
-        var body = NSMutableData()
+        let body = NSMutableData()
         
         var fieldString = "--\(boundary)\r\n"
         fieldString += "Content-Disposition: form-data; name=\"post_info\"\r\n"
@@ -32,7 +32,7 @@ struct PostModifyRequestDTO: Encodable, MultipartFormData {
         
         image.forEach { image in
             body.appendString("--\(boundary)\r\n")
-            body.appendString("Content-Disposition: form-data; name=\"image\";\r\n")
+            body.appendString("Content-Disposition: form-data; name=\"image\"; filename=\"image.png\"\r\n")
             body.appendString("Content-Type: image\r\n\r\n")
             body.append(image)
             body.appendString("\r\n")
@@ -57,6 +57,7 @@ struct PostInfoDTO: Encodable {
     let isRequest: Bool
     let startDate: String
     let endDate: String
+    let deletedImages: [String]
     
     enum CodingKeys: String, CodingKey {
         case title
@@ -65,11 +66,12 @@ struct PostInfoDTO: Encodable {
         case isRequest = "is_request"
         case startDate = "start_date"
         case endDate = "end_date"
+        case deletedImages = "deleted_images"
     }
     
 }
 
-private extension NSMutableData {
+extension NSMutableData {
     
     func appendString(_ string: String) {
         if let data = string.data(using: .utf8) {

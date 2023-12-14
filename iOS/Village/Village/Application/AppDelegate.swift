@@ -14,7 +14,6 @@ import FirebaseMessaging
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        sleep(2)
         UINavigationBar.appearance().tintColor = .primary500
         registerForPushNotifications()
         FirebaseApp.configure()
@@ -71,13 +70,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
               let rootViewController = windowScene?.rootViewController as? AppTabBarController,
               let navigationController = rootViewController.selectedViewController as? UINavigationController,
               let roomIDString = content["room_id"] as? String,
-              let opponentNickname = content["title"] as? String,
               let roomID = Int(roomIDString) else {
             completionHandler()
             return
         }
         
-        navigationController.pushViewController(ChatRoomViewController(roomID: roomID, opponentNickname: opponentNickname), animated: true)
+        navigationController.pushViewController(ChatRoomViewController(viewModel: ChatRoomViewModel(roomID: roomID)), animated: true)
         completionHandler()
     }
     

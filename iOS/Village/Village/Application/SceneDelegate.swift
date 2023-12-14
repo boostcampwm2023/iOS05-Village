@@ -34,13 +34,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
     }
     
-    private func observeShouldLoginEvent() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(rootViewControllerToLoginViewController),
-                                               name: .shouldLogin,
-                                               object: nil)
-    }
-    
     private func autoLogin() {
         guard let accessToken = JWTManager.shared.get()?.accessToken else {
             window?.rootViewController = LoginViewController()
@@ -58,14 +51,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
+    private func observeShouldLoginEvent() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(rootViewControllerToLoginViewController),
+                                               name: .shouldLogin,
+                                               object: nil)
+    }
+    
     @objc
     private func rootViewControllerToTabBarController() {
-        window?.rootViewController = AppTabBarController()
+        DispatchQueue.main.async { [weak self] in
+            self?.window?.rootViewController = AppTabBarController()
+        }
     }
     
     @objc
     private func rootViewControllerToLoginViewController() {
-        window?.rootViewController = LoginViewController()
+        DispatchQueue.main.async { [weak self] in
+            self?.window?.rootViewController = LoginViewController()
+        }
     }
 
 }

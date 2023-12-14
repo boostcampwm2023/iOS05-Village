@@ -18,18 +18,44 @@ final class AppTabBarController: UITabBarController {
     private let myPageViewController = UINavigationController(
         rootViewController: MyPageViewController(viewModel: MyPageViewModel())
     )
-
+    
+    private var timer: Timer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
         setViewControllers()
         configureTabBarItems()
+        
+        self.timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
+            let endpoint = APIEndPoints.getAllRead()
+
+            Task {
+                do {
+                    guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+                    if data.allRead == true {
+                        self?.tabBar.items?[1].badgeValue = nil
+                    } else {
+                        self?.tabBar.items?[1].badgeValue = "!"
+                    }
+                } catch {
+                    dump(error)
+                }
+            }
+        }
     }
     
-    // TODO: shadow 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        timer?.invalidate()
+    }
+    
     private func setup() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        tabBar.scrollEdgeAppearance = appearance
         view.backgroundColor = .systemBackground
-        tabBar.isTranslucent = false
         tabBar.backgroundColor = .systemBackground
         tabBar.tintColor = .primary500
         tabBar.unselectedItemTintColor = .primary500

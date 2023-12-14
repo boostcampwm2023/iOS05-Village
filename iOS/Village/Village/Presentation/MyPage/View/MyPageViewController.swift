@@ -16,182 +16,21 @@ final class MyPageViewController: UIViewController {
     private let viewModel: ViewModel
     private var cancellableBag: Set<AnyCancellable> = []
     
-    private var logoutSubject = PassthroughSubject<Void, Never>()
-    private var deleteAccountSubject = PassthroughSubject<Void, Never>()
+    private let logoutSubject = PassthroughSubject<Void, Never>()
+    private let deleteAccountSubject = PassthroughSubject<Void, Never>()
+    private let editProfileSubject = PassthroughSubject<Void, Never>()
+    private let refreshSubject = PassthroughSubject<Void, Never>()
     
-    private let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: ImageSystemName.personFill.rawValue)
-        imageView.tintColor = .primary500
-        imageView.setLayer(borderWidth: 0, cornerRadius: 16)
-        imageView.backgroundColor = .primary100
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: ProfileTableViewCell.identifier)
+        tableView.register(MyPageTableViewCell.self, forCellReuseIdentifier: MyPageTableViewCell.identifier)
+        tableView.separatorStyle = .none
         
-        return imageView
-    }()
-    
-    private let nicknameLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        label.text = "닉네임"
-        
-        return label
-    }()
-    
-    private let hashIDLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.text = "#123123"
-        label.textColor = .secondaryLabel
-        
-        return label
-    }()
-    
-    private lazy var profileEditButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        configuration.title = "프로필 수정"
-        configuration.titleAlignment = .center
-        configuration.baseForegroundColor = .label
-        
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(profileEditButtonTapped), for: .touchUpInside)
-        button.configuration = configuration
-        button.contentHorizontalAlignment = .leading
-        button.setLayer(borderWidth: 0)
-        button.backgroundColor = .systemGray5
-        
-        return button
-    }()
-    
-    private let activityLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "내 활동"
-        label.textColor = .secondaryLabel
-        label.font = .boldSystemFont(ofSize: 14)
-        
-        return label
-    }()
-    
-    private let activityStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        
-        return stackView
-    }()
-    
-    private lazy var myPostButton: UIButton = {
-        var titleAttr = AttributedString.init("내 게시글")
-        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
-        
-        var configuration = UIButton.Configuration.plain()
-        configuration.baseForegroundColor = .label
-        configuration.attributedTitle = titleAttr
-        configuration.buttonSize = .medium
-        
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(myPostsButtonTapped), for: .touchUpInside)
-        button.configuration = configuration
-        button.contentHorizontalAlignment = .leading
-
-        return button
-    }()
-    
-    private lazy var hiddenPostButton: UIButton = {
-        var titleAttr = AttributedString.init("숨긴 게시글")
-        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
-        
-        var configuration = UIButton.Configuration.plain()
-        configuration.baseForegroundColor = .label
-        configuration.attributedTitle = titleAttr
-        configuration.buttonSize = .medium
-        
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(hiddenPostButtonTapped), for: .touchUpInside)
-        button.configuration = configuration
-        button.contentHorizontalAlignment = .leading
-        
-        return button
-    }()
-    
-    private lazy var hiddenUserButton: UIButton = {
-        var titleAttr = AttributedString.init("차단 관리")
-        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
-        
-        var configuration = UIButton.Configuration.plain()
-        configuration.baseForegroundColor = .label
-        configuration.attributedTitle = titleAttr
-        configuration.buttonSize = .medium
-        
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(hiddenUserButtonTapped), for: .touchUpInside)
-        button.configuration = configuration
-        button.contentHorizontalAlignment = .leading
-        
-        return button
-    }()
-    
-    private let accountLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "계정"
-        label.textColor = .secondaryLabel
-        label.font = .boldSystemFont(ofSize: 14)
-        
-        return label
-    }()
-    
-    private lazy var logoutButton: UIButton = {
-        var titleAttr = AttributedString.init("로그아웃")
-        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
-        
-        var configuration = UIButton.Configuration.plain()
-        configuration.baseForegroundColor = .label
-        configuration.attributedTitle = titleAttr
-        configuration.buttonSize = .medium
-        
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(logoutButtonTapped), for: .touchUpInside)
-        button.configuration = configuration
-        button.contentHorizontalAlignment = .leading
-        
-        return button
-    }()
-    
-    private lazy var deleteAccountButton: UIButton = {
-        var titleAttr = AttributedString.init("회원탈퇴")
-        titleAttr.font = .systemFont(ofSize: 16, weight: .bold)
-        
-        var configuration = UIButton.Configuration.plain()
-        configuration.baseForegroundColor = .label
-        configuration.attributedTitle = titleAttr
-        configuration.buttonSize = .medium
-        
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(deleteAccountButtonTapped), for: .touchUpInside)
-        button.configuration = configuration
-        button.contentHorizontalAlignment = .leading
-        
-        return button
-    }()
-    
-    private let accountStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        
-        return stackView
+        return tableView
     }()
     
     init(viewModel: MyPageViewModel) {
@@ -211,6 +50,13 @@ final class MyPageViewController: UIViewController {
         setConstraints()
         bindViewModel()
         view.backgroundColor = .systemBackground
+        refreshSubject.send()
+        tableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshSubject.send()
     }
     
 }
@@ -225,69 +71,33 @@ private extension MyPageViewController {
     }
     
     func setUI() {
-        view.addSubview(profileImageView)
-        view.addSubview(nicknameLabel)
-        view.addSubview(hashIDLabel)
-        view.addSubview(profileEditButton)
-        view.addSubview(activityStackView)
-        view.addSubview(accountStackView)
-        
-        activityStackView.addArrangedSubview(activityLabel)
-        activityStackView.addArrangedSubview(myPostButton)
-        activityStackView.addArrangedSubview(hiddenPostButton)
-        activityStackView.addArrangedSubview(hiddenUserButton)
-        
-        accountStackView.addArrangedSubview(accountLabel)
-        accountStackView.addArrangedSubview(logoutButton)
-        accountStackView.addArrangedSubview(deleteAccountButton)
+        view.addSubview(tableView)
     }
     
     func setConstraints() {
-                
         NSLayoutConstraint.activate([
-            profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 6),
-            profileImageView.widthAnchor.constraint(equalToConstant: 96),
-            profileImageView.heightAnchor.constraint(equalToConstant: 96)
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
         ])
-        
-        NSLayoutConstraint.activate([
-            nicknameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15),
-            nicknameLabel.bottomAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: -5)
-        ])
-        
-        NSLayoutConstraint.activate([
-            hashIDLabel.leadingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor, constant: 5),
-            hashIDLabel.bottomAnchor.constraint(equalTo: nicknameLabel.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            profileEditButton.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15),
-            profileEditButton.topAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 5)
-        ])
-        
-        NSLayoutConstraint.activate([
-            activityStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            activityStackView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 35),
-            activityStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
-        ])
-        
-        NSLayoutConstraint.activate([
-            accountStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            accountStackView.topAnchor.constraint(equalTo: activityStackView.bottomAnchor, constant: 40),
-            accountStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
-        ])
-
     }
     
     func bindViewModel() {
         let output = viewModel.transform(input: Input(
             logoutSubject: logoutSubject.eraseToAnyPublisher(),
-            deleteAccountSubject: deleteAccountSubject.eraseToAnyPublisher()
+            deleteAccountSubject: deleteAccountSubject.eraseToAnyPublisher(),
+            editProfileSubject: editProfileSubject.eraseToAnyPublisher(),
+            refreshInputSubject: refreshSubject.eraseToAnyPublisher()
         ))
-        
+        handleLogout(output: output)
+        handleDeleteAccount(output: output)
+        handleEditProfile(output: output)
+        handleRefresh(output: output)
+    }
+    
+    func handleLogout(output: ViewModel.Output) {
         output.logoutSucceed
-            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -299,9 +109,10 @@ private extension MyPageViewController {
                 NotificationCenter.default.post(Notification(name: .shouldLogin))
             }
             .store(in: &cancellableBag)
-        
+    }
+    
+    func handleDeleteAccount(output: ViewModel.Output) {
         output.deleteAccountSucceed
-            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -313,16 +124,41 @@ private extension MyPageViewController {
                 NotificationCenter.default.post(Notification(name: .shouldLogin))
             }
             .store(in: &cancellableBag)
+        
+    }
+    
+    func handleEditProfile(output: ViewModel.Output) {
+        output.editProfileOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] profileInfo in
+                guard let self = self else { return }
+                let nextVC = EditProfileViewController(viewModel: EditProfileViewModel(
+                    profileInfo: profileInfo
+                ))
+                nextVC.hidesBottomBarWhenPushed = true
+                nextVC.updateSuccessSubject
+                    .receive(on: DispatchQueue.main)
+                    .sink { [weak self] in
+                        self?.refreshSubject.send()
+                    }
+                    .store(in: &self.cancellableBag)
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    func handleRefresh(output: ViewModel.Output) {
+        output.refreshOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellableBag)
     }
     
 }
 
-@objc
 private extension MyPageViewController {
-    
-    func profileEditButtonTapped() {
-        
-    }
     
     func myPostsButtonTapped() {
         let nextVC = MyPostsViewController(viewModel: MyPostsViewModel())
@@ -331,13 +167,13 @@ private extension MyPageViewController {
     }
     
     func hiddenPostButtonTapped() {
-        let nextVC = PostMuteViewController()
+        let nextVC = MyHiddenPostsViewController(viewModel: MyHiddenPostsViewModel())
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    func hiddenUserButtonTapped() {
-        let nextVC = BlockedUserViewController()
+    func blockedUsersButtonTapped() {
+        let nextVC = BlockedUserViewController(viewModel: BlockedUsersViewModel())
         nextVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(nextVC, animated: true)
     }
@@ -358,6 +194,95 @@ private extension MyPageViewController {
             self?.deleteAccountSubject.send()
         }))
         self.present(alert, animated: true)
+    }
+    
+}
+
+extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.getTableViewContentCount(section: section)
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            if let cell = tableView.dequeueReusableCell(
+                withIdentifier: ProfileTableViewCell.identifier,
+                for: indexPath
+            ) as? ProfileTableViewCell {
+                cell.editProfileSubject
+                    .sink { [weak self] _ in
+                        self?.editProfileSubject.send()
+                    }
+                    .store(in: &cancellableBag)
+                guard let profileInfo = viewModel.getProfileInfo() else { return cell }
+                cell.configureData(profileInfo: profileInfo)
+                cell.selectionStyle = .none
+                
+                return cell
+            }
+        } else {
+            if let cell = tableView.dequeueReusableCell(
+                withIdentifier: MyPageTableViewCell.identifier,
+                for: indexPath
+            ) as? MyPageTableViewCell {
+                cell.configureData(text: viewModel.getTableViewContent(section: indexPath.section, row: indexPath.row)
+                )
+                return cell
+            }
+        }
+        return UITableViewCell()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 1:
+            switch indexPath.row {
+            case 0:
+                myPostsButtonTapped()
+            case 1:
+                hiddenPostButtonTapped()
+            case 2:
+                blockedUsersButtonTapped()
+            default:
+                break
+            }
+        case 2:
+            switch indexPath.row {
+            case 0:
+                logoutButtonTapped()
+            case 1:
+                deleteAccountButtonTapped()
+            default:
+                break
+            }
+        default:
+            break
+        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 1:
+            return "내 활동"
+        case 2:
+            return "계정"
+        default:
+            return nil
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 0:
+            return 100
+        default:
+            return 40
+        }
     }
     
 }

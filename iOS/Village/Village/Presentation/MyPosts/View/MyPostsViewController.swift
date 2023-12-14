@@ -10,7 +10,7 @@ import Combine
 
 final class MyPostsViewController: UIViewController {
     
-    typealias MyPostsDataSource = UITableViewDiffableDataSource<Section, PostListResponseDTO>
+    typealias MyPostsDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
     
     typealias ViewModel = MyPostsViewModel
     typealias Input = ViewModel.Input
@@ -18,6 +18,7 @@ final class MyPostsViewController: UIViewController {
     enum Section {
         case posts
     }
+    private var paginationFlag: Bool = true
     
     private let viewModel: ViewModel
     
@@ -31,6 +32,7 @@ final class MyPostsViewController: UIViewController {
                 }
                 cell.configureData(post: post)
                 cell.selectionStyle = .none
+                
                 return cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(
@@ -67,7 +69,7 @@ final class MyPostsViewController: UIViewController {
     }()
     
     private let paginationPublisher = PassthroughSubject<Void, Never>()
-    private let togglePublisher = PassthroughSubject<Void, Never>()
+    private let refreshPublisher = PassthroughSubject<Bool, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     init(viewModel: ViewModel) {
@@ -89,7 +91,7 @@ final class MyPostsViewController: UIViewController {
     }
     
     @objc private func segmentedControlChanged() {
-        togglePublisher.send()
+        refreshPublisher.send(requestSegmentedControl.selectedSegmentIndex == 1)
     }
     
 }
@@ -99,25 +101,31 @@ private extension MyPostsViewController {
     func bindViewModel() {
         let output = viewModel.transform(input: MyPostsViewModel.Input(
             nextPageUpdateSubject: paginationPublisher.eraseToAnyPublisher(),
-            toggleSubject: togglePublisher.eraseToAnyPublisher()
+            refreshSubject: refreshPublisher.eraseToAnyPublisher()
         ))
         
         output.nextPageUpdateOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] posts in
+                if posts.isEmpty {
+                    self?.paginationFlag = false
+                }
                 self?.addNextPage(posts: posts)
             }
             .store(in: &cancellableBag)
         
-        output.toggleUpdateOutput
+        output.refreshOutput
             .receive(on: DispatchQueue.main)
             .sink { [weak self] posts in
+                if posts.isEmpty {
+                    self?.paginationFlag = false
+                }
                 self?.toggleData(posts: posts)
             }
             .store(in: &cancellableBag)
     }
     
-    func addNextPage(posts: [PostListResponseDTO]) {
+    func addNextPage(posts: [PostResponseDTO]) {
         var snapshot = dataSource.snapshot()
         snapshot.appendItems(posts)
         dataSource.apply(snapshot)
@@ -132,13 +140,13 @@ private extension MyPostsViewController {
     }
     
     func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListResponseDTO>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
         snapshot.appendSections([.posts])
         snapshot.appendItems(viewModel.posts)
         dataSource.apply(snapshot)
     }
     
-    func toggleData(posts: [PostListResponseDTO]) {
+    func toggleData(posts: [PostResponseDTO]) {
         var snapshot = dataSource.snapshot()
         snapshot.deleteAllItems()
         snapshot.appendSections([.posts])
@@ -154,31 +162,17 @@ private extension MyPostsViewController {
     func configureConstraints() {
         
         NSLayoutConstraint.activate([
-            requestSegmentedControl.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10
-            ),
-            requestSegmentedControl.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10
-            ),
-            requestSegmentedControl.topAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10
-            ),
+            requestSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            requestSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            requestSegmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             requestSegmentedControl.heightAnchor.constraint(equalToConstant: 35)
         ])
         
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor
-            ),
-            tableView.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor
-            ),
-            tableView.topAnchor.constraint(
-                equalTo: requestSegmentedControl.bottomAnchor, constant: 5
-            ),
-            tableView.bottomAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5
-            )
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: requestSegmentedControl.bottomAnchor, constant: 5),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5)
         ])
         
     }
@@ -188,14 +182,21 @@ private extension MyPostsViewController {
 extension MyPostsViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > self.tableView.contentSize.height - 1000 {
+        if scrollView.contentOffset.y > self.tableView.contentSize.height - 1000
+        && paginationFlag {
             paginationPublisher.send()
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPost = viewModel.posts[indexPath.row]
-        let nextVC = PostDetailViewController(postID: selectedPost.postID)
+        let nextVC = PostDetailViewController(viewModel: PostDetailViewModel(postID: selectedPost.postID))
+        nextVC.refreshPreviousViewController
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refreshPublisher.send(self?.requestSegmentedControl.selectedSegmentIndex == 1)
+            }
+            .store(in: &cancellableBag)
         nextVC.hidesBottomBarWhenPushed = true
         nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
