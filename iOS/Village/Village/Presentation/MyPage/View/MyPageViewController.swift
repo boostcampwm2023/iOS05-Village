@@ -217,6 +217,7 @@ extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
                     .store(in: &cancellableBag)
                 guard let profileInfo = viewModel.getProfileInfo() else { return cell }
                 cell.configureData(profileInfo: profileInfo)
+                cell.selectionStyle = .none
                 
                 return cell
             }
