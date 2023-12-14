@@ -13,12 +13,12 @@ export class ReportService {
     private postRepository: Repository<PostEntity>,
   ) {}
   async createReport(body: CreateReportDto, userId: string) {
-    const isExist = await this.postRepository.exist({
-      where: { id: body.post_id },
-    });
     if (body.user_id === userId) {
       throw new HttpException('자신의 게시글은 신고 할 수 없습니다.', 400);
     }
+    const isExist = await this.postRepository.exist({
+      where: { id: body.post_id },
+    });
     if (!isExist) {
       throw new HttpException('신고할 대상이 존재 하지 않습니다.', 404);
     }
