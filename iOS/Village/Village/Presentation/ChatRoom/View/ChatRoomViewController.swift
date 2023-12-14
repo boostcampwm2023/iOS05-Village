@@ -342,6 +342,7 @@ private extension ChatRoomViewController {
         handlePush(output: output)
         handleBlock(output: output)
         handleReport(output: output)
+        handleReload(output: output)
     }
     
     func handlePost(output: ViewModel.Output) {
@@ -425,6 +426,18 @@ private extension ChatRoomViewController {
                 }
             } receiveValue: { [weak self] value in
                 self?.report(postID: value.postID, userID: value.userID)
+            }
+            .store(in: &cancellableBag)
+    }
+    
+    func handleReload(output: ViewModel.Output) {
+        output.tableViewReloadOutput
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                var snapshot = self.dataSource.snapshot()
+                snapshot.reconfigureItems(snapshot.itemIdentifiers)
+                self.dataSource.apply(snapshot)
             }
             .store(in: &cancellableBag)
     }

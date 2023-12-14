@@ -31,6 +31,7 @@ final class ChatRoomViewModel {
     private let userOutput = PassthroughSubject<UserResponseDTO, NetworkError>()
     private let reportOutput = PassthroughSubject<(postID: Int, userID: String), Never>()
     private let popViewControllerOutput = PassthroughSubject<Void, NetworkError>()
+    private let tableViewReloadOutput = PassthroughSubject<Void, Never>()
     private var cancellableBag = Set<AnyCancellable>()
     
     private let roomID: Int
@@ -49,7 +50,7 @@ final class ChatRoomViewModel {
     func transform(input: Input) -> Output {
         input.roomIDInput.sink { [weak self] _ in
             guard let self = self else { return }
-            self.roomIDOutput.send(self.roomID)
+//            self.roomIDOutput.send(self.roomID)
             self.getChatRoomData()
         }
         .store(in: &cancellableBag)
@@ -95,7 +96,9 @@ final class ChatRoomViewModel {
             postOutput: postOutput.eraseToAnyPublisher(),
             userOutput: userOutput.eraseToAnyPublisher(),
             reportOutput: reportOutput.eraseToAnyPublisher(),
-            popViewControllerOutput: popViewControllerOutput.eraseToAnyPublisher())
+            popViewControllerOutput: popViewControllerOutput.eraseToAnyPublisher(),
+            tableViewReloadOutput: tableViewReloadOutput.eraseToAnyPublisher()
+        )
     }
     
     func getChatRoomData() {
@@ -161,6 +164,7 @@ final class ChatRoomViewModel {
                 let opponentData = try await APIProvider.shared.request(from: opponentURL)
                 self.myProfileData = myData
                 self.opponentProfileData = opponentData
+                self.tableViewReloadOutput.send()
             } catch let error {
                 dump(error)
             }
@@ -231,6 +235,7 @@ extension ChatRoomViewModel {
         let userOutput: AnyPublisher<UserResponseDTO, NetworkError>
         let reportOutput: AnyPublisher<(postID: Int, userID: String), Never>
         let popViewControllerOutput: AnyPublisher<Void, NetworkError>
+        let tableViewReloadOutput: AnyPublisher<Void, Never>
     }
     
 }
