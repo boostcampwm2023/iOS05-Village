@@ -31,7 +31,7 @@ export class AuthGuard implements CanActivate {
       request.userId = payload.userId;
       return true;
     } catch (err) {
-      return false;
+      throw new HttpException('토큰이 유효하지 않습니다.', 401);
     }
   }
 }
