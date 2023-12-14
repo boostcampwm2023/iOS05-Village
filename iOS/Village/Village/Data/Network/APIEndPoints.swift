@@ -9,7 +9,7 @@ import Foundation
 
 struct APIEndPoints {
     
-    static let baseURL = "https://www.village-api.shop/"
+    static let baseURL = "https://www.village-api.store/"
     
     static func getPosts() -> EndPoint<[PostResponseDTO]> {
         return EndPoint(

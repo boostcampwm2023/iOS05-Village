@@ -18,6 +18,7 @@ final class ChatRoomViewController: UIViewController {
     }
     
     private let viewModel: ViewModel
+    private let roomIDPublisher = PassthroughSubject<Void, Never>()
     private let postPublisher = PassthroughSubject<Void, Never>()
     private let userPublisher = PassthroughSubject<Void, Never>()
     private let blockPublisher = PassthroughSubject<Void, Never>()
@@ -173,11 +174,12 @@ final class ChatRoomViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setSocket()
         bindViewModel()
+        setSocket()
         setNavigationUI()
         setUI()
         setUpNotification()
+        roomIDPublisher.send()
         view.backgroundColor = .systemBackground
     }
     
@@ -188,7 +190,7 @@ final class ChatRoomViewController: UIViewController {
     }
     
     private func setSocket() {
-        WebSocket.shared.url = URL(string: "ws://www.village-api.shop/chats")
+        WebSocket.shared.url = URL(string: "ws://www.village-api.store/chats")
         try? WebSocket.shared.openWebSocket()
         joinPublisher.send()
         
@@ -322,6 +324,7 @@ private extension ChatRoomViewController {
     
     func bindViewModel() {
         let input = ViewModel.Input(
+            roomIDInput: roomIDPublisher.eraseToAnyPublisher(),
             postInput: postPublisher.eraseToAnyPublisher(),
             userInput: userPublisher.eraseToAnyPublisher(),
             joinInput: joinPublisher.eraseToAnyPublisher(),
@@ -373,7 +376,7 @@ private extension ChatRoomViewController {
     }
     
     func handleJoin(output: ViewModel.Output) {
-        output.roomIDOutput.receive(on: DispatchQueue.main)
+        output.joinOutput.receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] roomID in
                 self?.sendJoinRoom(roomID: roomID)
             })
