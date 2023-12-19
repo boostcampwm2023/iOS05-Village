@@ -6,23 +6,18 @@ import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../common/S3Handler';
 import { PostListDto } from './dto/postList.dto';
-import { BlockPostEntity } from '../entities/blockPost.entity';
 import { PostRepository } from './post.repository';
 
 @Injectable()
 export class PostService {
   constructor(
-    @InjectRepository(PostEntity)
-    private postRepository: Repository<PostEntity>,
     @InjectRepository(PostImageEntity)
     private postImageRepository: Repository<PostImageEntity>,
-    @InjectRepository(BlockPostEntity)
-    private blockPostRepository: Repository<BlockPostEntity>,
+    private postRepository: PostRepository,
     private s3Handler: S3Handler,
-    private repo: PostRepository,
   ) {}
   async findPosts(query: PostListDto, userId: string) {
-    const posts = await this.repo.findExceptBlock(userId, query);
+    const posts = await this.postRepository.findExceptBlock(userId, query);
     return posts.map((filteredPost) => {
       return {
         title: filteredPost.title,
@@ -41,7 +36,7 @@ export class PostService {
   }
 
   async findPostById(postId: number, userId: string) {
-    const post = await this.repo.findOneWithBlock(userId, postId);
+    const post = await this.postRepository.findOneWithBlock(userId, postId);
 
     if (post === null) {
       throw new HttpException('없는 게시물입니다.', 404);
@@ -139,13 +134,7 @@ export class PostService {
 
   async removePost(postId: number, userId: string) {
     await this.checkAuth(postId, userId);
-    await this.deleteCascadingPost(postId);
-    return true;
-  }
-  async deleteCascadingPost(postId: number) {
-    await this.postImageRepository.softDelete({ post_id: postId });
-    await this.blockPostRepository.softDelete({ blocked_post: postId });
-    await this.postRepository.softDelete({ id: postId });
+    await this.postRepository.softDeleteCascade(postId);
   }
 
   async findPostsTitles(searchKeyword: string) {
