@@ -6,6 +6,7 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { PostEntity } from './post.entity';
 
 @Entity('block_user')
 export class BlockUserEntity {
@@ -25,4 +26,8 @@ export class BlockUserEntity {
   @ManyToOne(() => UserEntity, (blocked) => blocked.user_hash)
   @JoinColumn({ name: 'blocked_user', referencedColumnName: 'user_hash' })
   blockedUser: UserEntity;
+
+  @ManyToOne(() => PostEntity, (blocked) => blocked.user_hash)
+  @JoinColumn({ name: 'blocked_user', referencedColumnName: 'user_hash' })
+  blockedUserPost: PostEntity;
 }
