@@ -31,61 +31,6 @@ export class PostService {
     private s3Handler: S3Handler,
     private repo: PostRepository,
   ) {}
-  makeWhereOption(query: PostListDto): WhereOption {
-    const cursor: FindOperator<number> =
-      query.page === undefined ? undefined : LessThan(query.page);
-    const where: WhereOption = { id: cursor };
-    if (query.requestFilter !== undefined) {
-      where.is_request = query.requestFilter !== 0;
-    }
-    if (query.writer !== undefined) {
-      where.user_hash = query.writer;
-    }
-    if (query.searchKeyword !== undefined) {
-      where.title = Like(`%${query.searchKeyword}%`);
-    }
-    return where;
-  }
-
-  async getFilteredList(userId: string) {
-    const blockedUsersId: string[] = (
-      await this.blockUserRepository.find({
-        where: { blocker: userId },
-        // relations: ['blockedUser'],
-        // withDeleted: true,
-      })
-    ).map((blockedUser) => blockedUser.blocked_user);
-
-    const blockedPostsId: number[] = (
-      await this.blockPostRepository.find({
-        where: { blocker: userId },
-      })
-    ).map((blockedPost) => blockedPost.blocked_post);
-    return { blockedUsersId, blockedPostsId };
-  }
-
-  async filterBlockedPosts(
-    userId: string,
-    posts: PostEntity[],
-  ): Promise<PostEntity[]> {
-    const { blockedUsersId, blockedPostsId } =
-      await this.getFilteredList(userId);
-    return posts.filter((post) => {
-      return !(
-        blockedPostsId.includes(post.id) ||
-        blockedUsersId.includes(post.user_hash)
-      );
-    });
-  }
-
-  async isFiltered(post: PostEntity, userId: string) {
-    const { blockedUsersId, blockedPostsId } =
-      await this.getFilteredList(userId);
-    return (
-      blockedPostsId.includes(post.id) ||
-      blockedUsersId.includes(post.user_hash)
-    );
-  }
   async findPosts(query: PostListDto, userId: string) {
     const posts = await this.repo.findExceptBlock(userId, query);
     return posts.map((filteredPost) => {
@@ -106,15 +51,12 @@ export class PostService {
   }
 
   async findPostById(postId: number, userId: string) {
-    const post = await this.postRepository.findOne({
-      where: { id: postId },
-      relations: ['post_images', 'user'],
-    });
+    const post = await this.repo.findOneWithBlock(userId, postId);
 
     if (post === null) {
       throw new HttpException('없는 게시물입니다.', 404);
     }
-    if (await this.isFiltered(post, userId)) {
+    if (post.blocked_posts.length !== 0 || post.blocked_users.length !== 0) {
       throw new HttpException('차단한 게시물입니다.', 400);
     }
     return {
