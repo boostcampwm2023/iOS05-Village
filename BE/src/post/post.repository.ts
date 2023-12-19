@@ -53,6 +53,14 @@ export class PostRepository extends Repository<PostEntity> {
       .getOne();
   }
 
+  async softDeleteCascade(postId: number) {
+    const post = await this.findOne({
+      where: { id: postId },
+      relations: ['blocked_posts', 'post_images'],
+    });
+    await this.softRemove(post);
+  }
+
   createOption(options: PostListDto) {
     let option =
       options.page === undefined
