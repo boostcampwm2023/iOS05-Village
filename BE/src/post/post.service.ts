@@ -1,22 +1,14 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
-import { LessThan, Like, Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../common/S3Handler';
 import { PostListDto } from './dto/postList.dto';
-import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
-import { FindOperator } from 'typeorm/find-options/FindOperator';
 import { PostRepository } from './post.repository';
 
-interface WhereOption {
-  id: FindOperator<number>;
-  is_request?: boolean;
-  user_hash?: string;
-  title?: FindOperator<string>;
-}
 @Injectable()
 export class PostService {
   constructor(
@@ -24,8 +16,6 @@ export class PostService {
     private postRepository: Repository<PostEntity>,
     @InjectRepository(PostImageEntity)
     private postImageRepository: Repository<PostImageEntity>,
-    @InjectRepository(BlockUserEntity)
-    private blockUserRepository: Repository<BlockUserEntity>,
     @InjectRepository(BlockPostEntity)
     private blockPostRepository: Repository<BlockPostEntity>,
     private s3Handler: S3Handler,
