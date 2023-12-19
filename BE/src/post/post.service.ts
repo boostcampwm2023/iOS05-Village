@@ -9,6 +9,7 @@ import { PostListDto } from './dto/postList.dto';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { FindOperator } from 'typeorm/find-options/FindOperator';
+import { PostRepository } from './post.repository';
 
 interface WhereOption {
   id: FindOperator<number>;
@@ -28,6 +29,7 @@ export class PostService {
     @InjectRepository(BlockPostEntity)
     private blockPostRepository: Repository<BlockPostEntity>,
     private s3Handler: S3Handler,
+    private repo: PostRepository,
   ) {}
   makeWhereOption(query: PostListDto): WhereOption {
     const cursor: FindOperator<number> =
@@ -84,20 +86,9 @@ export class PostService {
       blockedUsersId.includes(post.user_hash)
     );
   }
-
   async findPosts(query: PostListDto, userId: string) {
-    const limit: number = 20;
-
-    const posts = await this.postRepository.find({
-      take: limit,
-      where: this.makeWhereOption(query),
-      relations: ['post_images', 'user'],
-      order: {
-        create_date: 'desc',
-      },
-    });
-    const filteredPosts = await this.filterBlockedPosts(userId, posts);
-    return filteredPosts.map((filteredPost) => {
+    const posts = await this.repo.findExceptBlock(userId, query);
+    return posts.map((filteredPost) => {
       return {
         title: filteredPost.title,
         price: filteredPost.price,
