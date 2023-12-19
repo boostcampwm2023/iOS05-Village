@@ -63,10 +63,14 @@ export class PostEntity {
   @Column({ length: 2048, nullable: true, charset: 'utf8' })
   thumbnail: string;
 
-  @OneToMany(() => PostImageEntity, (post_image) => post_image.post)
+  @OneToMany(() => PostImageEntity, (post_image) => post_image.post, {
+    cascade: ['soft-remove'],
+  })
   post_images: PostImageEntity[];
 
-  @OneToMany(() => BlockPostEntity, (block_post) => block_post.blockedPost)
+  @OneToMany(() => BlockPostEntity, (block_post) => block_post.blockedPost, {
+    cascade: ['soft-remove'],
+  })
   blocked_posts: BlockPostEntity[];
 
   @OneToMany(() => BlockUserEntity, (block_user) => block_user.blockedUserPost)
