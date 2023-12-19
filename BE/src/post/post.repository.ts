@@ -35,6 +35,24 @@ export class PostRepository extends Repository<PostEntity> {
       .getMany();
   }
 
+  async findOneWithBlock(blocker: string, postId: number) {
+    return await this.createQueryBuilder('post')
+      .leftJoinAndSelect(
+        'post.blocked_posts',
+        'bp',
+        'bp.blocker = :blocker AND bp.blocked_post = post.id',
+        { blocker: blocker },
+      )
+      .leftJoinAndSelect(
+        'post.blocked_users',
+        'bu',
+        'bu.blocker = :blocker AND bu.blocked_user = post.user_hash',
+      )
+      .leftJoinAndSelect('post.post_images', 'pi', 'pi.post_id = post.id')
+      .where('post.id = :postId', { postId: postId })
+      .getOne();
+  }
+
   createOption(options: PostListDto) {
     let option =
       options.page === undefined
