@@ -1,103 +1,24 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
-import { LessThan, Like, Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/postUpdate.dto';
 import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../common/S3Handler';
 import { PostListDto } from './dto/postList.dto';
-import { BlockUserEntity } from '../entities/blockUser.entity';
-import { BlockPostEntity } from '../entities/blockPost.entity';
-import { FindOperator } from 'typeorm/find-options/FindOperator';
+import { PostRepository } from './post.repository';
 
-interface WhereOption {
-  id: FindOperator<number>;
-  is_request?: boolean;
-  user_hash?: string;
-  title?: FindOperator<string>;
-}
 @Injectable()
 export class PostService {
   constructor(
-    @InjectRepository(PostEntity)
-    private postRepository: Repository<PostEntity>,
     @InjectRepository(PostImageEntity)
     private postImageRepository: Repository<PostImageEntity>,
-    @InjectRepository(BlockUserEntity)
-    private blockUserRepository: Repository<BlockUserEntity>,
-    @InjectRepository(BlockPostEntity)
-    private blockPostRepository: Repository<BlockPostEntity>,
+    private postRepository: PostRepository,
     private s3Handler: S3Handler,
   ) {}
-  makeWhereOption(query: PostListDto): WhereOption {
-    const cursor: FindOperator<number> =
-      query.page === undefined ? undefined : LessThan(query.page);
-    const where: WhereOption = { id: cursor };
-    if (query.requestFilter !== undefined) {
-      where.is_request = query.requestFilter !== 0;
-    }
-    if (query.writer !== undefined) {
-      where.user_hash = query.writer;
-    }
-    if (query.searchKeyword !== undefined) {
-      where.title = Like(`%${query.searchKeyword}%`);
-    }
-    return where;
-  }
-
-  async getFilteredList(userId: string) {
-    const blockedUsersId: string[] = (
-      await this.blockUserRepository.find({
-        where: { blocker: userId },
-        // relations: ['blockedUser'],
-        // withDeleted: true,
-      })
-    ).map((blockedUser) => blockedUser.blocked_user);
-
-    const blockedPostsId: number[] = (
-      await this.blockPostRepository.find({
-        where: { blocker: userId },
-      })
-    ).map((blockedPost) => blockedPost.blocked_post);
-    return { blockedUsersId, blockedPostsId };
-  }
-
-  async filterBlockedPosts(
-    userId: string,
-    posts: PostEntity[],
-  ): Promise<PostEntity[]> {
-    const { blockedUsersId, blockedPostsId } =
-      await this.getFilteredList(userId);
-    return posts.filter((post) => {
-      return !(
-        blockedPostsId.includes(post.id) ||
-        blockedUsersId.includes(post.user_hash)
-      );
-    });
-  }
-
-  async isFiltered(post: PostEntity, userId: string) {
-    const { blockedUsersId, blockedPostsId } =
-      await this.getFilteredList(userId);
-    return (
-      blockedPostsId.includes(post.id) ||
-      blockedUsersId.includes(post.user_hash)
-    );
-  }
-
   async findPosts(query: PostListDto, userId: string) {
-    const limit: number = 20;
-
-    const posts = await this.postRepository.find({
-      take: limit,
-      where: this.makeWhereOption(query),
-      relations: ['post_images', 'user'],
-      order: {
-        create_date: 'desc',
-      },
-    });
-    const filteredPosts = await this.filterBlockedPosts(userId, posts);
-    return filteredPosts.map((filteredPost) => {
+    const posts = await this.postRepository.findExceptBlock(userId, query);
+    return posts.map((filteredPost) => {
       return {
         title: filteredPost.title,
         price: filteredPost.price,
@@ -115,15 +36,12 @@ export class PostService {
   }
 
   async findPostById(postId: number, userId: string) {
-    const post = await this.postRepository.findOne({
-      where: { id: postId },
-      relations: ['post_images', 'user'],
-    });
+    const post = await this.postRepository.findOneWithBlock(userId, postId);
 
     if (post === null) {
       throw new HttpException('없는 게시물입니다.', 404);
     }
-    if (await this.isFiltered(post, userId)) {
+    if (post.blocked_posts.length !== 0 || post.blocked_users.length !== 0) {
       throw new HttpException('차단한 게시물입니다.', 400);
     }
     return {
@@ -216,13 +134,7 @@ export class PostService {
 
   async removePost(postId: number, userId: string) {
     await this.checkAuth(postId, userId);
-    await this.deleteCascadingPost(postId);
-    return true;
-  }
-  async deleteCascadingPost(postId: number) {
-    await this.postImageRepository.softDelete({ post_id: postId });
-    await this.blockPostRepository.softDelete({ blocked_post: postId });
-    await this.postRepository.softDelete({ id: postId });
+    await this.postRepository.softDeleteCascade(postId);
   }
 
   async findPostsTitles(searchKeyword: string) {

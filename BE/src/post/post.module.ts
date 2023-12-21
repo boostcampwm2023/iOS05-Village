@@ -8,6 +8,7 @@ import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
 import { AuthGuard } from 'src/common/guard/auth.guard';
+import { PostRepository } from './post.repository';
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { AuthGuard } from 'src/common/guard/auth.guard';
     ]),
   ],
   controllers: [PostController],
-  providers: [PostService, S3Handler, AuthGuard],
+  providers: [PostService, S3Handler, AuthGuard, PostRepository],
 })
 export class PostModule {}
