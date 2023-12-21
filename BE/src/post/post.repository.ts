@@ -54,11 +54,13 @@ export class PostRepository extends Repository<PostEntity> {
   }
 
   async softDeleteCascade(postId: number) {
-    const post = await this.findOne({
-      where: { id: postId },
-      relations: ['blocked_posts', 'post_images'],
+    await this.dataSource.transaction(async (manager) => {
+      const post = await manager.findOne(PostEntity, {
+        where: { id: postId },
+        relations: ['blocked_posts', 'post_images'],
+      });
+      await manager.softRemove(post);
     });
-    await this.softRemove(post);
   }
 
   createOption(options: PostListDto) {
