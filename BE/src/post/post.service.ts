@@ -1,4 +1,4 @@
-import { HttpException, Inject, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { Like, Repository } from 'typeorm';
@@ -7,9 +7,6 @@ import { PostImageEntity } from 'src/entities/postImage.entity';
 import { S3Handler } from '../common/S3Handler';
 import { PostListDto } from './dto/postList.dto';
 import { PostRepository } from './post.repository';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { uuid } from 'uuidv4';
-import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class PostService {

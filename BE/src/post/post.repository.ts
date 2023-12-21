@@ -1,4 +1,4 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { PostListDto } from './dto/postList.dto';
