@@ -1,20 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostRepository } from './post.repository';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { PostEntity } from '../entities/post.entity';
 import { DataSource } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 
-const mockDataSource = {
-  createEntityManager: jest.fn(),
-};
-// Mock Request 객체 생성
 const createMockRequest = (overrides: Partial<Request> = {}): Request => {
   return { ...overrides } as Request;
 };
 
-// 사용 예제
+const mockDataSource = {
+  createEntityManager: jest.fn(),
+};
+
 const mockRequest = createMockRequest({
   method: 'POST',
   url: '/api',
