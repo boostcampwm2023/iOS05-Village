@@ -23,6 +23,7 @@ import { PostListDto } from './dto/postList.dto';
 import { AuthGuard } from 'src/common/guard/auth.guard';
 import { UserHash } from 'src/common/decorator/auth.decorator';
 import { FilesSizeValidator } from '../common/files.validator';
+import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -94,6 +95,7 @@ export class PostController {
   }
 
   @Delete('/:id')
+  @UseInterceptors(TransactionInterceptor)
   async postRemove(@Param('id') id: number, @UserHash() userId) {
     await this.postService.removePost(id, userId);
   }
