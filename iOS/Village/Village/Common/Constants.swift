@@ -32,5 +32,6 @@ enum ImageSystemName: String {
 enum Constant {
     
     static let maxImageCount = 12
+    static let baseURL = "https://www.village-api.shop/"
     
 }
