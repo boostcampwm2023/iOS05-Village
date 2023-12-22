@@ -11,11 +11,9 @@ final class PostNotificationPublisher {
     
     static let shared = PostNotificationPublisher()
     
-    private let center: NotificationCenter
+    private let center = NotificationCenter.default
     
-    init(center: NotificationCenter = .default) {
-        self.center = center
-    }
+    private init() {}
     
     func publishPostCreated(isRequest: Bool) {
         let info = ["type": PostType(isRequest: isRequest)]
@@ -24,16 +22,16 @@ final class PostNotificationPublisher {
     
     func publishPostEdited(postID: Int) {
         let info = ["postID": postID]
-        NotificationCenter.default.post(name: .postEdited, object: nil, userInfo: info)
+        center.post(name: .postEdited, object: nil, userInfo: info)
     }
     
     func publishPostDeleted(postID: Int) {
         let info = ["postID": postID]
-        NotificationCenter.default.post(name: .postDeleted, object: nil, userInfo: info)
+        center.post(name: .postDeleted, object: nil, userInfo: info)
     }
     
     func publishPostRefreshAll() {
-        NotificationCenter.default.post(name: .postRefreshAll, object: nil)
+        center.post(name: .postRefreshAll, object: nil)
     }
     
 }
