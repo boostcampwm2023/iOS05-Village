@@ -167,10 +167,17 @@ private extension ReportViewController {
         
         output.completeOutput
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            }, receiveValue: { [weak self] _ in
                 guard let alert = self?.completeAlert else { return }
                 self?.present(alert, animated: true)
-            }
+            })
             .store(in: &cancellableBag)
     }
     

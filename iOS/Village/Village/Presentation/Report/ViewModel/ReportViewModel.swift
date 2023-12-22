@@ -10,10 +10,12 @@ import Combine
 
 final class ReportViewModel {
     
+    typealias UseCase = ReportUseCase
+    
     private let userID: String
     private let postID: Int
     
-    private let completeOutput = PassthroughSubject<Void, Never>()
+    private let completeOutput = PassthroughSubject<Void, Error>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -36,21 +38,17 @@ final class ReportViewModel {
     }
     
     private func report(description: String) {
-        let endpoint = APIEndPoints.reportUser(
-            reportInfo: ReportDTO(
-                postID: postID, userID: userID, description: description
-            )
+        let requestValue = UseCase.RequestValue(
+            postID: postID,
+            userID: userID,
+            description: description
         )
-        
-        Task {
-            do {
-                try await APIProvider.shared.request(with: endpoint)
-                completeOutput.send()
-            } catch {
-                dump(error)
-            }
-        }
-        
+        let usecase = UseCase(
+            repository: DefaultReportRepository(),
+            requestValue: requestValue,
+            completeOutput: completeOutput
+        )
+        usecase.start()
     }
     
 }
@@ -62,7 +60,7 @@ extension ReportViewModel {
     }
     
     struct Output {
-        let completeOutput: AnyPublisher<Void, Never>
+        let completeOutput: AnyPublisher<Void, Error>
     }
     
 }

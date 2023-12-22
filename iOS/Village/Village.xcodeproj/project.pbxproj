@@ -54,7 +54,6 @@
 		5959A8182B28184200F6A3FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5959A8172B28184200F6A3FC /* LaunchScreen.storyboard */; };
 		596AD1F22B259147005860B3 /* BlockedUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596AD1F12B259147005860B3 /* BlockedUsersViewModel.swift */; };
 		596AD1F42B2593E1005860B3 /* BlockedUserDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596AD1F32B2593E1005860B3 /* BlockedUserDTO.swift */; };
-		5975E98A2B035919007CEF13 /* Post.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9872B035919007CEF13 /* Post.json */; };
 		5975E98B2B035919007CEF13 /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9882B035919007CEF13 /* Posts.json */; };
 		5975E98C2B035919007CEF13 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = 5975E9892B035919007CEF13 /* Users.json */; };
 		5979BA7C2B08AE3C00FFF215 /* UITextField+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5979BA7B2B08AE3C00FFF215 /* UITextField+.swift */; };
@@ -90,6 +89,9 @@
 		59E6A2092B1F3AC200A2DF21 /* RequstPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */; };
 		59E6A20B2B1F3AD300A2DF21 /* RentPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A20A2B1F3AD300A2DF21 /* RentPostTableViewCell.swift */; };
 		59E6A20F2B205C8500A2DF21 /* RequestPostSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6A20E2B205C8500A2DF21 /* RequestPostSummaryView.swift */; };
+		59EA94BB2B359A23007EAA42 /* ReportRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EA94BA2B359A23007EAA42 /* ReportRepository.swift */; };
+		59EA94C12B359ABB007EAA42 /* DefaultReportRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EA94C02B359ABB007EAA42 /* DefaultReportRepository.swift */; };
+		59EA94C32B35A331007EAA42 /* ReportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EA94C22B35A331007EAA42 /* ReportUseCase.swift */; };
 		8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */; };
 		8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */; };
 		8F1E2CEE2B1F163D00179E34 /* GetRoomResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */; };
@@ -234,6 +236,9 @@
 		59E6A2082B1F3AC200A2DF21 /* RequstPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequstPostTableViewCell.swift; sourceTree = "<group>"; };
 		59E6A20A2B1F3AD300A2DF21 /* RentPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentPostTableViewCell.swift; sourceTree = "<group>"; };
 		59E6A20E2B205C8500A2DF21 /* RequestPostSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestPostSummaryView.swift; sourceTree = "<group>"; };
+		59EA94BA2B359A23007EAA42 /* ReportRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportRepository.swift; sourceTree = "<group>"; };
+		59EA94C02B359ABB007EAA42 /* DefaultReportRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultReportRepository.swift; sourceTree = "<group>"; };
+		59EA94C22B35A331007EAA42 /* ReportUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportUseCase.swift; sourceTree = "<group>"; };
 		8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndPoints.swift; sourceTree = "<group>"; };
 		8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListRequestDTO.swift; sourceTree = "<group>"; };
 		8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRoomResponseDTO.swift; sourceTree = "<group>"; };
@@ -480,6 +485,7 @@
 		5975E98D2B03591E007CEF13 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				59EA94BE2B359A9D007EAA42 /* Repository */,
 				4416D48A2B174C1C0052BF33 /* PersistentStorage */,
 				8F1B53302B0DE0B3006D8982 /* Network */,
 				59AA12952B036BFC00AFC766 /* Dummy */,
@@ -688,6 +694,30 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		59EA94BC2B359A3D007EAA42 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				59EA94BA2B359A23007EAA42 /* ReportRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		59EA94BD2B359A49007EAA42 /* UseCase */ = {
+			isa = PBXGroup;
+			children = (
+				59EA94C22B35A331007EAA42 /* ReportUseCase.swift */,
+			);
+			path = UseCase;
+			sourceTree = "<group>";
+		};
+		59EA94BE2B359A9D007EAA42 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				59EA94C02B359ABB007EAA42 /* DefaultReportRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		8F1B53302B0DE0B3006D8982 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -700,6 +730,8 @@
 		8F1B53332B0E037C006D8982 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				59EA94BD2B359A49007EAA42 /* UseCase */,
+				59EA94BC2B359A3D007EAA42 /* Repository */,
 				4416D4842B171C800052BF33 /* Entity */,
 			);
 			path = Domain;
@@ -1107,7 +1139,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F8F0B912B1DB6C100BE97D2 /* PostMute.json in Resources */,
-				5975E98A2B035919007CEF13 /* Post.json in Resources */,
 				59B6E27C2B185FD2000864F9 /* GoogleService-Info.plist in Resources */,
 				8FF7E61A2B106FBB00B6D678 /* ChatList.json in Resources */,
 				8F628D192B0349FE0013042E /* .swiftlint.yml in Resources */,
@@ -1163,6 +1194,7 @@
 				59BD5DCC2B0C772200FEB80F /* PostCreateViewController.swift in Sources */,
 				4416D4532B14AB300052BF33 /* ProfileImageView.swift in Sources */,
 				59B6E2732B17938C000864F9 /* MyPageViewModel.swift in Sources */,
+				59EA94C12B359ABB007EAA42 /* DefaultReportRepository.swift in Sources */,
 				8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */,
 				4416D4832B171C730052BF33 /* AuthenticationToken.swift in Sources */,
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
@@ -1201,6 +1233,7 @@
 				59AABDE52B0E2D47002F6D0E /* PostCreateDetailView.swift in Sources */,
 				4461F39D2B1786DA00723C55 /* JWTManager.swift in Sources */,
 				59457BC92B237615003F798C /* PatchUserDTO.swift in Sources */,
+				59EA94C32B35A331007EAA42 /* ReportUseCase.swift in Sources */,
 				440FCC2D2B04EB940011B637 /* Constants.swift in Sources */,
 				8F3D79E62B1469DF00370536 /* UICollectionViewCell+Identifier.swift in Sources */,
 				444A50982B0CE25200454397 /* DurationView.swift in Sources */,
@@ -1208,6 +1241,7 @@
 				444A50902B0C60F900454397 /* ImagePageView.swift in Sources */,
 				59110EFB2B15F3D60009E9AC /* ChatRoomTableViewCell.swift in Sources */,
 				444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */,
+				59EA94BB2B359A23007EAA42 /* ReportRepository.swift in Sources */,
 				446B61142B275C2900A361CB /* PostNotificationPublisher.swift in Sources */,
 				8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */,
 				59D4DBE22B068C6400BBA2D5 /* UIView+Layer.swift in Sources */,
