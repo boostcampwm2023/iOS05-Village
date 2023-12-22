@@ -453,6 +453,30 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		44CEA0FA2B357F5D00C56EF9 /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				4416D4792B15E7E70052BF33 /* Protocol */,
+				4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */,
+				8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */,
+				59D8F1042B103A7200A08E02 /* PostModifyRequestDTO.swift */,
+				44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */,
+				44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */,
+				8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */,
+				8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */,
+				8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */,
+				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
+				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
+				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
+				8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */,
+				59457BC82B237615003F798C /* PatchUserDTO.swift */,
+				59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */,
+				596AD1F32B2593E1005860B3 /* BlockedUserDTO.swift */,
+				59A384652B260DB000660B70 /* ReportDTO.swift */,
+			);
+			path = DTO;
+			sourceTree = "<group>";
+		};
 		5975E98D2B03591E007CEF13 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -667,6 +691,7 @@
 		8F1B53302B0DE0B3006D8982 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				44CEA0FA2B357F5D00C56EF9 /* DTO */,
 				8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */,
 			);
 			path = Network;
@@ -676,33 +701,8 @@
 			isa = PBXGroup;
 			children = (
 				4416D4842B171C800052BF33 /* Entity */,
-				8F1B53342B0E0384006D8982 /* Network */,
 			);
 			path = Domain;
-			sourceTree = "<group>";
-		};
-		8F1B53342B0E0384006D8982 /* Network */ = {
-			isa = PBXGroup;
-			children = (
-				4416D4792B15E7E70052BF33 /* Protocol */,
-				4416D4852B171CE50052BF33 /* AppleOAuthDTO.swift */,
-				8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */,
-				59D8F1042B103A7200A08E02 /* PostModifyRequestDTO.swift */,
-				44C1F5EC2B0FE44A0047A436 /* UserResponseDTO.swift */,
-				44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */,
-				8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */,
-				8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */,
-				8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */,
-				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
-				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
-				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
-				8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */,
-				59457BC82B237615003F798C /* PatchUserDTO.swift */,
-				59E2C1652B24B6D9004428F7 /* RequestFilterDTO.swift */,
-				596AD1F32B2593E1005860B3 /* BlockedUserDTO.swift */,
-				59A384652B260DB000660B70 /* ReportDTO.swift */,
-			);
-			path = Network;
 			sourceTree = "<group>";
 		};
 		8F3D79DA2B135BF000370536 /* View */ = {
