@@ -5,7 +5,7 @@ export class PostListDto {
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
-  page: number;
+  cursorId: number;
 
   @IsNumber()
   @IsOptional()
