@@ -22,13 +22,10 @@ export class PostService {
       return {
         title: filteredPost.title,
         price: filteredPost.price,
-        description: filteredPost.description,
         post_id: filteredPost.id,
         user_id: filteredPost.user_hash,
         is_request: filteredPost.is_request,
-        images: filteredPost.post_images.map(
-          (post_image) => post_image.image_url,
-        ),
+        post_image: filteredPost.thumbnail,
         start_date: filteredPost.start_date,
         end_date: filteredPost.end_date,
       };

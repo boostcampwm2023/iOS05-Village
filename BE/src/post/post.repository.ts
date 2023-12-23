@@ -26,7 +26,6 @@ export class PostRepository extends Repository<PostEntity> {
         'bu',
         'bu.blocker = :blocker AND bu.blocked_user = post.user_hash',
       )
-      .leftJoinAndSelect('post.post_images', 'pi', 'pi.post_id = post.id')
       .where('bp.blocked_post IS NULL')
       .andWhere('bu.blocked_user IS NULL')
       .andWhere(this.createOption(options))
@@ -65,9 +64,9 @@ export class PostRepository extends Repository<PostEntity> {
 
   createOption(options: PostListDto) {
     let option =
-      options.page === undefined
+      options.cursorId === undefined
         ? 'post.id > -1 AND '
-        : `post.id < ${options.page} AND `;
+        : `post.id < ${options.cursorId} AND `;
     if (options.requestFilter !== undefined) {
       option += `post.is_request = ${options.requestFilter} AND `;
     }
