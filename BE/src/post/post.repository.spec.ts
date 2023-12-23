@@ -27,7 +27,7 @@ describe('', () => {
   describe('createPost()', () => {
     it('should success (nothing)', async function () {
       const res = repository.createOption({
-        page: undefined,
+        cursorId: undefined,
         requestFilter: undefined,
         writer: undefined,
         searchKeyword: undefined,
@@ -36,7 +36,7 @@ describe('', () => {
     });
     it('should success (page)', async function () {
       const res = repository.createOption({
-        page: 1,
+        cursorId: 1,
         requestFilter: undefined,
         writer: undefined,
         searchKeyword: undefined,
@@ -45,7 +45,7 @@ describe('', () => {
     });
     it('should success (more than two options)', async function () {
       const res = repository.createOption({
-        page: 1,
+        cursorId: 1,
         requestFilter: undefined,
         writer: 'user',
         searchKeyword: undefined,
