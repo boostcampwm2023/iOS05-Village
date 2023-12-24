@@ -24,12 +24,16 @@ import { AuthGuard } from 'src/common/guard/auth.guard';
 import { UserHash } from 'src/common/decorator/auth.decorator';
 import { FilesSizeValidator } from '../common/files.validator';
 import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
+import { ImageService } from '../image/image.service';
 
 @Controller('posts')
 @ApiTags('posts')
 @UseGuards(AuthGuard)
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly imageService: ImageService,
+  ) {}
 
   @Get()
   async postsList(@Query() query: PostListDto, @UserHash() userId: string) {
@@ -43,6 +47,7 @@ export class PostController {
 
   @Post()
   @UseInterceptors(FilesInterceptor('image', 12))
+  @UseInterceptors(TransactionInterceptor)
   async postsCreate(
     @UploadedFiles(new FilesSizeValidator())
     files: Array<Express.Multer.File>,
@@ -53,11 +58,11 @@ export class PostController {
     body: PostCreateDto,
     @UserHash() userId: string,
   ) {
-    let imageLocation: Array<string> = [];
-    if (body.is_request === false && files !== undefined) {
-      imageLocation = await this.postService.uploadImages(files);
+    const postId = await this.postService.createPost(body, userId);
+    if (body.is_request === false && files.length !== 0) {
+      const thumbnail = await this.imageService.createPostImages(files, postId);
+      await this.postService.updatePostThumbnail(thumbnail, postId);
     }
-    await this.postService.createPost(imageLocation, body, userId);
   }
 
   @Get('/:id')
