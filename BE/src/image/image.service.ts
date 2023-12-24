@@ -8,6 +8,7 @@ import { uuid } from 'uuidv4';
 import { ConfigService } from '@nestjs/config';
 import { PostImageEntity } from '../entities/postImage.entity';
 import { PostImageRepository } from './postImage.repository';
+import { In } from 'typeorm';
 
 @Injectable()
 export class ImageService {
@@ -64,5 +65,28 @@ export class ImageService {
     } catch (e) {
       throw new HttpException('이미지 삭제에 실패하였습니다.', 500);
     }
+  }
+
+  async removePostImages(deletedImages: string[]) {
+    await this.postImageRepository
+      .getRepository(PostImageEntity)
+      .softDelete({ image_url: In(deletedImages) });
+  }
+
+  async updatePostImage(
+    files: Array<Express.Multer.File>,
+    deletedImages: string[],
+    postId: number,
+  ): Promise<string> {
+    if (files.length > 0) {
+      await this.createPostImages(files, postId);
+    }
+    if (deletedImages) {
+      await this.removePostImages(deletedImages);
+    }
+    const postImageEntity = await this.postImageRepository
+      .getRepository(PostImageEntity)
+      .findOne({ where: { post_id: postId }, order: { id: 'ASC' } });
+    return postImageEntity === null ? null : postImageEntity.image_url;
   }
 }
