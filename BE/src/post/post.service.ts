@@ -79,12 +79,14 @@ export class PostService {
     userId: string,
   ) {
     await this.checkAuth(postId, userId);
+    //새로운 이미지
     if (files) {
       const fileLocation = await this.uploadImages(files);
       await this.createImages(fileLocation, postId);
     }
 
     try {
+      //이미지 삭제
       if (updatePostDto.deleted_images !== undefined) {
         for (const deleted_image of updatePostDto.deleted_images) {
           await this.postImageRepository.softDelete({
@@ -92,6 +94,7 @@ export class PostService {
           });
         }
       }
+      // 게시글 업데이트
       delete updatePostDto.deleted_images;
       await this.postRepository
         .getRepository(PostEntity)
@@ -110,7 +113,7 @@ export class PostService {
     return fileLocation;
   }
 
-  async createPost(imageLocations, createPostDto, userHash) {
+  async createPost(createPostDto, userHash) {
     const post = new PostEntity();
 
     post.title = createPostDto.title;
@@ -120,11 +123,18 @@ export class PostService {
     post.start_date = createPostDto.start_date;
     post.end_date = createPostDto.end_date;
     post.user_hash = userHash;
-    post.thumbnail = imageLocations.length > 0 ? imageLocations[0] : null;
+    post.thumbnail = null;
     const res = await this.postRepository.getRepository(PostEntity).save(post);
-    if (res.is_request === false) {
-      await this.createImages(imageLocations, res.id);
-    }
+    return res.id;
+    // if (res.is_request === false) {
+    //   await this.createImages(imageLocations, res.id);
+    // }
+  }
+
+  async updatePostThumbnail(thumbnail: string, postId: number) {
+    await this.postRepository
+      .getRepository(PostEntity)
+      .update({ id: postId }, { thumbnail });
   }
 
   async createImages(imageLocations: Array<string>, postId: number) {
