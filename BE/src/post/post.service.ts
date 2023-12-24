@@ -1,21 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
-import { Like, Repository } from 'typeorm';
+import { Like } from 'typeorm';
 import { UpdatePostDto } from './dto/postUpdate.dto';
-import { PostImageEntity } from 'src/entities/postImage.entity';
-import { S3Handler } from '../common/S3Handler';
 import { PostListDto } from './dto/postList.dto';
 import { PostRepository } from './post.repository';
 
 @Injectable()
 export class PostService {
-  constructor(
-    @InjectRepository(PostImageEntity)
-    private postImageRepository: Repository<PostImageEntity>,
-    private postRepository: PostRepository,
-    private s3Handler: S3Handler,
-  ) {}
+  constructor(private postRepository: PostRepository) {}
   async findPosts(query: PostListDto, userId: string) {
     const posts = await this.postRepository.findExceptBlock(userId, query);
     return posts.map((filteredPost) => {
@@ -75,42 +67,12 @@ export class PostService {
   async updatePostById(
     postId: number,
     updatePostDto: UpdatePostDto,
-    files: Express.Multer.File[],
-    userId: string,
+    thumbnail: string,
   ) {
-    await this.checkAuth(postId, userId);
-    //새로운 이미지
-    if (files) {
-      const fileLocation = await this.uploadImages(files);
-      await this.createImages(fileLocation, postId);
-    }
-
-    try {
-      //이미지 삭제
-      if (updatePostDto.deleted_images !== undefined) {
-        for (const deleted_image of updatePostDto.deleted_images) {
-          await this.postImageRepository.softDelete({
-            image_url: deleted_image,
-          });
-        }
-      }
-      // 게시글 업데이트
-      delete updatePostDto.deleted_images;
-      await this.postRepository
-        .getRepository(PostEntity)
-        .update({ id: postId }, { ...updatePostDto });
-      return true;
-    } catch (e) {
-      console.log(e);
-      return null;
-    }
-  }
-  async uploadImages(files: Express.Multer.File[]): Promise<string[]> {
-    const fileLocation: Array<string> = [];
-    for (const file of files) {
-      fileLocation.push(await this.s3Handler.uploadFile(file));
-    }
-    return fileLocation;
+    delete updatePostDto.deleted_images;
+    await this.postRepository
+      .getRepository(PostEntity)
+      .update({ id: postId }, { ...updatePostDto, thumbnail });
   }
 
   async createPost(createPostDto, userHash) {
@@ -126,24 +88,12 @@ export class PostService {
     post.thumbnail = null;
     const res = await this.postRepository.getRepository(PostEntity).save(post);
     return res.id;
-    // if (res.is_request === false) {
-    //   await this.createImages(imageLocations, res.id);
-    // }
   }
 
   async updatePostThumbnail(thumbnail: string, postId: number) {
     await this.postRepository
       .getRepository(PostEntity)
       .update({ id: postId }, { thumbnail });
-  }
-
-  async createImages(imageLocations: Array<string>, postId: number) {
-    for (const imageLocation of imageLocations) {
-      const postImageEntity = new PostImageEntity();
-      postImageEntity.image_url = imageLocation;
-      postImageEntity.post_id = postId;
-      await this.postImageRepository.save(postImageEntity);
-    }
   }
 
   async removePost(postId: number, userId: string) {

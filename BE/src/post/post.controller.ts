@@ -74,8 +74,9 @@ export class PostController {
   @Patch('/:id')
   @ApiOperation({ summary: 'fix post context', description: '게시글 수정' })
   @UseInterceptors(FilesInterceptor('image', 12))
+  @UseInterceptors(TransactionInterceptor)
   async postModify(
-    @Param('id') id: number,
+    @Param('id') postId: number,
     @UploadedFiles(new FilesSizeValidator())
     files: Array<Express.Multer.File>,
     @MultiPartBody(
@@ -85,18 +86,13 @@ export class PostController {
     body: UpdatePostDto,
     @UserHash() userId,
   ) {
-    const isFixed = await this.postService.updatePostById(
-      id,
-      body,
+    await this.postService.checkAuth(postId, userId);
+    const updatedThumbnail = await this.imageService.updatePostImage(
       files,
-      userId,
+      body.deleted_images,
+      postId,
     );
-
-    if (isFixed) {
-      return HttpCode(200);
-    } else {
-      throw new HttpException('서버 오류입니다.', 500);
-    }
+    await this.postService.updatePostById(postId, body, updatedThumbnail);
   }
 
   @Delete('/:id')
