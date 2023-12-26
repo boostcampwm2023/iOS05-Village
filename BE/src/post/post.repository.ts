@@ -1,12 +1,14 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { PostEntity } from '../entities/post.entity';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { PostListDto } from './dto/postList.dto';
+import { BaseRepository } from '../common/base.repository';
+import { REQUEST } from '@nestjs/core';
 
-@Injectable()
-export class PostRepository extends Repository<PostEntity> {
-  constructor(private dataSource: DataSource) {
-    super(PostEntity, dataSource.createEntityManager());
+@Injectable({ scope: Scope.REQUEST })
+export class PostRepository extends BaseRepository {
+  constructor(dataSource: DataSource, @Inject(REQUEST) req: Request) {
+    super(dataSource, req);
   }
 
   async findExceptBlock(
@@ -14,7 +16,8 @@ export class PostRepository extends Repository<PostEntity> {
     options: PostListDto,
   ): Promise<Array<PostEntity>> {
     const limit = 20;
-    return await this.createQueryBuilder('post')
+    return await this.getRepository(PostEntity)
+      .createQueryBuilder('post')
       .leftJoin(
         'post.blocked_posts',
         'bp',
@@ -35,7 +38,8 @@ export class PostRepository extends Repository<PostEntity> {
   }
 
   async findOneWithBlock(blocker: string, postId: number) {
-    return await this.createQueryBuilder('post')
+    return await this.getRepository(PostEntity)
+      .createQueryBuilder('post')
       .leftJoinAndSelect(
         'post.blocked_posts',
         'bp',
@@ -53,13 +57,11 @@ export class PostRepository extends Repository<PostEntity> {
   }
 
   async softDeleteCascade(postId: number) {
-    await this.dataSource.transaction(async (manager) => {
-      const post = await manager.findOne(PostEntity, {
-        where: { id: postId },
-        relations: ['blocked_posts', 'post_images'],
-      });
-      await manager.softRemove(post);
+    const post = await this.getRepository(PostEntity).findOne({
+      where: { id: postId },
+      relations: ['blocked_posts', 'post_images'],
     });
+    await this.getRepository(PostEntity).softRemove(post);
   }
 
   createOption(options: PostListDto) {

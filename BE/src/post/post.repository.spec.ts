@@ -1,12 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostRepository } from './post.repository';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { PostEntity } from '../entities/post.entity';
 import { DataSource } from 'typeorm';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+
+const createMockRequest = (overrides: Partial<Request> = {}): Request => {
+  return { ...overrides } as Request;
+};
 
 const mockDataSource = {
   createEntityManager: jest.fn(),
 };
+
+const mockRequest = createMockRequest({
+  method: 'POST',
+  url: '/api',
+  headers: { 'Content-Type': 'application/json' },
+});
+
 describe('', () => {
   let repository: PostRepository;
   beforeEach(async () => {
@@ -14,10 +25,10 @@ describe('', () => {
       providers: [
         PostRepository,
         { provide: DataSource, useValue: mockDataSource },
-        { provide: getRepositoryToken(PostEntity), useValue: {} },
+        { provide: REQUEST, useValue: mockRequest },
       ],
     }).compile();
-    repository = module.get<PostRepository>(PostRepository);
+    repository = await module.resolve<PostRepository>(PostRepository);
   });
 
   it('should be defined', () => {

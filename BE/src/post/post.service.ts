@@ -55,10 +55,12 @@ export class PostService {
   }
 
   async checkAuth(postId, userId) {
-    const isDataExists = await this.postRepository.findOne({
-      where: { id: postId },
-      relations: ['user'],
-    });
+    const isDataExists = await this.postRepository
+      .getRepository(PostEntity)
+      .findOne({
+        where: { id: postId },
+        relations: ['user'],
+      });
     if (!isDataExists) {
       throw new HttpException('게시글이 없습니다.', 404);
     }
@@ -88,7 +90,9 @@ export class PostService {
         }
       }
       delete updatePostDto.deleted_images;
-      await this.postRepository.update({ id: postId }, { ...updatePostDto });
+      await this.postRepository
+        .getRepository(PostEntity)
+        .update({ id: postId }, { ...updatePostDto });
       return true;
     } catch (e) {
       console.log(e);
@@ -114,7 +118,7 @@ export class PostService {
     post.end_date = createPostDto.end_date;
     post.user_hash = userHash;
     post.thumbnail = imageLocations.length > 0 ? imageLocations[0] : null;
-    const res = await this.postRepository.save(post);
+    const res = await this.postRepository.getRepository(PostEntity).save(post);
     if (res.is_request === false) {
       await this.createImages(imageLocations, res.id);
     }
@@ -135,12 +139,14 @@ export class PostService {
   }
 
   async findPostsTitles(searchKeyword: string) {
-    const posts: PostEntity[] = await this.postRepository.find({
-      where: { title: Like(`%${searchKeyword}%`) },
-      order: {
-        create_date: 'desc',
-      },
-    });
+    const posts: PostEntity[] = await this.postRepository
+      .getRepository(PostEntity)
+      .find({
+        where: { title: Like(`%${searchKeyword}%`) },
+        order: {
+          create_date: 'desc',
+        },
+      });
     const titles: string[] = posts.map((post) => post.title);
     return titles.slice(0, 5);
   }
