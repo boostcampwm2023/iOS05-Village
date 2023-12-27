@@ -30,3 +30,20 @@ struct PostListResponseDTO: Decodable {
     }
     
 }
+
+extension PostListResponseDTO {
+    
+    func toDomain() -> PostListItem {
+        .init(
+            title: self.title,
+            price: self.price,
+            postID: self.postID,
+            userID: self.userID,
+            thumbnailURL: self.postImage,
+            isRequest: self.isRequest,
+            startDate: self.startDate,
+            endDate: self.endDate
+        )
+    }
+    
+}
