@@ -457,6 +457,14 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		44A59F582B3BFC1500736A34 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				59EA94C42B35AAA7007EAA42 /* UseCase.swift */,
+			);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
 		44C1F5E42B0FE3670047A436 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -713,7 +721,7 @@
 		59EA94BD2B359A49007EAA42 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
-				59EA94C42B35AAA7007EAA42 /* UseCase.swift */,
+				44A59F582B3BFC1500736A34 /* Protocol */,
 				59EA94C22B35A331007EAA42 /* ReportUseCase.swift */,
 			);
 			path = UseCase;
