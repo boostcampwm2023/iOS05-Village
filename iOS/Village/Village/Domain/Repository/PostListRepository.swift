@@ -17,6 +17,6 @@ protocol PostListRepository {
         postType: PostType,
         writer: String?,
         lastID: String?
-    ) async -> Result<[PostListItem]?, Error>
+    ) async -> Result<[PostListItem], Error>
     
 }
