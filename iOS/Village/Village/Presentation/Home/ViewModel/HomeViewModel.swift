@@ -94,7 +94,17 @@ private extension HomeViewModel {
         Task {
             do {
                 guard let post = try await APIProvider.shared.request(with: endpoint) else { return }
-                editedPost.send(post)
+                let editedItem = PostListItem(
+                    title: post.title,
+                    price: post.price,
+                    postID: post.postID,
+                    userID: post.userID,
+                    thumbnailURL: post.images.first,
+                    isRequest: post.isRequest,
+                    startDate: post.startDate,
+                    endDate: post.endDate
+                )
+                editedPost.send(editedItem)
             } catch {
                 dump(error)
             }
@@ -123,8 +133,7 @@ private extension HomeViewModel {
     
     func refresh(type: PostType) {
         if type == .rent {
-            isRentLastPage = false
-            lastRentPostID = nil
+            rentPagingInfo = (false, nil)
         } else {
             requestPagingInfo = (false, nil)
         }
