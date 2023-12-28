@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PostType {
+enum PostType: Int {
     case rent
     case request
     
