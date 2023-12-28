@@ -10,8 +10,9 @@ import Combine
 
 final class HomeViewController: UIViewController {
     
-    typealias PostDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
-    typealias PostSnapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>
+    typealias Item = PostListItem
+    typealias PostDataSource = UITableViewDiffableDataSource<Section, Item>
+    typealias PostSnapshot = NSDiffableDataSourceSnapshot<Section, Item>
     
     typealias ViewModel = HomeViewModel
     typealias Input = ViewModel.Input
@@ -19,7 +20,7 @@ final class HomeViewController: UIViewController {
     
     private var postType: PostType = .rent {
         didSet {
-            postSegmentedControl.selectedSegmentIndex = (postType == .rent) ? 0 : 1
+            postSegmentedControl.selectedSegmentIndex = postType.rawValue
             setContainerViewPosition()
         }
     }
@@ -65,14 +66,14 @@ final class HomeViewController: UIViewController {
     
     private lazy var requestDataSource = PostDataSource(
         tableView: requestPostTableView,
-        cellProvider: { [weak self] (tableView, indexPath, postDTO) in
+        cellProvider: { [weak self] (tableView, indexPath, item) in
             if let self = self,
                let cell = tableView.dequeueReusableCell(withIdentifier: RequestPostTableViewCell.identifier,
                                                         for: indexPath) as? RequestPostTableViewCell {
                 if shouldPaginate(indexPath: indexPath) {
                     pagination.send(postType)
                 }
-                cell.configureData(post: postDTO)
+                cell.configureData(post: item)
                 
                 return cell
             }
@@ -394,7 +395,7 @@ extension HomeViewController: UITableViewDelegate {
         currentDataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    private func replacePost(item: PostResponseDTO) {
+    private func replacePost(item: Item) {
         var snapshot = currentDataSource.snapshot()
         guard let index = snapshot.indexOfItem(item) else { return }
         snapshot.deleteItems([item])
@@ -413,7 +414,7 @@ extension HomeViewController: UITableViewDelegate {
         currentDataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    private func appendPost(items: [PostResponseDTO]) {
+    private func appendPost(items: [Item]) {
         var snapshot = currentDataSource.snapshot()
         snapshot.appendItems(items)
         currentDataSource.apply(snapshot, animatingDifferences: false)
