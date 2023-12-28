@@ -13,7 +13,7 @@ struct PostListItem {
     let price: Int?
     let postID: Int
     let userID: String
-    let thumbnailURL: String
+    let thumbnailURL: String?
     let isRequest: Bool
     let startDate: String
     let endDate: String
