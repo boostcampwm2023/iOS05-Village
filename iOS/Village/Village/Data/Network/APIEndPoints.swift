@@ -19,7 +19,7 @@ struct APIEndPoints {
         )
     }
     
-    static func getPosts(queryParameter: PostListRequestDTO? = nil) -> EndPoint<[PostResponseDTO]> {
+    static func getPosts(queryParameter: PostListRequestDTO? = nil) -> EndPoint<[PostListResponseDTO]> {
         return EndPoint(
             baseURL: baseURL,
             path: "posts",
