@@ -4,7 +4,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import { HttpException, Injectable } from '@nestjs/common';
 
 @Injectable()

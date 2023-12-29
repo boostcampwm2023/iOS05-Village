@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 
