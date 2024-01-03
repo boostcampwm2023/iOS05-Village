@@ -10,7 +10,7 @@ import Combine
 
 final class MyPostsViewController: UIViewController {
     
-    typealias MyPostsDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
+    typealias MyPostsDataSource = UITableViewDiffableDataSource<Section, PostListItem>
     
     typealias ViewModel = MyPostsViewModel
     typealias Input = ViewModel.Input
@@ -125,7 +125,7 @@ private extension MyPostsViewController {
             .store(in: &cancellableBag)
     }
     
-    func addNextPage(posts: [PostResponseDTO]) {
+    func addNextPage(posts: [PostListItem]) {
         var snapshot = dataSource.snapshot()
         snapshot.appendItems(posts)
         dataSource.apply(snapshot)
@@ -140,13 +140,13 @@ private extension MyPostsViewController {
     }
     
     func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
         snapshot.appendSections([.posts])
         snapshot.appendItems(viewModel.posts)
         dataSource.apply(snapshot)
     }
     
-    func toggleData(posts: [PostResponseDTO]) {
+    func toggleData(posts: [PostListItem]) {
         var snapshot = dataSource.snapshot()
         snapshot.deleteAllItems()
         snapshot.appendSections([.posts])
