@@ -33,7 +33,7 @@ final class SearchRequstTableViewCell: UITableViewCell {
         postSummaryView.postAccessoryView.image = nil
     }
     
-    func configureData(post: PostResponseDTO) {
+    func configureData(post: PostListItem) {
         postSummaryView.postTitleLabel.text = post.title
         
         let dateFormatter = DateFormatter()

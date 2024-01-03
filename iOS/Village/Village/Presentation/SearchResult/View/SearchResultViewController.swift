@@ -10,7 +10,7 @@ import Combine
 
 final class SearchResultViewController: UIViewController {
     
-    typealias SearchResultDataSource = UITableViewDiffableDataSource<Section, PostResponseDTO>
+    typealias SearchResultDataSource = UITableViewDiffableDataSource<Section, PostListItem>
     typealias ViewModel = SearchResultViewModel
     
     enum Section { case list }
@@ -160,12 +160,12 @@ extension SearchResultViewController {
     }
     
     private func generateData() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, PostResponseDTO>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PostListItem>()
         snapshot.appendSections([.list])
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    private func addGenerateData(list: [PostResponseDTO]) {
+    private func addGenerateData(list: [PostListItem]) {
         var snapshot = dataSource.snapshot()
         snapshot.appendItems(list, toSection: .list)
         dataSource.apply(snapshot, animatingDifferences: false)

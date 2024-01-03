@@ -10,12 +10,12 @@ import Combine
 
 final class MyPostsViewModel {
     
-    var posts: [PostResponseDTO] = []
+    var posts: [PostListItem] = []
     
     private var requestFilter: String = "0"
     
-    private let nextPageUpdateOutput = PassthroughSubject<[PostResponseDTO], Never>()
-    private let refreshOutput = PassthroughSubject<[PostResponseDTO], Never>()
+    private let nextPageUpdateOutput = PassthroughSubject<[PostListItem], Never>()
+    private let refreshOutput = PassthroughSubject<[PostListItem], Never>()
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -29,14 +29,14 @@ final class MyPostsViewModel {
                 searchKeyword: nil,
                 requestFilter: requestFilter,
                 writer: JWTManager.shared.currentUserID,
-                page: nil
+                lastID: nil
             )
         )
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                posts = data
-                refreshOutput.send(data)
+                posts = data.map { $0.toDomain() }
+                refreshOutput.send(posts)
             } catch {
                 dump(error)
             }
@@ -50,15 +50,16 @@ final class MyPostsViewModel {
                 searchKeyword: nil,
                 requestFilter: requestFilter,
                 writer: JWTManager.shared.currentUserID,
-                page: String(lastPostID)
+                lastID: String(lastPostID)
             )
         )
         Task {
             do {
                 guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                if posts.last != data.last {
-                    posts.append(contentsOf: data)
-                    nextPageUpdateOutput.send(data)
+                if posts.last != data.last?.toDomain() {
+                    let newPosts = data.map { $0.toDomain() }
+                    posts.append(contentsOf: newPosts)
+                    nextPageUpdateOutput.send(newPosts)
                 }
             } catch {
                 dump(error)
@@ -96,8 +97,8 @@ final class MyPostsViewModel {
     
     struct Output {
         
-        let nextPageUpdateOutput: AnyPublisher<[PostResponseDTO], Never>
-        let refreshOutput: AnyPublisher<[PostResponseDTO], Never>
+        let nextPageUpdateOutput: AnyPublisher<[PostListItem], Never>
+        let refreshOutput: AnyPublisher<[PostListItem], Never>
         
     }
     
