@@ -54,7 +54,7 @@ final class NetworkService {
         }
     }
     
-    func request<R: Decodable, E: Requestable>(_ req: E) -> AnyPublisher<R, NetworkError> {
+    func request<E: Requestable>(_ req: E) -> AnyPublisher<Void, NetworkError> {
         while true {
             do {
                 guard let request = interceptor.adapt(request: try req.makeURLRequest()) else {
@@ -66,9 +66,7 @@ final class NetworkService {
                 return publisher
                     .tryMap { [weak self] output in
                         try self?.checkStatusCode(output.response)
-                        return output.data
                     }
-                    .decode(type: R.self, decoder: JSONDecoder())
                     .mapError { [weak self] error in
                         guard let networkError = error as? NetworkError else { return NetworkError.unknownError }
                         switch self?.interceptor.retry(
@@ -88,7 +86,7 @@ final class NetworkService {
                     }
                     .eraseToAnyPublisher()
             } catch {
-                return Fail<R, NetworkError>(error: NetworkError.urlRequestError)
+                return Fail<Void, NetworkError>(error: NetworkError.urlRequestError)
                     .eraseToAnyPublisher()
             }
         }
