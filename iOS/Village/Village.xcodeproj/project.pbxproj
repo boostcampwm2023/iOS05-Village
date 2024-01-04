@@ -56,6 +56,7 @@
 		59110F042B1725C20009E9AC /* NotificationName+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59110F032B1725C20009E9AC /* NotificationName+.swift */; };
 		59457BC72B233EE5003F798C /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59457BC62B233EE5003F798C /* UIImage+Resize.swift */; };
 		59457BC92B237615003F798C /* PatchUserDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59457BC82B237615003F798C /* PatchUserDTO.swift */; };
+		5958B9A92B468510005E3868 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5958B9A82B468510005E3868 /* NetworkService.swift */; };
 		5959A8182B28184200F6A3FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5959A8172B28184200F6A3FC /* LaunchScreen.storyboard */; };
 		596AD1F22B259147005860B3 /* BlockedUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596AD1F12B259147005860B3 /* BlockedUsersViewModel.swift */; };
 		596AD1F42B2593E1005860B3 /* BlockedUserDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596AD1F32B2593E1005860B3 /* BlockedUserDTO.swift */; };
@@ -71,6 +72,7 @@
 		59AABDE32B0E272C002F6D0E /* PostCreateTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE22B0E272C002F6D0E /* PostCreateTimeView.swift */; };
 		59AABDE52B0E2D47002F6D0E /* PostCreateDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AABDE42B0E2D47002F6D0E /* PostCreateDetailView.swift */; };
 		59AADE382B22086400C3E17D /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AADE372B22086400C3E17D /* EditProfileViewModel.swift */; };
+		59ACF50A2B46E4D00034E709 /* CombineAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59ACF5092B46E4D00034E709 /* CombineAuthInterceptor.swift */; };
 		59B6E2732B17938C000864F9 /* MyPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B6E2722B17938C000864F9 /* MyPageViewModel.swift */; };
 		59B6E27C2B185FD2000864F9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 59B6E27B2B185FD2000864F9 /* GoogleService-Info.plist */; };
 		59B6E27F2B18604D000864F9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 59B6E27E2B18604D000864F9 /* FirebaseAnalytics */; };
@@ -207,6 +209,7 @@
 		59110F032B1725C20009E9AC /* NotificationName+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationName+.swift"; sourceTree = "<group>"; };
 		59457BC62B233EE5003F798C /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		59457BC82B237615003F798C /* PatchUserDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchUserDTO.swift; sourceTree = "<group>"; };
+		5958B9A82B468510005E3868 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5959A8172B28184200F6A3FC /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		596AD1F12B259147005860B3 /* BlockedUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersViewModel.swift; sourceTree = "<group>"; };
 		596AD1F32B2593E1005860B3 /* BlockedUserDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserDTO.swift; sourceTree = "<group>"; };
@@ -224,6 +227,7 @@
 		59AABDE22B0E272C002F6D0E /* PostCreateTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateTimeView.swift; sourceTree = "<group>"; };
 		59AABDE42B0E2D47002F6D0E /* PostCreateDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateDetailView.swift; sourceTree = "<group>"; };
 		59AADE372B22086400C3E17D /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
+		59ACF5092B46E4D00034E709 /* CombineAuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineAuthInterceptor.swift; sourceTree = "<group>"; };
 		59B6E2722B17938C000864F9 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
 		59B6E27B2B185FD2000864F9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		59BA10F92B1CC3F700F30DB8 /* FCMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMManager.swift; sourceTree = "<group>"; };
@@ -871,6 +875,8 @@
 			children = (
 				8F95CF9B2B0C81640024631F /* APIProvider.swift */,
 				445D62AF2B1DD6EC005DD3B1 /* AuthInterceptor.swift */,
+				5958B9A82B468510005E3868 /* NetworkService.swift */,
+				59ACF5092B46E4D00034E709 /* CombineAuthInterceptor.swift */,
 			);
 			path = APIProvider;
 			sourceTree = "<group>";
@@ -1289,10 +1295,12 @@
 				59AABDDF2B0E1AE1002F6D0E /* PostCreateTitleView.swift in Sources */,
 				44A59F5A2B3BFC4A00736A34 /* PostListUseCase.swift in Sources */,
 				8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */,
+				5958B9A92B468510005E3868 /* NetworkService.swift in Sources */,
 				8F9939552B29E1BD009FF9F8 /* ImageCache.swift in Sources */,
 				444A509A2B0CE94E00454397 /* DateView.swift in Sources */,
 				59E2C1622B248AB9004428F7 /* MyHiddenPostsViewModel.swift in Sources */,
 				8F81E8422B247A8B00C5687C /* SearchResultViewModel.swift in Sources */,
+				59ACF50A2B46E4D00034E709 /* CombineAuthInterceptor.swift in Sources */,
 				8F81E8402B246C0F00C5687C /* SearchResultViewController.swift in Sources */,
 				59AABDE32B0E272C002F6D0E /* PostCreateTimeView.swift in Sources */,
 				59E6A20B2B1F3AD300A2DF21 /* RentPostTableViewCell.swift in Sources */,
