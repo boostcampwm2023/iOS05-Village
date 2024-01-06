@@ -6,12 +6,15 @@ import { PostEntity } from '../entities/post.entity';
 import { PostImageEntity } from '../entities/postImage.entity';
 import { HttpException } from '@nestjs/common';
 import { BlockPostEntity } from '../entities/blockPost.entity';
+import { UpdatePostDto } from './dto/postUpdate.dto';
+import { PostCreateDto } from './dto/postCreate.dto';
 
 const mockRepository = {
   save: jest.fn(),
   softDelete: jest.fn(),
   findOne: jest.fn(),
   find: jest.fn(),
+  update: jest.fn(),
 };
 
 const mockPostRepository = {
@@ -139,6 +142,60 @@ describe('PostService', function () {
       postRepository.getRepository().find.mockResolvedValue(posts);
       const res = await service.findPostsTitles('test');
       expect(res.length).toEqual(5);
+    });
+  });
+
+  describe('updatePostById', function () {
+    it('should update post by id', async () => {
+      const postId = 1;
+      const thumbnail = 'testthumbnail';
+      const updatePostDto = new UpdatePostDto();
+      // postRepository.getRepository().updat;
+      await service.updatePostById(postId, updatePostDto, thumbnail);
+
+      expect(mockPostRepository.getRepository).toHaveBeenCalledWith(PostEntity);
+      expect(mockPostRepository.getRepository().update).toHaveBeenCalledWith(
+        { id: postId },
+        { ...updatePostDto, thumbnail: thumbnail },
+      );
+    });
+  });
+
+  describe('createPost', function () {
+    it('should create post', async function () {
+      const createPostDto = new PostCreateDto();
+      createPostDto.title = 'title';
+      createPostDto.description = 'test';
+      createPostDto.price = null;
+      createPostDto.is_request = true;
+      createPostDto.start_date = 'yyyy-mm-dd';
+      createPostDto.end_date = 'yyyy-mm-dd';
+      const post = new PostEntity();
+      post.id = 1;
+      postRepository.getRepository().save.mockResolvedValue(post);
+      const res = await service.createPost(createPostDto, 'qwe');
+      expect(res).toEqual(1);
+    });
+  });
+
+  describe('updatePostThumbnail', function () {
+    it('should update post thumbnail', async function () {
+      const thumbnail = 'test';
+      const postId = 1;
+      await service.updatePostThumbnail(thumbnail, postId);
+      expect(mockPostRepository.getRepository().update).toHaveBeenCalledWith(
+        { id: postId },
+        { thumbnail },
+      );
+    });
+  });
+
+  describe('removePost', function () {
+    it('should remove post', async function () {
+      const postId = 1;
+      jest.spyOn(service, 'checkAuth').mockResolvedValue(undefined);
+      await service.removePost(postId, 'user');
+      expect(mockPostRepository.softDeleteCascade).toHaveBeenCalledWith(postId);
     });
   });
 });
