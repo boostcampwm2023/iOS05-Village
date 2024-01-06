@@ -97,4 +97,27 @@ describe('PostService', function () {
       expect(res.title).toEqual('title');
     });
   });
+
+  describe('checkAuth', function () {
+    const post = new PostEntity();
+    post.user_hash = 'user1';
+    it('should throw 404', function () {
+      postRepository.getRepository().findOne.mockResolvedValue(null);
+      expect(async () => {
+        await service.checkAuth(1, 'user');
+      }).rejects.toThrowError(new HttpException('게시글이 없습니다.', 404));
+    });
+
+    it('should throw 403', function () {
+      postRepository.getRepository().findOne.mockResolvedValue(post);
+      expect(async () => {
+        await service.checkAuth(1, 'user');
+      }).rejects.toThrowError(new HttpException('수정 권한이 없습니다.', 403));
+    });
+
+    it('should pass checkAuth', async function () {
+      postRepository.getRepository().findOne.mockResolvedValue(post);
+      await service.checkAuth(1, 'user1');
+    });
+  });
 });
