@@ -51,12 +51,11 @@ export class PostService {
       .getRepository(PostEntity)
       .findOne({
         where: { id: postId },
-        relations: ['user'],
       });
     if (!isDataExists) {
       throw new HttpException('게시글이 없습니다.', 404);
     }
-    if (isDataExists.user.user_hash !== userId) {
+    if (isDataExists.user_hash !== userId) {
       throw new HttpException('수정 권한이 없습니다.', 403);
     }
   }
