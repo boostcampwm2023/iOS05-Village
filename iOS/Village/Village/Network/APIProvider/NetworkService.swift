@@ -64,8 +64,8 @@ final class NetworkService {
                 let publisher = URLSession.shared.dataTaskPublisher(for: request)
                 
                 return publisher
-                    .tryMap { [weak self] output in
-                        try self?.checkStatusCode(output.response)
+                    .tryMap { [weak self] (_, response) in
+                        try self?.checkStatusCode(response)
                     }
                     .mapError { [weak self] error in
                         guard let networkError = error as? NetworkError else { return NetworkError.unknownError }
