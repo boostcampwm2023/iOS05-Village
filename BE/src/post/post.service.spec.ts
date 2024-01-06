@@ -11,6 +11,7 @@ const mockRepository = {
   save: jest.fn(),
   softDelete: jest.fn(),
   findOne: jest.fn(),
+  find: jest.fn(),
 };
 
 const mockPostRepository = {
@@ -118,6 +119,26 @@ describe('PostService', function () {
     it('should pass checkAuth', async function () {
       postRepository.getRepository().findOne.mockResolvedValue(post);
       await service.checkAuth(1, 'user1');
+    });
+  });
+
+  describe('findPostsTitles', function () {
+    it('should return empty array', async function () {
+      postRepository.getRepository().find.mockResolvedValue([]);
+      const res = await service.findPostsTitles('test');
+      expect(res.length).toEqual(0);
+    });
+
+    it('should return 5 title array', async function () {
+      const posts = [];
+      for (let i = 0; i < 5; i++) {
+        const post = new PostEntity();
+        post.title = 'test' + i;
+        posts.push(post);
+      }
+      postRepository.getRepository().find.mockResolvedValue(posts);
+      const res = await service.findPostsTitles('test');
+      expect(res.length).toEqual(5);
     });
   });
 });
