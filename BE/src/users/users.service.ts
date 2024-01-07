@@ -14,16 +14,12 @@ import * as jwt from 'jsonwebtoken';
 import { FcmHandler } from 'src/common/fcmHandler';
 import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 import { GreenEyeHandler } from '../common/greenEyeHandler';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
-    @InjectRepository(BlockUserEntity)
-    private blockUserRepository: Repository<BlockUserEntity>,
-    @InjectRepository(BlockPostEntity)
-    private blockPostRepository: Repository<BlockPostEntity>,
+    private userRepository: UserRepository,
     @InjectRepository(RegistrationTokenEntity)
     private registrationTokenRepository: Repository<RegistrationTokenEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
@@ -40,13 +36,15 @@ export class UsersService {
     userEntity.OAuth_domain = createUserDto.OAuth_domain;
     userEntity.profile_img = imageLocation;
     userEntity.user_hash = hashMaker(createUserDto.nickname).slice(0, 8);
-    return await this.userRepository.save(userEntity);
+    return await this.userRepository.getRepository(UserEntity).save(userEntity);
   }
 
   async findUserById(userId: string) {
-    const user: UserEntity = await this.userRepository.findOne({
-      where: { user_hash: userId },
-    });
+    const user: UserEntity = await this.userRepository
+      .getRepository(UserEntity)
+      .findOne({
+        where: { user_hash: userId },
+      });
     if (user) {
       if (user.profile_img === null) {
         user.profile_img = this.configService.get('DEFAULT_PROFILE_IMAGE');
@@ -65,21 +63,16 @@ export class UsersService {
       const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
       await this.cacheManager.set(accessToken, 'logout', { ttl });
     }
-
-    await this.deleteCascadingUser(userPk, userId);
+    await this.userRepository.softDeleteCascade(userId);
     return true;
   }
 
-  async deleteCascadingUser(userId, userHash) {
-    await this.blockPostRepository.softDelete({ blocker: userHash });
-    await this.blockUserRepository.softDelete({ blocker: userHash });
-    await this.userRepository.softDelete({ id: userId });
-  }
-
   async checkAuth(id, userId) {
-    const isDataExists = await this.userRepository.findOne({
-      where: { user_hash: id },
-    });
+    const isDataExists = await this.userRepository
+      .getRepository(UserEntity)
+      .findOne({
+        where: { user_hash: id },
+      });
     if (!isDataExists) {
       throw new HttpException('유저가 존재하지 않습니다.', 404);
     }
@@ -105,10 +98,9 @@ export class UsersService {
   }
 
   async changeNickname(userId: string, nickname: string) {
-    await this.userRepository.update(
-      { user_hash: userId },
-      { nickname: nickname },
-    );
+    await this.userRepository
+      .getRepository(UserEntity)
+      .update({ user_hash: userId }, { nickname: nickname });
   }
 
   async changeImages(userId: string, file: Express.Multer.File) {
@@ -117,10 +109,9 @@ export class UsersService {
     // if (isHarmful) {
     //   throw new HttpException('이미지가 유해합니다.', 400);
     // }
-    await this.userRepository.update(
-      { user_hash: userId },
-      { profile_img: fileLocation },
-    );
+    await this.userRepository
+      .getRepository(UserEntity)
+      .update({ user_hash: userId }, { profile_img: fileLocation });
   }
 
   async uploadImages(file: Express.Multer.File) {

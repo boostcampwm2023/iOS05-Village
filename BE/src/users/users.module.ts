@@ -10,6 +10,7 @@ import { AuthGuard } from 'src/common/guard/auth.guard';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { FcmHandler } from 'src/common/fcmHandler';
 import { GreenEyeHandler } from '../common/greenEyeHandler';
+import { UserRepository } from './user.repository';
 
 @Module({
   imports: [
@@ -21,6 +22,13 @@ import { GreenEyeHandler } from '../common/greenEyeHandler';
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService, S3Handler, AuthGuard, FcmHandler, GreenEyeHandler],
+  providers: [
+    UsersService,
+    S3Handler,
+    AuthGuard,
+    FcmHandler,
+    GreenEyeHandler,
+    UserRepository,
+  ],
 })
 export class UsersModule {}
