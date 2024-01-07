@@ -111,7 +111,6 @@ final class ChatRoomViewModel {
             case .success(let data):
                 guard let self = self else { return }
                 data.chatLog.forEach { [weak self] chat in
-                    print(chat.message)
                     self?.appendLog(sender: chat.sender, message: chat.message)
                 }
                 if self.postID != data.postID {
@@ -152,16 +151,18 @@ final class ChatRoomViewModel {
     }
     
     private func getUserData() {
-        let endpoint = APIEndPoints.getUser(id: self.userID)
-        
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                userOutput.send(data)
-            } catch let error as NetworkError {
-                userOutput.send(completion: .failure(error))
+        UserDetailUseCase(
+            repository: DefaultUserDetailRepository(),
+            userID: self.userID
+        ) { [weak self] result in
+            switch result {
+            case .success(let user):
+                self?.userOutput.send(user)
+            case .failure(let error):
+                self?.userOutput.send(completion: .failure(error))
             }
         }
+        .start()
     }
     
     private func checkUser(userID: String) -> Bool {
