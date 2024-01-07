@@ -3,14 +3,12 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { S3Handler } from '../common/S3Handler';
 import { hashMaker } from 'src/common/hashMaker';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
 import { FcmHandler } from 'src/common/fcmHandler';
 import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
-import { GreenEyeHandler } from '../common/greenEyeHandler';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -20,10 +18,8 @@ export class UsersService {
     @InjectRepository(RegistrationTokenEntity)
     private registrationTokenRepository: Repository<RegistrationTokenEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
-    private s3Handler: S3Handler,
     private configService: ConfigService,
     private fcmHandler: FcmHandler,
-    private greenEyeHandler: GreenEyeHandler,
   ) {}
 
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
