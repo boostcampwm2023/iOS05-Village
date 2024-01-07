@@ -102,7 +102,7 @@
 		59EA94C52B35AAA7007EAA42 /* UseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EA94C42B35AAA7007EAA42 /* UseCase.swift */; };
 		8F1B53322B0DE0D8006D8982 /* APIEndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */; };
 		8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */; };
-		8F1E2CEE2B1F163D00179E34 /* GetRoomResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */; };
+		8F1E2CEE2B1F163D00179E34 /* ChatRoomResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1E2CED2B1F163D00179E34 /* ChatRoomResponseDTO.swift */; };
 		8F3D79DD2B135D1500370536 /* ChatRoom.json in Resources */ = {isa = PBXBuildFile; fileRef = 8F3D79DC2B135D1500370536 /* ChatRoom.json */; };
 		8F3D79E02B136C6800370536 /* ChatRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */; };
 		8F3D79E22B14438A00370536 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D79E12B14438A00370536 /* PostView.swift */; };
@@ -260,7 +260,7 @@
 		59EA94C42B35AAA7007EAA42 /* UseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCase.swift; sourceTree = "<group>"; };
 		8F1B53312B0DE0D8006D8982 /* APIEndPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndPoints.swift; sourceTree = "<group>"; };
 		8F1B53352B0E0396006D8982 /* PostListRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListRequestDTO.swift; sourceTree = "<group>"; };
-		8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRoomResponseDTO.swift; sourceTree = "<group>"; };
+		8F1E2CED2B1F163D00179E34 /* ChatRoomResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomResponseDTO.swift; sourceTree = "<group>"; };
 		8F3D79DC2B135D1500370536 /* ChatRoom.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatRoom.json; sourceTree = "<group>"; };
 		8F3D79DF2B136C6800370536 /* ChatRoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewModel.swift; sourceTree = "<group>"; };
 		8F3D79E12B14438A00370536 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
@@ -501,7 +501,7 @@
 				44C1F5F22B0FF63C0047A436 /* PostResponseDTO.swift */,
 				8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */,
 				8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */,
-				8F1E2CED2B1F163D00179E34 /* GetRoomResponseDTO.swift */,
+				8F1E2CED2B1F163D00179E34 /* ChatRoomResponseDTO.swift */,
 				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
 				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
@@ -1242,7 +1242,7 @@
 				596AD1F22B259147005860B3 /* BlockedUsersViewModel.swift in Sources */,
 				59E2C1662B24B6D9004428F7 /* RequestFilterDTO.swift in Sources */,
 				44FC336B2B2A023C00FF4D65 /* NSItemProvider+.swift in Sources */,
-				8F1E2CEE2B1F163D00179E34 /* GetRoomResponseDTO.swift in Sources */,
+				8F1E2CEE2B1F163D00179E34 /* ChatRoomResponseDTO.swift in Sources */,
 				59E6A20F2B205C8500A2DF21 /* RequestPostSummaryView.swift in Sources */,
 				446B61002B2433E100A361CB /* ImageItem.swift in Sources */,
 				8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */,
