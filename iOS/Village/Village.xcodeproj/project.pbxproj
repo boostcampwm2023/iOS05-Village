@@ -141,6 +141,9 @@
 		8FBD4E4E2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E4D2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift */; };
 		8FBD4E502B4A9E3200D32488 /* PostDetailRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E4F2B4A9E3200D32488 /* PostDetailRepository.swift */; };
 		8FBD4E522B4A9E3E00D32488 /* PostDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E512B4A9E3E00D32488 /* PostDetailUseCase.swift */; };
+		8FBD4E542B4AC04A00D32488 /* UserDetailRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E532B4AC04A00D32488 /* UserDetailRepository.swift */; };
+		8FBD4E562B4AC05B00D32488 /* DefaultUserDetailRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E552B4AC05B00D32488 /* DefaultUserDetailRepository.swift */; };
+		8FBD4E582B4AC06700D32488 /* UserDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E572B4AC06700D32488 /* UserDetailUseCase.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
@@ -303,6 +306,9 @@
 		8FBD4E4D2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPostDetailRepostory.swift; sourceTree = "<group>"; };
 		8FBD4E4F2B4A9E3200D32488 /* PostDetailRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailRepository.swift; sourceTree = "<group>"; };
 		8FBD4E512B4A9E3E00D32488 /* PostDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailUseCase.swift; sourceTree = "<group>"; };
+		8FBD4E532B4AC04A00D32488 /* UserDetailRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailRepository.swift; sourceTree = "<group>"; };
+		8FBD4E552B4AC05B00D32488 /* DefaultUserDetailRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserDetailRepository.swift; sourceTree = "<group>"; };
+		8FBD4E572B4AC06700D32488 /* UserDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailUseCase.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
@@ -739,6 +745,7 @@
 				44A59F5B2B3BFC7700736A34 /* PostListRepository.swift */,
 				8FBD4E492B4A746900D32488 /* ChatRoomRepository.swift */,
 				8FBD4E4F2B4A9E3200D32488 /* PostDetailRepository.swift */,
+				8FBD4E532B4AC04A00D32488 /* UserDetailRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -751,6 +758,7 @@
 				44A59F592B3BFC4A00736A34 /* PostListUseCase.swift */,
 				8FBD4E4B2B4A74A800D32488 /* ChatRoomUseCase.swift */,
 				8FBD4E512B4A9E3E00D32488 /* PostDetailUseCase.swift */,
+				8FBD4E572B4AC06700D32488 /* UserDetailUseCase.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -762,6 +770,7 @@
 				44A59F5D2B3BFC9C00736A34 /* DefaultPostListRepository.swift */,
 				8FBD4E472B4A745300D32488 /* DefaultChatRoomRepository.swift */,
 				8FBD4E4D2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift */,
+				8FBD4E552B4AC05B00D32488 /* DefaultUserDetailRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1250,6 +1259,7 @@
 				59BD5DC92B0C760500FEB80F /* UIStackView+.swift in Sources */,
 				596AD1F22B259147005860B3 /* BlockedUsersViewModel.swift in Sources */,
 				59E2C1662B24B6D9004428F7 /* RequestFilterDTO.swift in Sources */,
+				8FBD4E582B4AC06700D32488 /* UserDetailUseCase.swift in Sources */,
 				44FC336B2B2A023C00FF4D65 /* NSItemProvider+.swift in Sources */,
 				8F1E2CEE2B1F163D00179E34 /* ChatRoomResponseDTO.swift in Sources */,
 				59E6A20F2B205C8500A2DF21 /* RequestPostSummaryView.swift in Sources */,
@@ -1258,6 +1268,7 @@
 				59E6A2072B1F374B00A2DF21 /* MyPostsViewModel.swift in Sources */,
 				59BA10FA2B1CC3F700F30DB8 /* FCMManager.swift in Sources */,
 				8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */,
+				8FBD4E562B4AC05B00D32488 /* DefaultUserDetailRepository.swift in Sources */,
 				446B60F72B220D6000A361CB /* CameraButtonCell.swift in Sources */,
 				59E2C1602B248A6D004428F7 /* MyHiddenPostsViewController.swift in Sources */,
 				4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */,
@@ -1296,6 +1307,7 @@
 				59110EFB2B15F3D60009E9AC /* ChatRoomTableViewCell.swift in Sources */,
 				444A50942B0C8D1900454397 /* UIView+Divider.swift in Sources */,
 				59EA94BB2B359A23007EAA42 /* ReportRepository.swift in Sources */,
+				8FBD4E542B4AC04A00D32488 /* UserDetailRepository.swift in Sources */,
 				446B61142B275C2900A361CB /* PostNotificationPublisher.swift in Sources */,
 				8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */,
 				44A59F5E2B3BFC9C00736A34 /* DefaultPostListRepository.swift in Sources */,
