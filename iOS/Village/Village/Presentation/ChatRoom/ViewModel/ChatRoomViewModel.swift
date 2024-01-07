@@ -137,15 +137,18 @@ final class ChatRoomViewModel {
     }
     
     func getPostData() {
-        let endpoint = APIEndPoints.getPost(id: self.postID)
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                postOutput.send(data)
-            } catch let error as NetworkError {
-                postOutput.send(completion: .failure(error))
+        PostDetailUseCase(
+            repository: DefaultPostDetailRepostory(),
+            postID: self.postID
+        ) { [weak self] result in
+            switch result {
+            case .success(let post):
+                self?.postOutput.send(post)
+            case .failure(let error):
+                self?.postOutput.send(completion: .failure(error))
             }
         }
+        .start()
     }
     
     private func getUserData() {
