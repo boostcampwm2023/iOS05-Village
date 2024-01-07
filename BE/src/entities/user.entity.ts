@@ -21,13 +21,17 @@ export class UserEntity {
   @OneToMany(() => PostEntity, (post) => post.user)
   posts: PostEntity[];
 
-  @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blocker)
+  @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blockerUser, {
+    cascade: ['soft-remove'],
+  })
   blocker: BlockUserEntity[];
 
   @OneToMany(() => BlockUserEntity, (blockUser) => blockUser.blocked_user)
   blocked: BlockUserEntity[];
 
-  @OneToMany(() => BlockPostEntity, (blockUser) => blockUser.blocker)
+  @OneToMany(() => BlockPostEntity, (blockUser) => blockUser.blockerUser, {
+    cascade: ['soft-remove'],
+  })
   blocker_post: BlockPostEntity[];
 
   @OneToOne(
