@@ -9,6 +9,6 @@ import Foundation
 
 protocol ChatListRepository {
     
-    func fetchChatList() async -> Result<GetChatListResponseDTO, Error>
+    func fetchChatList() async -> Result<GetChatListResponseDTO, NetworkError>
     
 }

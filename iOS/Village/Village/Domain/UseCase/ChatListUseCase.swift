@@ -10,10 +10,10 @@ import Foundation
 struct ChatListUseCase: UseCase {
     
     private let repository: DefaultChatListRepository
-    private let completion: (Result<GetChatListResponseDTO, Error>) -> Void
+    private let completion: (Result<GetChatListResponseDTO, NetworkError>) -> Void
 
     init(repository: DefaultChatListRepository, 
-         completion: @escaping (Result<GetChatListResponseDTO, Error>) -> Void
+         completion: @escaping (Result<GetChatListResponseDTO, NetworkError>) -> Void
     ) {
         self.repository = repository
         self.completion = completion

@@ -17,7 +17,7 @@ struct DefaultChatListRepository: ChatListRepository {
         )
     }
     
-    func fetchChatList() async -> Result<GetChatListResponseDTO, Error> {
+    func fetchChatList() async -> Result<GetChatListResponseDTO, NetworkError> {
         let endpoint = makeEndPoint()
         
         do {
@@ -25,8 +25,10 @@ struct DefaultChatListRepository: ChatListRepository {
                 return .success(GetChatListResponseDTO(allRead: true, chatList: []))
             }
             return .success(chatListDTO)
-        } catch {
+        } catch let error as NetworkError {
             return .failure(error)
+        } catch {
+            return .failure(.unknownError)
         }
     }
     
