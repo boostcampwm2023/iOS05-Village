@@ -138,6 +138,9 @@
 		8FBD4E482B4A745300D32488 /* DefaultChatRoomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E472B4A745300D32488 /* DefaultChatRoomRepository.swift */; };
 		8FBD4E4A2B4A746900D32488 /* ChatRoomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E492B4A746900D32488 /* ChatRoomRepository.swift */; };
 		8FBD4E4C2B4A74A800D32488 /* ChatRoomUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E4B2B4A74A800D32488 /* ChatRoomUseCase.swift */; };
+		8FBD4E4E2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E4D2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift */; };
+		8FBD4E502B4A9E3200D32488 /* PostDetailRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E4F2B4A9E3200D32488 /* PostDetailRepository.swift */; };
+		8FBD4E522B4A9E3E00D32488 /* PostDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E512B4A9E3E00D32488 /* PostDetailUseCase.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
@@ -297,6 +300,9 @@
 		8FBD4E472B4A745300D32488 /* DefaultChatRoomRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultChatRoomRepository.swift; sourceTree = "<group>"; };
 		8FBD4E492B4A746900D32488 /* ChatRoomRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomRepository.swift; sourceTree = "<group>"; };
 		8FBD4E4B2B4A74A800D32488 /* ChatRoomUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomUseCase.swift; sourceTree = "<group>"; };
+		8FBD4E4D2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPostDetailRepostory.swift; sourceTree = "<group>"; };
+		8FBD4E4F2B4A9E3200D32488 /* PostDetailRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailRepository.swift; sourceTree = "<group>"; };
+		8FBD4E512B4A9E3E00D32488 /* PostDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailUseCase.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
@@ -732,6 +738,7 @@
 				59EA94BA2B359A23007EAA42 /* ReportRepository.swift */,
 				44A59F5B2B3BFC7700736A34 /* PostListRepository.swift */,
 				8FBD4E492B4A746900D32488 /* ChatRoomRepository.swift */,
+				8FBD4E4F2B4A9E3200D32488 /* PostDetailRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -743,6 +750,7 @@
 				59EA94C22B35A331007EAA42 /* ReportUseCase.swift */,
 				44A59F592B3BFC4A00736A34 /* PostListUseCase.swift */,
 				8FBD4E4B2B4A74A800D32488 /* ChatRoomUseCase.swift */,
+				8FBD4E512B4A9E3E00D32488 /* PostDetailUseCase.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -753,6 +761,7 @@
 				59EA94C02B359ABB007EAA42 /* DefaultReportRepository.swift */,
 				44A59F5D2B3BFC9C00736A34 /* DefaultPostListRepository.swift */,
 				8FBD4E472B4A745300D32488 /* DefaultChatRoomRepository.swift */,
+				8FBD4E4D2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1254,6 +1263,7 @@
 				4416D48C2B174C7A0052BF33 /* KeychainManager.swift in Sources */,
 				59457BC72B233EE5003F798C /* UIImage+Resize.swift in Sources */,
 				5980D75F2B0FB6DB00A6B370 /* PostCreateRepository.swift in Sources */,
+				8FBD4E502B4A9E3200D32488 /* PostDetailRepository.swift in Sources */,
 				4416D48E2B174CBA0052BF33 /* KeychainError.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
 				8FBD4E482B4A745300D32488 /* DefaultChatRoomRepository.swift in Sources */,
@@ -1305,6 +1315,7 @@
 				59AABDDF2B0E1AE1002F6D0E /* PostCreateTitleView.swift in Sources */,
 				44A59F5A2B3BFC4A00736A34 /* PostListUseCase.swift in Sources */,
 				8F8F0B952B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift in Sources */,
+				8FBD4E4E2B4A9E2600D32488 /* DefaultPostDetailRepostory.swift in Sources */,
 				5958B9A92B468510005E3868 /* NetworkService.swift in Sources */,
 				8F9939552B29E1BD009FF9F8 /* ImageCache.swift in Sources */,
 				444A509A2B0CE94E00454397 /* DateView.swift in Sources */,
@@ -1347,6 +1358,7 @@
 				8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */,
 				8F81E8462B248B0A00C5687C /* SearchRequstTableViewCell.swift in Sources */,
 				446B61062B2602A200A361CB /* PostSegmentedControl.swift in Sources */,
+				8FBD4E522B4A9E3E00D32488 /* PostDetailUseCase.swift in Sources */,
 				59AABDE12B0E1BB8002F6D0E /* PostCreatePriceView.swift in Sources */,
 				8F8F0B832B1B36DD00BE97D2 /* ChatListTableViewCell.swift in Sources */,
 				8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */,
