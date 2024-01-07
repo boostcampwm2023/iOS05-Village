@@ -12,6 +12,7 @@ import { FcmHandler } from 'src/common/fcmHandler';
 import { GreenEyeHandler } from '../common/greenEyeHandler';
 import { UserRepository } from './user.repository';
 import { ImageModule } from '../image/image.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ImageModule } from '../image/image.module';
       RegistrationTokenEntity,
     ]),
     ImageModule,
+    NotificationModule,
   ],
   controllers: [UsersController],
   providers: [

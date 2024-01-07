@@ -22,6 +22,8 @@ import { AuthGuard } from 'src/common/guard/auth.guard';
 import { UserHash } from '../common/decorator/auth.decorator';
 import { FileSizeValidator } from '../common/files.validator';
 import { ImageService } from '../image/image.service';
+import { NotificationService } from '../notification/notification.service';
+import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -29,6 +31,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly imageService: ImageService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   @Get(':id')
@@ -61,12 +64,15 @@ export class UsersController {
   // }
 
   @Delete(':id')
+  @UseInterceptors(TransactionInterceptor)
   async usersRemove(
     @Param('id') id: string,
     @UserHash() userId: string,
     @Headers('authorization') token: string,
   ) {
+    await this.usersService.checkAuth(id, userId);
     await this.usersService.removeUser(id, userId, token);
+    await this.notificationService.removeRegistrationToken(userId);
   }
 
   @Patch(':id')
@@ -77,6 +83,7 @@ export class UsersController {
     @UploadedFile(new FileSizeValidator()) file: Express.Multer.File,
     @UserHash() userId,
   ) {
+    await this.usersService.checkAuth(id, userId);
     const imageLocation = file
       ? await this.imageService.uploadImage(file)
       : null;
@@ -89,6 +96,6 @@ export class UsersController {
     @Body('registration_token') registrationToken: string,
     @UserHash() userId: string,
   ) {
-    await this.usersService.registerToken(userId, registrationToken);
+    await this.notificationService.registerToken(userId, registrationToken);
   }
 }

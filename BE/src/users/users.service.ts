@@ -1,13 +1,9 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
 import { hashMaker } from 'src/common/hashMaker';
-import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
-import { FcmHandler } from 'src/common/fcmHandler';
 import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
 import { UserRepository } from './user.repository';
 
@@ -15,11 +11,8 @@ import { UserRepository } from './user.repository';
 export class UsersService {
   constructor(
     private userRepository: UserRepository,
-    @InjectRepository(RegistrationTokenEntity)
-    private registrationTokenRepository: Repository<RegistrationTokenEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
     private configService: ConfigService,
-    private fcmHandler: FcmHandler,
   ) {}
 
   async createUser(imageLocation: string, createUserDto: CreateUserDto) {
@@ -49,10 +42,8 @@ export class UsersService {
   }
 
   async removeUser(id: string, userId: string, accessToken: string) {
-    await this.checkAuth(id, userId);
     const decodedToken: any = jwt.decode(accessToken);
     if (decodedToken && decodedToken.exp) {
-      await this.fcmHandler.removeRegistrationToken(decodedToken.userId);
       const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
       await this.cacheManager.set(accessToken, 'logout', { ttl });
     }
@@ -80,7 +71,6 @@ export class UsersService {
     imageLocation: string,
     userId: string,
   ) {
-    await this.checkAuth(id, userId);
     const user = new UserEntity();
     user.nickname = nickname ?? undefined;
     user.profile_img = imageLocation ?? undefined;
@@ -88,31 +78,5 @@ export class UsersService {
     await this.userRepository
       .getRepository(UserEntity)
       .update({ user_hash: userId }, user);
-  }
-
-  async registerToken(userId, registrationToken) {
-    const registrationTokenEntity =
-      await this.registrationTokenRepository.findOne({
-        where: { user_hash: userId },
-      });
-    if (registrationTokenEntity === null) {
-      await this.registrationTokenRepository.save({
-        user_hash: userId,
-        registration_token: registrationToken,
-      });
-    } else {
-      await this.updateRegistrationToken(userId, registrationToken);
-    }
-  }
-
-  async updateRegistrationToken(userId, registrationToken) {
-    const registrationTokenEntity = new RegistrationTokenEntity();
-    registrationTokenEntity.registration_token = registrationToken;
-    await this.registrationTokenRepository.update(
-      {
-        user_hash: userId,
-      },
-      registrationTokenEntity,
-    );
   }
 }
