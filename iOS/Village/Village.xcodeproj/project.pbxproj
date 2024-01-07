@@ -135,6 +135,9 @@
 		8FBB3BB92B26B431001876F5 /* GetAllReadResponseDTO .swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */; };
 		8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */; };
 		8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */; };
+		8FBD4E482B4A745300D32488 /* DefaultChatRoomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E472B4A745300D32488 /* DefaultChatRoomRepository.swift */; };
+		8FBD4E4A2B4A746900D32488 /* ChatRoomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E492B4A746900D32488 /* ChatRoomRepository.swift */; };
+		8FBD4E4C2B4A74A800D32488 /* ChatRoomUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBD4E4B2B4A74A800D32488 /* ChatRoomUseCase.swift */; };
 		8FBE3B0C2B048B1300660530 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B0B2B048B1300660530 /* HomeViewController.swift */; };
 		8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */; };
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
@@ -291,6 +294,9 @@
 		8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GetAllReadResponseDTO .swift"; sourceTree = "<group>"; };
 		8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserTableViewCell.swift; sourceTree = "<group>"; };
 		8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatListResponseDTO.swift; sourceTree = "<group>"; };
+		8FBD4E472B4A745300D32488 /* DefaultChatRoomRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultChatRoomRepository.swift; sourceTree = "<group>"; };
+		8FBD4E492B4A746900D32488 /* ChatRoomRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomRepository.swift; sourceTree = "<group>"; };
+		8FBD4E4B2B4A74A800D32488 /* ChatRoomUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomUseCase.swift; sourceTree = "<group>"; };
 		8FBE3B0B2B048B1300660530 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8FBE3B112B04CF6300660530 /* UILabel+SetTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SetTitle.swift"; sourceTree = "<group>"; };
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
@@ -725,6 +731,7 @@
 			children = (
 				59EA94BA2B359A23007EAA42 /* ReportRepository.swift */,
 				44A59F5B2B3BFC7700736A34 /* PostListRepository.swift */,
+				8FBD4E492B4A746900D32488 /* ChatRoomRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -735,6 +742,7 @@
 				44A59F582B3BFC1500736A34 /* Protocol */,
 				59EA94C22B35A331007EAA42 /* ReportUseCase.swift */,
 				44A59F592B3BFC4A00736A34 /* PostListUseCase.swift */,
+				8FBD4E4B2B4A74A800D32488 /* ChatRoomUseCase.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -744,6 +752,7 @@
 			children = (
 				59EA94C02B359ABB007EAA42 /* DefaultReportRepository.swift */,
 				44A59F5D2B3BFC9C00736A34 /* DefaultPostListRepository.swift */,
+				8FBD4E472B4A745300D32488 /* DefaultChatRoomRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1247,6 +1256,7 @@
 				5980D75F2B0FB6DB00A6B370 /* PostCreateRepository.swift in Sources */,
 				4416D48E2B174CBA0052BF33 /* KeychainError.swift in Sources */,
 				4491AA282B05D6C90016FC70 /* MenuView.swift in Sources */,
+				8FBD4E482B4A745300D32488 /* DefaultChatRoomRepository.swift in Sources */,
 				8F95CF982B0C7B270024631F /* Responsable.swift in Sources */,
 				44A59F5C2B3BFC7700736A34 /* PostListRepository.swift in Sources */,
 				8F97D06C2B222EFA00A19754 /* OpponentChatTableViewCell.swift in Sources */,
@@ -1313,6 +1323,7 @@
 				8F8F0B8B2B1D985A00BE97D2 /* BlockedUserViewController.swift in Sources */,
 				8F8F0B8D2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift in Sources */,
 				59AADE382B22086400C3E17D /* EditProfileViewModel.swift in Sources */,
+				8FBD4E4A2B4A746900D32488 /* ChatRoomRepository.swift in Sources */,
 				44FC33692B2986E900FF4D65 /* ImageDetailView.swift in Sources */,
 				8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */,
 				59A384642B26093600660B70 /* ReportViewModel.swift in Sources */,
@@ -1341,6 +1352,7 @@
 				8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */,
 				5900F92C2B2AD70C0065B7F6 /* ProfileTableViewCell.swift in Sources */,
 				44C1F5E62B0FE37C0047A436 /* PostDetailViewModel.swift in Sources */,
+				8FBD4E4C2B4A74A800D32488 /* ChatRoomUseCase.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
 				4416D4552B14B5F00052BF33 /* NicknameTextField.swift in Sources */,
 				8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */,
