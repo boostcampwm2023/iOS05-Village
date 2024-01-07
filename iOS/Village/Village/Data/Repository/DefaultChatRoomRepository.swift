@@ -24,9 +24,7 @@ struct DefaultChatRoomRepository: ChatRoomRepository {
         
         do {
             guard let roomDataDTO = try await APIProvider.shared.request(with: endpoint) else {
-                return .success(
-                    ResponseDTO(writer: "", writerProfileIMG: "", user: "", userProfileIMG: "", postID: -1, chatLog: [])
-                )
+                return .failure(.emptyData)
             }
             return .success(roomDataDTO)
         } catch let error as NetworkError {
