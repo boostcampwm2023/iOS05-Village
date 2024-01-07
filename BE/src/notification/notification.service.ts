@@ -42,4 +42,8 @@ export class NotificationService {
       );
     }
   }
+
+  async removeRegistrationToken(userId: string) {
+    await this.registrationTokenRepository.delete({ user_hash: userId });
+  }
 }
