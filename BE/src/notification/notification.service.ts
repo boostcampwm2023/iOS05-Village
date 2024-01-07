@@ -22,4 +22,24 @@ export class NotificationService {
       this.logger.log('Firebase Admin initialized');
     }
   }
+
+  async registerToken(userId, registrationToken) {
+    const registrationTokenEntity =
+      await this.registrationTokenRepository.findOne({
+        where: { user_hash: userId },
+      });
+    if (registrationTokenEntity === null) {
+      await this.registrationTokenRepository.save({
+        user_hash: userId,
+        registration_token: registrationToken,
+      });
+    } else {
+      await this.registrationTokenRepository.update(
+        {
+          user_hash: userId,
+        },
+        { registration_token: registrationToken },
+      );
+    }
+  }
 }
