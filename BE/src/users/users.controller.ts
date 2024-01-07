@@ -6,7 +6,6 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  ValidationPipe,
   UploadedFile,
   HttpException,
   UseGuards,
@@ -14,7 +13,6 @@ import {
   Headers,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/createUser.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MultiPartBody } from 'src/common/decorator/multiPartBody.decorator';
 import { UpdateUsersDto } from './dto/usersUpdate.dto';
@@ -43,25 +41,6 @@ export class UsersController {
       return user;
     }
   }
-
-  // @Post()
-  // @UseInterceptors(FileInterceptor('profileImage'))
-  // async usersCreate(
-  //   @UploadedFile(new FileSizeValidator())
-  //   file: Express.Multer.File,
-  //   @MultiPartBody(
-  //     'profile',
-  //     new ValidationPipe({ validateCustomDecorators: true }),
-  //   )
-  //   createUserDto: CreateUserDto,
-  // ) {
-  //   let imageLocation: string;
-  //
-  //   if (file !== undefined) {
-  //     imageLocation = await this.usersService.uploadImages(file);
-  //   }
-  //   await this.usersService.createUser(imageLocation, createUserDto);
-  // }
 
   @Delete(':id')
   @UseInterceptors(TransactionInterceptor)
