@@ -38,6 +38,8 @@ final class ChatRoomViewModel {
     private var userID: String = ""
     private var postID: Int = 0
     
+    var myProfileURL: String = ""
+    var opponentProfileURL: String = ""
     var myProfileData: Data = Data()
     var opponentProfileData: Data = Data()
     
@@ -50,7 +52,6 @@ final class ChatRoomViewModel {
     func transform(input: Input) -> Output {
         input.roomIDInput.sink { [weak self] _ in
             guard let self = self else { return }
-//            self.roomIDOutput.send(self.roomID)
             self.getChatRoomData()
         }
         .store(in: &cancellableBag)
@@ -102,29 +103,37 @@ final class ChatRoomViewModel {
     }
     
     func getChatRoomData() {
-        let endpoint = APIEndPoints.getChatRoom(with: self.roomID)
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
+        ChatRoomUseCase(
+            repository: DefaultChatRoomRepository(),
+            roomID: self.roomID
+        ) { [weak self] result in
+            switch result {
+            case .success(let data):
+                guard let self = self else { return }
                 data.chatLog.forEach { [weak self] chat in
+                    print(chat.message)
                     self?.appendLog(sender: chat.sender, message: chat.message)
                 }
                 if self.postID != data.postID {
                     self.postID = data.postID
                     if checkUser(userID: data.user) {
                         self.userID = data.writer
-                        await self.getImageData(myURL: data.userProfileIMG, opponentURL: data.writerProfileIMG)
+                        self.myProfileURL = data.userProfileIMG
+                        self.opponentProfileURL = data.writerProfileIMG
                     } else {
                         self.userID = data.user
-                        await self.getImageData(myURL: data.writerProfileIMG, opponentURL: data.userProfileIMG)
+                        self.myProfileURL = data.writerProfileIMG
+                        self.opponentProfileURL = data.userProfileIMG
                     }
                     self.getPostData()
                     self.getUserData()
+                    self.getImageData()
                 }
-            } catch {
+            case .failure(let error):
                 dump(error)
             }
         }
+        .start()
     }
     
     func getPostData() {
@@ -157,11 +166,11 @@ final class ChatRoomViewModel {
         return userID == currentUserID ? true : false
     }
 
-    private func getImageData(myURL: String, opponentURL: String) async {
+    private func getImageData() {
         Task {
             do {
-                let myData = try await APIProvider.shared.request(from: myURL)
-                let opponentData = try await APIProvider.shared.request(from: opponentURL)
+                let myData = try await APIProvider.shared.request(from: self.myProfileURL)
+                let opponentData = try await APIProvider.shared.request(from: self.opponentProfileURL)
                 self.myProfileData = myData
                 self.opponentProfileData = opponentData
                 self.tableViewReloadOutput.send()
