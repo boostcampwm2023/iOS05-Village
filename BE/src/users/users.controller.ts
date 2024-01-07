@@ -21,11 +21,15 @@ import { UpdateUsersDto } from './dto/usersUpdate.dto';
 import { AuthGuard } from 'src/common/guard/auth.guard';
 import { UserHash } from '../common/decorator/auth.decorator';
 import { FileSizeValidator } from '../common/files.validator';
+import { ImageService } from '../image/image.service';
 
 @Controller('users')
 @UseGuards(AuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly imageService: ImageService,
+  ) {}
 
   @Get(':id')
   async usersDetails(@Param('id') userId) {
@@ -37,24 +41,24 @@ export class UsersController {
     }
   }
 
-  @Post()
-  @UseInterceptors(FileInterceptor('profileImage'))
-  async usersCreate(
-    @UploadedFile(new FileSizeValidator())
-    file: Express.Multer.File,
-    @MultiPartBody(
-      'profile',
-      new ValidationPipe({ validateCustomDecorators: true }),
-    )
-    createUserDto: CreateUserDto,
-  ) {
-    let imageLocation: string;
-
-    if (file !== undefined) {
-      imageLocation = await this.usersService.uploadImages(file);
-    }
-    await this.usersService.createUser(imageLocation, createUserDto);
-  }
+  // @Post()
+  // @UseInterceptors(FileInterceptor('profileImage'))
+  // async usersCreate(
+  //   @UploadedFile(new FileSizeValidator())
+  //   file: Express.Multer.File,
+  //   @MultiPartBody(
+  //     'profile',
+  //     new ValidationPipe({ validateCustomDecorators: true }),
+  //   )
+  //   createUserDto: CreateUserDto,
+  // ) {
+  //   let imageLocation: string;
+  //
+  //   if (file !== undefined) {
+  //     imageLocation = await this.usersService.uploadImages(file);
+  //   }
+  //   await this.usersService.createUser(imageLocation, createUserDto);
+  // }
 
   @Delete(':id')
   async usersRemove(
@@ -73,7 +77,11 @@ export class UsersController {
     @UploadedFile(new FileSizeValidator()) file: Express.Multer.File,
     @UserHash() userId,
   ) {
-    await this.usersService.updateUserById(id, body, file, userId);
+    const imageLocation = file
+      ? await this.imageService.uploadImage(file)
+      : null;
+    const nickname = body ? body.nickname : null;
+    await this.usersService.updateUserById(id, nickname, imageLocation, userId);
   }
 
   @Post('registration-token')

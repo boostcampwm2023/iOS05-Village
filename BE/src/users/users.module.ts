@@ -11,6 +11,7 @@ import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { FcmHandler } from 'src/common/fcmHandler';
 import { GreenEyeHandler } from '../common/greenEyeHandler';
 import { UserRepository } from './user.repository';
+import { ImageModule } from '../image/image.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserRepository } from './user.repository';
       BlockPostEntity,
       RegistrationTokenEntity,
     ]),
+    ImageModule,
   ],
   controllers: [UsersController],
   providers: [

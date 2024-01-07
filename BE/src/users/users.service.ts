@@ -6,8 +6,6 @@ import { Repository } from 'typeorm';
 import { UpdateUsersDto } from './dto/usersUpdate.dto';
 import { S3Handler } from '../common/S3Handler';
 import { hashMaker } from 'src/common/hashMaker';
-import { BlockUserEntity } from '../entities/blockUser.entity';
-import { BlockPostEntity } from '../entities/blockPost.entity';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
@@ -84,38 +82,18 @@ export class UsersService {
 
   async updateUserById(
     id: string,
-    body: UpdateUsersDto,
-    file: Express.Multer.File,
+    nickname: string,
+    imageLocation: string,
     userId: string,
   ) {
     await this.checkAuth(id, userId);
-    if (file !== undefined) {
-      await this.changeImages(id, file);
-    }
-    if (body) {
-      await this.changeNickname(id, body.nickname);
-    }
-  }
+    const user = new UserEntity();
+    user.nickname = nickname ?? undefined;
+    user.profile_img = imageLocation ?? undefined;
 
-  async changeNickname(userId: string, nickname: string) {
     await this.userRepository
       .getRepository(UserEntity)
-      .update({ user_hash: userId }, { nickname: nickname });
-  }
-
-  async changeImages(userId: string, file: Express.Multer.File) {
-    const fileLocation = await this.s3Handler.uploadFile(file);
-    const isHarmful = await this.greenEyeHandler.isHarmful(fileLocation);
-    // if (isHarmful) {
-    //   throw new HttpException('이미지가 유해합니다.', 400);
-    // }
-    await this.userRepository
-      .getRepository(UserEntity)
-      .update({ user_hash: userId }, { profile_img: fileLocation });
-  }
-
-  async uploadImages(file: Express.Multer.File) {
-    return await this.s3Handler.uploadFile(file);
+      .update({ user_hash: userId }, user);
   }
 
   async registerToken(userId, registrationToken) {
