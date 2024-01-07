@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
 import { Repository } from 'typeorm';
 import admin from 'firebase-admin';
+import { PushMessage } from '../common/fcmHandler';
 
 @Injectable()
 export class NotificationService {
@@ -23,13 +24,55 @@ export class NotificationService {
     }
   }
 
+  async sendChatNotification(userId: string, pushMessage: PushMessage) {
+    const registrationToken = await this.getRegistrationToken(userId);
+    if (!registrationToken) {
+      throw new Error('no registration token');
+    }
+    const message = this.createChatNotificationMessage(
+      registrationToken,
+      pushMessage,
+    );
+    try {
+      const response = await admin.messaging().send(message);
+      this.logger.debug(
+        `Push Notification Success : ${response} `,
+        'FcmHandler',
+      );
+    } catch (e) {
+      throw new Error('fail to send chat notification');
+    }
+  }
+
+  createChatNotificationMessage(
+    registrationToken: string,
+    pushMessage: PushMessage,
+  ) {
+    return {
+      token: registrationToken,
+      notification: {
+        title: pushMessage.title,
+        body: pushMessage.body,
+      },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'default',
+          },
+        },
+      },
+      data: {
+        ...pushMessage.data,
+      },
+    };
+  }
+
   private async getRegistrationToken(userId: string): Promise<string> {
     const registrationToken = await this.registrationTokenRepository.findOne({
       where: { user_hash: userId },
     });
     if (registrationToken === null) {
       this.logger.error('토큰이 없습니다.', 'FcmHandler');
-      throw new Error('no registration token');
     }
     return registrationToken.registration_token;
   }
