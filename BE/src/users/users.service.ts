@@ -3,7 +3,6 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { UpdateUsersDto } from './dto/usersUpdate.dto';
 import { S3Handler } from '../common/S3Handler';
 import { hashMaker } from 'src/common/hashMaker';
 import { RegistrationTokenEntity } from '../entities/registrationToken.entity';
@@ -54,7 +53,7 @@ export class UsersService {
   }
 
   async removeUser(id: string, userId: string, accessToken: string) {
-    const userPk = await this.checkAuth(id, userId);
+    await this.checkAuth(id, userId);
     const decodedToken: any = jwt.decode(accessToken);
     if (decodedToken && decodedToken.exp) {
       await this.fcmHandler.removeRegistrationToken(decodedToken.userId);
@@ -77,7 +76,6 @@ export class UsersService {
     if (id !== userId) {
       throw new HttpException('수정 권한이 없습니다.', 403);
     }
-    return isDataExists.id;
   }
 
   async updateUserById(
