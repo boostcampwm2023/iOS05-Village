@@ -16,24 +16,25 @@ final class ChatListViewModel {
     func transform(input: Input) -> Output {
         input.getChatListSubject
             .sink(receiveValue: { [weak self] () in
-                self?.getChatList()
+                self?.getList()
             })
             .store(in: &cancellableBag)
         
         return Output(chatList: chatList.eraseToAnyPublisher())
     }
     
-    private func getChatList() {
-        let endpoint = APIEndPoints.getChatList()
-        
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                chatList.send(data)
-            } catch let error as NetworkError {
-                chatList.send(completion: .failure(error))
+    private func getList() {
+        ChatListUseCase(
+            repository: DefaultChatListRepository()
+        ) { [weak self] result in
+            switch result {
+            case .success(let list):
+                self?.chatList.send(list)
+            case .failure(let error):
+                self?.chatList.send(completion: .failure(error))
             }
         }
+        .start()
     }
     
     func deleteChatRoom(roomID: Int) {
@@ -48,7 +49,7 @@ final class ChatListViewModel {
             }
         }
     }
-
+    
 }
 
 extension ChatListViewModel {
