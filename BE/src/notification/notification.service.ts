@@ -23,6 +23,17 @@ export class NotificationService {
     }
   }
 
+  private async getRegistrationToken(userId: string): Promise<string> {
+    const registrationToken = await this.registrationTokenRepository.findOne({
+      where: { user_hash: userId },
+    });
+    if (registrationToken === null) {
+      this.logger.error('토큰이 없습니다.', 'FcmHandler');
+      throw new Error('no registration token');
+    }
+    return registrationToken.registration_token;
+  }
+
   async registerToken(userId, registrationToken) {
     const registrationTokenEntity =
       await this.registrationTokenRepository.findOne({
