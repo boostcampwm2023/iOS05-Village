@@ -1,5 +1,5 @@
 //
-//  GetRoomResponseDTO.swift
+//  ChatRoomResponseDTO.swift
 //  Village
 //
 //  Created by 박동재 on 2023/12/05.
@@ -31,7 +31,7 @@ struct Chat: Hashable, Codable {
     
 }
 
-struct GetRoomResponseDTO: Codable {
+struct ChatRoomResponseDTO: Codable {
     
     let writer: String
     let writerProfileIMG: String
