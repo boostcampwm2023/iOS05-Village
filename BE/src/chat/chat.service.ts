@@ -126,9 +126,9 @@ export class ChatService {
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
-      .andWhere('chat_room.writer_left IS NULL')
+      .andWhere('chat_room.writer_left IS false')
       .orWhere('chat_room.user = :userId', { userId: userId })
-      .andWhere('chat_room.user_left IS NULL')
+      .andWhere('chat_room.user_left IS false')
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
@@ -206,9 +206,9 @@ export class ChatService {
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
-      .andWhere('chat_room.writer_left IS NULL')
+      .andWhere('chat_room.writer_left IS false')
       .orWhere('chat_room.user = :userId', { userId: userId })
-      .andWhere('chat_room.user_left IS NULL')
+      .andWhere('chat_room.user_left IS false')
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
