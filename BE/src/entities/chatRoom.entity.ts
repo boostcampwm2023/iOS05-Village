@@ -42,6 +42,12 @@ export class ChatRoomEntity {
   @DeleteDateColumn()
   delete_date: Date;
 
+  @Column({ default: false })
+  writer_left: boolean;
+
+  @Column({ default: false })
+  user_left: boolean;
+
   @OneToMany(() => ChatEntity, (chat) => chat.chatRoom)
   chats: ChatEntity[];
 
