@@ -280,6 +280,19 @@ export class ChatService {
     await this.fcmHandler.sendPush(receiver.user_hash, pushMessage);
   }
 
+  async checkOpponentLeft(roomId: number, userId: string) {
+    const room = await this.chatRoomRepository.findOne({
+      where: { id: roomId },
+    });
+
+    if (room.writer === userId && room.user_left !== null) {
+      room.user_left = null;
+    } else if (room.user === userId && room.writer_left !== null) {
+      room.writer_left = null;
+    }
+    await this.chatRoomRepository.save(room);
+  }
+
   validateUser(authorization) {
     try {
       const payload: Payload = jwt.verify(
