@@ -126,7 +126,9 @@ export class ChatService {
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
+      .andWhere('chat_room.writer_left IS NULL')
       .orWhere('chat_room.user = :userId', { userId: userId })
+      .andWhere('chat_room.user_left IS NULL')
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
@@ -204,7 +206,9 @@ export class ChatService {
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
+      .andWhere('chat_room.writer_left IS NULL')
       .orWhere('chat_room.user = :userId', { userId: userId })
+      .andWhere('chat_room.user_left IS NULL')
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
@@ -285,10 +289,10 @@ export class ChatService {
       where: { id: roomId },
     });
 
-    if (room.writer === userId && room.user_left !== null) {
-      room.user_left = null;
-    } else if (room.user === userId && room.writer_left !== null) {
-      room.writer_left = null;
+    if (room.writer === userId && room.user_left !== false) {
+      room.user_left = false;
+    } else if (room.user === userId && room.writer_left !== false) {
+      room.writer_left = false;
     }
     await this.chatRoomRepository.save(room);
   }
