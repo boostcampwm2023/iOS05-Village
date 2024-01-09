@@ -52,6 +52,12 @@ export class ChatController {
     return await this.chatService.unreadChat(userId);
   }
 
+  @Get('leave/:id')
+  @UseGuards(AuthGuard)
+  async leaveChatRoom(@Param('id') id: number, @UserHash() userId: string) {
+    return await this.chatService.leaveChatRoom(id, userId);
+  }
+
   @Get()
   async testPush(@Body() body) {
     await this.fcmHandler.sendPush(body.user, {

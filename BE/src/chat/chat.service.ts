@@ -310,4 +310,18 @@ export class ChatService {
       return null;
     }
   }
+
+  async leaveChatRoom(roomId: number, userId: string) {
+    const room = await this.chatRoomRepository.findOne({
+      where: { id: roomId },
+    });
+
+    if (room.writer === userId) {
+      room.writer_left = true;
+    } else if (room.user === userId) {
+      room.user_left = true;
+    }
+
+    await this.chatRoomRepository.save(room);
+  }
 }
