@@ -268,6 +268,7 @@ export class ChatService {
       where: { id: message.room_id },
       relations: ['writerUser', 'userUser'],
     });
+
     const receiver: UserEntity =
       chatRoom.writerUser.user_hash === message.sender
         ? chatRoom.userUser
