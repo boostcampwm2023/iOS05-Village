@@ -40,7 +40,16 @@ export class ChatService {
     chat.chat_room = message.room_id;
     chat.is_read = is_read;
     chat.count = message.count;
-    await this.chatRepository.save(chat);
+    const lastChat = await this.chatRepository.save(chat);
+
+    await this.chatRoomRepository.update(
+      {
+        id: message.room_id,
+      },
+      {
+        last_chat_id: lastChat.id,
+      },
+    );
   }
 
   async createRoom(

@@ -8,6 +8,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  OneToOne,
 } from 'typeorm';
 import { PostEntity } from './post.entity';
 import { ChatEntity } from './chat.entity';
@@ -42,6 +43,9 @@ export class ChatRoomEntity {
   @DeleteDateColumn()
   delete_date: Date;
 
+  @Column()
+  last_chat_id: number;
+
   @Column({ default: false })
   writer_left: boolean;
 
@@ -50,6 +54,10 @@ export class ChatRoomEntity {
 
   @OneToMany(() => ChatEntity, (chat) => chat.chatRoom)
   chats: ChatEntity[];
+
+  @OneToOne(() => ChatEntity, (chat) => chat.id)
+  @JoinColumn({ name: 'last_chat_id' })
+  lastChat: ChatEntity;
 
   @ManyToOne(() => PostEntity, (post) => post.id)
   @JoinColumn({ name: 'post_id' })
