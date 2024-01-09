@@ -126,7 +126,9 @@ export class ChatService {
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
+      .andWhere('chat_room.writer_left IS false')
       .orWhere('chat_room.user = :userId', { userId: userId })
+      .andWhere('chat_room.user_left IS false')
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
@@ -204,7 +206,9 @@ export class ChatService {
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
+      .andWhere('chat_room.writer_left IS false')
       .orWhere('chat_room.user = :userId', { userId: userId })
+      .andWhere('chat_room.user_left IS false')
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
@@ -264,6 +268,7 @@ export class ChatService {
       where: { id: message.room_id },
       relations: ['writerUser', 'userUser'],
     });
+
     const receiver: UserEntity =
       chatRoom.writerUser.user_hash === message.sender
         ? chatRoom.userUser
@@ -280,6 +285,19 @@ export class ChatService {
     await this.fcmHandler.sendPush(receiver.user_hash, pushMessage);
   }
 
+  async checkOpponentLeft(roomId: number, userId: string) {
+    const room = await this.chatRoomRepository.findOne({
+      where: { id: roomId },
+    });
+
+    if (room.writer === userId && room.user_left !== false) {
+      room.user_left = false;
+    } else if (room.user === userId && room.writer_left !== false) {
+      room.writer_left = false;
+    }
+    await this.chatRoomRepository.save(room);
+  }
+
   validateUser(authorization) {
     try {
       const payload: Payload = jwt.verify(
@@ -291,5 +309,19 @@ export class ChatService {
     } catch {
       return null;
     }
+  }
+
+  async leaveChatRoom(roomId: number, userId: string) {
+    const room = await this.chatRoomRepository.findOne({
+      where: { id: roomId },
+    });
+
+    if (room.writer === userId) {
+      room.writer_left = true;
+    } else if (room.user === userId) {
+      room.user_left = true;
+    }
+
+    await this.chatRoomRepository.save(room);
   }
 }

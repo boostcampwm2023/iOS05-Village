@@ -84,6 +84,9 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
           );
       });
     }
+
+    await this.chatService.checkOpponentLeft(message['room_id'], sender);
+
     client.send(
       JSON.stringify({ event: 'send-message', data: { sent: true } }),
     );

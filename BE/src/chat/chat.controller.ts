@@ -4,7 +4,9 @@ import {
   Get,
   HttpException,
   Param,
+  Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
@@ -50,6 +52,12 @@ export class ChatController {
   @UseGuards(AuthGuard)
   async unreadChat(@UserHash() userId: string) {
     return await this.chatService.unreadChat(userId);
+  }
+
+  @Patch('leave/:id')
+  @UseGuards(AuthGuard)
+  async leaveChatRoom(@Param('id') id: number, @UserHash() userId: string) {
+    return await this.chatService.leaveChatRoom(id, userId);
   }
 
   @Get()
