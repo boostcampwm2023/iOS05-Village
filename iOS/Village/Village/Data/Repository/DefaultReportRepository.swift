@@ -34,21 +34,14 @@ struct DefaultReportRepository: ReportRepository {
         postID: Int,
         userID: String,
         description: String
-    ) async -> Result<Void, NetworkError> {
+    ) -> AnyPublisher<Void, NetworkError> {
         let endpoint = makeReportUserEndpoint(
             postID: postID,
             userID: userID,
             description: description
         )
         
-        do {
-            try await APIProvider.shared.request(with: endpoint)
-            return .success(())
-        } catch let error as NetworkError {
-            return .failure(error)
-        } catch {
-            return .failure(.unknownError)
-        }
+        return NetworkService.shared.request(endpoint)
     }
     
 }
