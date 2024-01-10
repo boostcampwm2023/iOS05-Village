@@ -103,7 +103,24 @@ final class ChatRoomViewModel {
     }
     
     private func setRoom(data: ChatRoom) {
-        
+        data.chatLog.forEach { [weak self] chat in
+            self?.appendLog(sender: chat.sender, message: chat.message)
+        }
+        if postID != data.postID {
+            postID = data.postID
+            if checkUser(userID: data.user) {
+                userID = data.writer
+                myProfileURL = data.userProfileIMG
+                opponentProfileURL = data.writerProfileIMG
+            } else {
+                userID = data.user
+                myProfileURL = data.writerProfileIMG
+                opponentProfileURL = data.userProfileIMG
+            }
+            getPostData()
+            getUserData()
+            getImageData()
+        }
     }
     
     func getChatRoomData() {
@@ -124,39 +141,6 @@ final class ChatRoomViewModel {
         }
         .store(in: &cancellableBag)
     }
-    
-//    func getChatRoomData() {
-//        ChatRoomUseCase(
-//            repository: DefaultChatRoomRepository(),
-//            roomID: self.roomID
-//        ) { [weak self] result in
-//            switch result {
-//            case .success(let data):
-//                guard let self = self else { return }
-//                data.chatLog.forEach { [weak self] chat in
-//                    self?.appendLog(sender: chat.sender, message: chat.message)
-//                }
-//                if self.postID != data.postID {
-//                    self.postID = data.postID
-//                    if checkUser(userID: data.user) {
-//                        self.userID = data.writer
-//                        self.myProfileURL = data.userProfileIMG
-//                        self.opponentProfileURL = data.writerProfileIMG
-//                    } else {
-//                        self.userID = data.user
-//                        self.myProfileURL = data.writerProfileIMG
-//                        self.opponentProfileURL = data.userProfileIMG
-//                    }
-//                    self.getPostData()
-//                    self.getUserData()
-//                    self.getImageData()
-//                }
-//            case .failure(let error):
-//                dump(error)
-//            }
-//        }
-//        .start()
-//    }
     
     func getPostData() {
         PostDetailUseCase(
