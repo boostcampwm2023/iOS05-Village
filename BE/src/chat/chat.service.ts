@@ -40,7 +40,16 @@ export class ChatService {
     chat.chat_room = message.room_id;
     chat.is_read = is_read;
     chat.count = message.count;
-    await this.chatRepository.save(chat);
+    const lastChat = await this.chatRepository.save(chat);
+
+    await this.chatRoomRepository.update(
+      {
+        id: message.room_id,
+      },
+      {
+        last_chat_id: lastChat.id,
+      },
+    );
   }
 
   async createRoom(
@@ -79,24 +88,12 @@ export class ChatService {
   async findRoomList(userId: string) {
     const chatListInfo = { all_read: true, chat_list: [] };
 
-    const subquery = this.chatRepository
-      .createQueryBuilder('chat')
-      .select('chat.id', 'id')
-      .addSelect('chat.chat_room', 'chat_room')
-      .addSelect('chat.message', 'message')
-      .addSelect('chat.create_date', 'create_date')
-      .addSelect('chat.is_read', 'is_read')
-      .addSelect('chat.sender', 'sender')
-      .where(
-        'chat.id IN (SELECT MAX(chat.id) FROM chat GROUP BY chat.chat_room)',
-      );
-
     const rooms = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
       .innerJoin(
-        '(' + subquery.getQuery() + ')',
+        'chat_room.lastChat',
         'chat_info',
-        'chat_room.id = chat_info.chat_room',
+        'chat_room.lastChat = chat_info.id',
       )
       .innerJoin(
         'chat_room.writerUser',
@@ -162,24 +159,12 @@ export class ChatService {
   }
 
   async unreadChat(userId: string) {
-    const subquery = this.chatRepository
-      .createQueryBuilder('chat')
-      .select('chat.id', 'id')
-      .addSelect('chat.chat_room', 'chat_room')
-      .addSelect('chat.message', 'message')
-      .addSelect('chat.create_date', 'create_date')
-      .addSelect('chat.is_read', 'is_read')
-      .addSelect('chat.sender', 'sender')
-      .where(
-        'chat.id IN (SELECT MAX(chat.id) FROM chat GROUP BY chat.chat_room)',
-      );
-
     const rooms = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
       .innerJoin(
-        '(' + subquery.getQuery() + ')',
+        'chat_room.lastChat',
         'chat_info',
-        'chat_room.id = chat_info.chat_room',
+        'chat_room.lastChat = chat_info.id',
       )
       .innerJoin(
         'chat_room.writerUser',
