@@ -7,30 +7,6 @@
 
 import Foundation
 
-struct Chat: Hashable, Codable {
-    
-    let id: Int
-    let message: String
-    let sender: String
-    let chatRoom: Int
-    let isRead: Bool
-    let createDate: String
-    let deleteDate: String?
-    let count: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case message
-        case sender
-        case chatRoom = "chat_room"
-        case isRead = "is_read"
-        case createDate = "create_date"
-        case deleteDate = "delete_date"
-        case count
-    }
-    
-}
-
 struct ChatRoomResponseDTO: Codable {
     
     let writer: String
@@ -38,7 +14,7 @@ struct ChatRoomResponseDTO: Codable {
     let user: String
     let userProfileIMG: String
     let postID: Int
-    let chatLog: [Chat]
+    let chatLog: [ChatDTO]
     
     enum CodingKeys: String, CodingKey {
         case writer
@@ -47,6 +23,21 @@ struct ChatRoomResponseDTO: Codable {
         case userProfileIMG = "user_profile_img"
         case postID = "post_id"
         case chatLog = "chat_log"
+    }
+    
+}
+
+extension ChatRoomResponseDTO {
+    
+    func toDomain() -> ChatRoom {
+        .init(
+            writer: self.writer,
+            writerProfileIMG: self.writerProfileIMG,
+            user: self.user,
+            userProfileIMG: self.userProfileIMG,
+            postID: self.postID,
+            chatLog: self.chatLog.map { $0.toDomain() }
+        )
     }
     
 }

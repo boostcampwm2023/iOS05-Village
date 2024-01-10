@@ -6,27 +6,26 @@
 //
 
 import Foundation
+import Combine
 
 struct ChatRoomUseCase: UseCase {
     
+    typealias ResultValue = ChatRoom
+    
     private let repository: DefaultChatRoomRepository
     private let roomID: Int
-    private let completion: (Result<ChatRoomResponseDTO, NetworkError>) -> Void
     
     init(repository: DefaultChatRoomRepository,
-         roomID: Int,
-         completion: @escaping (Result<ChatRoomResponseDTO, NetworkError>) -> Void
+         roomID: Int
     ) {
         self.repository = repository
         self.roomID = roomID
-        self.completion = completion
     }
     
-    func start() {
-        Task {
-            let result = await repository.fetchRoomData(roomID: roomID)
-            completion(result)
-        }
+    func start() -> AnyPublisher<ResultValue, NetworkError> {
+        repository
+            .fetchRoomData(roomID: roomID)
+            .eraseToAnyPublisher()
     }
     
 }

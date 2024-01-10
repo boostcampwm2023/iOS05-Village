@@ -152,6 +152,8 @@
 		8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */; };
 		8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */; };
 		8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */; };
+		8FF472962B4E915F00B9BA95 /* ChatRoomData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF472952B4E915F00B9BA95 /* ChatRoomData.swift */; };
+		8FF472982B4E9FE200B9BA95 /* ChatDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF472972B4E9FE200B9BA95 /* ChatDTO.swift */; };
 		8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */; };
 		8FF7E61A2B106FBB00B6D678 /* ChatList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8FF7E6192B106FBB00B6D678 /* ChatList.json */; };
 		8FF7E61D2B10721400B6D678 /* ChatListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF7E61C2B10721400B6D678 /* ChatListViewModel.swift */; };
@@ -317,6 +319,8 @@
 		8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
+		8FF472952B4E915F00B9BA95 /* ChatRoomData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomData.swift; sourceTree = "<group>"; };
+		8FF472972B4E9FE200B9BA95 /* ChatDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDTO.swift; sourceTree = "<group>"; };
 		8FF7E60B2B0F38A500B6D678 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
 		8FF7E6192B106FBB00B6D678 /* ChatList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ChatList.json; sourceTree = "<group>"; };
 		8FF7E61C2B10721400B6D678 /* ChatListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewModel.swift; sourceTree = "<group>"; };
@@ -412,6 +416,7 @@
 			children = (
 				4416D4822B171C730052BF33 /* AuthenticationToken.swift */,
 				44A59F562B3BF77C00736A34 /* PostListItem.swift */,
+				8FF472952B4E915F00B9BA95 /* ChatRoomData.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -514,6 +519,7 @@
 				8F8F0B922B1DC0C300BE97D2 /* PostRoomRequestDTO.swift */,
 				8F8F0B942B1DC0CE00BE97D2 /* PostRoomResponseDTO.swift */,
 				8F1E2CED2B1F163D00179E34 /* ChatRoomResponseDTO.swift */,
+				8FF472972B4E9FE200B9BA95 /* ChatDTO.swift */,
 				8F8F0B842B1C7A5800BE97D2 /* ChatRoomRequestDTO.swift */,
 				8F8F0B8E2B1DB2EE00BE97D2 /* PostMuteResponseDTO.swift */,
 				8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */,
@@ -1289,6 +1295,7 @@
 				8F1B53362B0E0396006D8982 /* PostListRequestDTO.swift in Sources */,
 				5900F92E2B2AD7570065B7F6 /* MyPageTableViewCell.swift in Sources */,
 				8FBB3BB92B26B431001876F5 /* GetAllReadResponseDTO .swift in Sources */,
+				8FF472982B4E9FE200B9BA95 /* ChatDTO.swift in Sources */,
 				8F3D7A3A2B173B7C00370536 /* WebSocketError.swift in Sources */,
 				8FBE3B122B04CF6300660530 /* UILabel+SetTitle.swift in Sources */,
 				4416D4762B15E25A0052BF33 /* MultipartFormData.swift in Sources */,
@@ -1342,6 +1349,7 @@
 				59D8F1032B0FC4F700A08E02 /* PostCreateViewModel.swift in Sources */,
 				8F3D7A382B171B8400370536 /* WebSocket.swift in Sources */,
 				59110F042B1725C20009E9AC /* NotificationName+.swift in Sources */,
+				8FF472962B4E915F00B9BA95 /* ChatRoomData.swift in Sources */,
 				59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */,
 				8F8F0B8B2B1D985A00BE97D2 /* BlockedUserViewController.swift in Sources */,
 				8F8F0B8D2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift in Sources */,

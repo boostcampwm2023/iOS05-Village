@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 protocol ChatRoomRepository {
     
     associatedtype ResponseDTO
     
-    func fetchRoomData(roomID: Int) async -> Result<ChatRoomResponseDTO, NetworkError>
+    func fetchRoomData(roomID: Int) -> AnyPublisher<ChatRoom, NetworkError>
     
 }

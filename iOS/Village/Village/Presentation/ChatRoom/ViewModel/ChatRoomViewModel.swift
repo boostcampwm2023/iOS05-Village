@@ -102,38 +102,61 @@ final class ChatRoomViewModel {
         )
     }
     
+    private func setRoom(data: ChatRoom) {
+        
+    }
+    
     func getChatRoomData() {
         ChatRoomUseCase(
             repository: DefaultChatRoomRepository(),
             roomID: self.roomID
-        ) { [weak self] result in
-            switch result {
-            case .success(let data):
-                guard let self = self else { return }
-                data.chatLog.forEach { [weak self] chat in
-                    self?.appendLog(sender: chat.sender, message: chat.message)
-                }
-                if self.postID != data.postID {
-                    self.postID = data.postID
-                    if checkUser(userID: data.user) {
-                        self.userID = data.writer
-                        self.myProfileURL = data.userProfileIMG
-                        self.opponentProfileURL = data.writerProfileIMG
-                    } else {
-                        self.userID = data.user
-                        self.myProfileURL = data.writerProfileIMG
-                        self.opponentProfileURL = data.userProfileIMG
-                    }
-                    self.getPostData()
-                    self.getUserData()
-                    self.getImageData()
-                }
+        )
+        .start()
+        .sink { completion in
+            switch completion {
+            case .finished:
+                break
             case .failure(let error):
                 dump(error)
             }
+        } receiveValue: { [weak self] data in
+            self?.setRoom(data: data)
         }
-        .start()
+        .store(in: &cancellableBag)
     }
+    
+//    func getChatRoomData() {
+//        ChatRoomUseCase(
+//            repository: DefaultChatRoomRepository(),
+//            roomID: self.roomID
+//        ) { [weak self] result in
+//            switch result {
+//            case .success(let data):
+//                guard let self = self else { return }
+//                data.chatLog.forEach { [weak self] chat in
+//                    self?.appendLog(sender: chat.sender, message: chat.message)
+//                }
+//                if self.postID != data.postID {
+//                    self.postID = data.postID
+//                    if checkUser(userID: data.user) {
+//                        self.userID = data.writer
+//                        self.myProfileURL = data.userProfileIMG
+//                        self.opponentProfileURL = data.writerProfileIMG
+//                    } else {
+//                        self.userID = data.user
+//                        self.myProfileURL = data.writerProfileIMG
+//                        self.opponentProfileURL = data.userProfileIMG
+//                    }
+//                    self.getPostData()
+//                    self.getUserData()
+//                    self.getImageData()
+//                }
+//            case .failure(let error):
+//                dump(error)
+//            }
+//        }
+//        .start()
+//    }
     
     func getPostData() {
         PostDetailUseCase(
