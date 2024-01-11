@@ -146,30 +146,39 @@ final class ChatRoomViewModel {
         PostDetailUseCase(
             repository: DefaultPostDetailRepostory(),
             postID: self.postID
-        ) { [weak self] result in
-            switch result {
-            case .success(let post):
-                self?.postOutput.send(post)
-            case .failure(let error):
-                self?.postOutput.send(completion: .failure(error))
-            }
-        }
+        )
         .start()
+        .sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                dump(error)
+            }
+        } receiveValue: { [weak self] post in
+            self?.postOutput.send(post)
+        }
+        .store(in: &cancellableBag)
     }
     
     private func getUserData() {
         UserDetailUseCase(
             repository: DefaultUserDetailRepository(),
             userID: self.userID
-        ) { [weak self] result in
-            switch result {
-            case .success(let user):
-                self?.userOutput.send(user)
-            case .failure(let error):
-                self?.userOutput.send(completion: .failure(error))
-            }
-        }
+        )
         .start()
+        .sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                dump(error)
+            }
+        } receiveValue: { [weak self] user in
+            self?.userOutput.send(user)
+        }
+        .store(in: &cancellableBag)
+
     }
     
     private func checkUser(userID: String) -> Bool {
