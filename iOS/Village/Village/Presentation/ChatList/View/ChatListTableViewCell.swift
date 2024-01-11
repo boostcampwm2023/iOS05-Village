@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ChatListTableViewCell: UITableViewCell {
+final class ChatListTableViewCell: UITableViewCell {
     
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()

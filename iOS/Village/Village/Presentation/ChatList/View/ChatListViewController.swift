@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class ChatListViewController: UIViewController {
+final class ChatListViewController: UIViewController {
     
     typealias ChatListDataSource = UITableViewDiffableDataSource<Section, ChatListItem>
     typealias ViewModel = ChatListViewModel
