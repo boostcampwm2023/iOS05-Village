@@ -151,16 +151,21 @@ private extension HomeViewModel {
         PostListUseCase(
             repository: DefaultPostListRepository(),
             requestValue: requestValue
-        ) { [weak self] result in
-            switch result {
-            case .success(let list):
-                self?.checkLastPage(type: type, list: list)
-                self?.postList.send(list)
-            case .failure(let error):
-                self?.postList.send(completion: .failure(error))
-            }
-        }
+        )
         .start()
+        .sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                dump(error)
+            }
+        } receiveValue: { [weak self] list in
+            self?.checkLastPage(type: type, list: list)
+            self?.postList.send(list)
+        }
+        .store(in: &cancellableBag)
+
     }
     
     func checkLastPage(type: PostType, list: [PostListItem]) {

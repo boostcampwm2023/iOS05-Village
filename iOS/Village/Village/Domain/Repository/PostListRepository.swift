@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 protocol PostListRepository {
     
@@ -17,6 +18,6 @@ protocol PostListRepository {
         postType: PostType,
         writer: String?,
         lastID: String?
-    ) async -> Result<[PostListItem], Error>
+    ) -> AnyPublisher<[PostListItem], NetworkError>
     
 }
