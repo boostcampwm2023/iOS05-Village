@@ -212,7 +212,7 @@ export class ChatService {
       .update()
       .set({ is_read: true })
       .where('chat.chat_room = :roomId', { roomId: roomId })
-      //.andWhere('chat.is_read = :isRead', { isRead: false })
+      .andWhere('chat.is_read = :isRead', { isRead: false })
       .andWhere('chat.sender != :userId', { userId: userId })
       .execute();
 
@@ -332,21 +332,3 @@ export class ChatService {
     await this.chatRoomRepository.save(room);
   }
 }
-
-/*
-user_left_time , writer_left_time -> timestamp 혹은 dateTime 형식
-user_hide, writer_hide -> boolean 형식
-
-채팅을 보낼 때, 상대방의 hide 를 X 로 만들어준다, 
-
-채팅 목록을 보내는건 hide 가 X 이고 user_left_time 이후,  혹은 null 일 경우 전부 보내준다
-채팅방 목록은 hide 가 X 인 것만 보내준다.
-
-1. user 나감 -> user_hide -> O, user_left_time -> now()
-
-2. writer 가 다시 보냄 -> user_hide -> X 
-
-3. 나가기 -> hide -> O, left_time -> now()
-
-이렇게 처리해도 될듯? user_left_time = now()
-*/
