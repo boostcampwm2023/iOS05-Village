@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 protocol PostDetailRepository {
     
     associatedtype ResponseDTO
     
-    func fetchPostData(postID: Int) async -> Result<PostResponseDTO, NetworkError>
+    func fetchPostData(postID: Int) -> AnyPublisher<PostDetail, NetworkError>
     
 }

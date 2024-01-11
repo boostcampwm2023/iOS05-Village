@@ -132,6 +132,7 @@
 		8F95CF9C2B0C81640024631F /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95CF9B2B0C81640024631F /* APIProvider.swift */; };
 		8F97D06C2B222EFA00A19754 /* OpponentChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */; };
 		8F9939552B29E1BD009FF9F8 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9939542B29E1BD009FF9F8 /* ImageCache.swift */; };
+		8FB8BFFF2B4F7C820006E903 /* PostDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB8BFFE2B4F7C820006E903 /* PostDetail.swift */; };
 		8FBB3BB92B26B431001876F5 /* GetAllReadResponseDTO .swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */; };
 		8FBB65CC2B20587B00C6A133 /* BlockedUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */; };
 		8FBB65CE2B20C21100C6A133 /* GetChatListResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */; };
@@ -299,6 +300,7 @@
 		8F95CF9B2B0C81640024631F /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
 		8F97D06B2B222EF900A19754 /* OpponentChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentChatTableViewCell.swift; sourceTree = "<group>"; };
 		8F9939542B29E1BD009FF9F8 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		8FB8BFFE2B4F7C820006E903 /* PostDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetail.swift; sourceTree = "<group>"; };
 		8FBB3BB82B26B431001876F5 /* GetAllReadResponseDTO .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GetAllReadResponseDTO .swift"; sourceTree = "<group>"; };
 		8FBB65CB2B20587B00C6A133 /* BlockedUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserTableViewCell.swift; sourceTree = "<group>"; };
 		8FBB65CD2B20C21100C6A133 /* GetChatListResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatListResponseDTO.swift; sourceTree = "<group>"; };
@@ -416,6 +418,7 @@
 			children = (
 				4416D4822B171C730052BF33 /* AuthenticationToken.swift */,
 				44A59F562B3BF77C00736A34 /* PostListItem.swift */,
+				8FB8BFFE2B4F7C820006E903 /* PostDetail.swift */,
 				8FF472952B4E915F00B9BA95 /* ChatRoomData.swift */,
 			);
 			path = Entity;
@@ -1353,6 +1356,7 @@
 				59D8F1072B103F4800A08E02 /* PostCreateUseCase.swift in Sources */,
 				8F8F0B8B2B1D985A00BE97D2 /* BlockedUserViewController.swift in Sources */,
 				8F8F0B8D2B1DA91500BE97D2 /* HiddenRentPostTableViewCell.swift in Sources */,
+				8FB8BFFF2B4F7C820006E903 /* PostDetail.swift in Sources */,
 				59AADE382B22086400C3E17D /* EditProfileViewModel.swift in Sources */,
 				8FBD4E4A2B4A746900D32488 /* ChatRoomRepository.swift in Sources */,
 				44FC33692B2986E900FF4D65 /* ImageDetailView.swift in Sources */,

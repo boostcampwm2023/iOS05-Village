@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 struct DefaultPostDetailRepostory: PostDetailRepository {
     
@@ -19,19 +20,12 @@ struct DefaultPostDetailRepostory: PostDetailRepository {
         )
     }
     
-    func fetchPostData(postID: Int) async -> Result<PostResponseDTO, NetworkError> {
+    func fetchPostData(postID: Int) -> AnyPublisher<PostDetail, NetworkError> {
         let endpoint = makeEndPoint(postID: postID)
         
-        do {
-            guard let responseDTO = try await APIProvider.shared.request(with: endpoint) else {
-                return .failure(.emptyData)
-            }
-            return .success(responseDTO)
-        } catch let error as NetworkError {
-            return .failure(error)
-        } catch {
-            return .failure(.unknownError)
-        }
+        return NetworkService.shared.request(endpoint)
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
     }
     
 }

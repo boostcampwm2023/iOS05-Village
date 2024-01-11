@@ -1,13 +1,13 @@
 //
-//  PostResponseDTO.swift
+//  PostDetail.swift
 //  Village
 //
-//  Created by 정상윤 on 11/24/23.
+//  Created by 박동재 on 1/11/24.
 //
 
 import Foundation
 
-struct PostResponseDTO: Decodable {
+struct PostDetail: Decodable {
     
     let title: String
     let description: String
@@ -33,7 +33,7 @@ struct PostResponseDTO: Decodable {
     
 }
 
-extension PostResponseDTO: Hashable {
+extension PostDetail: Hashable {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(postID)
@@ -41,24 +41,6 @@ extension PostResponseDTO: Hashable {
     
     static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.postID == rhs.postID
-    }
-    
-}
-
-extension PostResponseDTO {
-    
-    func toDomain() -> PostDetail {
-        .init(
-            title: self.title,
-            description: self.description,
-            price: self.price,
-            postID: self.postID,
-            userID: self.userID,
-            images: self.images,
-            isRequest: self.isRequest,
-            startDate: self.startDate,
-            endDate: self.endDate
-        )
     }
     
 }
