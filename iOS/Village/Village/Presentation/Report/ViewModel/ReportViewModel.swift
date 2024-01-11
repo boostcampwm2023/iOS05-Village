@@ -45,10 +45,17 @@ final class ReportViewModel {
         )
         let usecase = UseCase(
             repository: DefaultReportRepository(),
-            requestValue: requestValue,
-            completeOutput: completeOutput
+            requestValue: requestValue
         )
-        usecase.start()
+            .start()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    dump(error)
+                }
+            } receiveValue: {}
     }
     
 }

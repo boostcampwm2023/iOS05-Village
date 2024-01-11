@@ -27,8 +27,8 @@ final class ChatRoomViewModel {
     private let roomIDOutput = PassthroughSubject<Int, Never>()
     private let joinOutput = PassthroughSubject<Int, Never>()
     private let postIDOutput = PassthroughSubject<Int, Never>()
-    private let postOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
-    private let userOutput = PassthroughSubject<UserResponseDTO, NetworkError>()
+    private let postOutput = PassthroughSubject<PostDetail, NetworkError>()
+    private let userOutput = PassthroughSubject<UserDetail, NetworkError>()
     private let reportOutput = PassthroughSubject<(postID: Int, userID: String), Never>()
     private let popViewControllerOutput = PassthroughSubject<Void, NetworkError>()
     private let tableViewReloadOutput = PassthroughSubject<Void, Never>()
@@ -38,6 +38,8 @@ final class ChatRoomViewModel {
     private var userID: String = ""
     private var postID: Int = 0
     
+    var myProfileURL: String = ""
+    var opponentProfileURL: String = ""
     var myProfileData: Data = Data()
     var opponentProfileData: Data = Data()
     
@@ -50,7 +52,6 @@ final class ChatRoomViewModel {
     func transform(input: Input) -> Output {
         input.roomIDInput.sink { [weak self] _ in
             guard let self = self else { return }
-//            self.roomIDOutput.send(self.roomID)
             self.getChatRoomData()
         }
         .store(in: &cancellableBag)
@@ -101,55 +102,83 @@ final class ChatRoomViewModel {
         )
     }
     
+    private func setRoom(data: ChatRoom) {
+        data.chatLog.forEach { [weak self] chat in
+            self?.appendLog(sender: chat.sender, message: chat.message)
+        }
+        if postID != data.postID {
+            postID = data.postID
+            if checkUser(userID: data.user) {
+                userID = data.writer
+                myProfileURL = data.userProfileIMG
+                opponentProfileURL = data.writerProfileIMG
+            } else {
+                userID = data.user
+                myProfileURL = data.writerProfileIMG
+                opponentProfileURL = data.userProfileIMG
+            }
+            getPostData()
+            getUserData()
+            getImageData()
+        }
+    }
+    
     func getChatRoomData() {
-        let endpoint = APIEndPoints.getChatRoom(with: self.roomID)
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                data.chatLog.forEach { [weak self] chat in
-                    self?.appendLog(sender: chat.sender, message: chat.message)
-                }
-                if self.postID != data.postID {
-                    self.postID = data.postID
-                    if checkUser(userID: data.user) {
-                        self.userID = data.writer
-                        await self.getImageData(myURL: data.userProfileIMG, opponentURL: data.writerProfileIMG)
-                    } else {
-                        self.userID = data.user
-                        await self.getImageData(myURL: data.writerProfileIMG, opponentURL: data.userProfileIMG)
-                    }
-                    self.getPostData()
-                    self.getUserData()
-                }
-            } catch {
+        ChatRoomUseCase(
+            repository: DefaultChatRoomRepository(),
+            roomID: self.roomID
+        )
+        .start()
+        .sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
                 dump(error)
             }
+        } receiveValue: { [weak self] data in
+            self?.setRoom(data: data)
         }
+        .store(in: &cancellableBag)
     }
     
     func getPostData() {
-        let endpoint = APIEndPoints.getPost(id: self.postID)
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                postOutput.send(data)
-            } catch let error as NetworkError {
-                postOutput.send(completion: .failure(error))
+        PostDetailUseCase(
+            repository: DefaultPostDetailRepostory(),
+            postID: self.postID
+        )
+        .start()
+        .sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                dump(error)
             }
+        } receiveValue: { [weak self] post in
+            self?.postOutput.send(post)
         }
+        .store(in: &cancellableBag)
     }
     
     private func getUserData() {
-        let endpoint = APIEndPoints.getUser(id: self.userID)
-        
-        Task {
-            do {
-                guard let data = try await APIProvider.shared.request(with: endpoint) else { return }
-                userOutput.send(data)
-            } catch let error as NetworkError {
-                userOutput.send(completion: .failure(error))
+        UserDetailUseCase(
+            repository: DefaultUserDetailRepository(),
+            userID: self.userID
+        )
+        .start()
+        .sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                dump(error)
             }
+        } receiveValue: { [weak self] user in
+            self?.userOutput.send(user)
         }
+        .store(in: &cancellableBag)
+
     }
     
     private func checkUser(userID: String) -> Bool {
@@ -157,11 +186,11 @@ final class ChatRoomViewModel {
         return userID == currentUserID ? true : false
     }
 
-    private func getImageData(myURL: String, opponentURL: String) async {
+    private func getImageData() {
         Task {
             do {
-                let myData = try await APIProvider.shared.request(from: myURL)
-                let opponentData = try await APIProvider.shared.request(from: opponentURL)
+                let myData = try await APIProvider.shared.request(from: self.myProfileURL)
+                let opponentData = try await APIProvider.shared.request(from: self.opponentProfileURL)
                 self.myProfileData = myData
                 self.opponentProfileData = opponentData
                 self.tableViewReloadOutput.send()
@@ -231,8 +260,8 @@ extension ChatRoomViewModel {
         let joinOutput: AnyPublisher<Int, Never>
         let roomIDOutput: AnyPublisher<Int, Never>
         let postIDOutput: AnyPublisher<Int, Never>
-        let postOutput: AnyPublisher<PostResponseDTO, NetworkError>
-        let userOutput: AnyPublisher<UserResponseDTO, NetworkError>
+        let postOutput: AnyPublisher<PostDetail, NetworkError>
+        let userOutput: AnyPublisher<UserDetail, NetworkError>
         let reportOutput: AnyPublisher<(postID: Int, userID: String), Never>
         let popViewControllerOutput: AnyPublisher<Void, NetworkError>
         let tableViewReloadOutput: AnyPublisher<Void, Never>

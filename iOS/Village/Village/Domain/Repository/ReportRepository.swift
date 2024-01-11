@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 protocol ReportRepository {
     
@@ -13,6 +14,6 @@ protocol ReportRepository {
         postID: Int,
         userID: String,
         description: String
-    ) async -> Result<Void, NetworkError>
+    ) -> AnyPublisher<Void, NetworkError>
     
 }

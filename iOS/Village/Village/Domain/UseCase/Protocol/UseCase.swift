@@ -6,9 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 protocol UseCase {
     
-    func start()
+    associatedtype ResultValue
+    
+    func start() -> AnyPublisher<ResultValue, NetworkError>
     
 }

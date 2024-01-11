@@ -318,7 +318,7 @@ private extension ChatRoomViewController {
         navigationItem.backButtonDisplayMode = .minimal
     }
     
-    func setNavigationTitle(user: UserResponseDTO) {
+    func setNavigationTitle(user: UserDetail) {
         self.navigationItem.title = user.nickname
     }
     
@@ -442,7 +442,7 @@ private extension ChatRoomViewController {
             .store(in: &cancellableBag)
     }
     
-    func setPostContent(post: PostResponseDTO) {
+    func setPostContent(post: PostDetail) {
         if post.isRequest == true {
             view.addSubview(self.requestPostView)
             NSLayoutConstraint.activate([

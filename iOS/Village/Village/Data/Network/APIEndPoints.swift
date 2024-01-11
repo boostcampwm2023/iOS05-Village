@@ -118,7 +118,7 @@ struct APIEndPoints {
         )
     }
     
-    static func getChatRoom(with roomID: Int) -> EndPoint<GetRoomResponseDTO> {
+    static func getChatRoom(with roomID: Int) -> EndPoint<ChatRoomResponseDTO> {
         return EndPoint(
             baseURL: baseURL,
             path: "chat/room/\(roomID)",

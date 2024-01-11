@@ -44,7 +44,7 @@ final class RequestPostSummaryView: UIView {
         setUI()
     }
     
-    func configureData(post: PostResponseDTO) {
+    func configureData(post: PostDetail) {
         postTitleLabel.text = post.title
         
         let dateFormatter = DateFormatter()

@@ -8,7 +8,9 @@
 import Foundation
 import Combine
 
-struct ReportUseCase {
+struct ReportUseCase: UseCase {
+    
+    typealias ResultValue = Void
     
     struct RequestValue {
         let postID: Int
@@ -18,32 +20,22 @@ struct ReportUseCase {
     
     private let repository: DefaultReportRepository
     private let requestValue: RequestValue
-    private let completeOutput: PassthroughSubject<Void, Error>
     
     init(
         repository: DefaultReportRepository,
-        requestValue: RequestValue,
-        completeOutput: PassthroughSubject<Void, Error>
+        requestValue: RequestValue
     ) {
         self.repository = repository
         self.requestValue = requestValue
-        self.completeOutput = completeOutput
     }
     
-    func start() {
-        Task {
-            let result = await self.repository.reportUser(
-                postID: requestValue.postID,
-                userID: requestValue.userID,
-                description: requestValue.description
-            )
-            switch result {
-            case .success(let success):
-                completeOutput.send()
-            case .failure(let error):
-                completeOutput.send(completion: .failure(error))
-            }
-        }
+    func start() -> AnyPublisher<ResultValue, NetworkError> {
+        repository.reportUser(
+            postID: requestValue.postID,
+            userID: requestValue.userID,
+            description: requestValue.description
+        )
+        .eraseToAnyPublisher()
     }
     
 }
