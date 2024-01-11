@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 struct DefaultUserDetailRepository: UserDetailRepository {
     
@@ -19,19 +20,12 @@ struct DefaultUserDetailRepository: UserDetailRepository {
         )
     }
     
-    func fetchUserData(userID: String) async -> Result<UserResponseDTO, NetworkError> {
+    func fetchUserData(userID: String) -> AnyPublisher<UserDetail, NetworkError> {
         let endpoint = makeEndPoint(userID: userID)
         
-        do {
-            guard let responseDTO = try await APIProvider.shared.request(with: endpoint) else {
-                return .failure(.emptyData)
-            }
-            return .success(responseDTO)
-        } catch let error as NetworkError {
-            return .failure(error)
-        } catch {
-            return .failure(.unknownError)
-        }
+        return NetworkService.shared.request(endpoint)
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
     }
     
 }

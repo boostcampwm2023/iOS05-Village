@@ -18,3 +18,14 @@ struct UserResponseDTO: Hashable, Decodable {
     }
     
 }
+
+extension UserResponseDTO {
+    
+    func toDomain() -> UserDetail {
+        .init(
+            nickname: self.nickname,
+            profileImageURL: self.profileImageURL
+        )
+    }
+    
+}

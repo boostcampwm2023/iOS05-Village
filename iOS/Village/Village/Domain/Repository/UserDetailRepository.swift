@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 protocol UserDetailRepository {
     
     associatedtype ResponseDTO
     
-    func fetchUserData(userID: String) async -> Result<UserResponseDTO, NetworkError>
+    func fetchUserData(userID: String) -> AnyPublisher<UserDetail, NetworkError>
     
 }

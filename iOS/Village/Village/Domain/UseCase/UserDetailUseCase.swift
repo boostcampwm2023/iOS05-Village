@@ -6,28 +6,27 @@
 //
 
 import Foundation
+import Combine
 
 struct UserDetailUseCase: UseCase {
     
+    typealias ResultValue = UserDetail
+    
     private let repository: DefaultUserDetailRepository
     private let userID: String
-    private let completion: (Result<UserResponseDTO, NetworkError>) -> Void
     
     init(
         repository: DefaultUserDetailRepository,
-        userID: String,
-        completion: @escaping (Result<UserResponseDTO, NetworkError>) -> Void
+        userID: String
     ) {
         self.repository = repository
         self.userID = userID
-        self.completion = completion
     }
     
-    func start() {
-        Task {
-            let result = await repository.fetchUserData(userID: userID)
-            completion(result)
-        }
+    func start() -> AnyPublisher<ResultValue, NetworkError> {
+        repository
+            .fetchUserData(userID: userID)
+            .eraseToAnyPublisher()
     }
     
 }
