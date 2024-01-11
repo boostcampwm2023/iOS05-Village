@@ -131,7 +131,7 @@ class ChatListTableViewCell: UITableViewCell {
         ])
     }
     
-    func configureData(data: ChatListData) async {
+    func configureData(data: ChatListItem) async {
         nicknameLabel.text = data.user != JWTManager.shared.currentUserID
         ? data.userNickname
         : data.writerNickname

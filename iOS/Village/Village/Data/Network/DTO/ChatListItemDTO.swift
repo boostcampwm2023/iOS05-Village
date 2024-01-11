@@ -1,13 +1,13 @@
 //
-//  GetChatListResponseDTO.swift
+//  ChatListItemDTO.swift
 //  Village
 //
-//  Created by 박동재 on 12/6/23.
+//  Created by 박동재 on 1/11/24.
 //
 
 import Foundation
 
-struct ChatListData: Hashable, Codable {
+struct ChatListItemDTO: Hashable, Codable {
 
     let roomID: Int
     let writer: String?
@@ -41,14 +41,23 @@ struct ChatListData: Hashable, Codable {
     
 }
 
-struct GetChatListResponseDTO: Hashable, Codable {
+extension ChatListItemDTO {
     
-    let allRead: Bool
-    let chatList: [ChatListData]
-    
-    enum CodingKeys: String, CodingKey {
-        case allRead = "all_read"
-        case chatList = "chat_list"
+    func toDomain() -> ChatListItem {
+        .init(
+            roomID: self.roomID,
+            writer: self.writer,
+            writerProfileIMG: self.writerProfileIMG,
+            writerNickname: self.writerNickname,
+            user: self.user,
+            userProfileIMG: self.userProfileIMG,
+            userNickname: self.userNickname,
+            postID: self.postID,
+            postTitle: self.postTitle,
+            postThumbnail: self.postThumbnail,
+            lastChat: self.lastChat,
+            lastChatDate: self.lastChatDate,
+            allRead: self.allRead)
     }
     
 }

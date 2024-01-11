@@ -11,7 +11,7 @@ import Combine
 final class ChatListViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
-    private let chatList = PassthroughSubject<GetChatListResponseDTO, NetworkError>()
+    private let chatList = PassthroughSubject<ChatList, NetworkError>()
     
     func transform(input: Input) -> Output {
         input.getChatListSubject
@@ -26,15 +26,20 @@ final class ChatListViewModel {
     private func getList() {
         ChatListUseCase(
             repository: DefaultChatListRepository()
-        ) { [weak self] result in
-            switch result {
-            case .success(let list):
-                self?.chatList.send(list)
-            case .failure(let error):
-                self?.chatList.send(completion: .failure(error))
-            }
-        }
+        )
         .start()
+        .sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
+                dump(error)
+            }
+        } receiveValue: { [weak self] list in
+            self?.chatList.send(list)
+        }
+        .store(in: &cancellableBag)
+
     }
     
     func deleteChatRoom(roomID: Int) {
@@ -59,7 +64,7 @@ extension ChatListViewModel {
     }
     
     struct Output {
-        let chatList: AnyPublisher<GetChatListResponseDTO, NetworkError>
+        let chatList: AnyPublisher<ChatList, NetworkError>
     }
     
 }

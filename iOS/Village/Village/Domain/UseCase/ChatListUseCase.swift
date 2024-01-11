@@ -6,24 +6,23 @@
 //
 
 import Foundation
+import Combine
 
 struct ChatListUseCase: UseCase {
     
+    typealias ResultValue = ChatList
+    
     private let repository: DefaultChatListRepository
-    private let completion: (Result<GetChatListResponseDTO, NetworkError>) -> Void
 
-    init(repository: DefaultChatListRepository, 
-         completion: @escaping (Result<GetChatListResponseDTO, NetworkError>) -> Void
+    init(repository: DefaultChatListRepository
     ) {
         self.repository = repository
-        self.completion = completion
     }
     
-    func start() {
-        Task {
-            let result = await repository.fetchChatList()
-            completion(result)
-        }
+    func start() -> AnyPublisher<ResultValue, NetworkError> {
+        repository
+            .fetchChatList()
+            .eraseToAnyPublisher()
     }
     
 }

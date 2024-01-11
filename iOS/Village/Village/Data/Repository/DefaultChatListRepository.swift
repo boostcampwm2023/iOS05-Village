@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import Combine
 
 struct DefaultChatListRepository: ChatListRepository {
     
-    private func makeEndPoint() -> EndPoint<GetChatListResponseDTO> {
+    private func makeEndPoint() -> EndPoint<ChatListResponseDTO> {
         return EndPoint(
             baseURL: Constant.baseURL,
             path: "chat/room",
@@ -17,19 +18,12 @@ struct DefaultChatListRepository: ChatListRepository {
         )
     }
     
-    func fetchChatList() async -> Result<GetChatListResponseDTO, NetworkError> {
+    func fetchChatList() -> AnyPublisher<ChatList, NetworkError> {
         let endpoint = makeEndPoint()
         
-        do {
-            guard let chatListDTO = try await APIProvider.shared.request(with: endpoint) else {
-                return .success(GetChatListResponseDTO(allRead: true, chatList: []))
-            }
-            return .success(chatListDTO)
-        } catch let error as NetworkError {
-            return .failure(error)
-        } catch {
-            return .failure(.unknownError)
-        }
+        return NetworkService.shared.request(endpoint)
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
     }
     
 }

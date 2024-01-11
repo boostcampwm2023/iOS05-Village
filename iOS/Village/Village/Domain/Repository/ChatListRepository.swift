@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Combine
 
 protocol ChatListRepository {
     
-    func fetchChatList() async -> Result<GetChatListResponseDTO, NetworkError>
+    func fetchChatList() -> AnyPublisher<ChatList, NetworkError>
     
 }
