@@ -41,7 +41,6 @@ struct ChatListItem: Hashable, Codable {
     
 }
 
-
 struct ChatList: Hashable, Codable {
     
     let allRead: Bool
