@@ -64,11 +64,12 @@ export class NotificationService {
     };
   }
 
-  private async getRegistrationToken(userId: string): Promise<string> {
+  async getRegistrationToken(userId: string): Promise<string> {
     const registrationToken =
       await this.registrationTokenRepository.findOne(userId);
     if (registrationToken === null) {
       this.logger.error('토큰이 없습니다.', 'FcmHandler');
+      return null;
     }
     return registrationToken.registration_token;
   }
