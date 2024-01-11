@@ -47,7 +47,6 @@ export class UsersService {
       await this.cacheManager.set(accessToken, 'logout', { ttl });
     }
     await this.userRepository.softDeleteCascade(userId);
-    return true;
   }
 
   async checkAuth(id, userId) {
