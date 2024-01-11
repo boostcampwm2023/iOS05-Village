@@ -3,7 +3,6 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
-import { S3Handler } from '../common/S3Handler';
 import { PostImageEntity } from '../entities/postImage.entity';
 import { BlockUserEntity } from '../entities/blockUser.entity';
 import { BlockPostEntity } from '../entities/blockPost.entity';
@@ -22,6 +21,6 @@ import { ImageModule } from '../image/image.module';
     ImageModule,
   ],
   controllers: [PostController],
-  providers: [PostService, S3Handler, AuthGuard, PostRepository],
+  providers: [PostService, AuthGuard, PostRepository],
 })
 export class PostModule {}
