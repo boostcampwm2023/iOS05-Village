@@ -303,8 +303,10 @@ export class ChatService {
 
     if (room.writer === userId) {
       room.writer_hide = true;
+      room.writer_left_time = new Date();
     } else if (room.user === userId) {
       room.user_hide = true;
+      room.user_left_time = new Date();
     }
 
     await this.chatRoomRepository.save(room);
