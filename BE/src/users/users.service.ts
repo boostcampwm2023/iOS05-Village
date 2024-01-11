@@ -32,9 +32,8 @@ export class UsersService {
         where: { user_hash: userId },
       });
     if (user) {
-      if (user.profile_img === null) {
-        user.profile_img = this.configService.get('DEFAULT_PROFILE_IMAGE');
-      }
+      user.profile_img =
+        user.profile_img ?? this.configService.get('DEFAULT_PROFILE_IMAGE');
       return { nickname: user.nickname, profile_img: user.profile_img };
     } else {
       return null;
