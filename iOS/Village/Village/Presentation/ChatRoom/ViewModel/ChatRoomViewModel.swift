@@ -27,8 +27,8 @@ final class ChatRoomViewModel {
     private let roomIDOutput = PassthroughSubject<Int, Never>()
     private let joinOutput = PassthroughSubject<Int, Never>()
     private let postIDOutput = PassthroughSubject<Int, Never>()
-    private let postOutput = PassthroughSubject<PostResponseDTO, NetworkError>()
-    private let userOutput = PassthroughSubject<UserResponseDTO, NetworkError>()
+    private let postOutput = PassthroughSubject<PostDetail, NetworkError>()
+    private let userOutput = PassthroughSubject<UserDetail, NetworkError>()
     private let reportOutput = PassthroughSubject<(postID: Int, userID: String), Never>()
     private let popViewControllerOutput = PassthroughSubject<Void, NetworkError>()
     private let tableViewReloadOutput = PassthroughSubject<Void, Never>()
@@ -251,8 +251,8 @@ extension ChatRoomViewModel {
         let joinOutput: AnyPublisher<Int, Never>
         let roomIDOutput: AnyPublisher<Int, Never>
         let postIDOutput: AnyPublisher<Int, Never>
-        let postOutput: AnyPublisher<PostResponseDTO, NetworkError>
-        let userOutput: AnyPublisher<UserResponseDTO, NetworkError>
+        let postOutput: AnyPublisher<PostDetail, NetworkError>
+        let userOutput: AnyPublisher<UserDetail, NetworkError>
         let reportOutput: AnyPublisher<(postID: Int, userID: String), Never>
         let popViewControllerOutput: AnyPublisher<Void, NetworkError>
         let tableViewReloadOutput: AnyPublisher<Void, Never>
