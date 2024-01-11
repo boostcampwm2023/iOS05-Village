@@ -10,7 +10,7 @@ import Combine
 
 struct PostListUseCase: UseCase {
     
-    typealias ResultValue = PostListItem
+    typealias ResultValue = [PostListItem]
     
     struct RequestValue {
         let searchKeyword: String? = nil
@@ -29,13 +29,14 @@ struct PostListUseCase: UseCase {
         self.requestValue = requestValue
     }
     
-    func start() -> AnyPublisher<[ResultValue], NetworkError> {
-        return repository.fetchPostList(
-            searchKeyword: requestValue.searchKeyword,
-            postType: requestValue.postType,
-            writer: requestValue.writer,
-            lastID: requestValue.lastID)
-        .eraseToAnyPublisher()
+    func start() -> AnyPublisher<ResultValue, NetworkError> {
+        repository
+            .fetchPostList(
+                searchKeyword: requestValue.searchKeyword,
+                postType: requestValue.postType,
+                writer: requestValue.writer,
+                lastID: requestValue.lastID)
+            .eraseToAnyPublisher()
     }
     
 }
