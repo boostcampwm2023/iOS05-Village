@@ -6,34 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 struct DefaultPostListRepository: PostListRepository {
     
-    typealias ResponseDTO = PostListResponseDTO
     typealias RequestDTO = PostListRequestDTO
-    
-    func fetchPostList(
-        searchKeyword: String?,
-        postType: PostType,
-        writer: String?,
-        lastID: String?
-    ) async -> Result<[PostListItem], Error> {
-        let endpoint = makeEndPoint(
-            searchKeyword: searchKeyword,
-            postType: postType,
-            writer: writer,
-            lastID: lastID
-        )
-        
-        do {
-            guard let postListDTO = try await APIProvider.shared.request(with: endpoint) else {
-                return .success([])
-            }
-            return .success(postListDTO.map { $0.toDomain() })
-        } catch {
-            return .failure(error)
-        }
-    }
+    typealias ResponseDTO = PostListResponseDTO
     
     private func makeEndPoint(
         searchKeyword: String?,
@@ -54,6 +32,26 @@ struct DefaultPostListRepository: PostListRepository {
             method: .GET,
             queryParameters: requestDTO
         )
+    }
+    
+    func fetchPostList(
+        searchKeyword: String?,
+        postType: PostType,
+        writer: String?,
+        lastID: String?
+    ) -> AnyPublisher<[PostListItem], NetworkError> {
+        let endpoint = makeEndPoint(
+            searchKeyword: searchKeyword,
+            postType: postType,
+            writer: writer,
+            lastID: lastID
+        )
+
+        return NetworkService.shared.request(endpoint)
+            .map({ dto in
+                dto.map { $0.toDomain() }
+            })
+            .eraseToAnyPublisher()
     }
     
 }

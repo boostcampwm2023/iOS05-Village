@@ -54,7 +54,7 @@ final class RentPostSummaryView: UIView {
         setUI()
     }
     
-    func configureData(post: PostResponseDTO) {
+    func configureData(post: PostDetail) {
         postTitleLabel.text = post.title
         setPrice(price: post.price)
         configureImageView(imageURL: post.images.first)

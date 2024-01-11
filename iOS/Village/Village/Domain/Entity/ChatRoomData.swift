@@ -1,8 +1,8 @@
 //
-//  GetRoomResponseDTO.swift
+//  ChatRoomData.swift
 //  Village
 //
-//  Created by 박동재 on 2023/12/05.
+//  Created by 박동재 on 1/10/24.
 //
 
 import Foundation
@@ -31,7 +31,7 @@ struct Chat: Hashable, Codable {
     
 }
 
-struct GetRoomResponseDTO: Codable {
+struct ChatRoom: Codable {
     
     let writer: String
     let writerProfileIMG: String
