@@ -123,9 +123,9 @@ export class ChatService {
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
-      .andWhere('chat_room.writer_left IS false')
+      .andWhere('chat_room.writer_hide IS false')
       .orWhere('chat_room.user = :userId', { userId: userId })
-      .andWhere('chat_room.user_left IS false')
+      .andWhere('chat_room.user_hide IS false')
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
@@ -212,7 +212,7 @@ export class ChatService {
       .update()
       .set({ is_read: true })
       .where('chat.chat_room = :roomId', { roomId: roomId })
-      .andWhere('chat.is_read = :isRead', { isRead: false })
+      //.andWhere('chat.is_read = :isRead', { isRead: false })
       .andWhere('chat.sender != :userId', { userId: userId })
       .execute();
 
@@ -223,7 +223,27 @@ export class ChatService {
       relations: ['chats', 'userUser', 'writerUser'],
     });
 
+    let chats = room.chats;
     this.checkAuth(room, userId);
+
+    if (
+      room.writer === userId &&
+      room.writer_hide === false &&
+      room.writer_left_time !== null
+    ) {
+      chats = chats.filter((chat) => {
+        return chat.create_date > room.writer_left_time;
+      });
+    } else if (
+      room.user === userId &&
+      room.user_hide === false &&
+      room.user_left_time !== null
+    ) {
+      chats = chats.filter((chat) => {
+        return chat.create_date > room.user_left_time;
+      });
+    }
+
     return {
       writer: room.writer,
       writer_profile_img:
@@ -236,7 +256,7 @@ export class ChatService {
           ? this.configService.get('DEFAULT_PROFILE_IMAGE')
           : room.userUser.profile_img,
       post_id: room.post_id,
-      chat_log: room.chats,
+      chat_log: chats,
     };
   }
 
