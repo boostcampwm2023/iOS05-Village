@@ -10,8 +10,6 @@ import Combine
 
 protocol UserDetailRepository {
     
-    associatedtype ResponseDTO
-    
     func fetchUserData(userID: String) -> AnyPublisher<UserDetail, NetworkError>
     
 }

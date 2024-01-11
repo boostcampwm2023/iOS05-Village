@@ -10,9 +10,6 @@ import Combine
 
 protocol PostListRepository {
     
-    associatedtype RequestDTO
-    associatedtype ResponseDTO
-    
     func fetchPostList(
         searchKeyword: String?,
         postType: PostType,

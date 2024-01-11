@@ -10,8 +10,6 @@ import Combine
 
 protocol ChatRoomRepository {
     
-    associatedtype ResponseDTO
-    
     func fetchRoomData(roomID: Int) -> AnyPublisher<ChatRoom, NetworkError>
     
 }

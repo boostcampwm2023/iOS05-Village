@@ -10,8 +10,6 @@ import Combine
 
 protocol PostDetailRepository {
     
-    associatedtype ResponseDTO
-    
     func fetchPostData(postID: Int) -> AnyPublisher<PostDetail, NetworkError>
     
 }
