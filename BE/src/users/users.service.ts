@@ -64,7 +64,6 @@ export class UsersService {
   }
 
   async updateUserById(
-    id: string,
     nickname: string,
     imageLocation: string,
     userId: string,

@@ -67,7 +67,7 @@ export class UsersController {
       ? await this.imageService.uploadImage(file)
       : null;
     const nickname = body ? body.nickname : null;
-    await this.usersService.updateUserById(id, nickname, imageLocation, userId);
+    await this.usersService.updateUserById(nickname, imageLocation, userId);
   }
 
   @Post('registration-token')
