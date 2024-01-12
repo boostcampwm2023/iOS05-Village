@@ -29,7 +29,7 @@ describe('UsersService', function () {
         },
         {
           provide: ConfigService,
-          useValue: { get: jest.fn((key: string) => 'mocked-value') },
+          useValue: { get: jest.fn((key: string) => 'default image') },
         },
         {
           provide: CACHE_MANAGER,
@@ -66,6 +66,34 @@ describe('UsersService', function () {
     it('should pass', async function () {
       repository.getRepository().findOne.mockResolvedValue(new UserEntity());
       await service.checkAuth('user', 'user');
+    });
+  });
+
+  describe('findUserById', function () {
+    it('should return null', async function () {
+      repository.getRepository().findOne.mockResolvedValue(null);
+      const res = await service.findUserById('user');
+      expect(res).toEqual(null);
+    });
+
+    it('should return user with profile image', async function () {
+      const user = new UserEntity();
+      user.profile_img = 'www.test.com';
+      user.nickname = 'user';
+      repository.getRepository().findOne.mockResolvedValue(user);
+      const res = await service.findUserById('user');
+      expect(res.nickname).toEqual('user');
+      expect(res.profile_img).toEqual('www.test.com');
+    });
+
+    it('should return user with default profile image', async function () {
+      const user = new UserEntity();
+      user.profile_img = null;
+      user.nickname = 'user';
+      repository.getRepository().findOne.mockResolvedValue(user);
+      const res = await service.findUserById('user');
+      expect(res.nickname).toEqual('user');
+      expect(res.profile_img).toEqual('default image');
     });
   });
 });
