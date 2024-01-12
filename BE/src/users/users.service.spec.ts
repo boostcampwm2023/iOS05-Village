@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { HttpException } from '@nestjs/common';
 import { UserEntity } from '../entities/user.entity';
-
 const mockRepository = {
   save: jest.fn(),
   findOne: jest.fn(),
@@ -16,6 +15,15 @@ const mockUserRepository = {
   getRepository: jest.fn().mockReturnValue(mockRepository),
   softDeleteCascade: jest.fn(),
 };
+
+jest.mock('jsonwebtoken', () => ({
+  decode: jest.fn(() => {
+    return {
+      exp: 1703128397,
+    };
+  }),
+}));
+
 describe('UsersService', function () {
   let service: UsersService;
   let repository;
@@ -147,5 +155,10 @@ describe('UsersService', function () {
     });
   });
 
-  describe('', function () {});
+  describe('removeUser', function () {
+    it('should remove', async function () {
+      jest.spyOn(Math, 'floor').mockReturnValue(1703128360);
+      await service.removeUser('user', 'token');
+    });
+  });
 });
