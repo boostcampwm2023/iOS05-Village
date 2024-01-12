@@ -1,7 +1,7 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
-import { UserEntity } from 'src/entities/user.entity';
-import { hashMaker } from 'src/common/hashMaker';
+import { UserEntity } from '../entities/user.entity';
+import { hashMaker } from '../common/hashMaker';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
 import { CACHE_MANAGER, CacheStore } from '@nestjs/cache-manager';
