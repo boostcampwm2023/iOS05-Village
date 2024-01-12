@@ -20,7 +20,7 @@ export class BlockUserEntity {
   delete_date: Date;
 
   @ManyToOne(() => UserEntity, (blocker) => blocker.user_hash)
-  @JoinColumn({ name: 'blocker' })
+  @JoinColumn({ name: 'blocker', referencedColumnName: 'user_hash' })
   blockerUser: UserEntity;
 
   @ManyToOne(() => UserEntity, (blocked) => blocked.user_hash)
