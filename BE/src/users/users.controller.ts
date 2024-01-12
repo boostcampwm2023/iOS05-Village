@@ -50,7 +50,7 @@ export class UsersController {
     @Headers('authorization') token: string,
   ) {
     await this.usersService.checkAuth(id, userId);
-    await this.usersService.removeUser(id, userId, token);
+    await this.usersService.removeUser(userId, token);
     await this.notificationService.removeRegistrationToken(userId);
   }
 

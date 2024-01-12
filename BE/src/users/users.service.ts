@@ -40,7 +40,7 @@ export class UsersService {
     }
   }
 
-  async removeUser(id: string, userId: string, accessToken: string) {
+  async removeUser(userId: string, accessToken: string) {
     const decodedToken: any = jwt.decode(accessToken);
     if (decodedToken && decodedToken.exp) {
       const ttl: number = decodedToken.exp - Math.floor(Date.now() / 1000);
