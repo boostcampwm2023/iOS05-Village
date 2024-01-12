@@ -96,4 +96,56 @@ describe('UsersService', function () {
       expect(res.profile_img).toEqual('default image');
     });
   });
+
+  describe('updateUserById', function () {
+    it('should update only nickname', async function () {
+      const nickname = 'test';
+      const imageLocation = null;
+      const userId = 'user';
+      const updateEntity = new UserEntity();
+      updateEntity.nickname = nickname;
+      updateEntity.profile_img = undefined;
+      await service.updateUserById(nickname, imageLocation, userId);
+      expect(repository.getRepository().update).toHaveBeenCalledWith(
+        {
+          user_hash: userId,
+        },
+        updateEntity,
+      );
+    });
+
+    it('should update only image', async function () {
+      const nickname = null;
+      const imageLocation = 'test';
+      const userId = 'user';
+      const updateEntity = new UserEntity();
+      updateEntity.nickname = undefined;
+      updateEntity.profile_img = imageLocation;
+      await service.updateUserById(nickname, imageLocation, userId);
+      expect(repository.getRepository().update).toHaveBeenCalledWith(
+        {
+          user_hash: userId,
+        },
+        updateEntity,
+      );
+    });
+
+    it('should update all', async function () {
+      const nickname = 'test';
+      const imageLocation = 'test';
+      const userId = 'user';
+      const updateEntity = new UserEntity();
+      updateEntity.nickname = nickname;
+      updateEntity.profile_img = imageLocation;
+      await service.updateUserById(nickname, imageLocation, userId);
+      expect(repository.getRepository().update).toHaveBeenCalledWith(
+        {
+          user_hash: userId,
+        },
+        updateEntity,
+      );
+    });
+  });
+
+  describe('', function () {});
 });
