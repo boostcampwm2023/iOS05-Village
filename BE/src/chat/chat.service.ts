@@ -275,9 +275,9 @@ export class ChatService {
     } else if (room.writer !== userId && room.user !== userId) {
       throw new HttpException('권한이 없습니다.', 403);
     } else if (room.writer === userId && room.writer_hide === true) {
-      throw new HttpException('채팅방이 존재하지 않습니다.', 404);
+      throw new HttpException('숨긴 채팅방입니다.', 403);
     } else if (room.user === userId && room.user_hide === true) {
-      throw new HttpException('채팅방이 존재하지 않습니다.', 404);
+      throw new HttpException('숨긴 채팅방입니다.', 403);
     }
   }
 
