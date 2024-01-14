@@ -50,7 +50,7 @@ export class UsersController {
     @Headers('authorization') token: string,
   ) {
     await this.usersService.checkAuth(id, userId);
-    await this.usersService.removeUser(id, userId, token);
+    await this.usersService.removeUser(userId, token);
     await this.notificationService.removeRegistrationToken(userId);
   }
 
@@ -67,7 +67,7 @@ export class UsersController {
       ? await this.imageService.uploadImage(file)
       : null;
     const nickname = body ? body.nickname : null;
-    await this.usersService.updateUserById(id, nickname, imageLocation, userId);
+    await this.usersService.updateUserById(nickname, imageLocation, userId);
   }
 
   @Post('registration-token')
