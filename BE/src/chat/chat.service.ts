@@ -123,9 +123,9 @@ export class ChatService {
         'chat_info.sender as sender',
       ])
       .where('chat_room.writer = :userId', { userId: userId })
-      .andWhere('chat_room.writer_left IS false')
+      .andWhere('chat_room.writer_hide IS false')
       .orWhere('chat_room.user = :userId', { userId: userId })
-      .andWhere('chat_room.user_left IS false')
+      .andWhere('chat_room.user_hide IS false')
       .orderBy('chat_info.create_date', 'DESC')
       .getRawMany();
 
@@ -206,7 +206,7 @@ export class ChatService {
     return { all_read: true };
   }
 
-  async findRoomById(roomId: number, userId: string) {
+  async makeAllRead(roomId: number, userId: string) {
     await this.chatRepository
       .createQueryBuilder('chat')
       .update()
@@ -215,15 +215,57 @@ export class ChatService {
       .andWhere('chat.is_read = :isRead', { isRead: false })
       .andWhere('chat.sender != :userId', { userId: userId })
       .execute();
+  }
 
-    const room = await this.chatRoomRepository.findOne({
+  /*async getRoomAndChatInfoPagination(roomId: number, chatId: number) {
+    return await this.chatRoomRepository
+      .createQueryBuilder('chat_room')
+      .innerJoinAndSelect('chat_room.chats', 'chat_info')
+      .innerJoinAndSelect('chat_room.writerUser', 'writer')
+      .innerJoinAndSelect('chat_room.userUser', 'user')
+      .where('chat_room.id = :roomId', { roomId: roomId })
+      .andWhere('chat_info.id < :chatId', { chatId: chatId })
+      .orderBy('chat_info.id', 'DESC')
+      .limit(30)
+      .getOne();
+  }*/
+
+  async getRoomAndChatInfo(roomId: number, userId: string) {
+    return await this.chatRoomRepository.findOne({
       where: {
         id: roomId,
       },
       relations: ['chats', 'userUser', 'writerUser'],
     });
+  }
+
+  async findRoomById(roomId: number, userId: string) {
+    await this.makeAllRead(roomId, userId);
+
+    const room = await this.getRoomAndChatInfo(roomId, userId);
 
     this.checkAuth(room, userId);
+
+    let chats = room.chats;
+
+    if (
+      room.writer === userId &&
+      room.writer_hide === false &&
+      room.writer_left_time !== null
+    ) {
+      chats = chats.filter((chat) => {
+        return chat.create_date > room.writer_left_time;
+      });
+    } else if (
+      room.user === userId &&
+      room.user_hide === false &&
+      room.user_left_time !== null
+    ) {
+      chats = chats.filter((chat) => {
+        return chat.create_date > room.user_left_time;
+      });
+    }
+
     return {
       writer: room.writer,
       writer_profile_img:
@@ -236,7 +278,7 @@ export class ChatService {
           ? this.configService.get('DEFAULT_PROFILE_IMAGE')
           : room.userUser.profile_img,
       post_id: room.post_id,
-      chat_log: room.chats,
+      chat_log: chats,
     };
   }
 
@@ -245,6 +287,10 @@ export class ChatService {
       throw new HttpException('존재하지 않는 채팅방입니다.', 404);
     } else if (room.writer !== userId && room.user !== userId) {
       throw new HttpException('권한이 없습니다.', 403);
+    } else if (room.writer === userId && room.writer_hide === true) {
+      throw new HttpException('숨긴 채팅방입니다.', 403);
+    } else if (room.user === userId && room.user_hide === true) {
+      throw new HttpException('숨긴 채팅방입니다.', 403);
     }
   }
 
@@ -275,10 +321,10 @@ export class ChatService {
       where: { id: roomId },
     });
 
-    if (room.writer === userId && room.user_left !== false) {
-      room.user_left = false;
-    } else if (room.user === userId && room.writer_left !== false) {
-      room.writer_left = false;
+    if (room.writer === userId && room.user_hide !== false) {
+      room.user_hide = false;
+    } else if (room.user === userId && room.writer_hide !== false) {
+      room.writer_hide = false;
     }
     await this.chatRoomRepository.save(room);
   }
@@ -302,9 +348,11 @@ export class ChatService {
     });
 
     if (room.writer === userId) {
-      room.writer_left = true;
+      room.writer_hide = true;
+      room.writer_left_time = new Date();
     } else if (room.user === userId) {
-      room.user_left = true;
+      room.user_hide = true;
+      room.user_left_time = new Date();
     }
 
     await this.chatRoomRepository.save(room);

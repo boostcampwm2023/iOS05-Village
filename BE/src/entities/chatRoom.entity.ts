@@ -47,10 +47,16 @@ export class ChatRoomEntity {
   last_chat_id: number;
 
   @Column({ default: false })
-  writer_left: boolean;
+  writer_hide: boolean;
 
   @Column({ default: false })
-  user_left: boolean;
+  user_hide: boolean;
+
+  @Column({ default: null, type: 'timestamp' })
+  writer_left_time: Date;
+
+  @Column({ default: null, type: 'timestamp' })
+  user_left_time: Date;
 
   @OneToMany(() => ChatEntity, (chat) => chat.chatRoom)
   chats: ChatEntity[];
