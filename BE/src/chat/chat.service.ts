@@ -224,6 +224,15 @@ export class ChatService {
       },
       relations: ['chats', 'userUser', 'writerUser'],
     });
+    /*return await this.chatRoomRepository
+      .createQueryBuilder('chat_room')
+      .innerJoinAndSelect('chat_room.chats', 'chat_info')
+      .innerJoinAndSelect('chat_room.writerUser', 'writer')
+      .innerJoinAndSelect('chat_room.userUser', 'user')
+      .where('chat_room.id = :roomId', { roomId: roomId })
+      .andWhere('chat_info.id < 450374')
+      .limit(5)
+      .getOne();*/
   }
 
   async findRoomById(roomId: number, userId: string) {
