@@ -156,6 +156,9 @@
 		8FBE3B142B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */; };
 		8FC7FE742B05CE9A00B91D3B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE732B05CE9A00B91D3B /* HomeViewModel.swift */; };
 		8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */; };
+		8FCA6B382B568DC900585B52 /* DeleteChatUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FCA6B372B568DC900585B52 /* DeleteChatUseCase.swift */; };
+		8FCA6B3A2B568DD400585B52 /* DeleteChatRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FCA6B392B568DD400585B52 /* DeleteChatRepository.swift */; };
+		8FCA6B3C2B568DE300585B52 /* DefaultDeleteChatRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FCA6B3B2B568DE300585B52 /* DefaultDeleteChatRepository.swift */; };
 		8FD52A482B09D1AD005EE367 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */; };
 		8FD52A4B2B0B0A2F005EE367 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */; };
 		8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */; };
@@ -330,6 +333,9 @@
 		8FBE3B132B04D84B00660530 /* UINavigationItem+MakeSFSymbolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+MakeSFSymbolButton.swift"; sourceTree = "<group>"; };
 		8FC7FE732B05CE9A00B91D3B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		8FC7FE7A2B07A89A00B91D3B /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
+		8FCA6B372B568DC900585B52 /* DeleteChatUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteChatUseCase.swift; sourceTree = "<group>"; };
+		8FCA6B392B568DD400585B52 /* DeleteChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteChatRepository.swift; sourceTree = "<group>"; };
+		8FCA6B3B2B568DE300585B52 /* DefaultDeleteChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDeleteChatRepository.swift; sourceTree = "<group>"; };
 		8FD52A472B09D1AD005EE367 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		8FD52A4A2B0B0A2F005EE367 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		8FD52A502B0B51AF005EE367 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
@@ -771,6 +777,7 @@
 				8FBD4E492B4A746900D32488 /* ChatRoomRepository.swift */,
 				8FBD4E4F2B4A9E3200D32488 /* PostDetailRepository.swift */,
 				8FBD4E532B4AC04A00D32488 /* UserDetailRepository.swift */,
+				8FCA6B392B568DD400585B52 /* DeleteChatRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -780,6 +787,7 @@
 			children = (
 				44A59F582B3BFC1500736A34 /* Protocol */,
 				59EA94C22B35A331007EAA42 /* ReportUseCase.swift */,
+				8FCA6B372B568DC900585B52 /* DeleteChatUseCase.swift */,
 				44A59F592B3BFC4A00736A34 /* PostListUseCase.swift */,
 				8FBD4E432B49422D00D32488 /* ChatListUseCase.swift */,
 				8FBD4E4B2B4A74A800D32488 /* ChatRoomUseCase.swift */,
@@ -793,6 +801,7 @@
 			isa = PBXGroup;
 			children = (
 				59EA94C02B359ABB007EAA42 /* DefaultReportRepository.swift */,
+				8FCA6B3B2B568DE300585B52 /* DefaultDeleteChatRepository.swift */,
 				44A59F5D2B3BFC9C00736A34 /* DefaultPostListRepository.swift */,
 				8FBD4E452B49435E00D32488 /* DefaultChatListRepository.swift */,
 				8FBD4E472B4A745300D32488 /* DefaultChatRoomRepository.swift */,
@@ -1291,6 +1300,7 @@
 				8F1E2CEE2B1F163D00179E34 /* ChatRoomResponseDTO.swift in Sources */,
 				59E6A20F2B205C8500A2DF21 /* RequestPostSummaryView.swift in Sources */,
 				446B61002B2433E100A361CB /* ImageItem.swift in Sources */,
+				8FCA6B3A2B568DD400585B52 /* DeleteChatRepository.swift in Sources */,
 				8F8F0B932B1DC0C300BE97D2 /* PostRoomRequestDTO.swift in Sources */,
 				59E6A2072B1F374B00A2DF21 /* MyPostsViewModel.swift in Sources */,
 				59BA10FA2B1CC3F700F30DB8 /* FCMManager.swift in Sources */,
@@ -1323,6 +1333,7 @@
 				4416D4762B15E25A0052BF33 /* MultipartFormData.swift in Sources */,
 				8FD52A512B0B51AF005EE367 /* ChatRoomViewController.swift in Sources */,
 				4416D47B2B15EBCC0052BF33 /* Encodable+.swift in Sources */,
+				8FCA6B382B568DC900585B52 /* DeleteChatUseCase.swift in Sources */,
 				446362CF2B0F042500B74DA7 /* PostInfoView.swift in Sources */,
 				59AABDE52B0E2D47002F6D0E /* PostCreateDetailView.swift in Sources */,
 				4461F39D2B1786DA00723C55 /* JWTManager.swift in Sources */,
@@ -1415,6 +1426,7 @@
 				8FBD4E4C2B4A74A800D32488 /* ChatRoomUseCase.swift in Sources */,
 				8FC7FE7B2B07A89A00B91D3B /* PostDetailViewController.swift in Sources */,
 				4416D4552B14B5F00052BF33 /* NicknameTextField.swift in Sources */,
+				8FCA6B3C2B568DE300585B52 /* DefaultDeleteChatRepository.swift in Sources */,
 				8FF7E60D2B0F38A500B6D678 /* ChatListViewController.swift in Sources */,
 				442442172B14427F009D39A8 /* LoginViewController.swift in Sources */,
 				446362D12B0F050600B74DA7 /* UserInfoView.swift in Sources */,
