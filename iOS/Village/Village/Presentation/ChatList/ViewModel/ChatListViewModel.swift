@@ -12,6 +12,7 @@ final class ChatListViewModel {
     
     private var cancellableBag = Set<AnyCancellable>()
     private let chatList = PassthroughSubject<ChatList, NetworkError>()
+    private var roomIDList: [Int] = []
     
     func transform(input: Input) -> Output {
         input.getChatListSubject
@@ -37,22 +38,28 @@ final class ChatListViewModel {
             }
         } receiveValue: { [weak self] list in
             self?.chatList.send(list)
+            self?.roomIDList.removeAll()
+            list.chatList.forEach { item in
+                self?.roomIDList.append(item.roomID)
+            }
         }
         .store(in: &cancellableBag)
 
     }
     
-    func deleteChatRoom(roomID: Int) {
-        let request = ChatRoomRequestDTO(roomID: roomID)
-        let endpoint = APIEndPoints.deleteChatRoom(with: request)
-        
-        Task {
-            do {
-                try await APIProvider.shared.request(with: endpoint)
-            } catch {
+    func deleteChatRoom(index: Int) {
+        DeleteChatUseCase(
+            repository: DefaultDeleteChatRepository(),
+            roomID: self.roomIDList[index]
+        ).start().sink { completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let error):
                 dump(error)
             }
-        }
+        } receiveValue: {}
+        .store(in: &cancellableBag)
     }
     
 }
