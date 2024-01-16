@@ -148,17 +148,17 @@ extension ChatListViewController: UITableViewDelegate {
         chatRoomVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(chatRoomVC, animated: true)
     }
-    // TODO: after 15
-//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
-//    -> UISwipeActionsConfiguration? {
-//        let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
-//            self.handleDeleteAction(forRowAt: indexPath)
-//            completion(true)
-//        }
-//        let configuration = UISwipeActionsConfiguration(actions: [delete])
-//        
-//        return configuration
-//    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+    -> UISwipeActionsConfiguration? {
+        let delete = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
+            self.handleDeleteAction(forRowAt: indexPath)
+            completion(true)
+        }
+        let configuration = UISwipeActionsConfiguration(actions: [delete])
+        
+        return configuration
+    }
     
     func handleDeleteAction(forRowAt indexPath: IndexPath) {
         let alertController = UIAlertController(title: "", message: "", preferredStyle: .alert)
@@ -179,7 +179,7 @@ extension ChatListViewController: UITableViewDelegate {
         alertController.setValue(attributedMessage, forKey: "attributedMessage")
         
         let okAction = UIAlertAction(title: "삭제", style: .default) { (_) in
-            self.handleAlertOKAction()
+            self.handleAlertOKAction(index: indexPath.row)
         }
         okAction.setValue(UIColor.white, forKey: "titleTextColor")
         alertController.addAction(okAction)
@@ -191,9 +191,9 @@ extension ChatListViewController: UITableViewDelegate {
         self.present(alertController, animated: false, completion: nil)
     }
     
-    func handleAlertOKAction() {
+    func handleAlertOKAction(index: Int) {
         print("ok.")
-        viewModel.deleteChatRoom(roomID: 1)
+        viewModel.deleteChatRoom(index: index)
     }
     
 }
