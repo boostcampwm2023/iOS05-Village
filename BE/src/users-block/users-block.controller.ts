@@ -20,6 +20,11 @@ export class UsersBlockController {
     return this.usersBlockService.getBlockUser(userId);
   }
 
+  @Get('/:id')
+  async blockUserCheck(@Param('id') id: string, @UserHash() userId: string) {
+    return await this.usersBlockService.checkBlockUser(id, userId);
+  }
+
   @Post('/:id')
   async blockUserAdd(@Param('id') id: string, @UserHash() userId: string) {
     await this.usersBlockService.addBlockUser(id, userId);
