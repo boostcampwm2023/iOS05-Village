@@ -46,6 +46,37 @@ export class UsersBlockService {
     return await this.blockUserRepository.save(blockUserEntity);
   }
 
+  async checkBlockUser(oppId: string, userId: string) {
+    const isExistUser = await this.userRepository.findOne({
+      where: { user_hash: oppId },
+      withDeleted: true,
+    });
+
+    if (!isExistUser) {
+      throw new HttpException('존재하지 않는 유저입니다', 404);
+    }
+
+    const checkBlock = await this.blockUserRepository.findOne({
+      where: { blocker: userId, blocked_user: oppId },
+      withDeleted: true,
+    });
+
+    if (checkBlock !== null) {
+      return { block: 'block' };
+    }
+
+    const checkBlocked = await this.blockUserRepository.findOne({
+      where: { blocker: oppId, blocked_user: userId },
+      withDeleted: true,
+    });
+
+    if (checkBlocked !== null) {
+      return { block: 'blocked' };
+    }
+
+    return { block: 'none' };
+  }
+
   async getBlockUser(id: string) {
     const res = await this.blockUserRepository.find({
       where: { blocker: id },
