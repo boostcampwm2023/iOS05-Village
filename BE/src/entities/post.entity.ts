@@ -13,6 +13,7 @@ import { UserEntity } from './user.entity';
 import { PostImageEntity } from './postImage.entity';
 import { BlockPostEntity } from './blockPost.entity';
 import { ReportEntity } from './report.entity';
+import { BlockUserEntity } from './blockUser.entity';
 
 @Entity('post')
 export class PostEntity {
@@ -62,9 +63,16 @@ export class PostEntity {
   @Column({ length: 2048, nullable: true, charset: 'utf8' })
   thumbnail: string;
 
-  @OneToMany(() => PostImageEntity, (post_image) => post_image.post)
+  @OneToMany(() => PostImageEntity, (post_image) => post_image.post, {
+    cascade: ['soft-remove'],
+  })
   post_images: PostImageEntity[];
 
-  @OneToMany(() => BlockPostEntity, (post_image) => post_image.blocked_post)
+  @OneToMany(() => BlockPostEntity, (block_post) => block_post.blockedPost, {
+    cascade: ['soft-remove'],
+  })
   blocked_posts: BlockPostEntity[];
+
+  @OneToMany(() => BlockUserEntity, (block_user) => block_user.blockedUserPost)
+  blocked_users: BlockUserEntity[];
 }

@@ -16,6 +16,8 @@ import { ChatModule } from './chat/chat.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RedisConfigProvider } from './config/redis.config';
 import { ReportModule } from './report/report.module';
+import { ImageModule } from './image/image.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { ReportModule } from './report/report.module';
     LoginModule,
     ChatModule,
     ReportModule,
+    ImageModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [
